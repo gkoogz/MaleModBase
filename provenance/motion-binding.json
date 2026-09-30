@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
+  "algorithm": "signed donor-field transfer with final scalar clamp and linear two-influence chain partition",
+  "runtimeParity": false,
+  "files": [
+    {
+      "path": "malemod_base/motion_binding.py",
+      "sha256": "b9c86b0d109243979d6017f6be5cd49c7a9e6f2afe1d574d1c77022e9234980d"
+    },
+    {
+      "path": "tests/test_motion_binding.py",
+      "sha256": "2b830d2c785548f0cc8f1115e1c9019ee3db11845c1de86c829e597d2f007be7"
+    },
+    {
+      "path": "docs/MOTION-BINDING.md",
+      "sha256": "a23fd46573760e94be12e403e93df0fd19793595f86054cb6285db1e89c89616"
+    },
+    {
+      "path": "assets/wolverine-reference/geometry.npz",
+      "sha256": "435cb9b391e6bf1ee76a09524b075bfc356230920b30e523bac90448961b2f30"
+    }
+  ],
+  "omissions": [
+    "complete XPBD suspension/contact solver",
+    "native bone mappings",
+    "runtime rest-shape output",
+    "engine input and menus"
+  ]
+}

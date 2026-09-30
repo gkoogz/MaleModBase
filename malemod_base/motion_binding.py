@@ -47,3 +47,48 @@ def linear_chain_weights(coordinate, knots):
     weights[np.arange(len(x)), left] = 1-alpha
     weights[np.arange(len(x)), left+1] = alpha
     return weights
+
+
+def reference_cage_weights(fields, lateral, half_width, seam_distance, blend_distance):
+    """Eight axial joints and two lobes; distances use the caller's measured frame.
+
+    The caller supplies signed lateral coordinates and exact seam distances.
+    Zero seam distance gives zero new influence. Original donor bindings remain
+    authoritative for UV aliases and should be applied again after quantization.
+    """
+    fields=np.asarray(fields,dtype=float);lateral=np.asarray(lateral,dtype=float)
+    distance=np.asarray(seam_distance,dtype=float)
+    if (fields.ndim!=2 or fields.shape[1]!=3 or lateral.shape!=(len(fields),) or
+            distance.shape!=(len(fields),) or half_width<=0 or blend_distance<=0 or
+            not np.isfinite([half_width,blend_distance]).all() or
+            not np.isfinite(fields).all() or not np.isfinite(lateral).all() or
+            not np.isfinite(distance).all() or np.any(distance<0)):
+        raise ValueError('Invalid motion cage frame or fields')
+    fields=np.clip(fields,0,1)
+    shaft=linear_chain_weights(fields[:,2],np.linspace(0,1,8))*fields[:,0,None]
+    side=np.clip((lateral+half_width)/(2*half_width),0,1)
+    weights=np.column_stack([shaft,fields[:,1]*(1-side),fields[:,1]*side])
+    weights/=np.maximum(weights.sum(1)[:,None],1)
+    fade=np.clip(distance/blend_distance,0,1);fade=fade*fade*(3-2*fade)
+    return weights*fade[:,None]
+
+
+def reference_cage_centres(points, fields, root, lateral, lobe_exclusion):
+    """Author small native-rig rest centres from transferred reference fields.
+
+    These centres are an approximation for native secondary-motion backends;
+    they do not replace the authored Wolverine simulation cage.
+    """
+    points=np.asarray(points,dtype=float);fields=np.asarray(fields,dtype=float)
+    lateral=np.asarray(lateral,dtype=float);root=np.asarray(root,dtype=float)
+    if (points.shape!=(len(fields),3) or fields.shape!=(len(points),3) or
+            lateral.shape!=(len(points),) or root.shape!=(3,) or lobe_exclusion<0 or not np.isfinite(lobe_exclusion) or
+            not all(np.isfinite(x).all() for x in [points,fields,lateral,root])):
+        raise ValueError('Invalid reference cage inputs')
+    centres=[root]
+    masks=[(abs(fields[:,2]-t)<.075)&(fields[:,0]>.5) for t in np.linspace(0,1,8)[1:]]
+    masks += [(fields[:,1]>.8)&(lateral*side>lobe_exclusion) for side in [-1,1]]
+    for mask in masks:
+        if mask.sum()<8:raise ValueError('Insufficient field support for motion cage')
+        centres.append(points[mask].mean(0))
+    return np.asarray(centres)

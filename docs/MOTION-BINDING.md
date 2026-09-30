@@ -7,7 +7,9 @@ interpolation uses signed coefficients; the final scalar weights are clamped to
 Original geometry, donor tables and unrendered supports remain unchanged.
 
 The module also supplies a nonnegative, two-influence partition over explicitly
-authored chain coordinates. Native bone names, measured unit transforms, joint
+authored chain coordinates, reference-derived cage centres and a seam-faded
+eight-joint/two-lobe binding. Lateral blend and seam distances are supplied by
+the adapter in its measured authoring frame. Native bone names, measured unit transforms, joint
 rest frames, dynamics resources and SDK writers belong in each adapter.
 
 A spoke must preserve body and attachment seam weights, protect existing body

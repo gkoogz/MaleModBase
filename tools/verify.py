@@ -63,6 +63,10 @@ def main():
             raise ValueError('Rest-graft implementation provenance differs: '+item['path'])
     if hashlib.sha256((ROOT/graft['sourceBank']).read_bytes()).hexdigest()!=graft['sourceBankSHA256']:
         raise ValueError('Rest-graft source bank differs')
+    motion=json.loads((ROOT/'provenance/motion-binding.json').read_text())
+    for item in motion['files']:
+        if hashlib.sha256((ROOT/item['path']).read_bytes()).hexdigest()!=item['sha256']:
+            raise ValueError('Motion binding provenance differs: '+item['path'])
     generic_manifest=json.loads((generic/'manifest.json').read_text())
     for name,digest in generic_manifest['files'].items():
         if hashlib.sha256((generic/name).read_bytes()).hexdigest()!=digest:
