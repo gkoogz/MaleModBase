@@ -7,10 +7,14 @@ from export_geometry import arrays
 from extract_clinical import generate, FILES
 from extract_physics import outputs as physics_outputs
 from extract_collar import outputs as collar_outputs
+from export_controls import outputs as control_outputs
 
 ROOT = Path(__file__).resolve().parents[1]
 
 def main():
+    for path, content in control_outputs().items():
+        if (ROOT/path).read_bytes() != content.encode():
+            raise ValueError('Control catalog/provenance differs: '+path)
     report = json.loads((ROOT/'provenance/wolverine.json').read_text())
     count = 0
     for item in report['files']:

@@ -22,6 +22,14 @@ runtime. Its source commit is `dc64bdc44e75fd5521f066cdb2975277e9c34302`;
 
 ## Current shared work
 
+The next physics/menu pass has added the 18-control catalog and preference
+validation in `malemod_base/controls.py`. Read `docs/LIVE-CONTROLS.md`.
+`tools/export_controls.py --check` and `tools/verify.py` enforce its source and
+implementation provenance. These are control mappings, not a completed native
+deformation bridge. The user supplied a Witcher screenshot confirming the
+installed fitted attachment's appearance; motion remains unverified. The
+adapter's `docs/RUNTIME-PHYSICS.md` records native compiler probes and next gates.
+
 The first new spoke now uses Base's `surface.rest-graft` implementation. Read
 `docs/REST-GRAFT.md`, `modules/rest-graft.json` and `provenance/rest-graft.json`.
 It fits an actual body opening, preserves original-edge donors and UV lineage,
@@ -60,7 +68,7 @@ commits may exist; the adapter's lock file is authoritative for its build.
 
 ## Verification already recorded
 
-Base: 17 Python tests passed; 1,024 native C++ collar metric cases passed;
+Base: 27 Python tests passed; 1,024 historical native C++ collar metric cases passed;
 source/provenance verification passed. Witcher: 11 adapter tests passed;
 official export/import/compile/cook/pack/unbundle and package integrity passed.
 These are historical results, not a substitute for rerunning relevant checks
@@ -93,12 +101,11 @@ Another account needs repository access and its own tool/Git credentials.
 
 ## Next implementation gates
 
-Resume the attachment task by measuring Geralt's actual frame, units and rig;
-fit an opening, preserve UV/skin lineage and edge donors, then evaluate support
-refinement and maximum expansion offline. Shared fitting/deformation algorithms
-belong here; native Geralt bindings and a verified deformation path belong in
-Witcher. Implement the native bridge and test moving poses before claiming it
-works in game. Return shared improvements to Wolverine through an explicit
+Rest fitting and native round-trip are complete for Geralt's first reference
+shape. Continue with the independent motion/size output bridge and moving-pose
+seam tests, then maximum expansion. Shared deformation algorithms belong here;
+native Geralt bindings belong in Witcher. A compiler-accepted property does not
+prove a live output. Return shared improvements to Wolverine through an explicit
 adapter migration and parity checks, not by editing the legacy snapshot.
 
 Update this checkpoint and the affected adapter's feature/provenance status

@@ -1,0 +1,38 @@
+{
+  "format": "malemod.controls-provenance",
+  "version": 1,
+  "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
+  "sourceFiles": [
+    {
+      "path": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "sha256": "20779d89b389ca315a27f77d7e804d9fa290129fe7b2137e896149c344467e30"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/morph_targets_faired.h",
+      "sha256": "1d5c897539a68445ca10062fb42d39bde039260b76d097b2539bff290f721537"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "sha256": "3d7ebe41cdfecb0e1bf40343bb1bfc232ba066e0cbb4100583b9284cf6bdef75"
+    }
+  ],
+  "files": [
+    {
+      "path": "malemod_base/controls.py",
+      "sha256": "f713bb405842d924df9ce5e5788713871502718b8ac636e5f04b7386e44bacf9"
+    },
+    {
+      "path": "tests/test_controls.py",
+      "sha256": "512b1ad7d757cd7d4458c0d5b83a1b00166a42a9d8145ec83efa17e874b14eab"
+    }
+  ],
+  "mappingScope": "Source UI v5 rest controls; animation modulation excluded",
+  "omissions": [
+    "throb animation",
+    "idle audio",
+    "sequence controls",
+    "complete authored physics runtime",
+    "native engine bindings"
+  ],
+  "physicalCalibration": "No SI unit inference; adapters calibrate explicitly"
+}

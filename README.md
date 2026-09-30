@@ -65,5 +65,8 @@ The source-derived [pelvic collar](docs/PELVIC-COLLAR.md) now includes a portabl
 metric kernel and offline coupled evaluator with hard body-edge seam constraints.
 The [rest graft fitter](docs/REST-GRAFT.md) adds reusable opening/seam fitting,
 vertex lineage, orientation repair and target skin transfer for new spokes.
+The [live-control contract](docs/LIVE-CONTROLS.md) preserves Wolverine's 18
+rest-shape/mechanical controls and validates portable preferences. A native
+Witcher motion/size bridge remains pending.
 Commercial reuse rights are not established by this extraction: upstream has
 no root license, and game-derived assets retain their separate provenance.
