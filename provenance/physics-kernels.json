@@ -1,0 +1,21 @@
+{
+  "contractVersion": 1,
+  "source": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+  "sourceSHA256": "3d7ebe41cdfecb0e1bf40343bb1bfc232ba066e0cbb4100583b9284cf6bdef75",
+  "files": [
+    {
+      "path": "include/malemod/physics/xpbd_kernels.hpp",
+      "sha256": "d91eea589f380b48a7dc76174a7c51c5f81785c394dc52767d9a36aedc771747"
+    },
+    {
+      "path": "tests/data/wolverine-xpbd.inc",
+      "sha256": "8fc9c5b39938e9066722acc0eb5ee0f743870445895b290f863d306e8741da34"
+    }
+  ],
+  "scope": "Distance and Kelvin-Voigt bending kernels; full authored suspension/contact solver remains separate.",
+  "changes": [
+    "explicit instance state",
+    "explicit normalized bounce input",
+    "standard C++ dependencies"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "contractVersion": 1,
+  "id": "portable-default",
+  "body": {"height":0.5,"shoulders":0.5,"chest":0.5,"glutes":0.5,"hips":0.5,"limb_length":0.5},
+  "anatomy": {"length_m":0.2,"radius_m":0.02,"compliance":0.00008,"damping":0.3},
+  "clothing": []
+}

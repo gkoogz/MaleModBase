@@ -20,3 +20,13 @@ Before claiming a game port works, distinguish reference asset export, offline
 verification, runtime parity and observed in-game results. For changes to
 conversion or physics, run the relevant tests and provenance verification.
 Do not commit game packages, private audio, settings or captured user data.
+
+## Base first
+
+Before developing a feature in a game repository, identify which part is shared.
+Keep anatomy, geometry, morphology, garments, preference contracts, numerical
+physics and clinical timing here. A character export, observed bone mapping,
+WitcherScript controller, native input/menu integration and cooker belong in the
+game adapter. Proactively explain when a requested game feature should be moved
+into Base so all ports benefit. Pin Base revisions in adapters; do not copy its
+source into an independently maintained fork. See docs/GENERIC-BASE.md.

@@ -1,0 +1,19 @@
+{
+  "contractVersion": 1,
+  "generator": "tools/build_generic.py",
+  "units": "meters",
+  "vertexCount": 4641,
+  "triangleCount": 7392,
+  "jointCount": 25,
+  "socketCount": 4,
+  "files": {
+    "reference.json": "89ff5c6e9aff01e88983e32a297f4138bff5443008e6f701b347bf6b96171f22",
+    "reference.glb": "2a048a4babe5d8db636bfc9bfaa91f59df925da2f20cde0b9117ec76a8b792e5"
+  },
+  "limitations": [
+    "reference proxy made of overlapping surfaces",
+    "body control changes require target re-fitting",
+    "not a game skeleton",
+    "facial controls reserved"
+  ]
+}

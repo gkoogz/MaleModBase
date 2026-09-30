@@ -28,7 +28,10 @@ morph and binding arrays can be read without Direct3D. Character fitting runs
 offline with validated transforms. The clinical sequence, CPU viscous-fluid
 solver, mesh generation, deposition and audio cue timing are now portable,
 with per-character state and adapter callbacks. See CLINICAL-SEQUENCE.md.
-The anatomy XPBD/collar solver remains coupled in legacy/wolverine.
+The distance and damped-bending XPBD kernels now have explicit instance state,
+and drive a separate generic fixed-step chain. Skinning, sockets and cached
+capsule projection are shared too; see GENERIC-BASE.md. The complete authored
+anatomy suspension/contact/collar solver remains coupled in legacy/wolverine.
 
 The XPBD solver uses globals for rod nodes, lobe transforms, previous poses,
 contact impulses and tuning. Moving its header alone does not make it portable.

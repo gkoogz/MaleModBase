@@ -1,0 +1,12 @@
+{
+  "contractVersion":1,
+  "id":"garment.template",
+  "kind":"garment",
+  "status":"contract-only",
+  "socket":"waist.garment",
+  "mesh":null,
+  "requiredSemanticJoints":["pelvis","hip_left","hip_right"],
+  "fitEnvelope":null,
+  "physicsModes":["skinned","shared-secondary-motion","engine-cloth"],
+  "collisionPolicy":"adapter provides body surfaces; shared fitting and constraints belong in base"
+}

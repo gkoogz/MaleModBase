@@ -1,0 +1,13 @@
+{
+  "contractVersion":1,
+  "id":"anatomy.wolverine-reference",
+  "kind":"anatomy",
+  "socket":"pelvis.anatomy",
+  "mesh":"assets/wolverine-reference/final-reference.obj",
+  "bindings":"assets/wolverine-reference/geometry.npz",
+  "sourceUnits":"uncalibrated-source-model-units",
+  "calibrationStatus":"required",
+  "physics":"shared-xpbd-kernels; full authored suspension/contact parity pending",
+  "sequence":"malemod::clinical::Session",
+  "requires":["observed source root/outlet landmarks","metric calibration","source cage mapping","target body seam fit"]
+}

@@ -7,3 +7,4 @@ legacy/** -text
 assets/** -text
 include/malemod/detail/** -text
 include/malemod/clinical/** text eol=lf
+tests/data/** text eol=lf

@@ -5,6 +5,7 @@ from pathlib import Path
 import numpy as np
 from export_geometry import arrays
 from extract_clinical import generate, FILES
+from extract_physics import outputs as physics_outputs
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -32,6 +33,20 @@ def main():
             raise ValueError(f'Clinical extraction recipe differs: {name}')
     if hashlib.sha256((ROOT/clinical['bakeAsset']).read_bytes()).hexdigest()!=clinical['bakeSHA256']:
         raise ValueError('Clinical baked source differs')
+    physics=json.loads((ROOT/'provenance/physics-kernels.json').read_text())
+    if hashlib.sha256((ROOT/physics['source']).read_bytes()).hexdigest()!=physics['sourceSHA256']:
+        raise ValueError('Physics source provenance differs')
+    for item in physics['files']:
+        if hashlib.sha256((ROOT/item['path']).read_bytes()).hexdigest()!=item['sha256']:
+            raise ValueError('Physics generated provenance differs')
+    for path,text in physics_outputs().items():
+        if (ROOT/path).read_bytes()!=text.encode():
+            raise ValueError('Physics extraction recipe differs: '+path)
+    generic=ROOT/'assets/generic-male'
+    generic_manifest=json.loads((generic/'manifest.json').read_text())
+    for name,digest in generic_manifest['files'].items():
+        if hashlib.sha256((generic/name).read_bytes()).hexdigest()!=digest:
+            raise ValueError('Generic reference hash differs: '+name)
     asset = ROOT/'assets/wolverine-reference'
     manifest = json.loads((asset/'manifest.json').read_text())
     with np.load(asset/'geometry.npz',allow_pickle=False) as bank:
@@ -47,6 +62,6 @@ def main():
         vertices = sum(line.startswith(b'v ') for line in data.splitlines())
         faces = sum(line.startswith(b'f ') for line in data.splitlines())
         if (vertices,faces) != (item['vertices'],item['triangles']): raise ValueError('Mesh counts mismatch')
-    print(f'PASS: {count} imported files, materials, {len(manifest["arrays"])} source arrays and all exported mesh hashes/counts.')
+    print(f'PASS: {count} imported files, materials, {len(manifest["arrays"])} source arrays, exported meshes, generic reference and physics/clinical provenance.')
 
 if __name__ == '__main__': main()

@@ -25,6 +25,11 @@ reference runtime. No complete engine-independent anatomy runtime or Witcher por
 claimed. Profiles expose known requirements rather than pretending that
 engine or skeleton mappings are solved.
 
+The generic framework adds a metric skinned proxy, body preference controls,
+semantic sockets, linear skinning, capsule projection and an instance-owned
+fixed-step chain using extracted distance/bend kernels. Kernel parity is tested;
+full authored solver parity and live engine integration are still pending.
+
 Unavailable from Git: live capture banks, full character skeleton/palettes,
 some original authoring scripts, some build dependencies referenced by scripts,
 release runtime DLL and payload. The include/build audit records missing

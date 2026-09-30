@@ -11,6 +11,8 @@ geometry exports; it does not yet replace the installed Wolverine runtime.
   physics, material code, existing simulation code, remeshing inputs and tools.
 - `assets/wolverine-reference/`: OBJ surfaces, portable NumPy geometry/binding
   arrays and source metadata. Reference geometry is not a captured live pose.
+- `assets/generic-male/`: metric adult male proxy with semantic skinning and
+  attachment sockets in GLB and JSON; see [generic framework](docs/GENERIC-BASE.md).
 - `include/malemod/`: standalone C++ math, triangle correction limiter and
   portable clinical sequence with fluid simulation, meshes, deposition and cues.
 - `adapters/`: Wolverine dependency profile and a Witcher port profile with
@@ -27,6 +29,8 @@ geometry exports; it does not yet replace the installed Wolverine runtime.
 python -m pip install -r requirements.txt
 python tools/export_geometry.py
 python tools/extract_clinical.py --check
+python tools/extract_physics.py --check
+python tools/build_generic.py
 python tools/verify.py
 python -m unittest discover -s tests -v
 ```
