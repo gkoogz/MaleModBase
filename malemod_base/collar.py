@@ -104,7 +104,7 @@ class CollarPlan:
     A render adapter expands unique solved vertices to its UV-split aliases.
     Rebuild the plan for changed topology, pose metric or recruitment radius.
     """
-    def __init__(self, points, triangles, seams, frame):
+    def __init__(self, points, triangles, seams, frame, locked_vertices=()):
         from scipy import sparse
         from scipy.sparse.linalg import splu
 
@@ -125,6 +125,10 @@ class CollarPlan:
             slaves.add(x)
         if any(a in slaves or b in slaves for _, a, b, _ in self.seams):
             raise ValueError('Seam donors must be independent masters')
+        locked = set(locked_vertices)
+        if any(not isinstance(i, (int, np.integer)) or isinstance(i, bool) or
+               i < 0 or i >= n or i in slaves for i in locked):
+            raise ValueError('Locked vertices must be valid independent masters')
         self.masters = np.array([i for i in range(n) if i not in slaves], dtype=np.int32)
         master_of = {int(i): j for j, i in enumerate(self.masters)}
         rows, cols, weights = list(self.masters), list(range(len(self.masters))), [1.] * len(self.masters)
@@ -154,8 +158,9 @@ class CollarPlan:
         self.metric = (cp.T @ sparse.diags(1 / area) @ cp * 8 +
                        projection.T @ curvature @ projection * 2 +
                        projection.T @ sparse.diags(self.screen) @ projection).tocsc()
-        self.free = np.flatnonzero(self.mask[self.masters] > 1e-4)
-        self.fixed = np.flatnonzero(self.mask[self.masters] <= 1e-4)
+        active = (self.mask[self.masters] > 1e-4) & ~np.isin(self.masters, list(locked))
+        self.free = np.flatnonzero(active)
+        self.fixed = np.flatnonzero(~active)
         self.boundary = self.metric[self.free][:, self.fixed]
         self._factor = splu(self.metric[self.free][:, self.free].tocsc()) if len(self.free) else None
 

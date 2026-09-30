@@ -8,10 +8,14 @@ from extract_clinical import generate, FILES
 from extract_physics import outputs as physics_outputs
 from extract_collar import outputs as collar_outputs
 from export_controls import outputs as control_outputs
+from extract_authored_shape import outputs as authored_outputs
 
 ROOT = Path(__file__).resolve().parents[1]
 
 def main():
+    for path, content in authored_outputs().items():
+        if (ROOT/path).read_bytes() != content.encode():
+            raise ValueError('Authored shape extraction/provenance differs: '+path)
     for path, content in control_outputs().items():
         if (ROOT/path).read_bytes() != content.encode():
             raise ValueError('Control catalog/provenance differs: '+path)

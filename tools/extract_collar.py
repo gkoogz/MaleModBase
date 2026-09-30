@@ -46,7 +46,9 @@ def main():
     other = ['legacy/wolverine/src/runtime/unified_collar_data.h',
              'legacy/wolverine/src/runtime/pelvic_attachment.h',
              'legacy/wolverine/src/runtime/anatomy_surface.h',
-             'malemod_base/collar.py', 'tests/data/wolverine-collar-metric.csv',
+             'malemod_base/collar.py', 'malemod_base/graft_collar.py',
+             'malemod_base/surface_limit.py', 'legacy/wolverine/src/runtime/surface_limit.h',
+             'tests/test_graft_collar.py', 'tests/data/wolverine-collar-metric.csv',
              'tests/collar_test.cpp', 'modules/pelvic-collar.json']
     report = {'schemaVersion': 1, 'sourceCommit': json.loads((ROOT / 'provenance/wolverine.json').read_text())['commit'],
               'source': SOURCE.relative_to(ROOT).as_posix(), 'sourceSHA256': hashlib.sha256(SOURCE.read_bytes()).hexdigest(),

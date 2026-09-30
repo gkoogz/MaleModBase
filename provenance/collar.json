@@ -28,7 +28,23 @@
     },
     {
       "path": "malemod_base/collar.py",
-      "sha256": "5f847ee44e16722d6342db5bc0b1e7348ea41f72934d1cd5391e2187f06b9b8c"
+      "sha256": "1b7c5eef622b3262eb7bdd4097d7c22abedf10dbaca5ee4efce0db57dbb9df2e"
+    },
+    {
+      "path": "malemod_base/graft_collar.py",
+      "sha256": "8d9b95915b13bfc36d03cc2176d05dac973ed99071129b3d61a18f08a692efdf"
+    },
+    {
+      "path": "malemod_base/surface_limit.py",
+      "sha256": "596f25719ce9e3285eeedbd950de46611b78944e1966a4979155158bb501837b"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/surface_limit.h",
+      "sha256": "7fcaff99fc3cb587fb3a50a8f212cf0bfb31eb5f3f73e1a58a0101797477b748"
+    },
+    {
+      "path": "tests/test_graft_collar.py",
+      "sha256": "901b06de4333e96d67d3459ebd4e81398989c89f3662a3bf4d7869aa2dbe19f9"
     },
     {
       "path": "tests/data/wolverine-collar-metric.csv",
@@ -40,7 +56,7 @@
     },
     {
       "path": "modules/pelvic-collar.json",
-      "sha256": "2c32b0365206e560a55d5a18463fabae68faf2e47739df671a72a40f5f44e824"
+      "sha256": "6510485439ff6af84026793ba74351911e249bb1d4b4343bc1d8e8de6353d4d6"
     }
   ],
   "scope": "Exact scalar metric extraction and source-derived offline coupled collar evaluator; not installed runtime parity",

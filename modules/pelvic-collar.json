@@ -6,6 +6,8 @@
   "implementation": {
     "metricKernel": "include/malemod/surface/collar_field.hpp",
     "offlineCoupledEvaluator": "malemod_base/collar.py",
+    "fittedGraftDomain": "malemod_base/graft_collar.py",
+    "continuousCorrectionBound": "malemod_base/surface_limit.py",
     "provenance": "provenance/collar.json"
   },
   "referenceBindings": {

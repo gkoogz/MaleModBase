@@ -48,9 +48,10 @@ games are anticipated. They are not independent forks of the shared algorithms.
 
 ## Current authorized work and deferrals
 
-Current Witcher work is repairing secondary physics and the F6 corner control
-menu. The requested eventual controls include live size and physics tuning
-comparable to Wolverine, with efficient native execution and minimal CPU cost.
+Current Witcher work is porting every Wolverine size/deformation/physics slider
+and reconstructing the dynamic coupled pelvis. The user confirms the native
+pause-menu category is visible, accepts it as an interim interface and prefers
+live editing. Efficient native execution and minimal CPU cost remain requirements.
 Control labels or saved preferences do not count as implemented deformation.
 
 The user explicitly deferred (1) animation sequences, (2) fluid and (3) audio

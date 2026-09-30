@@ -1,0 +1,68 @@
+{
+  "format": "malemod.authored-shape-provenance",
+  "version": 1,
+  "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
+  "sourceFiles": [
+    {
+      "path": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "sha256": "20779d89b389ca315a27f77d7e804d9fa290129fe7b2137e896149c344467e30"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/prepared_shape.h",
+      "sha256": "c64997b3bf51f03fafcd71159878e39b2234a40061dcc2bb3867f4040981e7bc"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/morph_targets_faired.h",
+      "sha256": "1d5c897539a68445ca10062fb42d39bde039260b76d097b2539bff290f721537"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/physics_weights.h",
+      "sha256": "2ad09b90805d185c650871f19e6913001b0857934dd8f22f09b9031c7ce4fa28"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/collar_fairing.h",
+      "sha256": "ac3e48fe78158e4967926f629744e1477c94bbca55fb82cad21b4e0bd6af3870"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/pelvic_root_binding.h",
+      "sha256": "011b9f6d4c108078a234ee048d431a42157031daf015b5d5587c4407a2b5c8d1"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/suspension_weights.h",
+      "sha256": "475353fba30236e4d593cf10cd248e2341d2fe47ba446430aaf591a5a2f43336"
+    }
+  ],
+  "oracle": "tests/data/wolverine-authored-shape.inc",
+  "oracleSHA256": "21cc819f03ad888677c34dd2f05b3fed70498a1e00c5c5ff98d6cfed8ec50249",
+  "files": [
+    {
+      "path": "malemod_base/authored_shape.py",
+      "sha256": "5e025158693cd9539aed4c6f45f4fac5ff342681ef9084d00b6bd85cc631ba1e"
+    },
+    {
+      "path": "tools/build_shape_fixture.py",
+      "sha256": "7bfff8cf8ae1285bd3afd3909cea61f2ffa69112c96699c14297beaaa929e99f"
+    },
+    {
+      "path": "tests/authored_shape_oracle.cpp",
+      "sha256": "7865c20edb64d9cbf5d168cda30196427e58180470325ab96cb27a26a0070797"
+    },
+    {
+      "path": "tests/test_authored_shape.py",
+      "sha256": "9e2e6d716a423c2148c5c6eb92f871c747c80895183751fe50215ff5396310a4"
+    },
+    {
+      "path": "tests/data/wolverine-authored-shape.csv",
+      "sha256": "e9ae70b586d186f98086e8d9ccdd5ed483c53dd087e238aace934bcf01a15e59"
+    }
+  ],
+  "scope": "Early 2388-point authored stage and separate hang offset, source units",
+  "omissions": [
+    "remaining prepared-shape fairing/regularization",
+    "glans render refinement",
+    "logical rest section/egg fitting",
+    "final UnifiedCollar integration",
+    "full posed physics/contact",
+    "native buffer/graph output"
+  ]
+}

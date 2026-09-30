@@ -6,9 +6,11 @@ Chat history is not required to resume. Verify Git and local inputs first.
 Read [PROJECT-CONTEXT.md](PROJECT-CONTEXT.md) for the user's stated postgraduate
 educational purpose and enduring requirements before interpreting this project.
 
-Latest user correction, September 30: Witcher 0.4.1 was observed deformed and
-F6 unresponsive. Treat it as a failed gameplay test. A rest-frame/input repair
-is underway in the spoke; consult its handoff for the actual installed version.
+Latest user observations, September 30: the 0.4.2 rest-frame repair restored the
+shape; the 0.4.4 native pause-menu category is now visible. Earlier crushed-shape
+and missing-menu reports remain failed historical tests. Physics tuning effects
+and persistence are not confirmed. The user now requests all 18 source controls
+and reconstruction of the coupled pelvis, with animation/fluid/audio deferred.
 
 ## Repository map
 
@@ -27,6 +29,15 @@ runtime. Its source commit is `dc64bdc44e75fd5521f066cdb2975277e9c34302`;
 `provenance/wolverine.json` records hashes and omissions.
 
 ## Current shared work
+
+Read `AUTHORED-SHAPE.md` for the new source-derived early coarse-shape evaluator,
+1,300 original-code fixture samples, coupled graft collar domain and protected
+native part boundaries. The checked correction preserves both sides of the
+seam and prevents inverted triangles. An actual-Geralt synthetic stress probe
+passes those invariants in both LODs but accepts only 17–36% of its requested
+correction: the full-range deformation envelope is NOT established. Actual
+guide/rest-stage completion and native output remain required. The spoke has a
+native-cooked isolated scale graph; pose/dangle compatibility is not verified.
 
 Native cage authoring now has shared donor-field transfer and two-influence
 chain binding in `malemod_base/motion_binding.py`; read `MOTION-BINDING.md`.
@@ -55,7 +66,7 @@ implement shared two-part constraints before moving either side. Wolverine can
 adopt the reusable fitter and seam verification for future authoring; its current
 runtime remains unchanged. Secondary motion/live collar control remain pending.
 
-## Previous feature checkpoints
+## Previous feature checkpoints (historical; not current implementation)
 
 - Base feature checkpoint: `cb86e7edd6907f7301cd1f7bd0d25a0c40191fe4`.
   Shared generic proxy, source geometry/bindings, extracted physics/clinical

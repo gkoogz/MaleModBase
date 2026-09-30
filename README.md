@@ -70,5 +70,8 @@ vertex lineage, orientation repair and target skin transfer for new spokes.
 The [live-control contract](docs/LIVE-CONTROLS.md) preserves Wolverine's 18
 rest-shape/mechanical controls and validates portable preferences. A native
 Witcher motion/size bridge remains pending.
+The [authored shape stages](docs/AUTHORED-SHAPE.md) add an original-code-verified
+coarse evaluator and a coupled fitted-graft collar with protected part boundaries.
+These are offline stages; the complete live slider port remains unfinished.
 Commercial reuse rights are not established by this extraction: upstream has
 no root license, and game-derived assets retain their separate provenance.
