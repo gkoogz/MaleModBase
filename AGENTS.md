@@ -5,6 +5,7 @@ canonical repository remains authoritative for its installed runtime until its
 adapter consumes a tested version of this base. Do not modify or install into a
 game as part of an extraction or offline export.
 
+Start with docs/HANDOFF.md for the cross-repository map and current checkpoint.
 Read README.md, docs/ARCHITECTURE.md and docs/MIGRATION.md. Keep source commit,
 file hashes and omissions in provenance/wolverine.json. Imported code under
 legacy/wolverine is an exact reference snapshot, not a portable library. Its

@@ -5,6 +5,10 @@ Shared anatomy assets and portability infrastructure extracted from
 The first import preserves the developed Wolverine source and creates usable
 geometry exports; it does not yet replace the installed Wolverine runtime.
 
+**Resuming without chat history? Read [the handoff](docs/HANDOFF.md) first.**
+It maps all three repositories, records the current implementation and observed
+game state, and explains what a fresh machine must regenerate.
+
 ## Contents
 
 - `legacy/wolverine/`: tracked source, geometry tables, morphology, XPBD/contact
