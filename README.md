@@ -11,8 +11,8 @@ geometry exports; it does not yet replace the installed Wolverine runtime.
   physics, material code, existing simulation code, remeshing inputs and tools.
 - `assets/wolverine-reference/`: OBJ surfaces, portable NumPy geometry/binding
   arrays and source metadata. Reference geometry is not a captured live pose.
-- `include/malemod/`: standalone C++ math and the extracted conservative
-  triangle correction limiter.
+- `include/malemod/`: standalone C++ math, triangle correction limiter and
+  portable clinical sequence with fluid simulation, meshes, deposition and cues.
 - `adapters/`: Wolverine dependency profile and a Witcher port profile with
   explicit unresolved requirements.
 - `provenance/`: byte hashes and an inventory tying every imported file to its
@@ -26,6 +26,7 @@ geometry exports; it does not yet replace the installed Wolverine runtime.
 ```powershell
 python -m pip install -r requirements.txt
 python tools/export_geometry.py
+python tools/extract_clinical.py --check
 python tools/verify.py
 python -m unittest discover -s tests -v
 ```
@@ -49,6 +50,7 @@ python tools/import_wolverine.py --source C:/path/to/wolverine
 ```
 
 Read [architecture](docs/ARCHITECTURE.md), [migration status](docs/MIGRATION.md),
-[asset contract](docs/ASSET-CONTRACT.md) and [porting](docs/PORTING.md).
+[asset contract](docs/ASSET-CONTRACT.md), [clinical sequence](docs/CLINICAL-SEQUENCE.md)
+and [porting](docs/PORTING.md).
 Commercial reuse rights are not established by this extraction: upstream has
 no root license, and game-derived assets retain their separate provenance.

@@ -10,6 +10,7 @@ jobs:
           python-version: '3.10'
       - run: python -m pip install -r requirements.txt
       - run: python -m unittest discover -s tests -v
+      - run: python tools/extract_clinical.py --check
       - run: python tools/verify.py
       - run: cmake -S . -B build -DBUILD_TESTING=ON
       - run: cmake --build build

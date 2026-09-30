@@ -16,9 +16,12 @@ binding arrays. These are actual source data, not replacement sample meshes.
 Source material maps are copied only when found locally and matching the
 upstream manifest; their status appears in provenance.
 
-Portable C++: math and the conservative area limiter. Full XPBD, seam/collar
-evaluation, fluid compute and material rendering remain in the reference
-runtime. No complete engine-independent runtime or working Witcher port is
+Portable C++: math, the conservative area limiter, clinical timing, CPU fluid
+simulation, mesh generation, deposition and audio cue scheduling. The existing
+sequence is usable through a per-character Session and adapter callbacks; see
+CLINICAL-SEQUENCE.md and provenance/clinical.json. Full anatomy XPBD, seam/collar
+evaluation, alternate GPU particle compute and material rendering remain in the
+reference runtime. No complete engine-independent anatomy runtime or Witcher port is
 claimed. Profiles expose known requirements rather than pretending that
 engine or skeleton mappings are solved.
 

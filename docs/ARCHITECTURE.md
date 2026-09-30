@@ -25,8 +25,10 @@ are triangle ID plus barycentric coordinates, never a draw-call offset.
 
 The surface correction limiter now lives in a standalone C++ header. Geometry,
 morph and binding arrays can be read without Direct3D. Character fitting runs
-offline with validated transforms. All other original solver code is preserved
-under legacy/wolverine, with its existing coupling intact.
+offline with validated transforms. The clinical sequence, CPU viscous-fluid
+solver, mesh generation, deposition and audio cue timing are now portable,
+with per-character state and adapter callbacks. See CLINICAL-SEQUENCE.md.
+The anatomy XPBD/collar solver remains coupled in legacy/wolverine.
 
 The XPBD solver uses globals for rod nodes, lobe transforms, previous poses,
 contact impulses and tuning. Moving its header alone does not make it portable.

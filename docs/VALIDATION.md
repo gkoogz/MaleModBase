@@ -13,10 +13,16 @@ Passed locally:
 - Standalone C++ limiter compiled with MSVC C++17, without Direct3D or a game
   SDK; 2,000 randomized corrections passed sampled continuous area bounds and
   prepared-evaluation parity.
+- Portable clinical sequence compiled and passed against the original CPU
+  implementation at 15/30/60/120 FPS, including an 800 ms hitch: timeline
+  samples, node positions, meshes and emitted volume agree. Receiver-collision
+  and deferred-budget parity also pass. Independent sessions, baked loading,
+  deposition conservation, moving anchors, expiry and audio cues pass. Passive
+  preliminary-flow volume and mesh parity against the original also pass.
 
 `templates/github-actions-verify.yml` supplies Python verification and a CMake
 C++ test on Linux. GitHub rejected creating an active workflow because the
 current OAuth login lacks workflow scope, so the template is not active CI.
-Local MSVC verification does not establish that Linux CI has passed. Full
-source runtime, material appearance, animation, entire physics solver and
-Witcher integration were not tested in this extraction.
+Local MSVC verification does not establish that Linux CI has passed. The full
+source proxy runtime, material appearance, live character animation, anatomy
+XPBD/collar solver and Witcher integration were not tested in this extraction.

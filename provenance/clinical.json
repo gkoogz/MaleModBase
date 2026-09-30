@@ -1,0 +1,64 @@
+{
+  "contractVersion": 1,
+  "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
+  "files": [
+    {
+      "source": "legacy/wolverine/src/runtime/teaching_sequence.h",
+      "sourceSHA256": "ff55423282a73210997ca058b2048e5c0f6d9c7215b871b6b516f6f51e03b524",
+      "path": "include/malemod/clinical/teaching_sequence.h",
+      "sha256": "d29f53a340bbab96fdcd33f5efd31c01236b6cef8287ffbc36a2fe1e5259acdc"
+    },
+    {
+      "source": "legacy/wolverine/src/runtime/fluid_types.h",
+      "sourceSHA256": "6c0686aaa7cbf1e55853926f86f6502557d8121c1fb3e93dd0e61412cff9aa2a",
+      "path": "include/malemod/clinical/fluid_types.h",
+      "sha256": "84ce1d78422ac95e6ee42e2e09645e52c639b7be6a1244860be0ddb317f294ce"
+    },
+    {
+      "source": "legacy/wolverine/src/runtime/clear_strand.h",
+      "sourceSHA256": "cb431a911f1f18987cd40616db6286d594f05c0db4bb2cc7cbf3ea56cd2f16ce",
+      "path": "include/malemod/clinical/clear_strand.h",
+      "sha256": "98199c4d1bd5ac76eaa72169fdf374d1cca34b58313b2526f01268a066af9455"
+    },
+    {
+      "source": "legacy/wolverine/src/runtime/thread_mesh.h",
+      "sourceSHA256": "d5561b5442b2ab8c64e76605bcabcb1a28a5826e94252c06a3a708b1c1e7a313",
+      "path": "include/malemod/clinical/thread_mesh.h",
+      "sha256": "f2cb65baa4c4b705ff8330ee7b64c956dbe7b1f64b169d88e765b1395d5864ef"
+    },
+    {
+      "source": "legacy/wolverine/src/runtime/viscous_thread.h",
+      "sourceSHA256": "5f77112c620415a1fa0dc080aa7248558a3140507637e20d625e0bd71693dc61",
+      "path": "include/malemod/clinical/viscous_thread.h",
+      "sha256": "f4d25c5f77a3dde0dc621e8fe754ad923cf959ce91ace2322f92baee6cf916da"
+    },
+    {
+      "source": "legacy/wolverine/src/runtime/teaching_volume.h",
+      "sourceSHA256": "1398069503db0e5832b4e93f8e04dd8fb8ef84801beade1fb81caecbb61686a4",
+      "path": "include/malemod/clinical/teaching_volume.h",
+      "sha256": "2c913770c30ad780547f551dcef6f0992088c7abb9c51e968f73a4f55dc8fde5"
+    },
+    {
+      "source": "legacy/wolverine/src/runtime/fluid_splat_model.h",
+      "sourceSHA256": "5daa477faaf9c1ee613c1134842a071d3671abdba87446e9d130336bbb35c70d",
+      "path": "include/malemod/clinical/fluid_splat_model.h",
+      "sha256": "c4df5e8f01bf89f04db0b52d1388a504324934dd87aa0f0d0f641b4a679d7521"
+    },
+    {
+      "source": "legacy/wolverine/src/runtime/teaching_audio.h",
+      "sourceSHA256": "51453fe0ed077493b51d2e2b2f7410d4cc6a06302bc355db5b5e34fca1430f5c",
+      "path": "include/malemod/clinical/teaching_audio.h",
+      "sha256": "a357e596744d21231c436a936d5e7a4e0bc32c9e88afbd1c4f571bca87bb13cd"
+    }
+  ],
+  "changes": [
+    "engine-neutral namespace and includes",
+    "per-instance settings and sequence end",
+    "per-instance collision callbacks with deferred result",
+    "per-instance deposition state and standard integer timestamps",
+    "standard binary bake loading replaces Windows resources"
+  ],
+  "bakeAsset": "legacy/wolverine/src/runtime/splat_bakes.bin",
+  "bakeSHA256": "b41046ee1083da7f0921706022893a7aed78b74a9ff931776f12e746ab405fb5",
+  "scope": "Existing clinical simulation, without new physiological behavior or engine rendering."
+}
