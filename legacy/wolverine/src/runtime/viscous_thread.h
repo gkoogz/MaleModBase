@@ -1,0 +1,163 @@
+#pragma once
+// MIT. Reduced-dimensional viscous stream, not a full Navier-Stokes or DVT solver.
+// Segment volume is conserved. Internal velocity diffusion dissipates deformation
+// while preserving mass-weighted translation; there are no elastic rest lengths.
+namespace teaching {
+struct ThreadNode {V3 p,v;float born=0,lump=0,reportedContact=0;volumeFluid::CollisionPath path;};
+struct ThreadLink {float volume=0,initial=0,neck=1;bool broken=false;unsigned label=0;};
+struct ViscousThread {
+ std::vector<ThreadNode> nodes;std::vector<ThreadLink> links;
+ std::vector<float> diagonal,upper,mass;std::vector<V3> rhs;
+ double volume=0,retiredVolume=0;unsigned nextLabel=0;bool live=false,feeding=false;int breaks=0;
+ size_t collisionCursor=0;
+ void Reset(){nodes.clear();links.clear();volume=retiredVolume=0;nextLabel=0;collisionCursor=0;live=feeding=false;breaks=0;}
+ static float MaxSpan(const volumeFluid::Settings& cfg){return max(8.f*cfg.threadSpacing,5.f*cfg.nozzle);}
+ // Move neck material into its two ends. A link already contributes half its
+ // mass to each endpoint, so this preserves volume AND momentum exactly and
+ // leaves two rounded, viscous ends rather than deleting the connecting mass.
+ void DrainLink(size_t i,float amount,bool cut){
+  auto& link=links[i];amount=min(link.volume,max(0.f,amount));
+  nodes[i].lump+=amount*.5f;nodes[i+1].lump+=amount*.5f;link.volume-=amount;
+  if(cut&&!link.broken){link.broken=true;++breaks;}
+ }
+ void SeparateOverstretched(const volumeFluid::Settings& cfg){
+  for(size_t i=0;i<links.size();i++)if(!links[i].broken){
+   float length=Length(nodes[i+1].p-nodes[i].p);
+   float radius=sqrtf(max(0.f,links[i].volume)/(3.14159265f*max(.001f,length)));
+   float stretch=length/max(.01f,links[i].initial);
+   bool stretched=stretch>2.6f&&length>max(2.f*cfg.threadSpacing,8.f*radius);
+   bool wisp=radius<cfg.nozzle*.06f&&length>max(2.f*cfg.threadSpacing,12.f*radius);
+   if(length>MaxSpan(cfg)||stretched||wisp)DrainLink(i,links[i].volume,true);
+  }
+ }
+ void Feed(float amount,V3 tip,V3 dir,V3 velocity,float time,float dt,const volumeFluid::Settings& cfg){
+  if(amount<=1e-9f)return;
+  // A rapidly moving/turning outlet must not tie new material to a distant
+  // old tail. Start a local section separated by a zero-mass topology boundary.
+  bool fresh=nodes.empty()||Length(tip-nodes.back().p)>MaxSpan(cfg);
+  if(fresh){
+   if(!nodes.empty()){links.push_back({0,0,0,true,nextLabel++});++breaks;}
+   float travel=min(Length(velocity)*dt,MaxSpan(cfg)*.5f);
+   nodes.push_back({tip+Unit(velocity)*max(.002f,travel),velocity,time});
+  }
+  V3 p=tip;
+  float distance=Length(p-nodes.back().p);
+  if(distance<.002f)p=nodes.back().p-dir*.002f;
+  links.push_back({amount,max(.002f,Length(p-nodes.back().p)),1,false,nextLabel++});nodes.push_back({p,velocity,time});volume+=amount;live=feeding=true;
+  SeparateOverstretched(cfg);
+ }
+ void Step(float dt,float time,const volumeFluid::Settings& cfg,const volumeFluid::F4* colliders,V3 origin,int colliderCount=8,std::vector<volumeFluid::FluidImpact>* impacts=nullptr){
+  size_t n=nodes.size();if(!live||!n)return;
+  size_t expired=0;
+  while(expired<n&&(time-nodes[expired].born>cfg.lifetime||nodes[expired].p.z<origin.z-180||Length(nodes[expired].p-origin)>1000))expired++;
+  if(expired){for(size_t i=0;i<expired;i++){retiredVolume+=nodes[i].lump;if(i<links.size())retiredVolume+=links[i].volume;}links.erase(links.begin(),links.begin()+min(expired,links.size()));nodes.erase(nodes.begin(),nodes.begin()+expired);n=nodes.size();}
+  if(!n){live=false;return;}
+  SeparateOverstretched(cfg);
+  mass.assign(n,0);diagonal.assign(n,0);upper.assign(n,0);rhs.resize(n);
+  for(size_t i=0;i<n;i++)mass[i]=nodes[i].lump;
+  for(size_t i=0;i<links.size();i++){mass[i]+=links[i].volume*.5f;mass[i+1]+=links[i].volume*.5f;}
+  for(size_t i=0;i<n;i++){mass[i]=max(mass[i],1e-8f);diagonal[i]=mass[i];rhs[i]=(nodes[i].v+V3{0,0,-cfg.gravity}*dt)*mass[i];}
+  for(size_t i=0;i<links.size();i++)if(!links[i].broken){
+   float length=max(.03f,Length(nodes[i+1].p-nodes[i].p));
+   // Symmetric implicit diffusion is unconditionally dissipative and O(n).
+   V3 tangent=(nodes[i+1].p-nodes[i].p)/length;
+   float strain=max(0.f,Dot(nodes[i+1].v-nodes[i].v,tangent)/length);
+   // Extra extensional damping while a neck starts stretching; never damp the
+   // common ballistic velocity, and never transmit forces across a severed link.
+   float weight=dt*cfg.viscosity*.22f*(1.f+min(2.f,strain*.12f))*links[i].volume/(length*length+.08f);
+   diagonal[i]+=weight;diagonal[i+1]+=weight;upper[i]=-weight;
+  }
+  for(size_t i=1;i<n;i++){float w=upper[i-1]/diagonal[i-1];diagonal[i]-=w*upper[i-1];rhs[i]=rhs[i]-rhs[i-1]*w;}
+  nodes[n-1].v=rhs[n-1]/diagonal[n-1];for(int i=(int)n-2;i>=0;i--)nodes[i].v=(rhs[i]-nodes[i+1].v*upper[i])/diagonal[i];
+  int below=0;
+  size_t start=collisionCursor%n,checked=0;
+  for(size_t k=0;k<n;k++){
+   size_t i=(start+k)%n;
+   // Deposited material belongs to the receiver now. Its mass remains in the
+   // ledger, but must not consume the airborne collision budget every step.
+   if(impacts&&nodes[i].reportedContact>0&&mass[i]<=nodes[i].reportedContact+1e-6f){nodes[i].v={};continue;}
+   V3 old=nodes[i].p;nodes[i].p=old+nodes[i].v*dt;
+   float span=0;int neighbors=0;
+   if(i<links.size()&&!links[i].broken){span+=Length(nodes[i+1].p-old);++neighbors;}
+   if(i&&!links[i-1].broken){span+=Length(old-nodes[i-1].p);++neighbors;}
+   float blob=cbrtf(max(0.f,nodes[i].lump)*.2387324146f);
+   float radius=neighbors?sqrtf(max(.000001f,mass[i])/(3.14159265f*max(.1f,span/neighbors))):blob;
+   radius=min(cfg.nozzle*1.5f,max(blob,radius));
+   volumeFluid::FluidImpact exactHit{};
+   if(volumeFluid::collisionSweep&&nodes[i].path.Sweep(old,nodes[i].p,radius,exactHit)){
+    nodes[i].p=exactHit.p+exactHit.n*(radius*.72f+.025f);float inward=Dot(nodes[i].v,exactHit.n);
+    float contactVolume=max(0.f,mass[i]-nodes[i].reportedContact);
+    if(impacts&&contactVolume>1e-6f){exactHit.velocity=nodes[i].v;exactHit.volume=contactVolume;impacts->push_back(exactHit);nodes[i].reportedContact+=contactVolume;}
+    if(impacts){
+     // Each link already assigns half its volume to each endpoint. Draining
+     // preserves that mass while separating receiver-owned and airborne flow.
+     if(i<links.size())DrainLink(i,links[i].volume,true);
+     if(i)DrainLink(i-1,links[i-1].volume,true);
+    }
+    if(inward<0)nodes[i].v=nodes[i].v-exactHit.n*inward;float friction=expf(-dt*3.2f);nodes[i].v=exactHit.n*Dot(nodes[i].v,exactHit.n)+(nodes[i].v-exactHit.n*Dot(nodes[i].v,exactHit.n))*friction;
+   } else if(cfg.catchPlane&&nodes[i].p.z<origin.z-cfg.catchDepth+radius){nodes[i].p.z=origin.z-cfg.catchDepth+radius;nodes[i].v.z=max(0.f,nodes[i].v.z);float friction=expf(-dt*4);nodes[i].v.x*=friction;nodes[i].v.y*=friction;}
+   if(!volumeFluid::collisionSweep)for(int j=0;j<colliderCount;j++)if(colliders[j].w>0){V3 center{colliders[j].x,colliders[j].y,colliders[j].z},delta=nodes[i].p-center;float d=Length(delta),r=colliders[j].w+radius*.7f;if(d>1e-6f&&d<r){V3 normal=delta/d;nodes[i].p=center+normal*r;float inward=Dot(nodes[i].v,normal);if(inward<0)nodes[i].v=nodes[i].v-normal*inward;}}
+   if(nodes[i].p.z<origin.z-180||Length(nodes[i].p-origin)>1000)below++;
+   if(!nodes[i].path.pending){collisionCursor=(i+1)%n;++checked;}
+  }
+  if(!checked)collisionCursor=start;
+  if(below==(int)n){live=false;return;}
+  SeparateOverstretched(cfg);
+  // A finite-wavelength capillary instability transfers volume into its neighbors
+  // before a link separates. It cannot delete material or break every sample.
+  for(size_t i=0;i<links.size();i++)if(!links[i].broken){
+   float age=time-nodes[i].born,length=Length(nodes[i+1].p-nodes[i].p);
+   float radius=sqrtf(links[i].volume/(3.14159265f*max(.001f,length)));
+   bool neckSite=(links[i].label%29)==17;float stretch=length/max(.01f,links[i].initial);
+   bool strained=stretch>1.8f&&length>max(1.5f*cfg.threadSpacing,5.f*radius);
+   if(strained||(neckSite&&age>.65f&&length>radius*1.6f&&stretch>1.15f&&cfg.breakup>0)){
+    float rate=cfg.breakup*cfg.tension/(cfg.viscosity+8.f)*2.f+(strained?8.f:0.f);
+    float lost=links[i].volume*(1-expf(-dt*rate));links[i].neck*=expf(-dt*rate);
+    bool cut=links[i].neck<.08f&&length>radius*4;if(cut)lost=links[i].volume;
+    DrainLink(i,lost,cut);
+   }
+  }
+ }
+ void Append(LiquidMesh& mesh,int sides,std::vector<volumeFluid::Particle>& bounds)const{
+  if(!live||nodes.empty())return;
+  size_t first=0;
+  while(first<nodes.size()){
+   size_t last=first;while(last<links.size()&&!links[last].broken)last++;
+   if(last==first&&nodes[first].lump>1e-9f){
+    float r=cbrtf(nodes[first].lump*.2387324146f);V3 p=nodes[first].p;
+    mesh.Tube({p-V3{r*.1f,0,0},p+V3{r*.1f,0,0}},{r,r},sides,nodes[first].lump);
+    bounds.push_back({p,1,{},r});
+   }else if(last>first){
+    std::vector<V3> points;std::vector<float> radii;float amount=0;
+    for(size_t i=first;i<last;i++)amount+=links[i].volume;
+    for(size_t i=first;i<=last;i++)amount+=nodes[i].lump;
+    for(size_t i=first;i<=last;i++){
+     float vol=0,length=0;
+     if(i>first){vol+=links[i-1].volume;length+=Length(nodes[i].p-nodes[i-1].p);}
+     if(i<last){vol+=links[i].volume;length+=Length(nodes[i+1].p-nodes[i].p);}
+     float radius=sqrtf(max(1e-9f,vol)/(3.14159265f*max(.005f,length)));
+     radius=max(radius,cbrtf(nodes[i].lump*.2387324146f));
+     points.push_back(nodes[i].p);radii.push_back(radius);bounds.push_back({nodes[i].p,1,{},radius});
+    }
+    // Unresolved terminal wisps retract into the rounded end cap. This mesh-only
+    // regularization retains the component's complete volume in Tube(). Never
+    // shorten the feeding end, which must remain connected to the outlet.
+    if(points.size()>10){
+     size_t span=min(size_t(24),points.size()/3),trim=0;float largest=0;
+     for(size_t k=0;k<span;k++)largest=max(largest,radii[k]);
+     while(trim+2<span&&nodes[first+trim].lump==0&&radii[trim]<largest*.28f)++trim;
+     if(trim){points.erase(points.begin(),points.begin()+trim);radii.erase(radii.begin(),radii.begin()+trim);}
+     span=min(size_t(7),points.size()/4);
+     float head=radii[span]*.7f,tail=radii[radii.size()-1-span]*.6f;
+     for(size_t k=0;k<span;k++){
+      float t=float(k)/span,w=1-t;radii[k]=max(radii[k],head*w+radii[k]*t);
+      size_t j=points.size()-1-k;radii[j]=max(radii[j],tail*w+radii[j]*t);
+     }
+    }
+    mesh.Tube(points,radii,sides,amount);
+   }
+   first=last+1;
+  }
+ }
+};
+}

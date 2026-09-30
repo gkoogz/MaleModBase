@@ -1,0 +1,154 @@
+#pragma once
+#include <array>
+#include "fluid_splat_bakes.h"
+namespace volumeFluid {
+static constexpr int splatGrid=65,splatTexture=128,splatMaxMarks=32;
+static constexpr float splatStep=.65f,splatSpan=(splatGrid-1)*splatStep,splatTexel=splatSpan/splatTexture;
+struct SplatSample {FluidImpact anchor;unsigned char state=0,attempts=0;DWORD retryAt=0;float field=0;};
+struct SplatDeposit {float x=0,y=0,c=1,s=0,scale=1,volume=0;DWORD born=0;unsigned char kind=0;};
+struct StainMark {
+ FluidImpactKind kind=FLUID_IMPACT_WORLD;FluidImpact contact,axisAnchor;bool axisValid=false;
+ float span=splatSpan;
+ V3 direction{1,0,0};float volume=0,spread=0;DWORD born=0,touched=0,shaped=0;unsigned serial=0,slot=0,revision=0;bool dirty=true;
+ std::vector<SplatDeposit> active;std::vector<int> candidates;
+ std::vector<float> settled=std::vector<float>(splatTexture*splatTexture),density=std::vector<float>(splatTexture*splatTexture);
+ std::vector<DWORD> pixels=std::vector<DWORD>(splatTexture*splatTexture,0x00ff8080);
+ std::vector<SplatSample> samples=std::vector<SplatSample>(splatGrid*splatGrid);
+ int x0=0,y0=0,x1=0,y1=0;
+};
+struct SplatModel {
+ std::vector<StainMark> marks;size_t nextMark=0,nextShape=0;unsigned nextSerial=1;
+ bool (*project)(const FluidImpact&,V3,FluidImpact&)=nullptr;
+ bool (*resolve)(const FluidImpact&,V3&,V3&)=nullptr;
+ int projectionBudget=96,lastShapeUpdates=0;
+ bool Resolve(const FluidImpact& a,V3& p,V3& n)const{p=a.p;n=a.n;return !resolve||resolve(a,p,n);}
+ static float Coordinate(int i,float span=splatSpan){return (i-splatGrid/2)*span/(splatGrid-1);}
+ static float TexCoordinate(int i,float span=splatSpan){return (i+.5f)*span/splatTexture-span*.5f;}
+ bool Frame(const StainMark& m,V3& p,V3& n,V3& x,V3& y)const{
+  if(!Resolve(m.contact,p,n))return false;
+  x=m.direction;if(m.axisValid){V3 q,qn;if(!Resolve(m.axisAnchor,q,qn))return false;x=q-p;}
+  x=Unit(x-n*Dot(x,n));y=Unit(Cross(n,x));return true;
+ }
+ static float At(const std::vector<float>& a,int x,int y){return a[max(0,min(splatTexture-1,y))*splatTexture+max(0,min(splatTexture-1,x))];}
+ static float Field(const StainMark& m,float x,float y){
+  float texel=m.span/splatTexture;float u=(x+m.span*.5f)/texel-.5f,v=(y+m.span*.5f)/texel-.5f;
+  if(u<0||v<0||u>splatTexture-1||v>splatTexture-1)return 0;
+  int ix=(int)u,iy=(int)v;float fx=u-ix,fy=v-iy;
+  return (At(m.density,ix,iy)*(1-fx)+At(m.density,ix+1,iy)*fx)*(1-fy)+(At(m.density,ix,iy+1)*(1-fx)+At(m.density,ix+1,iy+1)*fx)*fy;
+ }
+ static void Deposit(const SplatDeposit& d,int frame,std::vector<float>& target,float span=splatSpan){
+  const float texel=span/splatTexture;
+  const float radius=2.5f*d.scale;
+  int x0=max(0,(int)floorf((d.x-radius+span*.5f)/texel)),x1=min(splatTexture-1,(int)ceilf((d.x+radius+span*.5f)/texel));
+  int y0=max(0,(int)floorf((d.y-radius+span*.5f)/texel)),y1=min(splatTexture-1,(int)ceilf((d.y+radius+span*.5f)/texel));
+  int width=x1-x0+1,height=y1-y0+1;if(width<=0||height<=0)return;
+  std::vector<float> values(width*height);double sum=0;
+  for(int y=y0;y<=y1;y++)for(int x=x0;x<=x1;x++){
+   float dx=TexCoordinate(x,span)-d.x,dy=TexCoordinate(y,span)-d.y;
+   float u=((dx*d.c+dy*d.s)/d.scale+.52f)/2.8f*splatBakes.width-.5f;
+   float v=(1.4f-(-dx*d.s+dy*d.c)/d.scale)/2.8f*splatBakes.width-.5f;
+   float h=splatBakes.Sample(d.kind,frame,u,v);values[(y-y0)*width+x-x0]=h;sum+=h;
+  }
+  if(sum<1e-12){int x=max(0,min(splatTexture-1,(int)((d.x+span*.5f)/texel))),y=max(0,min(splatTexture-1,(int)((d.y+span*.5f)/texel)));target[y*splatTexture+x]+=d.volume/(texel*texel);return;}
+  float scale=(float)(d.volume/(sum*texel*texel));
+  for(int y=y0;y<=y1;y++)for(int x=x0;x<=x1;x++)target[y*splatTexture+x]+=values[(y-y0)*width+x-x0]*scale;
+ }
+ void Shape(StainMark& m,DWORD now){
+  const float texel=m.span/splatTexture,step=m.span/(splatGrid-1);
+  m.density=m.settled;
+  for(size_t i=0;i<m.active.size();){const auto& d=m.active[i];int last=splatBakes.frames[d.kind]-1,frame=min(last,(int)(DWORD(now-d.born)*.12f));
+   Deposit(d,frame,m.density,m.span);
+   if(frame==last){Deposit(d,frame,m.settled,m.span);m.active.erase(m.active.begin()+i);}else ++i;
+  }
+  std::vector<float> relief(m.density.size());
+  for(size_t i=0;i<relief.size();i++)relief[i]=.35f*(1-expf(-m.density[i]/.35f));
+  for(int y=0;y<splatTexture;y++)for(int x=0;x<splatTexture;x++){
+   int i=y*splatTexture+x;float gx=(At(relief,x+1,y)-At(relief,x-1,y))/texel,gy=(At(relief,x,y+1)-At(relief,x,y-1))/texel;
+   V3 n=Unit({-gx,-gy,1});float a=max(0.f,min(1.f,(m.density[i]-.00015f)/.001f));
+   unsigned r=(unsigned)(127.5f+127.5f*n.x),g=(unsigned)(127.5f+127.5f*n.y),b=(unsigned)(127.5f+127.5f*n.z);
+   m.pixels[i]=((unsigned)(a*255)<<24)|(r<<16)|(g<<8)|b;
+  }
+  m.x0=m.y0=splatGrid-1;m.x1=m.y1=0;m.candidates.clear();
+  for(int y=0;y<splatGrid;y++)for(int x=0;x<splatGrid;x++){
+   float u=Coordinate(x,m.span),v=Coordinate(y,m.span),h=0;
+   for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++)h=max(h,Field(m,u+dx*step*.65f,v+dy*step*.65f));
+   m.samples[y*splatGrid+x].field=h;
+   if(h>.0001f){m.x0=min(m.x0,max(0,x-1));m.x1=max(m.x1,min(splatGrid-1,x+1));m.y0=min(m.y0,max(0,y-1));m.y1=max(m.y1,min(splatGrid-1,y+1));}
+  }
+  float radius2=0;for(int y=m.y0;y<=m.y1;y++)for(int x=m.x0;x<=m.x1;x++)if(m.samples[y*splatGrid+x].field>.0001f)radius2=max(radius2,float((x-32)*(x-32)+(y-32)*(y-32)));
+  for(int y=0;y<splatGrid;y++)for(int x=0;x<splatGrid;x++){
+   int at=y*splatGrid+x;
+   bool acquire=m.samples[at].field>.0001f;
+   // Hidden neighboring anchors let the footprint walk around chest curvature.
+   if(m.kind==FLUID_IMPACT_BODY&&(x-32)*(x-32)+(y-32)*(y-32)<=radius2+4)acquire=true;
+   if(acquire)m.candidates.push_back(at);
+  }
+  std::sort(m.candidates.begin(),m.candidates.end(),[](int a,int b){int ax=a%splatGrid-32,ay=a/splatGrid-32,bx=b%splatGrid-32,by=b/splatGrid-32;return ax*ax+ay*ay<bx*bx+by*by;});
+  m.shaped=now;m.dirty=false;++m.revision;
+ }
+ bool Add(const std::vector<FluidImpact>& impacts,DWORD now){
+  if(!splatBakes.Open())return false;
+  for(const auto& hit:impacts){
+   if(!std::isfinite(hit.volume)||hit.volume<=1e-7f||!std::isfinite(Length(hit.velocity))||!std::isfinite(Length(hit.p))||!std::isfinite(Length(hit.n))||Length(hit.n)<.1f)continue;
+   V3 n=Unit(hit.n),tangent=hit.velocity-n*Dot(hit.velocity,n);float along=Length(tangent),normal=fabsf(Dot(hit.velocity,n));
+   float scale=max(.25f,min(6.4f,.48f*cbrtf(hit.volume/.0138f))),radius=2.5f*scale;
+   StainMark* chosen=nullptr;float nearest=1e9f,cx=0,cy=0,co=1,si=0;
+   for(auto& m:marks)if(m.kind==hit.kind&&DWORD(now-m.touched)<12000&&(hit.kind!=FLUID_IMPACT_BODY||m.contact.section==hit.section)){
+    V3 p,nn,x,y;if(!Frame(m,p,nn,x,y)||Dot(nn,n)<.85f)continue;
+    V3 delta=hit.p-p;float u=Dot(delta,x),v=Dot(delta,y),distance=Length(delta);
+    if(fabsf(Dot(delta,nn))>1.2f||fabsf(u)+radius>m.span*(.5f-2.f/splatTexture)||fabsf(v)+radius>m.span*(.5f-2.f/splatTexture))continue;
+    if(distance<nearest){chosen=&m;nearest=distance;cx=u;cy=v;co=along>1?Dot(Unit(tangent),x):1;si=along>1?Dot(Unit(tangent),y):0;}
+   }
+   if(!chosen){
+    if(marks.size()>=splatMaxMarks)marks.erase(marks.begin());
+    bool used[splatMaxMarks]{};for(const auto& mark:marks)used[mark.slot]=true;
+    // Small body patches double linear texel/anchor density in both scenes.
+    // Large impacts retain the wide patch so the bake is never cropped.
+    StainMark m;if(hit.kind==FLUID_IMPACT_BODY&&radius<splatSpan*.5f*(.5f-2.f/splatTexture))m.span=splatSpan*.5f;m.kind=hit.kind;m.contact=hit;m.born=m.touched=now;m.serial=nextSerial++;
+    while(used[m.slot])++m.slot;
+    m.direction=along>1?Unit(tangent):Unit(Cross(n,fabsf(n.z)<.8f?V3{0,0,1}:V3{0,1,0}));
+    m.samples[32*splatGrid+32].anchor=hit;m.samples[32*splatGrid+32].state=1;
+    marks.push_back(std::move(m));chosen=&marks.back();cx=cy=0;co=1;si=0;
+   }
+   auto& m=*chosen;float length=sqrtf(co*co+si*si);co/=max(length,1e-6f);si/=max(length,1e-6f);
+   if(m.active.size()>=96){Deposit(m.active.front(),splatBakes.frames[m.active.front().kind]-1,m.settled,m.span);m.active.erase(m.active.begin());}
+   SplatDeposit d;d.x=cx;d.y=cy;d.c=co;d.s=si;d.scale=scale;d.volume=hit.volume;d.born=now;d.kind=along>normal*1.5f?1:0;
+   m.active.push_back(d);m.volume+=hit.volume;m.spread=max(m.spread,radius);m.touched=now;m.dirty=true;
+  }return true;
+ }
+ bool Acquire(StainMark& m,int index,V3 p,V3 n,V3 x,V3 y,DWORD now){
+  float u=Coordinate(index%splatGrid,m.span),v=Coordinate(index/splatGrid,m.span);FluidImpact receiver=m.contact;V3 candidate=p+x*u+y*v;
+  if(m.kind==FLUID_IMPACT_BODY){
+   int ix=index%splatGrid,iy=index/splatGrid;bool found=false;
+   for(int radius=1;radius<=2&&!found;radius++)for(int dy=-radius;dy<=radius&&!found;dy++)for(int dx=-radius;dx<=radius&&!found;dx++){
+    int xx=ix+dx,yy=iy+dy;if(xx<0||yy<0||xx>=splatGrid||yy>=splatGrid)continue;
+    const auto& neighbor=m.samples[yy*splatGrid+xx];if(neighbor.state!=1)continue;
+    V3 q,qn;if(!Resolve(neighbor.anchor,q,qn))continue;
+    V3 tx=Unit(x-qn*Dot(x,qn)),ty=Unit(Cross(qn,tx));candidate=q-tx*(dx*m.span/(splatGrid-1))-ty*(dy*m.span/(splatGrid-1));receiver=neighbor.anchor;found=true;
+   }
+  }
+  auto& sample=m.samples[index];bool ok=true;
+  if(project)ok=project(receiver,candidate,sample.anchor);else{sample.anchor=receiver;sample.anchor.p=candidate;}
+  if(ok&&m.kind==FLUID_IMPACT_BODY)ok=sample.anchor.kind==m.kind&&sample.anchor.section==m.contact.section;
+  sample.state=ok?1:2;if(!ok){sample.attempts=(unsigned char)min(4,int(sample.attempts)+1);sample.retryAt=now+(120u<<sample.attempts);}return ok;
+ }
+ void Update(DWORD now){
+  marks.erase(std::remove_if(marks.begin(),marks.end(),[&](const StainMark& m){return DWORD(now-m.touched)>=20000;}),marks.end());
+  projectionBudget=96;lastShapeUpdates=0;if(marks.empty())return;
+  for(size_t offset=0;offset<marks.size()&&lastShapeUpdates<4;offset++){
+   auto& m=marks[(nextShape+offset)%marks.size()];
+   if((m.dirty||!m.active.empty())&&(!m.revision||DWORD(now-m.shaped)>=16)){Shape(m,now);++lastShapeUpdates;}
+  }
+  nextShape=(nextShape+max(1,lastShapeUpdates))%marks.size();
+  for(size_t offset=0;offset<marks.size()&&projectionBudget>0;offset++){
+   auto& m=marks[(nextMark+offset)%marks.size()];V3 p,n,x,y;if(!Frame(m,p,n,x,y))continue;
+   if(!m.axisValid){if(project){--projectionBudget;m.axisValid=project(m.contact,p+x*.5f,m.axisAnchor);}else{m.axisAnchor=m.contact;m.axisAnchor.p=p+x*.5f;m.axisValid=true;}}
+   int quota=min(64,projectionBudget);
+   for(int index:m.candidates){
+    if(quota<=0||projectionBudget<=0)break;auto& sample=m.samples[index];if(sample.state==1||(sample.state==2&&LONG(now-sample.retryAt)<0))continue;
+    --quota;--projectionBudget;Acquire(m,index,p,n,x,y,now);
+   }
+  }nextMark=(nextMark+1)%marks.size();
+ }
+};
+}

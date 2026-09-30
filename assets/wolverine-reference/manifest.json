@@ -1,0 +1,1714 @@
+{
+  "contractVersion": 1,
+  "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
+  "units": "uncalibrated-source-model-units",
+  "referenceOnly": true,
+  "meshes": [
+    {
+      "file": "coarse-sculpt.obj",
+      "vertices": 10554,
+      "triangles": 21086,
+      "sha256": "fe1cd00ebdee5dbcdab3999e960726c312eaf107bbd18315c52059b2501b56e3"
+    },
+    {
+      "file": "support-reference.obj",
+      "vertices": 25597,
+      "triangles": 32000,
+      "sha256": "ea168489afbe021f6dc745d8f9c4477a69f49335fa5453204258a81b3bb8b44d"
+    },
+    {
+      "file": "final-reference.obj",
+      "vertices": 17528,
+      "triangles": 35000,
+      "sha256": "a60bfd0c31a9e5ca768b9045d61a8b2df39fed7a68f5ec7be7856243c81011d1"
+    }
+  ],
+  "arrays": [
+    {
+      "key": "collar_fairing__collarFairNeighborWeights",
+      "source": "collar_fairing.h",
+      "symbol": "collarFairNeighborWeights",
+      "dtype": "<f4",
+      "count": 6682,
+      "declarationDimension": "6682",
+      "sha256": "7598a9a8899239b32e7646e2d60860304093f1f09f5b1772a3c3badbb5fe8420"
+    },
+    {
+      "key": "collar_fairing__collarFairWeights",
+      "source": "collar_fairing.h",
+      "symbol": "collarFairWeights",
+      "dtype": "<f4",
+      "count": 1169,
+      "declarationDimension": "1169",
+      "sha256": "b6ff5b13fa173749dd8dc2533ce489ab9c7107b3db89393601f9438335f77f48"
+    },
+    {
+      "key": "collar_fairing__collarFairDistances",
+      "source": "collar_fairing.h",
+      "symbol": "collarFairDistances",
+      "dtype": "<f4",
+      "count": 1169,
+      "declarationDimension": "1169",
+      "sha256": "a41734d56140310e96613b260e6e5662b31e9ae75af45189e75eee924c556acb"
+    },
+    {
+      "key": "collar_fairing__collarFairBaseNormals",
+      "source": "collar_fairing.h",
+      "symbol": "collarFairBaseNormals",
+      "dtype": "<f4",
+      "count": 3507,
+      "declarationDimension": "3507",
+      "sha256": "1498201acfe6774794ef340c71f796fff9556317b57a919fb1320d57c4ba2c6f"
+    },
+    {
+      "key": "collar_fairing__graftCollarDistances",
+      "source": "collar_fairing.h",
+      "symbol": "graftCollarDistances",
+      "dtype": "<f4",
+      "count": 2388,
+      "declarationDimension": "2388",
+      "sha256": "669fb52f56ea892fecf96d533f1d3dc2c8bc7ed91567bce8aba4cbfe34e6914d"
+    },
+    {
+      "key": "collar_fairing__collarNormalTriangleBasePositions",
+      "source": "collar_fairing.h",
+      "symbol": "collarNormalTriangleBasePositions",
+      "dtype": "<f4",
+      "count": 22770,
+      "declarationDimension": "22770",
+      "sha256": "72988b71b89a270c6acca68cc16225227557604ffd34fac616b147c28cf21663"
+    },
+    {
+      "key": "continuous_raphe_data__rapheGraft",
+      "source": "continuous_raphe_data.h",
+      "symbol": "rapheGraft",
+      "dtype": "<f4",
+      "count": 2388,
+      "declarationDimension": "2388",
+      "sha256": "f652ec1898592ed08f9e265b11908e45995b658069cdadab4ce39f85160a0b6a"
+    },
+    {
+      "key": "continuous_raphe_data__rapheCollar",
+      "source": "continuous_raphe_data.h",
+      "symbol": "rapheCollar",
+      "dtype": "<f4",
+      "count": 1169,
+      "declarationDimension": "1169",
+      "sha256": "a144ad2e013e675435ea63df4f8f223ffffc30a2ded57d013f84be34723d205c"
+    },
+    {
+      "key": "continuous_raphe_data__rapheFieldRows",
+      "source": "continuous_raphe_data.h",
+      "symbol": "rapheFieldRows",
+      "dtype": "<u4",
+      "count": 3558,
+      "declarationDimension": "3558",
+      "sha256": "e43636573fd795a27c21179c3abca43957f1ce06c0cebf7d3b707ee98169b9fc"
+    },
+    {
+      "key": "continuous_raphe_data__rapheFieldIDs",
+      "source": "continuous_raphe_data.h",
+      "symbol": "rapheFieldIDs",
+      "dtype": "<u4",
+      "count": 620877,
+      "declarationDimension": "620877",
+      "sha256": "86596c9764423e36ff7be9ab37052fcf998be99cb85c0069ebc905645b982a4b"
+    },
+    {
+      "key": "continuous_raphe_data__rapheFieldWeights",
+      "source": "continuous_raphe_data.h",
+      "symbol": "rapheFieldWeights",
+      "dtype": "<f4",
+      "count": 620877,
+      "declarationDimension": "620877",
+      "sha256": "33d7c963f86ee0be6fe57283d1ca4bb5c1f35798eeee0deb8801155859798299"
+    },
+    {
+      "key": "continuous_raphe_data__rapheSmoothIDs",
+      "source": "continuous_raphe_data.h",
+      "symbol": "rapheSmoothIDs",
+      "dtype": "<u4",
+      "count": 560,
+      "declarationDimension": "560",
+      "sha256": "4af821f99b60af440e2301d5139cfa18dde15af4504cbb831e355c84296f06ef"
+    },
+    {
+      "key": "continuous_raphe_data__rapheSmoothOffsets",
+      "source": "continuous_raphe_data.h",
+      "symbol": "rapheSmoothOffsets",
+      "dtype": "<u4",
+      "count": 561,
+      "declarationDimension": "561",
+      "sha256": "928c45901bf4268f064e2c535c1e7bb0b2f838634492f4ad5db9dcc14dabffb4"
+    },
+    {
+      "key": "continuous_raphe_data__rapheSmoothNeighbors",
+      "source": "continuous_raphe_data.h",
+      "symbol": "rapheSmoothNeighbors",
+      "dtype": "<u4",
+      "count": 3365,
+      "declarationDimension": "3365",
+      "sha256": "9f76dee10a6b489d9e9be5ab82382af47194cc4e21be95b160d0f8f8dfc8fe99"
+    },
+    {
+      "key": "continuous_raphe_data__rapheSmoothMask",
+      "source": "continuous_raphe_data.h",
+      "symbol": "rapheSmoothMask",
+      "dtype": "<f4",
+      "count": 560,
+      "declarationDimension": "560",
+      "sha256": "db0542228751b0864d2316396d127a25fbc8a74464b5c38b2c9f013d9ba45916"
+    },
+    {
+      "key": "continuous_raphe_data__rapheSmoothFull",
+      "source": "continuous_raphe_data.h",
+      "symbol": "rapheSmoothFull",
+      "dtype": "<f4",
+      "count": 10554,
+      "declarationDimension": "10554",
+      "sha256": "0005d62c8d3efe84ffc39e0df7911b14c64255cf1956bf491787b8c500c56d4f"
+    },
+    {
+      "key": "electrode_bindings_data__electrodeMembership",
+      "source": "electrode_bindings_data.h",
+      "symbol": "electrodeMembership",
+      "dtype": "|u1",
+      "count": 2162,
+      "declarationDimension": "2162",
+      "sha256": "7c89a5214fce10cce41d463f6750217c5503ae65afe22021512c11d5170d91ce"
+    },
+    {
+      "key": "geometry_binding_data__geometryFineFrames",
+      "source": "geometry_binding_data.h",
+      "symbol": "geometryFineFrames",
+      "dtype": "<u2",
+      "count": 6516,
+      "declarationDimension": "6516",
+      "sha256": "092513c5455b20456859cc4e167a22c8d20e710423dd2b4b4c9b4fc096f44eef"
+    },
+    {
+      "key": "geometry_binding_data__geometryFineFrameIDs",
+      "source": "geometry_binding_data.h",
+      "symbol": "geometryFineFrameIDs",
+      "dtype": "<u2",
+      "count": 15043,
+      "declarationDimension": "15043",
+      "sha256": "f6ab7bfee4d6f360809827de9eba597093c064ce86c95d7d1529a489152b2585"
+    },
+    {
+      "key": "geometry_binding_data__geometryRoundedFaces",
+      "source": "geometry_binding_data.h",
+      "symbol": "geometryRoundedFaces",
+      "dtype": "<u4",
+      "count": 2479,
+      "declarationDimension": "2479",
+      "sha256": "336a6e18a88fb11a55ada5a70898c3ae1b689d96a93759ee7abb8b1a751f375b"
+    },
+    {
+      "key": "geometry_binding_data__geometryFineFaces",
+      "source": "geometry_binding_data.h",
+      "symbol": "geometryFineFaces",
+      "dtype": "<u4",
+      "count": 21329,
+      "declarationDimension": "21329",
+      "sha256": "0a984706c1cd212ff2e11550b617041b27bc070928d5ea118025f13074f0c83a"
+    },
+    {
+      "key": "graft_normals__graftBaseNormals",
+      "source": "graft_normals.h",
+      "symbol": "graftBaseNormals",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "7164",
+      "sha256": "5345b030e8478b39a871e0c6bfa88792a869d2c86f3597fe0b9a69fd595b687e"
+    },
+    {
+      "key": "graft_normals__graftSeamNormalLock",
+      "source": "graft_normals.h",
+      "symbol": "graftSeamNormalLock",
+      "dtype": "<f4",
+      "count": 2388,
+      "declarationDimension": "2388",
+      "sha256": "d7c8512c6d160f67c9d85ab515be5d4c68f0a3b4e74ad1430eff4f5524a0ecc5"
+    },
+    {
+      "key": "graft_normals__graftUVs",
+      "source": "graft_normals.h",
+      "symbol": "graftUVs",
+      "dtype": "<f4",
+      "count": 4776,
+      "declarationDimension": "4776",
+      "sha256": "07d9d7c7cdfc457d6ab2246cb65f293a33bc419ab9d79863c921de83c47fc65b"
+    },
+    {
+      "key": "idle_gesture_data__igRotationKeys",
+      "source": "idle_gesture_data.h",
+      "symbol": "igRotationKeys",
+      "dtype": "<f4",
+      "count": 3872,
+      "declarationDimension": "3872",
+      "sha256": "ec772d87f74d99fd03f18aab3d294369d52d74891608017e2cbbf79c03f5d076"
+    },
+    {
+      "key": "idle_gesture_data__igParentBind",
+      "source": "idle_gesture_data.h",
+      "symbol": "igParentBind",
+      "dtype": "<f4",
+      "count": 24,
+      "declarationDimension": "24",
+      "sha256": "6f7221372ff1f2f4391994d7afa9b71f84da74a291c4ed3880902539548647b9"
+    },
+    {
+      "key": "idle_gesture_data__igPivots",
+      "source": "idle_gesture_data.h",
+      "symbol": "igPivots",
+      "dtype": "<f4",
+      "count": 6,
+      "declarationDimension": "6",
+      "sha256": "3278712d5b1bb71b1d1cf738b9c075079f67334c3568d12949142004e36fa705"
+    },
+    {
+      "key": "menu_tank__remap",
+      "source": "menu_tank.h",
+      "symbol": "remap",
+      "dtype": "|u1",
+      "count": 5,
+      "declarationDimension": "5",
+      "sha256": "a70c165884bff68fb89c2663c768f92f099435251216674c0b983221b33c97bf"
+    },
+    {
+      "key": "morph_targets__morph_base",
+      "source": "morph_targets.h",
+      "symbol": "morph_base",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "a7daf8c95770e11e04474e4103e0ccde6650e03f8126f4e4124f1c23a5f77a7f"
+    },
+    {
+      "key": "morph_targets__morph_overall_lo",
+      "source": "morph_targets.h",
+      "symbol": "morph_overall_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "4b6f4da5ea44c22de9146a46471e256e23b83907fa255ee37604bb391c21167e"
+    },
+    {
+      "key": "morph_targets__morph_overall_hi",
+      "source": "morph_targets.h",
+      "symbol": "morph_overall_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "79418c8f963aa99049559e857b874b1075ab776908df20feb157e287675ea26c"
+    },
+    {
+      "key": "morph_targets__morph_length_lo",
+      "source": "morph_targets.h",
+      "symbol": "morph_length_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "baa3ccd6e672c7ea73b78f5d3f765d566e9cc2669a5d69c13530df45afffed7c"
+    },
+    {
+      "key": "morph_targets__morph_length_hi",
+      "source": "morph_targets.h",
+      "symbol": "morph_length_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "ed5df6948046aeea552b907f9bdc24c87fa11c00be7abbb4a6d3baa35e350cdf"
+    },
+    {
+      "key": "morph_targets__morph_width_lo",
+      "source": "morph_targets.h",
+      "symbol": "morph_width_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "ad4dc185091390a968c9e0ffc0a1e71834a5344a55e8768ace392c6e10faaccb"
+    },
+    {
+      "key": "morph_targets__morph_width_hi",
+      "source": "morph_targets.h",
+      "symbol": "morph_width_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "c0b0b5ff02a97335006e85b73af0dbe6b750fcebf1755161a961a50462f55736"
+    },
+    {
+      "key": "morph_targets__morph_scrotum_lo",
+      "source": "morph_targets.h",
+      "symbol": "morph_scrotum_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "73ad2b086983c5e6660d148faf42b095bf08f51878fdcb7c12db3534920bac73"
+    },
+    {
+      "key": "morph_targets__morph_scrotum_hi",
+      "source": "morph_targets.h",
+      "symbol": "morph_scrotum_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "f2b0a5894c40cea2f16e7a4f36fb951cf32a036210ab73bdda692adf6d931dbc"
+    },
+    {
+      "key": "morph_targets__morph_angle_lo",
+      "source": "morph_targets.h",
+      "symbol": "morph_angle_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "a7daf8c95770e11e04474e4103e0ccde6650e03f8126f4e4124f1c23a5f77a7f"
+    },
+    {
+      "key": "morph_targets__morph_angle_hi",
+      "source": "morph_targets.h",
+      "symbol": "morph_angle_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "a7daf8c95770e11e04474e4103e0ccde6650e03f8126f4e4124f1c23a5f77a7f"
+    },
+    {
+      "key": "morph_targets__morph_forward_lo",
+      "source": "morph_targets.h",
+      "symbol": "morph_forward_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "618dd289ac2854d11613e9e95edbc7d1896dd19e674ed74112f8869394d4855f"
+    },
+    {
+      "key": "morph_targets__morph_forward_hi",
+      "source": "morph_targets.h",
+      "symbol": "morph_forward_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "279e8a3c4ca08d867c5d4f74ec210879bda1908b694b0180b437c85879d04208"
+    },
+    {
+      "key": "morph_targets__morph_vertical_lo",
+      "source": "morph_targets.h",
+      "symbol": "morph_vertical_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "f79e1a871a0bb4b4fc7865b1765fb7eae342a9dd1c88c7e9f8062aa814f83f0f"
+    },
+    {
+      "key": "morph_targets__morph_vertical_hi",
+      "source": "morph_targets.h",
+      "symbol": "morph_vertical_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "92cd692ab2b0d1246be1382ecd54ef3466af81d9940020dd692b7b1219075cdf"
+    },
+    {
+      "key": "morph_targets__morph_ow_lo_lo",
+      "source": "morph_targets.h",
+      "symbol": "morph_ow_lo_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "5f6bfa8aed84fb414021831f902d08482d396341b5132da186d980ac218765dc"
+    },
+    {
+      "key": "morph_targets__morph_ow_lo_def",
+      "source": "morph_targets.h",
+      "symbol": "morph_ow_lo_def",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "4b6f4da5ea44c22de9146a46471e256e23b83907fa255ee37604bb391c21167e"
+    },
+    {
+      "key": "morph_targets__morph_ow_lo_hi",
+      "source": "morph_targets.h",
+      "symbol": "morph_ow_lo_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "dad707395d8d03466fbd69092df6ace4ff3af89f2eb62104c82f82fcc6927373"
+    },
+    {
+      "key": "morph_targets__morph_ow_def_lo",
+      "source": "morph_targets.h",
+      "symbol": "morph_ow_def_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "ad4dc185091390a968c9e0ffc0a1e71834a5344a55e8768ace392c6e10faaccb"
+    },
+    {
+      "key": "morph_targets__morph_ow_def_def",
+      "source": "morph_targets.h",
+      "symbol": "morph_ow_def_def",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "a7daf8c95770e11e04474e4103e0ccde6650e03f8126f4e4124f1c23a5f77a7f"
+    },
+    {
+      "key": "morph_targets__morph_ow_def_hi",
+      "source": "morph_targets.h",
+      "symbol": "morph_ow_def_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "c0b0b5ff02a97335006e85b73af0dbe6b750fcebf1755161a961a50462f55736"
+    },
+    {
+      "key": "morph_targets__morph_ow_hi_lo",
+      "source": "morph_targets.h",
+      "symbol": "morph_ow_hi_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "b9a52871eaa011a26b6c53e7c4537f1aef41979cefe3b87d08fd45b038b0ed0e"
+    },
+    {
+      "key": "morph_targets__morph_ow_hi_def",
+      "source": "morph_targets.h",
+      "symbol": "morph_ow_hi_def",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "79418c8f963aa99049559e857b874b1075ab776908df20feb157e287675ea26c"
+    },
+    {
+      "key": "morph_targets__morph_ow_hi_hi",
+      "source": "morph_targets.h",
+      "symbol": "morph_ow_hi_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "9c6f129843df850c994dcf11368895df48b7c5fb502dbf03d483f259e74c4282"
+    },
+    {
+      "key": "morph_targets_faired__morph_base",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_base",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "526d7154b1f1723e61ff551f8773023a53f8a3fc6373b8f903f825e2afbfd7d0"
+    },
+    {
+      "key": "morph_targets_faired__morph_overall_lo",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_overall_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "ac6acf078aa8c4058991e32fafa80e6e82b865051967f2073946f9d2b3f7a453"
+    },
+    {
+      "key": "morph_targets_faired__morph_overall_hi",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_overall_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "3451ffdd96042640663c52af88a8ed3c8df680264a3b3bce232555d301f04741"
+    },
+    {
+      "key": "morph_targets_faired__morph_length_lo",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_length_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "705b60607248be9d8fc25555daeadee4e6c8285858821f394ad151671d0b3a44"
+    },
+    {
+      "key": "morph_targets_faired__morph_length_hi",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_length_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "d2a4837d9409621b21fc7703b72ed18d916945161739af6f646967cb6ac4f9b7"
+    },
+    {
+      "key": "morph_targets_faired__morph_width_lo",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_width_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "0124259ac6419965fae04711fa0257d12ad68ec8a5547cf0762eeb4c244882d0"
+    },
+    {
+      "key": "morph_targets_faired__morph_width_hi",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_width_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "b38703eb4b0d73f18cfcb4a1cca1cd94188b5eaa2284b180beb86959dc6b35ee"
+    },
+    {
+      "key": "morph_targets_faired__morph_scrotum_lo",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_scrotum_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "6807bec43540fa508c8930cd392eb4c55cad4e7bce9b61171b07b04706552718"
+    },
+    {
+      "key": "morph_targets_faired__morph_scrotum_hi",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_scrotum_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "e7ba3fccd1bf5e52681c467c63652f6ec00c5d25d62fe207f0294ee7d750a54b"
+    },
+    {
+      "key": "morph_targets_faired__morph_angle_lo",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_angle_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "526d7154b1f1723e61ff551f8773023a53f8a3fc6373b8f903f825e2afbfd7d0"
+    },
+    {
+      "key": "morph_targets_faired__morph_angle_hi",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_angle_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "526d7154b1f1723e61ff551f8773023a53f8a3fc6373b8f903f825e2afbfd7d0"
+    },
+    {
+      "key": "morph_targets_faired__morph_forward_lo",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_forward_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "8a5ab17c5da704cfa723e7ff2500ae9d802480512a02e7914597687452685aa4"
+    },
+    {
+      "key": "morph_targets_faired__morph_forward_hi",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_forward_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "6deda4155395480ccc83e516e0f07d93cf19a0ba3027724dbecbfeb3fb958b1b"
+    },
+    {
+      "key": "morph_targets_faired__morph_vertical_lo",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_vertical_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "b14002af5b8cb7524835086892c9b7498da85e035f56ed6480f1c32bd59659f8"
+    },
+    {
+      "key": "morph_targets_faired__morph_vertical_hi",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_vertical_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "239583bf312e246a38eb00507a7a55114cba5f9562056800b061e5267ce0d7aa"
+    },
+    {
+      "key": "morph_targets_faired__morph_ow_lo_lo",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_ow_lo_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "42ec83ea3029b89a94dfd1c8f4177291f8ef5df16da5ffeb12ac2ead0ec82a44"
+    },
+    {
+      "key": "morph_targets_faired__morph_ow_lo_def",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_ow_lo_def",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "ac6acf078aa8c4058991e32fafa80e6e82b865051967f2073946f9d2b3f7a453"
+    },
+    {
+      "key": "morph_targets_faired__morph_ow_lo_hi",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_ow_lo_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "03e1cb4c07e83238f36453c5a9255fbadf91707c77b65c7b2f7602888077a549"
+    },
+    {
+      "key": "morph_targets_faired__morph_ow_def_lo",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_ow_def_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "0124259ac6419965fae04711fa0257d12ad68ec8a5547cf0762eeb4c244882d0"
+    },
+    {
+      "key": "morph_targets_faired__morph_ow_def_def",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_ow_def_def",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "526d7154b1f1723e61ff551f8773023a53f8a3fc6373b8f903f825e2afbfd7d0"
+    },
+    {
+      "key": "morph_targets_faired__morph_ow_def_hi",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_ow_def_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "b38703eb4b0d73f18cfcb4a1cca1cd94188b5eaa2284b180beb86959dc6b35ee"
+    },
+    {
+      "key": "morph_targets_faired__morph_ow_hi_lo",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_ow_hi_lo",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "30d2879f1fb5a60393ff9058490f07e598c5f52b1e87b84119f6baef718dc79e"
+    },
+    {
+      "key": "morph_targets_faired__morph_ow_hi_def",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_ow_hi_def",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "3451ffdd96042640663c52af88a8ed3c8df680264a3b3bce232555d301f04741"
+    },
+    {
+      "key": "morph_targets_faired__morph_ow_hi_hi",
+      "source": "morph_targets_faired.h",
+      "symbol": "morph_ow_hi_hi",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "LIVE_COUNT*3",
+      "sha256": "00354b1481fab90cf96cefe081be37124978527284b2f430abe65b98f3e4dd94"
+    },
+    {
+      "key": "neck_render_data__nrIndices",
+      "source": "neck_render_data.h",
+      "symbol": "nrIndices",
+      "dtype": "<u2",
+      "count": 105000,
+      "declarationDimension": "105000",
+      "sha256": "4fcf730c2c66b022dfba3ee37b409ee07302640520abf2ffb60ee0e03d16589b"
+    },
+    {
+      "key": "neck_render_data__nrDirect",
+      "source": "neck_render_data.h",
+      "symbol": "nrDirect",
+      "dtype": "<u2",
+      "count": 17528,
+      "declarationDimension": "17528",
+      "sha256": "4a902afd5ff5ee76d6c607a32f05987d07cf916e20573ad81aeb1c551ffa3c1b"
+    },
+    {
+      "key": "neck_render_data__nrRows",
+      "source": "neck_render_data.h",
+      "symbol": "nrRows",
+      "dtype": "<u4",
+      "count": 17529,
+      "declarationDimension": "17529",
+      "sha256": "be3e9cdf44afd1615af224e4b21e37cedc69e995fec8f618d59ec3e2bb633528"
+    },
+    {
+      "key": "neck_render_data__nrSources",
+      "source": "neck_render_data.h",
+      "symbol": "nrSources",
+      "dtype": "<u2",
+      "count": 255080,
+      "declarationDimension": "255080",
+      "sha256": "7313e650d262e1a10d8cddc3a175e5e5be1240c5d6423fd7096cd3ad9b9aa766"
+    },
+    {
+      "key": "neck_render_data__nrWeights",
+      "source": "neck_render_data.h",
+      "symbol": "nrWeights",
+      "dtype": "<f4",
+      "count": 255080,
+      "declarationDimension": "255080",
+      "sha256": "9fa48e1233a92c477952b61bc0d776acd4820020f760895d5fd078d35dd355eb"
+    },
+    {
+      "key": "neck_render_data__nrAttributes",
+      "source": "neck_render_data.h",
+      "symbol": "nrAttributes",
+      "dtype": "|u1",
+      "count": 350560,
+      "declarationDimension": "350560",
+      "sha256": "c21c7652cf8973355923630d343cc6298c488c26e23dfa535584a6636a3f3938"
+    },
+    {
+      "key": "neck_render_data__nrMaterialSources",
+      "source": "neck_render_data.h",
+      "symbol": "nrMaterialSources",
+      "dtype": "<u2",
+      "count": 52584,
+      "declarationDimension": "52584",
+      "sha256": "3bef5ebb5b8f8b0efe02405edba7906256465cd2040b10d7696e0484f05f647d"
+    },
+    {
+      "key": "neck_render_data__nrMaterialWeights",
+      "source": "neck_render_data.h",
+      "symbol": "nrMaterialWeights",
+      "dtype": "<f4",
+      "count": 52584,
+      "declarationDimension": "52584",
+      "sha256": "db26ff0e5f874b1011b7496cc4298760515f2eeed787b6584fea02ee63baa46e"
+    },
+    {
+      "key": "neck_render_data__nrNormalMix",
+      "source": "neck_render_data.h",
+      "symbol": "nrNormalMix",
+      "dtype": "<f4",
+      "count": 17528,
+      "declarationDimension": "17528",
+      "sha256": "5bd2c335f91507e123e3295e40abfd5679b7e448e9feb96f89cd4dcad390fa18"
+    },
+    {
+      "key": "pelvic_attachment_data__paBodyIDs",
+      "source": "pelvic_attachment_data.h",
+      "symbol": "paBodyIDs",
+      "dtype": "<u4",
+      "count": 366,
+      "declarationDimension": "366",
+      "sha256": "a34cf59235b405d28d1c5668af2a305ea7dba8bb2d65660bf1411c97c51d85b2"
+    },
+    {
+      "key": "pelvic_attachment_data__paBodyBase",
+      "source": "pelvic_attachment_data.h",
+      "symbol": "paBodyBase",
+      "dtype": "<f4",
+      "count": 1098,
+      "declarationDimension": "1098",
+      "sha256": "efee55aac9277c4136bd73b3e3984c5cb310bb35c2634ee76c41961a2b1983a2"
+    },
+    {
+      "key": "pelvic_attachment_data__paBodyDelta",
+      "source": "pelvic_attachment_data.h",
+      "symbol": "paBodyDelta",
+      "dtype": "<f4",
+      "count": 3294,
+      "declarationDimension": "3294",
+      "sha256": "1766dc3889c339abfe69c1db024fb0f86cf9d668a5d1408a9297781105fe995a"
+    },
+    {
+      "key": "pelvic_attachment_data__paR14IDs",
+      "source": "pelvic_attachment_data.h",
+      "symbol": "paR14IDs",
+      "dtype": "<u4",
+      "count": 453,
+      "declarationDimension": "453",
+      "sha256": "a76722615d6633bd6c389f418b9a1aa9c6e6f580cb2115e41a95945fe3210693"
+    },
+    {
+      "key": "pelvic_attachment_data__paR14Delta",
+      "source": "pelvic_attachment_data.h",
+      "symbol": "paR14Delta",
+      "dtype": "<f4",
+      "count": 4077,
+      "declarationDimension": "4077",
+      "sha256": "5ab2959a4c1fca1c1d6ccd0ff8699608fd41f37b2036bd1c5197378634bbb636"
+    },
+    {
+      "key": "pelvic_attachment_data__paRotateWeight",
+      "source": "pelvic_attachment_data.h",
+      "symbol": "paRotateWeight",
+      "dtype": "<f4",
+      "count": 453,
+      "declarationDimension": "453",
+      "sha256": "578bce853b7af4af572d197e6386ee5fb42ef6938bb9ec01d38d282173e19573"
+    },
+    {
+      "key": "pelvic_attachment_data__paReferenceAxis",
+      "source": "pelvic_attachment_data.h",
+      "symbol": "paReferenceAxis",
+      "dtype": "<f4",
+      "count": 9,
+      "declarationDimension": "9",
+      "sha256": "5cd41331766085cffb67914d92e84f84e4ca31f23a16ea9e179111062b99e462"
+    },
+    {
+      "key": "pelvic_attachment_data__paBodyNormalIDs",
+      "source": "pelvic_attachment_data.h",
+      "symbol": "paBodyNormalIDs",
+      "dtype": "<u4",
+      "count": 548,
+      "declarationDimension": "548",
+      "sha256": "bfe786fe968013f668bfdd7b3471c4c44a7792b5d1a3e2ee10e3e510636c604d"
+    },
+    {
+      "key": "pelvic_attachment_data__paBodyNormalBase",
+      "source": "pelvic_attachment_data.h",
+      "symbol": "paBodyNormalBase",
+      "dtype": "<f4",
+      "count": 1644,
+      "declarationDimension": "1644",
+      "sha256": "62bf9b81810113f7325a721187026956c04adf1203d247915228c791ed4ffd5d"
+    },
+    {
+      "key": "pelvic_attachment_data__paBodyNormalFaces",
+      "source": "pelvic_attachment_data.h",
+      "symbol": "paBodyNormalFaces",
+      "dtype": "<u4",
+      "count": 2253,
+      "declarationDimension": "2253",
+      "sha256": "2e64bf999bb8b4020dc009bfe862ef648c112f2650be225721e33096fbf81738"
+    },
+    {
+      "key": "pelvic_attachment_data__paBodyNormalGroup",
+      "source": "pelvic_attachment_data.h",
+      "symbol": "paBodyNormalGroup",
+      "dtype": "<u4",
+      "count": 548,
+      "declarationDimension": "548",
+      "sha256": "b1a4012dbe98b58b671ad6e0c48dd1e96e54905403f187d807d8e4a6058ec2ca"
+    },
+    {
+      "key": "pelvic_attachment_data__paBodyNormalWrite",
+      "source": "pelvic_attachment_data.h",
+      "symbol": "paBodyNormalWrite",
+      "dtype": "<u4",
+      "count": 548,
+      "declarationDimension": "548",
+      "sha256": "7e4d7ef58fb5219988b353d0109204a8c9ebf8491ef087b0947c053010967924"
+    },
+    {
+      "key": "pelvic_attachment_data__paR14NormalIDs",
+      "source": "pelvic_attachment_data.h",
+      "symbol": "paR14NormalIDs",
+      "dtype": "<u4",
+      "count": 588,
+      "declarationDimension": "588",
+      "sha256": "154907d3f510cb2a0bb5520f9b552895c3c7a017f2dd325a71e21cd5f354a36f"
+    },
+    {
+      "key": "pelvic_attachment_data__paR14NormalFaces",
+      "source": "pelvic_attachment_data.h",
+      "symbol": "paR14NormalFaces",
+      "dtype": "<u4",
+      "count": 3894,
+      "declarationDimension": "3894",
+      "sha256": "84b37a7888e11fe30d15e3cd769d6fa900a787117620465c399d9a1dd5473a24"
+    },
+    {
+      "key": "pelvic_attachment_data__paSeamR14",
+      "source": "pelvic_attachment_data.h",
+      "symbol": "paSeamR14",
+      "dtype": "<u4",
+      "count": 20,
+      "declarationDimension": "20",
+      "sha256": "29d2cde1241385551f9217126e318813959cfd4d6bd36ca7a328e384a6a1f99a"
+    },
+    {
+      "key": "pelvic_attachment_data__paSeamBody",
+      "source": "pelvic_attachment_data.h",
+      "symbol": "paSeamBody",
+      "dtype": "<u4",
+      "count": 20,
+      "declarationDimension": "20",
+      "sha256": "1b1211dcbce75eb4d47750c1c98a15384515b582bfa183de21fcba6a83f7ae3e"
+    },
+    {
+      "key": "pelvic_attachment_data__paProtectedLobes",
+      "source": "pelvic_attachment_data.h",
+      "symbol": "paProtectedLobes",
+      "dtype": "<u4",
+      "count": 543,
+      "declarationDimension": "543",
+      "sha256": "f5f8172c08936dfe73086363055f52d057e23ce9ed8f79bdadee5beda855b2da"
+    },
+    {
+      "key": "pelvic_ramp__rampSupport",
+      "source": "pelvic_ramp.h",
+      "symbol": "rampSupport",
+      "dtype": "<f4",
+      "count": 1169,
+      "declarationDimension": "1169",
+      "sha256": "befb6b214c245c668bc47d356430f5b152902fa4d1a4ff1b5cee13ce42dad40a"
+    },
+    {
+      "key": "pelvic_ramp__rampCoefficients",
+      "source": "pelvic_ramp.h",
+      "symbol": "rampCoefficients",
+      "dtype": "<f4",
+      "count": 192386,
+      "declarationDimension": "192386",
+      "sha256": "4fd1a4297af952bd832a2908ab9461ce9a602f707c0fcd876778c13ade12a5e7"
+    },
+    {
+      "key": "pelvic_root_binding__pelvicRootFollow",
+      "source": "pelvic_root_binding.h",
+      "symbol": "pelvicRootFollow",
+      "dtype": "<f4",
+      "count": 2388,
+      "declarationDimension": "2388",
+      "sha256": "47e10d8d476680b359c8b48b6af6a3d72175dd0399cd8af79883cf6f30514f7b"
+    },
+    {
+      "key": "pelvic_root_binding__pelvicRootMask",
+      "source": "pelvic_root_binding.h",
+      "symbol": "pelvicRootMask",
+      "dtype": "<f4",
+      "count": 2388,
+      "declarationDimension": "2388",
+      "sha256": "57ec39c70189707a3ce9f1ad588a085bf681c68eadb5867ffaf4b186d9961297"
+    },
+    {
+      "key": "pelvic_root_binding__pelvicAngleFollow",
+      "source": "pelvic_root_binding.h",
+      "symbol": "pelvicAngleFollow",
+      "dtype": "<f4",
+      "count": 2388,
+      "declarationDimension": "2388",
+      "sha256": "66dad2049e35b08630e2ed238b18e2d77459a26004bdfaa9217e603540181cb7"
+    },
+    {
+      "key": "pelvis_control__pelvisControlBasePositions",
+      "source": "pelvis_control.h",
+      "symbol": "pelvisControlBasePositions",
+      "dtype": "<f4",
+      "count": 1368,
+      "declarationDimension": "1368",
+      "sha256": "4212b1c75539508f82c2ed9396fdcda97f947941b1aca7b7a9d84a8ae460f2ca"
+    },
+    {
+      "key": "pelvis_control__pelvisControlWeights",
+      "source": "pelvis_control.h",
+      "symbol": "pelvisControlWeights",
+      "dtype": "<f4",
+      "count": 456,
+      "declarationDimension": "456",
+      "sha256": "e1fe83bf1a5d6ee06054314f2855c8640c955169a184bb5213c7868a70688842"
+    },
+    {
+      "key": "pelvis_control__pelvisControlDistances",
+      "source": "pelvis_control.h",
+      "symbol": "pelvisControlDistances",
+      "dtype": "<f4",
+      "count": 456,
+      "declarationDimension": "456",
+      "sha256": "521535e0faaad20126da1d369fdb5f3337a5120152f7d6f8af8825cfdcc19a9b"
+    },
+    {
+      "key": "physics_weights__phys_shaft_weight",
+      "source": "physics_weights.h",
+      "symbol": "phys_shaft_weight",
+      "dtype": "<f4",
+      "count": 2388,
+      "declarationDimension": "2388",
+      "sha256": "9625c3820c20b579cdb2534c7bf6b1a79d8dc3a91943e9e0c6a2ad9a1adfc7ff"
+    },
+    {
+      "key": "physics_weights__phys_shaft_segment",
+      "source": "physics_weights.h",
+      "symbol": "phys_shaft_segment",
+      "dtype": "<f4",
+      "count": 2388,
+      "declarationDimension": "2388",
+      "sha256": "278742393ab42cfb7e67b53c4063d8c141ed00ffb156b695c470237750661c3e"
+    },
+    {
+      "key": "physics_weights__phys_scrotum_weight",
+      "source": "physics_weights.h",
+      "symbol": "phys_scrotum_weight",
+      "dtype": "<f4",
+      "count": 2388,
+      "declarationDimension": "2388",
+      "sha256": "a9d2318ab7b815ae148d79a515054306b88925cb5245c2721df72d12f764f0b8"
+    },
+    {
+      "key": "physics_weights__phys_attachment_weight",
+      "source": "physics_weights.h",
+      "symbol": "phys_attachment_weight",
+      "dtype": "<f4",
+      "count": 2388,
+      "declarationDimension": "2388",
+      "sha256": "da87c82b3ebb5a660b4f718544d7c006092184967310f45d164e9f9edec0f92a"
+    },
+    {
+      "key": "physics_weights__phys_flex_coordinate",
+      "source": "physics_weights.h",
+      "symbol": "phys_flex_coordinate",
+      "dtype": "<f4",
+      "count": 2388,
+      "declarationDimension": "2388",
+      "sha256": "beeda21dc9d22fdf871ed5bcfa45fafaf8a4925467a94d6458cea0d386cb7a8d"
+    },
+    {
+      "key": "pouch_surface_data__cpActive",
+      "source": "pouch_surface_data.h",
+      "symbol": "cpActive",
+      "dtype": "<u4",
+      "count": 10065,
+      "declarationDimension": "10065",
+      "sha256": "a5c033b1f06d01e9e76d69f0e6ff6cc4f8775ff4e31889d657faae3aae07128b"
+    },
+    {
+      "key": "pouch_surface_data__cpWeights",
+      "source": "pouch_surface_data.h",
+      "symbol": "cpWeights",
+      "dtype": "<f4",
+      "count": 10065,
+      "declarationDimension": "10065",
+      "sha256": "8c3e784102fb888200cb4fe4837bf4ce193b4b7a0f3c674c5e62f39ddb0621a0"
+    },
+    {
+      "key": "pouch_surface_data__cpDirections",
+      "source": "pouch_surface_data.h",
+      "symbol": "cpDirections",
+      "dtype": "<f4",
+      "count": 30195,
+      "declarationDimension": "30195",
+      "sha256": "378f350394bd84a8961a1bb70fb3ab614e2aef571cb42d90a1e204e0a9fd2376"
+    },
+    {
+      "key": "pouch_surface_data__cpFair",
+      "source": "pouch_surface_data.h",
+      "symbol": "cpFair",
+      "dtype": "<u4",
+      "count": 6966,
+      "declarationDimension": "6966",
+      "sha256": "49276d059490efb6bffe10ba56bd8ea883bb69a83e96ca4f885888807bfe3e98"
+    },
+    {
+      "key": "pouch_surface_data__cpFairWeight",
+      "source": "pouch_surface_data.h",
+      "symbol": "cpFairWeight",
+      "dtype": "<f4",
+      "count": 6966,
+      "declarationDimension": "6966",
+      "sha256": "09781c184ad472a6baaf569443eb5d8f07925d644e0ee97fb0489da091e46225"
+    },
+    {
+      "key": "pouch_surface_data__cpRows",
+      "source": "pouch_surface_data.h",
+      "symbol": "cpRows",
+      "dtype": "<u4",
+      "count": 25598,
+      "declarationDimension": "25598",
+      "sha256": "3db4e22700f96cbf5dadcc9d25545ba9c17f41ddc6ca9824ee8d7f9f045ab9db"
+    },
+    {
+      "key": "pouch_surface_data__cpNeighbors",
+      "source": "pouch_surface_data.h",
+      "symbol": "cpNeighbors",
+      "dtype": "<u2",
+      "count": 41795,
+      "declarationDimension": "41795",
+      "sha256": "5f96e514ffaad8c1105428979f96262bcc07342ab8d5de2ce4fe7d3b308691d3"
+    },
+    {
+      "key": "pouch_surface_data__cpReference",
+      "source": "pouch_surface_data.h",
+      "symbol": "cpReference",
+      "dtype": "<f4",
+      "count": 76791,
+      "declarationDimension": "76791",
+      "sha256": "f253c60a151c5cc900105c246dccacf41ade8ee6a49401902fc91455c46346c1"
+    },
+    {
+      "key": "pouch_surface_data__cpNeckIDs",
+      "source": "pouch_surface_data.h",
+      "symbol": "cpNeckIDs",
+      "dtype": "<u4",
+      "count": 4595,
+      "declarationDimension": "4595",
+      "sha256": "bb6f66c0c74f7b61dc5b678e143e887a5e60f7e97ab98096628cde0d31fe145f"
+    },
+    {
+      "key": "pouch_surface_data__cpNeckRows",
+      "source": "pouch_surface_data.h",
+      "symbol": "cpNeckRows",
+      "dtype": "<u4",
+      "count": 4596,
+      "declarationDimension": "4596",
+      "sha256": "3d223351e47012daa51997d718c935bce256ee40ede964a056bf479868d76412"
+    },
+    {
+      "key": "pouch_surface_data__cpNeckSources",
+      "source": "pouch_surface_data.h",
+      "symbol": "cpNeckSources",
+      "dtype": "<u2",
+      "count": 330840,
+      "declarationDimension": "330840",
+      "sha256": "d7bc0bc499f122b748533272bf441a6f8dd4ab1b97fd20b8b0ba8396ee600fe3"
+    },
+    {
+      "key": "pouch_surface_data__cpNeckWeights",
+      "source": "pouch_surface_data.h",
+      "symbol": "cpNeckWeights",
+      "dtype": "<f4",
+      "count": 330840,
+      "declarationDimension": "330840",
+      "sha256": "eb32979e05278a3e32ed13eed9fdb9a63a776d707fbd6294194a7315e44a46dd"
+    },
+    {
+      "key": "pouch_surface_data__cpNeckBlend",
+      "source": "pouch_surface_data.h",
+      "symbol": "cpNeckBlend",
+      "dtype": "<f4",
+      "count": 4595,
+      "declarationDimension": "4595",
+      "sha256": "45d083042a787b144bd6ca900bceef2f5415574904367d65b26f32bf491bd866"
+    },
+    {
+      "key": "pouch_surface_data__cpNormalIDs",
+      "source": "pouch_surface_data.h",
+      "symbol": "cpNormalIDs",
+      "dtype": "<u4",
+      "count": 16305,
+      "declarationDimension": "16305",
+      "sha256": "fc44452aa4f9f4742a2a5683619425ea8829b379d35790f02e0e1281695910ee"
+    },
+    {
+      "key": "pouch_surface_data__cpNormalFaces",
+      "source": "pouch_surface_data.h",
+      "symbol": "cpNormalFaces",
+      "dtype": "<u2",
+      "count": 65118,
+      "declarationDimension": "65118",
+      "sha256": "b64b0cbf0ba03379ece47e539d02a9d40c2072f9e98c2d9c0485fdf5472c7e55"
+    },
+    {
+      "key": "r14_asset__r14Base",
+      "source": "r14_asset.h",
+      "symbol": "r14Base",
+      "dtype": "<f4",
+      "count": 31662,
+      "declarationDimension": "31662",
+      "sha256": "874e32357c850fc3b19048534e8501f5c02f78d551fb3f4ad0fc141b9e9e7557"
+    },
+    {
+      "key": "r14_asset__r14Growth",
+      "source": "r14_asset.h",
+      "symbol": "r14Growth",
+      "dtype": "<f4",
+      "count": 31662,
+      "declarationDimension": "31662",
+      "sha256": "bcb29b0fbdd0e031190068ba7d89267cd1884f0f420fb07a6d7f1a7d761ec089"
+    },
+    {
+      "key": "r14_asset__r14Reference",
+      "source": "r14_asset.h",
+      "symbol": "r14Reference",
+      "dtype": "<f4",
+      "count": 7164,
+      "declarationDimension": "7164",
+      "sha256": "f4bab5aede461f3022a4bbc7307eb2504a1b8e14f1c0be5e861fda00d4b35bed"
+    },
+    {
+      "key": "r14_asset__r14Weight",
+      "source": "r14_asset.h",
+      "symbol": "r14Weight",
+      "dtype": "<f4",
+      "count": 453013,
+      "declarationDimension": "453013",
+      "sha256": "e055c584712023cf0b0c43c474cc7925c8435675c305554aca642eda2625de3e"
+    },
+    {
+      "key": "r14_asset__r14GrowthWeight",
+      "source": "r14_asset.h",
+      "symbol": "r14GrowthWeight",
+      "dtype": "<f4",
+      "count": 453013,
+      "declarationDimension": "453013",
+      "sha256": "f142a14e8bef6b5549496062eb321cd06c299f282e85b9f119eaf6be9f4286c4"
+    },
+    {
+      "key": "r14_asset__r14UV",
+      "source": "r14_asset.h",
+      "symbol": "r14UV",
+      "dtype": "<f4",
+      "count": 21108,
+      "declarationDimension": "21108",
+      "sha256": "e1169c65dc726a0e71a0dd41d62d2b07307c98a1c47e3525de83cd83ad12ac85"
+    },
+    {
+      "key": "r14_asset__r14Offsets",
+      "source": "r14_asset.h",
+      "symbol": "r14Offsets",
+      "dtype": "<u4",
+      "count": 10555,
+      "declarationDimension": "10555",
+      "sha256": "be53e23a7f6c760b5551215de39efe77620c5f94fbef824706a75b92748befb6"
+    },
+    {
+      "key": "r14_asset__r14Sources",
+      "source": "r14_asset.h",
+      "symbol": "r14Sources",
+      "dtype": "<u2",
+      "count": 453013,
+      "declarationDimension": "453013",
+      "sha256": "aa29533b0b4fc9b5c13cdbe604102039261967f18943659beb5f4007a55543d2"
+    },
+    {
+      "key": "r14_asset__r14Indices",
+      "source": "r14_asset.h",
+      "symbol": "r14Indices",
+      "dtype": "<u2",
+      "count": 63258,
+      "declarationDimension": "63258",
+      "sha256": "4ad7611ae89924e064ff37e049711bba4f4692d4d5b7faee1152d633b7856182"
+    },
+    {
+      "key": "r14_asset__r14Bones",
+      "source": "r14_asset.h",
+      "symbol": "r14Bones",
+      "dtype": "|u1",
+      "count": 42216,
+      "declarationDimension": "42216",
+      "sha256": "d2e667866220dafb8c9d414dfcaa3c9f58f0942c1421e41fd5fc7f47d3a2abb4"
+    },
+    {
+      "key": "r14_asset__r14Weights",
+      "source": "r14_asset.h",
+      "symbol": "r14Weights",
+      "dtype": "|u1",
+      "count": 42216,
+      "declarationDimension": "42216",
+      "sha256": "b1bd1f01f66e0bc1ebc050cfabe9b781d50e550a5174d3aad096426456442cc7"
+    },
+    {
+      "key": "r14_asset__r14Flex",
+      "source": "r14_asset.h",
+      "symbol": "r14Flex",
+      "dtype": "<f4",
+      "count": 10554,
+      "declarationDimension": "10554",
+      "sha256": "90fb4632c502f19d3d5f433685ea7416237fb757d003997f0f0d36d35fa19484"
+    },
+    {
+      "key": "r14_asset__r14CustomNormals",
+      "source": "r14_asset.h",
+      "symbol": "r14CustomNormals",
+      "dtype": "<f4",
+      "count": 31662,
+      "declarationDimension": "31662",
+      "sha256": "120af5e0fe9a813b461cccca3474d461275b0cf00dee32fd3850cce72cb0c28a"
+    },
+    {
+      "key": "r14_asset__r14FrameSources",
+      "source": "r14_asset.h",
+      "symbol": "r14FrameSources",
+      "dtype": "<u2",
+      "count": 48,
+      "declarationDimension": "48",
+      "sha256": "f468ae1e4a7da2ddf7d37e6d64e20727542e0533fa24d1f9bc69775d90806256"
+    },
+    {
+      "key": "r14_asset__r14FrameLinear",
+      "source": "r14_asset.h",
+      "symbol": "r14FrameLinear",
+      "dtype": "<f4",
+      "count": 144,
+      "declarationDimension": "144",
+      "sha256": "8345da1d42c39619a3456d09dfc007047fa1e486c14f8ad56c58342d9d117e52"
+    },
+    {
+      "key": "r14_asset__r14LowerDelta",
+      "source": "r14_asset.h",
+      "symbol": "r14LowerDelta",
+      "dtype": "<f4",
+      "count": 31662,
+      "declarationDimension": "31662",
+      "sha256": "d06044625ac7883c62751fb25818a48d27bad531b43928b537a1911105188690"
+    },
+    {
+      "key": "r14_asset__r14ShaftMask",
+      "source": "r14_asset.h",
+      "symbol": "r14ShaftMask",
+      "dtype": "<f4",
+      "count": 10554,
+      "declarationDimension": "10554",
+      "sha256": "dc19265ffffa690cefad3c99d330b38ff26244ad2917b0bc7475577c727c1ffc"
+    },
+    {
+      "key": "raphe_support_data__rapheSupportMask",
+      "source": "raphe_support_data.h",
+      "symbol": "rapheSupportMask",
+      "dtype": "<f4",
+      "count": 10554,
+      "declarationDimension": "10554",
+      "sha256": "5e46467ec42cc5baf265785cbfff13ee4e4557774489405b76eb48c873280583"
+    },
+    {
+      "key": "raphe_support_data__rapheSupportCore",
+      "source": "raphe_support_data.h",
+      "symbol": "rapheSupportCore",
+      "dtype": "<u4",
+      "count": 17,
+      "declarationDimension": "17",
+      "sha256": "a48c1e584f39d3dc7c262f266fb4492ed7b4475a1cd20d5a765b10ae2226ed40"
+    },
+    {
+      "key": "raphe_support_data__rapheSupportFree",
+      "source": "raphe_support_data.h",
+      "symbol": "rapheSupportFree",
+      "dtype": "<u4",
+      "count": 495,
+      "declarationDimension": "495",
+      "sha256": "901c56a444c6fc202d52e6937634bd919454c6372f0cfa1a4e7493f6eb3d5d07"
+    },
+    {
+      "key": "raphe_support_data__rapheSupportWeights",
+      "source": "raphe_support_data.h",
+      "symbol": "rapheSupportWeights",
+      "dtype": "<f4",
+      "count": 8415,
+      "declarationDimension": "8415",
+      "sha256": "a7cab47f49faf90bc741d247507b235d2e018bb1506b6b574df606c8c1b5983b"
+    },
+    {
+      "key": "rounded_render_data__rsIndices",
+      "source": "rounded_render_data.h",
+      "symbol": "rsIndices",
+      "dtype": "<u2",
+      "count": 96000,
+      "declarationDimension": "96000",
+      "sha256": "5ca251dd2b73f7fd8acd2a9527c4b5917c25c058e70869be43cb2a00d90f89f3"
+    },
+    {
+      "key": "rounded_render_data__rsFaceParent",
+      "source": "rounded_render_data.h",
+      "symbol": "rsFaceParent",
+      "dtype": "<u4",
+      "count": 32000,
+      "declarationDimension": "32000",
+      "sha256": "1aadf89a17135ba359f4b12671c75b20ee34dbfe13a398da45ea08b75a036d7d"
+    },
+    {
+      "key": "rounded_render_data__rsShapeIDs",
+      "source": "rounded_render_data.h",
+      "symbol": "rsShapeIDs",
+      "dtype": "<u4",
+      "count": 1028,
+      "declarationDimension": "1028",
+      "sha256": "22b5d69c9ffa506435b55a1e0b7f60b6206d2572afd04f08a432b2df63a0cb9c"
+    },
+    {
+      "key": "rounded_render_data__rsShapeFrame",
+      "source": "rounded_render_data.h",
+      "symbol": "rsShapeFrame",
+      "dtype": "<u4",
+      "count": 3084,
+      "declarationDimension": "3084",
+      "sha256": "f8ca591b60e20f73b33dfbd3dcbeb9ef36a3e5cc25bc1586014b3659b436e837"
+    },
+    {
+      "key": "rounded_render_data__rsShapeCoeff",
+      "source": "rounded_render_data.h",
+      "symbol": "rsShapeCoeff",
+      "dtype": "<f4",
+      "count": 3084,
+      "declarationDimension": "3084",
+      "sha256": "391dac6a34d7a5b8bc4b6d8597c4f2eff0815018870cc4c0d4421b3f5cfe07cb"
+    },
+    {
+      "key": "rounded_render_data__rsShapeLobeFade",
+      "source": "rounded_render_data.h",
+      "symbol": "rsShapeLobeFade",
+      "dtype": "<f4",
+      "count": 1028,
+      "declarationDimension": "1028",
+      "sha256": "d22dd2685eef2c36b90024f67743326a7c84ac73580149ca0f75bd3a088ff509"
+    },
+    {
+      "key": "rounded_render_data__rsFineSource",
+      "source": "rounded_render_data.h",
+      "symbol": "rsFineSource",
+      "dtype": "<u4",
+      "count": 45129,
+      "declarationDimension": "45129",
+      "sha256": "d3224dd55e12ff587be69a59bfaf85d84ef2431d569b74ca189eede2ba81838a"
+    },
+    {
+      "key": "rounded_render_data__rsFineBary",
+      "source": "rounded_render_data.h",
+      "symbol": "rsFineBary",
+      "dtype": "<f4",
+      "count": 45129,
+      "declarationDimension": "45129",
+      "sha256": "0b5d5762694a1a38d9ead91ac080825fe1a75bc92b5930703f0a4adba97b16d0"
+    },
+    {
+      "key": "rounded_render_data__rsFineCoeff",
+      "source": "rounded_render_data.h",
+      "symbol": "rsFineCoeff",
+      "dtype": "<f4",
+      "count": 45129,
+      "declarationDimension": "45129",
+      "sha256": "764339d571ef85548efd87c8603a19fe8def0e5ed8eb05d34bb9768c5f319d7d"
+    },
+    {
+      "key": "rounded_render_data__rsFineLobeFade",
+      "source": "rounded_render_data.h",
+      "symbol": "rsFineLobeFade",
+      "dtype": "<f4",
+      "count": 15043,
+      "declarationDimension": "15043",
+      "sha256": "2423c7dfb6ef2ee195ae009fc03965114f105ef97980c748963c17704d9fca7e"
+    },
+    {
+      "key": "rounded_render_data__rsNormalIDs",
+      "source": "rounded_render_data.h",
+      "symbol": "rsNormalIDs",
+      "dtype": "<u4",
+      "count": 16219,
+      "declarationDimension": "16219",
+      "sha256": "1147b74a4a13fa4f8536e768ab3893d1d1d1331fe72801c2096711a58f88a92b"
+    },
+    {
+      "key": "rounded_render_data__rsNormalFaces",
+      "source": "rounded_render_data.h",
+      "symbol": "rsNormalFaces",
+      "dtype": "<u4",
+      "count": 64575,
+      "declarationDimension": "64575",
+      "sha256": "7f23c8de0ca15399fd4e6596e76af239a53e63d2b52aeb4da0525a1df1f7adcf"
+    },
+    {
+      "key": "rounded_render_data__rsBodyIDs",
+      "source": "rounded_render_data.h",
+      "symbol": "rsBodyIDs",
+      "dtype": "<u4",
+      "count": 60,
+      "declarationDimension": "60",
+      "sha256": "1ddc5b1fb43853b1bb2dbc4cf785bd4ffa2ada23252f5beeb8d0a0ba8905aa14"
+    },
+    {
+      "key": "rounded_render_data__rsBodyDelta",
+      "source": "rounded_render_data.h",
+      "symbol": "rsBodyDelta",
+      "dtype": "<f4",
+      "count": 180,
+      "declarationDimension": "180",
+      "sha256": "1950a242d88ac4e69761690b9427bdb64c5d941720318c9ebf84007776e09c76"
+    },
+    {
+      "key": "scrotal_density_data__denseEdges",
+      "source": "scrotal_density_data.h",
+      "symbol": "denseEdges",
+      "dtype": "<u2",
+      "count": 5472,
+      "declarationDimension": "5472",
+      "sha256": "3694e2dd93483bb2a4f723087de16738ff70be5a2ed0ddc989cb39aa819a95fd"
+    },
+    {
+      "key": "scrotal_density_data__denseIndices",
+      "source": "scrotal_density_data.h",
+      "symbol": "denseIndices",
+      "dtype": "<u2",
+      "count": 79662,
+      "declarationDimension": "79662",
+      "sha256": "c9530c1ec37e899a9310f42386d992b533c1b8029769def39c2f9904a0f094e4"
+    },
+    {
+      "key": "scrotal_junction__neckSupport",
+      "source": "scrotal_junction.h",
+      "symbol": "neckSupport",
+      "dtype": "<f4",
+      "count": 2331,
+      "declarationDimension": "2331",
+      "sha256": "f1cae3622def7f2807298d9c42ceb06ed937ecf233a2c2b1ba462de5f9f66ea1"
+    },
+    {
+      "key": "scrotal_junction__neckCoefficients",
+      "source": "scrotal_junction.h",
+      "symbol": "neckCoefficients",
+      "dtype": "<f4",
+      "count": 141695,
+      "declarationDimension": "141695",
+      "sha256": "530a9c068e0ee13db28f32bdf55924390c66ccd41f7cdcb1878c2a1031567daa"
+    },
+    {
+      "key": "shared_body_surface__sharedBodyFirst",
+      "source": "shared_body_surface.h",
+      "symbol": "sharedBodyFirst",
+      "dtype": "<u4",
+      "count": 2,
+      "declarationDimension": "2",
+      "sha256": "b97b4f25d2cc08311b49530221b2f8cd3740102f92632bc46339b249119cd75e"
+    },
+    {
+      "key": "suspension_weights__suspensionWeight",
+      "source": "suspension_weights.h",
+      "symbol": "suspensionWeight",
+      "dtype": "<f4",
+      "count": 2388,
+      "declarationDimension": "2388",
+      "sha256": "12ec41467eb8dad659dd7b46b3bbb465705c4caa9d206ca27af9b06274b5651f"
+    },
+    {
+      "key": "teaching_sequence__peaks",
+      "source": "teaching_sequence.h",
+      "symbol": "peaks",
+      "dtype": "<f4",
+      "count": 8,
+      "declarationDimension": "8",
+      "sha256": "8ff1c527332c22e821aab1b5dc98e6e7b59caa67db42ef60b78ba84274149913"
+    },
+    {
+      "key": "underside_blend_data__undersideBlendMask",
+      "source": "underside_blend_data.h",
+      "symbol": "undersideBlendMask",
+      "dtype": "<f4",
+      "count": 10554,
+      "declarationDimension": "10554",
+      "sha256": "2a8053641b98d888702844c2ee3987bdaa76393ec37dde5ad00fa2a337aee73f"
+    },
+    {
+      "key": "underside_blend_data__undersideMaterial",
+      "source": "underside_blend_data.h",
+      "symbol": "undersideMaterial",
+      "dtype": "<f4",
+      "count": 10554,
+      "declarationDimension": "10554",
+      "sha256": "4be76c52c1a9d83a31f65b697bfedfb18a0c405dc423c4ad0beb15410ec7c45e"
+    },
+    {
+      "key": "underside_blend_data__undersideRows",
+      "source": "underside_blend_data.h",
+      "symbol": "undersideRows",
+      "dtype": "<u4",
+      "count": 1722,
+      "declarationDimension": "1722",
+      "sha256": "303159376d3b01affb6c2a7bd56a00f98f8e2ec6d58f6b09ad0c306604e0f275"
+    },
+    {
+      "key": "underside_blend_data__undersideNeighbors",
+      "source": "underside_blend_data.h",
+      "symbol": "undersideNeighbors",
+      "dtype": "<u4",
+      "count": 10318,
+      "declarationDimension": "10318",
+      "sha256": "7f1c63b6232f77946a4acf51dc9a6409740cf875919378bd38af304103be6146"
+    },
+    {
+      "key": "underside_legacy_data__undersideBlendMask",
+      "source": "underside_legacy_data.h",
+      "symbol": "undersideBlendMask",
+      "dtype": "<f4",
+      "count": 10554,
+      "declarationDimension": "10554",
+      "sha256": "27c9962e41494ba2ed50643d91e0f6c8245f115520981bbcce09b2f39189b686"
+    },
+    {
+      "key": "underside_legacy_data__undersideMaterial",
+      "source": "underside_legacy_data.h",
+      "symbol": "undersideMaterial",
+      "dtype": "<f4",
+      "count": 10554,
+      "declarationDimension": "10554",
+      "sha256": "782c5e997b214545a78f33f19b83731d2f366d0748b7a3774d4495e200fe1061"
+    },
+    {
+      "key": "underside_legacy_data__undersideRows",
+      "source": "underside_legacy_data.h",
+      "symbol": "undersideRows",
+      "dtype": "<u4",
+      "count": 1722,
+      "declarationDimension": "1722",
+      "sha256": "303159376d3b01affb6c2a7bd56a00f98f8e2ec6d58f6b09ad0c306604e0f275"
+    },
+    {
+      "key": "underside_legacy_data__undersideNeighbors",
+      "source": "underside_legacy_data.h",
+      "symbol": "undersideNeighbors",
+      "dtype": "<u4",
+      "count": 10318,
+      "declarationDimension": "10318",
+      "sha256": "7f1c63b6232f77946a4acf51dc9a6409740cf875919378bd38af304103be6146"
+    },
+    {
+      "key": "unified_collar_data__ucKeep",
+      "source": "unified_collar_data.h",
+      "symbol": "ucKeep",
+      "dtype": "<u4",
+      "count": 36872,
+      "declarationDimension": "36872",
+      "sha256": "74c525250f82bcb0628c0e045750ea8f5d86d44ccec5a8252b423663d3629256"
+    },
+    {
+      "key": "unified_collar_data__ucMap",
+      "source": "unified_collar_data.h",
+      "symbol": "ucMap",
+      "dtype": "<u4",
+      "count": 38311,
+      "declarationDimension": "38311",
+      "sha256": "0310315fecea26f38f55e1a145048cd9bada88319cb1e13c536f79cc8069242c"
+    },
+    {
+      "key": "unified_collar_data__ucFaces",
+      "source": "unified_collar_data.h",
+      "symbol": "ucFaces",
+      "dtype": "<u4",
+      "count": 221070,
+      "declarationDimension": "221070",
+      "sha256": "8c0d69d1cf74a98291263aa6b535969b1c4980aa86aeb6c9a9fc36fc934d7f35"
+    },
+    {
+      "key": "unified_collar_data__ucSeamVertices",
+      "source": "unified_collar_data.h",
+      "symbol": "ucSeamVertices",
+      "dtype": "<u4",
+      "count": 102,
+      "declarationDimension": "102",
+      "sha256": "4a405db74ead149fa6c3d880a8875cedecd684c22466e6b65655545fbb2b03ab"
+    },
+    {
+      "key": "unified_collar_data__ucSeamWeights",
+      "source": "unified_collar_data.h",
+      "symbol": "ucSeamWeights",
+      "dtype": "<f4",
+      "count": 34,
+      "declarationDimension": "34",
+      "sha256": "9e991a7a769b2994f672c678e5ee243c43229a9d418cca18e4f8acb6e33e3656"
+    }
+  ],
+  "multidimensionalTablesRetainedInSource": [
+    "compliant_dynamics.h",
+    "firm_lobes.h",
+    "fluid_collision.h",
+    "idle_gesture.h",
+    "idle_gesture_data.h",
+    "menu_tank.h",
+    "neck_render.h",
+    "necklace_contact.h",
+    "pelvic_attachment.h",
+    "pouch_contact.h",
+    "pouch_surface.h",
+    "r14_runtime.h",
+    "rounded_shape.h",
+    "teaching_audio.h"
+  ],
+  "unresolved": [
+    "native skeleton and palette",
+    "material mapping",
+    "live solver evaluation"
+  ]
+}

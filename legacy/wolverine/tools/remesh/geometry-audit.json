@@ -1,0 +1,1599 @@
+{
+  "cases": 88,
+  "physicsBitIdentical": true,
+  "uvAndWeightsBitIdentical": true,
+  "maximumSupportingPositionError": 0.027445498157088827,
+  "minimumSilhouetteIoU": 0.9915149607824151,
+  "maximumSurfaceP99": 0.2555522851368578,
+  "maximumNewSurfaceP99": 0.19889559975969365,
+  "maximumFlippedVsLineage": 5,
+  "maximumSignificantReversals": 0,
+  "maximumReversedFaceArea": 0.002958133645972345,
+  "nearDegenerateAreaThreshold": 0.005,
+  "poses": [
+    {
+      "pose": "motion-0-0.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9998685046790419,
+        0.9991154277442961,
+        0.9982882190414858,
+        0.9991217335429979,
+        0.9989325438672871
+      ],
+      "surfaceErrorP99": 0.08487372050992903,
+      "surfaceErrorMax": 0.18485422346808333,
+      "newSurfaceErrorP99": 0.08437168298483447,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.6853599298235746
+    },
+    {
+      "pose": "motion-0-30.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9997834630750408,
+        0.9991454158609054,
+        0.9982843548723912,
+        0.9990521021408305,
+        0.998917899488321
+      ],
+      "surfaceErrorP99": 0.08537849572529954,
+      "surfaceErrorMax": 0.1871841111933498,
+      "newSurfaceErrorP99": 0.0844173347559041,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.6784304057038801
+    },
+    {
+      "pose": "motion-0-60.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9998315858097463,
+        0.9990864785522016,
+        0.9984064495778525,
+        0.9991028035012856,
+        0.9989680637901182
+      ],
+      "surfaceErrorP99": 0.0851814431163832,
+      "surfaceErrorMax": 0.18770835426003532,
+      "newSurfaceErrorP99": 0.08457212764466036,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.6808841435631978
+    },
+    {
+      "pose": "motion-0-89.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9998685296886257,
+        0.9991803104627212,
+        0.9982912441288351,
+        0.9990887957292532,
+        0.9987553977515028
+      ],
+      "surfaceErrorP99": 0.08378368957291274,
+      "surfaceErrorMax": 0.1878996978776013,
+      "newSurfaceErrorP99": 0.0842700012680965,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.7035325016068285
+    },
+    {
+      "pose": "motion-1-0.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9995024961964099,
+        0.9990293137813883,
+        0.9988110580281788,
+        0.9990940289142433,
+        0.998859897200731
+      ],
+      "surfaceErrorP99": 0.10335554071704169,
+      "surfaceErrorMax": 0.3899017293719309,
+      "newSurfaceErrorP99": 0.10433795443550936,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.9054545604893759
+    },
+    {
+      "pose": "motion-1-30.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9994676379938358,
+        0.9988998356489174,
+        0.9988473766207447,
+        0.9989962862591589,
+        0.9987653528676513
+      ],
+      "surfaceErrorP99": 0.10121421357886953,
+      "surfaceErrorMax": 0.3832041797872686,
+      "newSurfaceErrorP99": 0.10245619535487074,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.8606521440368287
+    },
+    {
+      "pose": "motion-1-60.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9995156103028562,
+        0.9988186919284854,
+        0.9988570900335729,
+        0.9989307306673773,
+        0.9987357214151048
+      ],
+      "surfaceErrorP99": 0.10544303922055913,
+      "surfaceErrorMax": 0.3967746646293702,
+      "newSurfaceErrorP99": 0.1049394571582497,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.8795804986502059
+    },
+    {
+      "pose": "motion-1-89.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9998279560642799,
+        0.9990851690513545,
+        0.998805295447207,
+        0.9991332128086382,
+        0.998783366937221
+      ],
+      "surfaceErrorP99": 0.10718769895825728,
+      "surfaceErrorMax": 0.4202844363376235,
+      "newSurfaceErrorP99": 0.10794108307981644,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.9368933580548199
+    },
+    {
+      "pose": "motion-2-0.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9995018118628085,
+        0.998944575839422,
+        0.9988981501886107,
+        0.9990775513419823,
+        0.9988700124688279
+      ],
+      "surfaceErrorP99": 0.08519563696323613,
+      "surfaceErrorMax": 0.2996561368741321,
+      "newSurfaceErrorP99": 0.08328119841609616,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.9208525329347673
+    },
+    {
+      "pose": "motion-2-30.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9993586428054205,
+        0.9989318036866468,
+        0.9990469382892543,
+        0.9990526055142666,
+        0.9988115081886338
+      ],
+      "surfaceErrorP99": 0.08365927225498775,
+      "surfaceErrorMax": 0.3068401911080992,
+      "newSurfaceErrorP99": 0.08103748980996134,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.8921427689172512
+    },
+    {
+      "pose": "motion-2-60.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.999471047326294,
+        0.9988955823293173,
+        0.9990990483698406,
+        0.999180657144789,
+        0.9989337331833895
+      ],
+      "surfaceErrorP99": 0.08421462621370374,
+      "surfaceErrorMax": 0.3093375916528731,
+      "newSurfaceErrorP99": 0.08223306348282984,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.9052678001081625
+    },
+    {
+      "pose": "motion-2-89.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9999165352096219,
+        0.9989712329820783,
+        0.9989509247091072,
+        0.9991112012790972,
+        0.9987529949139006
+      ],
+      "surfaceErrorP99": 0.08731014514280834,
+      "surfaceErrorMax": 0.3319562165620066,
+      "newSurfaceErrorP99": 0.08633124965131311,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.967594861617054
+    },
+    {
+      "pose": "pulse-1-100-0.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9995128066170714,
+        0.9992189715731833,
+        0.999032695704923,
+        0.9991747313423974,
+        0.9989995922091409
+      ],
+      "surfaceErrorP99": 0.07237035476267636,
+      "surfaceErrorMax": 0.23734280316725617,
+      "newSurfaceErrorP99": 0.06947386110236597,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.0544550131960146
+    },
+    {
+      "pose": "pulse-1-100-100.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9999002763177031,
+        0.9992730697109626,
+        0.9989852762559769,
+        0.9992957347429432,
+        0.9991431227517077
+      ],
+      "surfaceErrorP99": 0.0722701379524928,
+      "surfaceErrorMax": 0.24190063493864053,
+      "newSurfaceErrorP99": 0.07163491365935994,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.0967172761101471
+    },
+    {
+      "pose": "pulse-1-100-119.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9999227843162755,
+        0.9992230830653689,
+        0.9989921723646352,
+        0.9991332583566579,
+        0.9990613425338678
+      ],
+      "surfaceErrorP99": 0.06964119120184067,
+      "surfaceErrorMax": 0.23244068233048434,
+      "newSurfaceErrorP99": 0.07183287364860189,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.1059353522640805
+    },
+    {
+      "pose": "pulse-1-100-20.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9995036928202533,
+        0.9990352543488341,
+        0.999107676698132,
+        0.999239275324079,
+        0.9990513512208248
+      ],
+      "surfaceErrorP99": 0.07414702990726536,
+      "surfaceErrorMax": 0.2482343321911788,
+      "newSurfaceErrorP99": 0.07178518093752843,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.069815556976747
+    },
+    {
+      "pose": "pulse-1-100-40.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9998705420715946,
+        0.9991389310786084,
+        0.9991032141396522,
+        0.999173275240573,
+        0.999038381631902
+      ],
+      "surfaceErrorP99": 0.07333955049098818,
+      "surfaceErrorMax": 0.2573982823490346,
+      "newSurfaceErrorP99": 0.0709907627526645,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.0848113758890106
+    },
+    {
+      "pose": "pulse-1-100-60.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9999703135262706,
+        0.9993873257841587,
+        0.9989956980674953,
+        0.9991124371309634,
+        0.999155620765041
+      ],
+      "surfaceErrorP99": 0.07487189890608308,
+      "surfaceErrorMax": 0.25329946874235587,
+      "newSurfaceErrorP99": 0.07151130240762402,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.0915702933795939
+    },
+    {
+      "pose": "pulse-1-100-80.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9999023704455813,
+        0.9992849251954681,
+        0.998849709290166,
+        0.9991757080751319,
+        0.9991967905087412
+      ],
+      "surfaceErrorP99": 0.07320739603470836,
+      "surfaceErrorMax": 0.24329001946153103,
+      "newSurfaceErrorP99": 0.07130176342390669,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.0908607819411287
+    },
+    {
+      "pose": "pulse-1-85-0.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9994156216033006,
+        0.9990057665539869,
+        0.9989126307432082,
+        0.9991207654512542,
+        0.9988092494430361
+      ],
+      "surfaceErrorP99": 0.08708042722258932,
+      "surfaceErrorMax": 0.313881615022932,
+      "newSurfaceErrorP99": 0.08306675410149904,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.9307058707339816
+    },
+    {
+      "pose": "pulse-1-85-100.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9998838025179101,
+        0.9988879596772371,
+        0.9986471213749255,
+        0.9990823491860836,
+        0.9987476435342119
+      ],
+      "surfaceErrorP99": 0.08208088678089168,
+      "surfaceErrorMax": 0.31095498078933964,
+      "newSurfaceErrorP99": 0.08366662256685166,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.951701473215947
+    },
+    {
+      "pose": "pulse-1-85-119.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9999181694065559,
+        0.9989538949500354,
+        0.9989292994068204,
+        0.9989790709545686,
+        0.9987409785732339
+      ],
+      "surfaceErrorP99": 0.0799398448639182,
+      "surfaceErrorMax": 0.3009980710650935,
+      "newSurfaceErrorP99": 0.0820035872200003,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.9625063543619053
+    },
+    {
+      "pose": "pulse-1-85-20.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.999660756512976,
+        0.9990847359786109,
+        0.9989246165919066,
+        0.999052226506446,
+        0.9988029978423464
+      ],
+      "surfaceErrorP99": 0.08824253053069185,
+      "surfaceErrorMax": 0.32315715317576077,
+      "newSurfaceErrorP99": 0.08346305842828806,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.9301117862099798
+    },
+    {
+      "pose": "pulse-1-85-40.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.999898174782985,
+        0.9988304308142495,
+        0.9990197519972553,
+        0.9990719382974123,
+        0.9986853043226832
+      ],
+      "surfaceErrorP99": 0.0874533862340733,
+      "surfaceErrorMax": 0.33144959971276405,
+      "newSurfaceErrorP99": 0.08651156698723336,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.9469620022926826
+    },
+    {
+      "pose": "pulse-1-85-60.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9999280245777126,
+        0.9990580787675654,
+        0.9990467649232053,
+        0.9990568886617576,
+        0.998840439890723
+      ],
+      "surfaceErrorP99": 0.08607844725040113,
+      "surfaceErrorMax": 0.32134122511500385,
+      "newSurfaceErrorP99": 0.0870320205412457,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.9474635564078147
+    },
+    {
+      "pose": "pulse-1-85-80.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.999941723001099,
+        0.9989763287769007,
+        0.9990168220050011,
+        0.9990636059433482,
+        0.9988279515248076
+      ],
+      "surfaceErrorP99": 0.08296426688483169,
+      "surfaceErrorMax": 0.3125670407112746,
+      "newSurfaceErrorP99": 0.08524113872096988,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.94705982199002
+    },
+    {
+      "pose": "pulse-3-100-0.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9995128039501199,
+        0.9992233280827985,
+        0.999036794451936,
+        0.9991777023757573,
+        0.9990025201036206
+      ],
+      "surfaceErrorP99": 0.07237329391956002,
+      "surfaceErrorMax": 0.23735349249154658,
+      "newSurfaceErrorP99": 0.06947440564649673,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.0544595140235198
+    },
+    {
+      "pose": "pulse-3-100-100.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9997952690551943,
+        0.9993119502296932,
+        0.9989881073309476,
+        0.9991673729572287,
+        0.9990589059559081
+      ],
+      "surfaceErrorP99": 0.09409896565969396,
+      "surfaceErrorMax": 0.3021842127189828,
+      "newSurfaceErrorP99": 0.08958780201107984,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.3700183761917228
+    },
+    {
+      "pose": "pulse-3-100-119.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9998696721712074,
+        0.9993238674780257,
+        0.998983412552139,
+        0.9992304527601588,
+        0.9990422185381971
+      ],
+      "surfaceErrorP99": 0.08905514522368732,
+      "surfaceErrorMax": 0.27725266225513384,
+      "newSurfaceErrorP99": 0.08284952003769494,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.2426137535007415
+    },
+    {
+      "pose": "pulse-3-100-20.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9995844537955608,
+        0.9991874184685571,
+        0.9989827959842554,
+        0.9992178924719632,
+        0.9991013665309708
+      ],
+      "surfaceErrorP99": 0.07521467197719209,
+      "surfaceErrorMax": 0.24857834404519846,
+      "newSurfaceErrorP99": 0.07264778415986616,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.073263608629137
+    },
+    {
+      "pose": "pulse-3-100-40.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9998715273624568,
+        0.9991965750711955,
+        0.9990481016494835,
+        0.9992325772798386,
+        0.999064910193975
+      ],
+      "surfaceErrorP99": 0.07627830052967494,
+      "surfaceErrorMax": 0.2617704020155559,
+      "newSurfaceErrorP99": 0.07267148241167444,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.0851031246533758
+    },
+    {
+      "pose": "pulse-3-100-60.bin",
+      "supportPositionError": 0.012084552587984833,
+      "silhouetteIoU": [
+        0.999923235586647,
+        0.9991887709130967,
+        0.9990972918756269,
+        0.9993195956454122,
+        0.9990864503283923
+      ],
+      "surfaceErrorP99": 0.11090562497695784,
+      "surfaceErrorMax": 0.2827474577169879,
+      "newSurfaceErrorP99": 0.10363873753467816,
+      "flippedVsLineage": 4,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.002958133645972345,
+      "vertexDisplacementMax": 1.3791713587210335
+    },
+    {
+      "pose": "pulse-3-100-80.bin",
+      "supportPositionError": 0.006203612962261931,
+      "silhouetteIoU": [
+        0.9999400374765771,
+        0.9992397765787834,
+        0.9990703249252803,
+        0.9991513663260094,
+        0.9990844257214648
+      ],
+      "surfaceErrorP99": 0.09419420965307627,
+      "surfaceErrorMax": 0.29521808749431233,
+      "newSurfaceErrorP99": 0.08594632267909195,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.3766753235484852
+    },
+    {
+      "pose": "pulse-3-85-0.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9994467606983363,
+        0.9989199697591532,
+        0.9988738252832696,
+        0.9990275568082183,
+        0.9987080062546396
+      ],
+      "surfaceErrorP99": 0.0874150743415736,
+      "surfaceErrorMax": 0.31492134181260456,
+      "newSurfaceErrorP99": 0.08500066989251845,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.9307159527724119
+    },
+    {
+      "pose": "pulse-3-85-100.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9998101250801035,
+        0.9989587366004085,
+        0.9990078974512413,
+        0.9989743460272477,
+        0.9987634726696155
+      ],
+      "surfaceErrorP99": 0.09271653320488099,
+      "surfaceErrorMax": 0.39648096505011554,
+      "newSurfaceErrorP99": 0.08526171870209188,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.2172319997971184
+    },
+    {
+      "pose": "pulse-3-85-119.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9998212226066897,
+        0.9989884641873278,
+        0.9990671069267311,
+        0.9989863323298738,
+        0.9987631397500877
+      ],
+      "surfaceErrorP99": 0.08787965072815206,
+      "surfaceErrorMax": 0.3707455913919653,
+      "newSurfaceErrorP99": 0.08627534909587763,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.0881789219115163
+    },
+    {
+      "pose": "pulse-3-85-20.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9996303194892722,
+        0.9990033848005109,
+        0.9990596510364996,
+        0.9991214933871063,
+        0.9988082066666172
+      ],
+      "surfaceErrorP99": 0.09111274894875251,
+      "surfaceErrorMax": 0.32332694771387754,
+      "newSurfaceErrorP99": 0.08561916583941521,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.9306730668516388
+    },
+    {
+      "pose": "pulse-3-85-40.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.999898393344764,
+        0.9989987644327042,
+        0.9989810221847505,
+        0.9990718097167536,
+        0.9987571738217541
+      ],
+      "surfaceErrorP99": 0.09112034304079188,
+      "surfaceErrorMax": 0.33801004141167335,
+      "newSurfaceErrorP99": 0.0875380708721817,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.9456878797302587
+    },
+    {
+      "pose": "pulse-3-85-60.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9998127741521343,
+        0.9987925835758557,
+        0.9991659098070471,
+        0.9992143651337909,
+        0.9988565064781394
+      ],
+      "surfaceErrorP99": 0.10722302447901289,
+      "surfaceErrorMax": 0.3727437414548693,
+      "newSurfaceErrorP99": 0.10754565752428766,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.1400470409939651
+    },
+    {
+      "pose": "pulse-3-85-80.bin",
+      "supportPositionError": 0.027445498157088827,
+      "silhouetteIoU": [
+        0.9998167935640657,
+        0.9989641402759657,
+        0.99911521980638,
+        0.9990514969791021,
+        0.9988313260796889
+      ],
+      "surfaceErrorP99": 0.09298522900594695,
+      "surfaceErrorMax": 0.3952081264162861,
+      "newSurfaceErrorP99": 0.0916334188431516,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.2117949146462577
+    },
+    {
+      "pose": "static-0-100-100.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9998049779381293,
+        0.9992594584692617,
+        0.998640669792873,
+        0.9991647240586767,
+        0.9988765362412502
+      ],
+      "surfaceErrorP99": 0.0783656628628001,
+      "surfaceErrorMax": 0.11754632531418854,
+      "newSurfaceErrorP99": 0.07325317857575116,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.7119996261483833
+    },
+    {
+      "pose": "static-0-100-25.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9998339658444023,
+        0.9991588998604649,
+        0.9986694969864676,
+        0.9993185807638804,
+        0.9987647790914748
+      ],
+      "surfaceErrorP99": 0.061003234520193225,
+      "surfaceErrorMax": 0.15049576051411995,
+      "newSurfaceErrorP99": 0.05445880393394368,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.7054650838241332
+    },
+    {
+      "pose": "static-0-100-50.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9999141289997102,
+        0.9993326559432371,
+        0.9988467343298636,
+        0.999423095783407,
+        0.9993729402231646
+      ],
+      "surfaceErrorP99": 0.06440393644458793,
+      "surfaceErrorMax": 0.1913219306722074,
+      "newSurfaceErrorP99": 0.06169854612151001,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.6913676069764731
+    },
+    {
+      "pose": "static-0-100-95.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9997137950772753,
+        0.9991323005079986,
+        0.9986637898402604,
+        0.9989760850502971,
+        0.9989500684087552
+      ],
+      "surfaceErrorP99": 0.07976257620638301,
+      "surfaceErrorMax": 0.15410844740834095,
+      "newSurfaceErrorP99": 0.07742859723502028,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.7197241145428821
+    },
+    {
+      "pose": "static-0-25-100.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9979285924590343,
+        0.9949954698531549,
+        0.9966802037001224,
+        0.9984129189095329,
+        0.9970432370516553
+      ],
+      "surfaceErrorP99": 0.20132215231993175,
+      "surfaceErrorMax": 0.2716437930449505,
+      "newSurfaceErrorP99": 0.17242173901436905,
+      "flippedVsLineage": 2,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0007160211733397625,
+      "vertexDisplacementMax": 0.673749263324928
+    },
+    {
+      "pose": "static-0-25-25.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.99909405880529,
+        0.9967542660632435,
+        0.9964123477183564,
+        0.9972864917454622,
+        0.9981637954762255
+      ],
+      "surfaceErrorP99": 0.1270711579515974,
+      "surfaceErrorMax": 0.182700814561461,
+      "newSurfaceErrorP99": 0.119935381826827,
+      "flippedVsLineage": 2,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 7.295584733869909e-05,
+      "vertexDisplacementMax": 0.5413280464095778
+    },
+    {
+      "pose": "static-0-25-50.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9986560772026976,
+        0.9956238327168858,
+        0.9963436126569504,
+        0.9979049460853259,
+        0.9976411665503605
+      ],
+      "surfaceErrorP99": 0.13770135030482616,
+      "surfaceErrorMax": 0.2000510692543142,
+      "newSurfaceErrorP99": 0.12144164869181766,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.5584484686801828
+    },
+    {
+      "pose": "static-0-25-95.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9980251571016184,
+        0.9951979759210334,
+        0.996748837844246,
+        0.9983198384809384,
+        0.9973219551115274
+      ],
+      "surfaceErrorP99": 0.1794478815082363,
+      "surfaceErrorMax": 0.2561900113129118,
+      "newSurfaceErrorP99": 0.15919270924994136,
+      "flippedVsLineage": 5,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.000595430575855692,
+      "vertexDisplacementMax": 0.6639016151486855
+    },
+    {
+      "pose": "static-0-50-100.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9997903507832852,
+        0.9956032387410401,
+        0.99662323584576,
+        0.9977707234539733,
+        0.9976780891779606
+      ],
+      "surfaceErrorP99": 0.12798048915251312,
+      "surfaceErrorMax": 0.23200171185785842,
+      "newSurfaceErrorP99": 0.151733259487354,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.7195469429481535
+    },
+    {
+      "pose": "static-0-50-25.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9993504112315994,
+        0.994359368476982,
+        0.9967469919923091,
+        0.9970805128254648,
+        0.9968620283056551
+      ],
+      "surfaceErrorP99": 0.13216985396447906,
+      "surfaceErrorMax": 0.21068454674514991,
+      "newSurfaceErrorP99": 0.13415249688999564,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.5795651503244016
+    },
+    {
+      "pose": "static-0-50-50.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9994310548434444,
+        0.9942007434944238,
+        0.9968466678441069,
+        0.9976063781922456,
+        0.9976162026526467
+      ],
+      "surfaceErrorP99": 0.1248988957744193,
+      "surfaceErrorMax": 0.22532844907266042,
+      "newSurfaceErrorP99": 0.12819231034165757,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.5943432257545883
+    },
+    {
+      "pose": "static-0-50-95.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9996132537055692,
+        0.9956292818585902,
+        0.9963801163942811,
+        0.9981724405140497,
+        0.9973504121581087
+      ],
+      "surfaceErrorP99": 0.12997118974026894,
+      "surfaceErrorMax": 0.24079527881794352,
+      "newSurfaceErrorP99": 0.14992939060356322,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.7485626848824762
+    },
+    {
+      "pose": "static-0-85-100.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9998401426121666,
+        0.9991236786717472,
+        0.9984298834064271,
+        0.998770444135517,
+        0.9988697019012336
+      ],
+      "surfaceErrorP99": 0.09624985492620275,
+      "surfaceErrorMax": 0.20407864510708731,
+      "newSurfaceErrorP99": 0.08503657082221634,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.7281452457100589
+    },
+    {
+      "pose": "static-0-85-25.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9996909269220482,
+        0.9988935363669291,
+        0.9985392788296299,
+        0.9991701297586382,
+        0.999055064539092
+      ],
+      "surfaceErrorP99": 0.07236168412637133,
+      "surfaceErrorMax": 0.0962492018848188,
+      "newSurfaceErrorP99": 0.06663767430878263,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.88493749287936
+    },
+    {
+      "pose": "static-0-85-50.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9998216187289524,
+        0.9989802108150402,
+        0.9983162740439767,
+        0.9991727294062427,
+        0.9991995971790893
+      ],
+      "surfaceErrorP99": 0.0725372667450287,
+      "surfaceErrorMax": 0.12455606007842081,
+      "newSurfaceErrorP99": 0.06740963053369767,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.6298429724991935
+    },
+    {
+      "pose": "static-0-85-95.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9998042535699255,
+        0.9990551404297536,
+        0.998282894962777,
+        0.9990365929066737,
+        0.9987465342918334
+      ],
+      "surfaceErrorP99": 0.0854177389873218,
+      "surfaceErrorMax": 0.19990468583732568,
+      "newSurfaceErrorP99": 0.08247022474189825,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.7232353407487304
+    },
+    {
+      "pose": "static-1-100-100.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.999494981713022,
+        0.9992808419747132,
+        0.9987594255372455,
+        0.9991852302843636,
+        0.9990620830041748
+      ],
+      "surfaceErrorP99": 0.06936144414168884,
+      "surfaceErrorMax": 0.2578336527664612,
+      "newSurfaceErrorP99": 0.06741090319788264,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.0133509971149404
+    },
+    {
+      "pose": "static-1-100-25.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9994805161072474,
+        0.998582577015112,
+        0.9989874998096804,
+        0.9991172533555226,
+        0.9988775484506931
+      ],
+      "surfaceErrorP99": 0.045543945981531074,
+      "surfaceErrorMax": 0.15448911111508057,
+      "newSurfaceErrorP99": 0.04154697419424106,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.1554975434059112
+    },
+    {
+      "pose": "static-1-100-50.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9995485142012805,
+        0.9989746710988342,
+        0.9988288439016229,
+        0.9991994327409136,
+        0.9991630170316301
+      ],
+      "surfaceErrorP99": 0.05115259977007965,
+      "surfaceErrorMax": 0.1325457212725877,
+      "newSurfaceErrorP99": 0.048049077423989235,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.1438213060708249
+    },
+    {
+      "pose": "static-1-100-95.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.999500440471842,
+        0.9992037246540771,
+        0.9987598665341704,
+        0.9992043351677828,
+        0.999046716850998
+      ],
+      "surfaceErrorP99": 0.06811478283523305,
+      "surfaceErrorMax": 0.22903924843974097,
+      "newSurfaceErrorP99": 0.06721163821933311,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.0278647331548196
+    },
+    {
+      "pose": "static-1-25-100.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9971181298806465,
+        0.9915149607824151,
+        0.9956503000604829,
+        0.9954147348483559,
+        0.9961084754021806
+      ],
+      "surfaceErrorP99": 0.25497259742904654,
+      "surfaceErrorMax": 0.3339331997443431,
+      "newSurfaceErrorP99": 0.19889559975969365,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.625869789503031
+    },
+    {
+      "pose": "static-1-25-25.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9988047596847319,
+        0.9919892187844837,
+        0.9970870446403864,
+        0.9969745872820336,
+        0.9963440460709642
+      ],
+      "surfaceErrorP99": 0.20168751518145858,
+      "surfaceErrorMax": 0.23070917675995067,
+      "newSurfaceErrorP99": 0.178113989234588,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.6052961695347031
+    },
+    {
+      "pose": "static-1-25-50.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9985497211721995,
+        0.99208215638617,
+        0.9969000566335807,
+        0.9971213263542933,
+        0.9968093858425439
+      ],
+      "surfaceErrorP99": 0.22427564769727928,
+      "surfaceErrorMax": 0.30279441444273875,
+      "newSurfaceErrorP99": 0.17622149953543872,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.6561085733799391
+    },
+    {
+      "pose": "static-1-25-95.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9972472337544857,
+        0.9915273187053548,
+        0.9960495012768187,
+        0.9953864451977557,
+        0.9960914491939465
+      ],
+      "surfaceErrorP99": 0.2555522851368578,
+      "surfaceErrorMax": 0.32987862693378506,
+      "newSurfaceErrorP99": 0.19867622868547347,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.6419687707599473
+    },
+    {
+      "pose": "static-1-50-100.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9996576196741518,
+        0.9982847196403826,
+        0.9976873661670236,
+        0.9985717533622092,
+        0.9982392289433936
+      ],
+      "surfaceErrorP99": 0.09159004489323418,
+      "surfaceErrorMax": 0.12225345312740446,
+      "newSurfaceErrorP99": 0.08050300488925195,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.46802218992622324
+    },
+    {
+      "pose": "static-1-50-25.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9989602901735607,
+        0.996036309756241,
+        0.9977747161456292,
+        0.9979799289894781,
+        0.9972462223819856
+      ],
+      "surfaceErrorP99": 0.15654428550500382,
+      "surfaceErrorMax": 0.18592023154814954,
+      "newSurfaceErrorP99": 0.11634733728391335,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.6941699626356456
+    },
+    {
+      "pose": "static-1-50-50.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9994965925268349,
+        0.9967445036450018,
+        0.9975989176994585,
+        0.9983828358393205,
+        0.9977551804700701
+      ],
+      "surfaceErrorP99": 0.1520531147332046,
+      "surfaceErrorMax": 0.17734114151616978,
+      "newSurfaceErrorP99": 0.11852659212292366,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.5553863822519083
+    },
+    {
+      "pose": "static-1-50-95.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9996902694655649,
+        0.9980975658376561,
+        0.9979537639293642,
+        0.9985652334649758,
+        0.9980889451266654
+      ],
+      "surfaceErrorP99": 0.08851244841060893,
+      "surfaceErrorMax": 0.12017079499031884,
+      "newSurfaceErrorP99": 0.07824812233499083,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.4547728483809776
+    },
+    {
+      "pose": "static-1-85-100.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9995233683398759,
+        0.9990143251412801,
+        0.9984103106196129,
+        0.9990150691409415,
+        0.9989224877697884
+      ],
+      "surfaceErrorP99": 0.10457271587654966,
+      "surfaceErrorMax": 0.3396789259371714,
+      "newSurfaceErrorP99": 0.10632644454942584,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.8085783318240906
+    },
+    {
+      "pose": "static-1-85-25.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9993339136857655,
+        0.9981828588575906,
+        0.9990343506102526,
+        0.9989729544676481,
+        0.9985268744882443
+      ],
+      "surfaceErrorP99": 0.0648359719232177,
+      "surfaceErrorMax": 0.17747733961685808,
+      "newSurfaceErrorP99": 0.055147594392255084,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.0353451927974977
+    },
+    {
+      "pose": "static-1-85-50.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9994836212985441,
+        0.9987342388393944,
+        0.9988403140318017,
+        0.99912855490942,
+        0.9986623542565085
+      ],
+      "surfaceErrorP99": 0.05876625152301423,
+      "surfaceErrorMax": 0.1354906412643525,
+      "newSurfaceErrorP99": 0.05640663764341419,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.9185084846646804
+    },
+    {
+      "pose": "static-1-85-95.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9995344985304226,
+        0.9989294640684789,
+        0.9986097221883461,
+        0.9991354431766983,
+        0.9988505469706934
+      ],
+      "surfaceErrorP99": 0.08856623208518406,
+      "surfaceErrorMax": 0.2960167552466059,
+      "newSurfaceErrorP99": 0.08638114773651837,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.8203565317508333
+    },
+    {
+      "pose": "static-2-100-100.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9995057345422464,
+        0.9992896565381735,
+        0.9988448971514194,
+        0.9992180481646517,
+        0.999071027904665
+      ],
+      "surfaceErrorP99": 0.06639854166794579,
+      "surfaceErrorMax": 0.21350447528365832,
+      "newSurfaceErrorP99": 0.0654316194272662,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.0678800129681825
+    },
+    {
+      "pose": "static-2-100-25.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9994024023425828,
+        0.9988633353933081,
+        0.9990749059678082,
+        0.9992821951776567,
+        0.9989182952332877
+      ],
+      "surfaceErrorP99": 0.054864110568671215,
+      "surfaceErrorMax": 0.18348481405303677,
+      "newSurfaceErrorP99": 0.04369886470646817,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.3545859920830783
+    },
+    {
+      "pose": "static-2-100-50.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9994806114619607,
+        0.9990232116988095,
+        0.9987979429699565,
+        0.9992252901892973,
+        0.9991331084393679
+      ],
+      "surfaceErrorP99": 0.05120751772696169,
+      "surfaceErrorMax": 0.13474195863195276,
+      "newSurfaceErrorP99": 0.04761729799557979,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.2164696085140705
+    },
+    {
+      "pose": "static-2-100-95.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9994790435884766,
+        0.99928224357608,
+        0.9987685126863382,
+        0.9992344832158938,
+        0.9990409264471255
+      ],
+      "surfaceErrorP99": 0.06563348111948797,
+      "surfaceErrorMax": 0.19375088725419964,
+      "newSurfaceErrorP99": 0.06508600892231832,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.0825431811534947
+    },
+    {
+      "pose": "static-2-25-100.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9971760397375797,
+        0.9923651485788114,
+        0.9957874470264225,
+        0.9956614720297967,
+        0.9960663107614498
+      ],
+      "surfaceErrorP99": 0.2357833919373869,
+      "surfaceErrorMax": 0.32297932104573523,
+      "newSurfaceErrorP99": 0.1916591712906237,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.6154357481611874
+    },
+    {
+      "pose": "static-2-25-25.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9985999942068726,
+        0.9916764972670148,
+        0.997178676338349,
+        0.9968132424976072,
+        0.9960019208648359
+      ],
+      "surfaceErrorP99": 0.2152820404263147,
+      "surfaceErrorMax": 0.2533382528884712,
+      "newSurfaceErrorP99": 0.18585191059846787,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.5886529755021829
+    },
+    {
+      "pose": "static-2-25-50.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9987451151349079,
+        0.9920679439760198,
+        0.9967069113883498,
+        0.9969848520410927,
+        0.9965717516631298
+      ],
+      "surfaceErrorP99": 0.22843817121134252,
+      "surfaceErrorMax": 0.29398500344495276,
+      "newSurfaceErrorP99": 0.18813300571966654,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.659886243636771
+    },
+    {
+      "pose": "static-2-25-95.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9973998959958398,
+        0.9923967667962333,
+        0.9961720366001287,
+        0.995750873507829,
+        0.9960553074509724
+      ],
+      "surfaceErrorP99": 0.2336984731602191,
+      "surfaceErrorMax": 0.31910282061504297,
+      "newSurfaceErrorP99": 0.19131033487852256,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.6336710056598629
+    },
+    {
+      "pose": "static-2-50-100.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9997139404700254,
+        0.9984510308729972,
+        0.9976626092151445,
+        0.9986368369937868,
+        0.9983890733144242
+      ],
+      "surfaceErrorP99": 0.08916816623112575,
+      "surfaceErrorMax": 0.12226329742703862,
+      "newSurfaceErrorP99": 0.0759629631258974,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.5351576088413014
+    },
+    {
+      "pose": "static-2-50-25.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9990494521065558,
+        0.9958443278814618,
+        0.9978099352697591,
+        0.9978955504532036,
+        0.9969422103450934
+      ],
+      "surfaceErrorP99": 0.16671498544377325,
+      "surfaceErrorMax": 0.19446721744234546,
+      "newSurfaceErrorP99": 0.12954106988417108,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.7044820518973697
+    },
+    {
+      "pose": "static-2-50-50.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9994164780125674,
+        0.9966140225508017,
+        0.997585302979214,
+        0.9982838234930983,
+        0.9976727729687853
+      ],
+      "surfaceErrorP99": 0.15360364638070556,
+      "surfaceErrorMax": 0.18150487447450084,
+      "newSurfaceErrorP99": 0.12094154734679878,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.5741080174063192
+    },
+    {
+      "pose": "static-2-50-95.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9997179348874956,
+        0.9980537756751902,
+        0.9977445310442302,
+        0.9985548708489252,
+        0.9981067678706349
+      ],
+      "surfaceErrorP99": 0.09516141966602498,
+      "surfaceErrorMax": 0.12405545452914017,
+      "newSurfaceErrorP99": 0.08450920269622193,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.5274086052797425
+    },
+    {
+      "pose": "static-2-85-100.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9994431981839694,
+        0.999027663413865,
+        0.9985408520773552,
+        0.9990360981252109,
+        0.9989259822787075
+      ],
+      "surfaceErrorP99": 0.07963504048920485,
+      "surfaceErrorMax": 0.27291079214455305,
+      "newSurfaceErrorP99": 0.08299144671573376,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.848087404687207
+    },
+    {
+      "pose": "static-2-85-25.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9992555931112184,
+        0.9983991492298381,
+        0.9989811725227153,
+        0.9989971647783623,
+        0.9985058447836405
+      ],
+      "surfaceErrorP99": 0.07674697875372584,
+      "surfaceErrorMax": 0.20105915876548636,
+      "newSurfaceErrorP99": 0.05705969118302418,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 1.1428931982751767
+    },
+    {
+      "pose": "static-2-85-50.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9994512704282477,
+        0.9987271100976046,
+        0.9988052759016185,
+        0.9991540416332367,
+        0.9987072397903596
+      ],
+      "surfaceErrorP99": 0.06126259228095914,
+      "surfaceErrorMax": 0.14128977590045938,
+      "newSurfaceErrorP99": 0.053561046836145675,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.9727050317660744
+    },
+    {
+      "pose": "static-2-85-95.bin",
+      "supportPositionError": 0.0,
+      "silhouetteIoU": [
+        0.9994643415909585,
+        0.9987562978285975,
+        0.9987237795634025,
+        0.9990687273209485,
+        0.9987695542321958
+      ],
+      "surfaceErrorP99": 0.07933164693380394,
+      "surfaceErrorMax": 0.25797380983958307,
+      "newSurfaceErrorP99": 0.07844586010439221,
+      "flippedVsLineage": 0,
+      "significantReversals": 0,
+      "maximumReversedFaceArea": 0.0,
+      "vertexDisplacementMax": 0.8598717033587053
+    }
+  ]
+}

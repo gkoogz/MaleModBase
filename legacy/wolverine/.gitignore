@@ -1,0 +1,11 @@
+/build/
+/captures/
+*.obj
+*.exe
+*.dll
+/backups/
+*.log
+
+/payload/
+/releases/*.zip
+

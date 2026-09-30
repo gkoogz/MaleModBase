@@ -1,0 +1,9 @@
+{
+  "contractVersion": 1,
+  "id": "source-reference",
+  "units": "unresolved-source-model-units",
+  "scale": 1.0,
+  "basis": [[1,0,0],[0,1,0],[0,0,1]],
+  "translation": [0,0,0],
+  "jointMapping": {}
+}

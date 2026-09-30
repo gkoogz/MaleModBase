@@ -1,0 +1,11 @@
+{
+  "sourceSHA256": "d9839d237c4217467a751bf0f483fb29b0d29ef711907764540d5d96f3e6ba67",
+  "packedSHA256": "b41046ee1083da7f0921706022893a7aed78b74a9ff931776f12e746ab405fb5",
+  "bytes": 6635536,
+  "resolution": 192,
+  "frames": [
+    26,
+    64
+  ],
+  "encoding": "Per-frame normalized height, little-endian uint16. Original Mantaflow meshes; no third-party assets."
+}

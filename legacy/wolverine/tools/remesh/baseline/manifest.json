@@ -1,0 +1,30 @@
+{
+  "baselineCommit": "2ea2b7b",
+  "purpose": "Offline reproducible authoring inputs; never compiled or loaded by the game",
+  "files": {
+    "geometry_binding_data.h": {
+      "bytes": 324476,
+      "sha256": "bfd5a59a9359c04cc689e74991054a3300eb8f2262394ae6e93b465e1e1c78bd"
+    },
+    "neck_render_data.h": {
+      "bytes": 17670633,
+      "sha256": "528ccae1d3590b64060b0aa0a604ab04b075b9ed801ef258b9133a815109f9cc"
+    },
+    "pelvic_attachment_data.h": {
+      "bytes": 180803,
+      "sha256": "817a02208f99df38ea296c95c3320435230f3668704a57dfca21d55182c60450"
+    },
+    "pouch_surface_data.h": {
+      "bytes": 10281960,
+      "sha256": "d9bffa16b5a19034c747ccf7c411ff469c72856d9020f815ec5e6f68228c52f0"
+    },
+    "rounded_render_data.h": {
+      "bytes": 3268111,
+      "sha256": "a978884394e4de18ca34c40d4f4bd72f04cb5b1a1d38dd255a2c1d4e3cc9a637"
+    },
+    "unified_collar_data.h": {
+      "bytes": 2355848,
+      "sha256": "8bdfe5c9539240ad15e822e541424943e4b91bcc1cdb38c6fdb6c6f6245bc4dd"
+    }
+  }
+}

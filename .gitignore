@@ -1,0 +1,9 @@
+.sources/
+build/
+__pycache__/
+*.pyc
+.venv/
+*.exe
+*.dll
+*.obj
+!assets/**/*.obj

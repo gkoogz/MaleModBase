@@ -1,0 +1,801 @@
+{
+  "cases": 88,
+  "windingMatchesRenderConvention": true,
+  "maximumOppositeNormals": 68,
+  "maximumOppositeCollarNormals": 6,
+  "maximumPositionChange": 7.62939453125e-06,
+  "poses": [
+    {
+      "pose": "motion-0-0.bin",
+      "oppositeNormals": 68,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999807471544302,
+      "previousOppositeNormals": 3830,
+      "minimumNormalDot": -0.9692733564013842,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "motion-0-30.bin",
+      "oppositeNormals": 64,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999780660765883,
+      "previousOppositeNormals": 3826,
+      "minimumNormalDot": -1.0018146866589772,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "motion-0-60.bin",
+      "oppositeNormals": 63,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999813538431201,
+      "previousOppositeNormals": 3825,
+      "minimumNormalDot": -1.0015993848519802,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "motion-0-89.bin",
+      "oppositeNormals": 62,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999801988164848,
+      "previousOppositeNormals": 3825,
+      "minimumNormalDot": -1.002153018069973,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "motion-1-0.bin",
+      "oppositeNormals": 28,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.999980492563929,
+      "previousOppositeNormals": 3614,
+      "minimumNormalDot": -0.4195770857362553,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "motion-1-30.bin",
+      "oppositeNormals": 36,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999790843853251,
+      "previousOppositeNormals": 3621,
+      "minimumNormalDot": -0.9345174932718184,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "motion-1-60.bin",
+      "oppositeNormals": 42,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.999978650401234,
+      "previousOppositeNormals": 3627,
+      "minimumNormalDot": -0.9764398308342945,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "motion-1-89.bin",
+      "oppositeNormals": 57,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999794831707899,
+      "previousOppositeNormals": 3644,
+      "minimumNormalDot": -0.9808381391772396,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "motion-2-0.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999804174283871,
+      "previousOppositeNormals": 3707,
+      "minimumNormalDot": 0.21670126874279108,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "motion-2-30.bin",
+      "oppositeNormals": 16,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.999980853253492,
+      "previousOppositeNormals": 3723,
+      "minimumNormalDot": -0.9971703191080353,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "motion-2-60.bin",
+      "oppositeNormals": 22,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999794000906095,
+      "previousOppositeNormals": 3729,
+      "minimumNormalDot": -0.8582391387927717,
+      "maximumPositionChange": 7.62939453125e-06
+    },
+    {
+      "pose": "motion-2-89.bin",
+      "oppositeNormals": 46,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.999981278125961,
+      "previousOppositeNormals": 3753,
+      "minimumNormalDot": -0.9410073048827372,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-1-100-0.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999796335974865,
+      "previousOppositeNormals": 3562,
+      "minimumNormalDot": 0.4382160707420222,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-1-100-100.bin",
+      "oppositeNormals": 1,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999805968845311,
+      "previousOppositeNormals": 3562,
+      "minimumNormalDot": -0.04673587081891595,
+      "maximumPositionChange": 9.5367431640625e-07
+    },
+    {
+      "pose": "pulse-1-100-119.bin",
+      "oppositeNormals": 4,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999813850151288,
+      "previousOppositeNormals": 3566,
+      "minimumNormalDot": -0.12381391772395231,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-1-100-20.bin",
+      "oppositeNormals": 1,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999789247949803,
+      "previousOppositeNormals": 3564,
+      "minimumNormalDot": -0.28061514801999227,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-1-100-40.bin",
+      "oppositeNormals": 17,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999810730745338,
+      "previousOppositeNormals": 3580,
+      "minimumNormalDot": -0.7388081507112649,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-1-100-60.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999803763254466,
+      "previousOppositeNormals": 3561,
+      "minimumNormalDot": 0.1359015763168011,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-1-100-80.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999804459830193,
+      "previousOppositeNormals": 3561,
+      "minimumNormalDot": 0.04633602460592079,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-1-85-0.bin",
+      "oppositeNormals": 29,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999795287285594,
+      "previousOppositeNormals": 3736,
+      "minimumNormalDot": -0.5071434063821607,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-1-85-100.bin",
+      "oppositeNormals": 37,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999800634153948,
+      "previousOppositeNormals": 3744,
+      "minimumNormalDot": -0.45436370626682054,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-1-85-119.bin",
+      "oppositeNormals": 41,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999811078781522,
+      "previousOppositeNormals": 3748,
+      "minimumNormalDot": -0.999507881584006,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-1-85-20.bin",
+      "oppositeNormals": 20,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.999979957982827,
+      "previousOppositeNormals": 3727,
+      "minimumNormalDot": -0.725674740484429,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-1-85-40.bin",
+      "oppositeNormals": 46,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999793763004584,
+      "previousOppositeNormals": 3753,
+      "minimumNormalDot": -0.832710495963091,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-1-85-60.bin",
+      "oppositeNormals": 1,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999811436541716,
+      "previousOppositeNormals": 3708,
+      "minimumNormalDot": -0.08050749711649369,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-1-85-80.bin",
+      "oppositeNormals": 18,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999801800961222,
+      "previousOppositeNormals": 3725,
+      "minimumNormalDot": -0.18040753556324488,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-3-100-0.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999795821863082,
+      "previousOppositeNormals": 3562,
+      "minimumNormalDot": 0.4382160707420222,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-3-100-100.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.999980383263527,
+      "previousOppositeNormals": 3557,
+      "minimumNormalDot": 0.09034986543637058,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-3-100-119.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999789340580089,
+      "previousOppositeNormals": 3559,
+      "minimumNormalDot": 0.029204152249134918,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-3-100-20.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999818079235704,
+      "previousOppositeNormals": 3563,
+      "minimumNormalDot": 0.2630219146482121,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-3-100-40.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999810645915577,
+      "previousOppositeNormals": 3563,
+      "minimumNormalDot": 0.0002306805074972218,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-3-100-60.bin",
+      "oppositeNormals": 6,
+      "oppositeCollarNormals": 6,
+      "minimumGeometricNormalAgreement": 0.9999814735965327,
+      "previousOppositeNormals": 3554,
+      "minimumNormalDot": -0.9997231833910035,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-3-100-80.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999816865041794,
+      "previousOppositeNormals": 3557,
+      "minimumNormalDot": 0.1984928873510189,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-3-85-0.bin",
+      "oppositeNormals": 31,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999797609845772,
+      "previousOppositeNormals": 3738,
+      "minimumNormalDot": -0.5787773933102652,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-3-85-100.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999787770237568,
+      "previousOppositeNormals": 3706,
+      "minimumNormalDot": 0.06909650134563611,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-3-85-119.bin",
+      "oppositeNormals": 3,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999799424118007,
+      "previousOppositeNormals": 3710,
+      "minimumNormalDot": -0.02978854286812771,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-3-85-20.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999785051719565,
+      "previousOppositeNormals": 3707,
+      "minimumNormalDot": 0.15964628988850435,
+      "maximumPositionChange": 7.62939453125e-06
+    },
+    {
+      "pose": "pulse-3-85-40.bin",
+      "oppositeNormals": 31,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999790766468833,
+      "previousOppositeNormals": 3738,
+      "minimumNormalDot": -0.6716955017301038,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "pulse-3-85-60.bin",
+      "oppositeNormals": 1,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999805646447107,
+      "previousOppositeNormals": 3707,
+      "minimumNormalDot": -0.001030372933487178,
+      "maximumPositionChange": 7.62939453125e-06
+    },
+    {
+      "pose": "pulse-3-85-80.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.999981289288855,
+      "previousOppositeNormals": 3706,
+      "minimumNormalDot": 0.14891195693963838,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-0-100-100.bin",
+      "oppositeNormals": 1,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999793009345946,
+      "previousOppositeNormals": 3705,
+      "minimumNormalDot": -0.013148788927335751,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-0-100-25.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999803376942129,
+      "previousOppositeNormals": 2158,
+      "minimumNormalDot": 0.9458977316416761,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-0-100-50.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999787418611916,
+      "previousOppositeNormals": 2860,
+      "minimumNormalDot": 0.8880430603613995,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-0-100-95.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999800177789041,
+      "previousOppositeNormals": 3624,
+      "minimumNormalDot": 0.3698731257208766,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-0-25-100.bin",
+      "oppositeNormals": 2,
+      "oppositeCollarNormals": 2,
+      "minimumGeometricNormalAgreement": 0.9999784643099822,
+      "previousOppositeNormals": 3189,
+      "minimumNormalDot": -0.4679584775086504,
+      "maximumPositionChange": 7.62939453125e-06
+    },
+    {
+      "pose": "static-0-25-25.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999801138331191,
+      "previousOppositeNormals": 2792,
+      "minimumNormalDot": 0.6996539792387543,
+      "maximumPositionChange": 2.3283064365386963e-10
+    },
+    {
+      "pose": "static-0-25-50.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.999979430382716,
+      "previousOppositeNormals": 3090,
+      "minimumNormalDot": 0.7898039215686273,
+      "maximumPositionChange": 5.820766091346741e-11
+    },
+    {
+      "pose": "static-0-25-95.bin",
+      "oppositeNormals": 4,
+      "oppositeCollarNormals": 4,
+      "minimumGeometricNormalAgreement": 0.999978678577861,
+      "previousOppositeNormals": 3184,
+      "minimumNormalDot": -0.8519031141868513,
+      "maximumPositionChange": 9.5367431640625e-07
+    },
+    {
+      "pose": "static-0-50-100.bin",
+      "oppositeNormals": 2,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999789807467566,
+      "previousOppositeNormals": 3786,
+      "minimumNormalDot": -0.7954017685505574,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-0-50-25.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999795138176125,
+      "previousOppositeNormals": 3117,
+      "minimumNormalDot": 0.9198154555940024,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-0-50-50.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999793623265358,
+      "previousOppositeNormals": 3750,
+      "minimumNormalDot": 0.816163014225298,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-0-50-95.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999802979680384,
+      "previousOppositeNormals": 3934,
+      "minimumNormalDot": 0.12550557477893107,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-0-85-100.bin",
+      "oppositeNormals": 1,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999800595737486,
+      "previousOppositeNormals": 3843,
+      "minimumNormalDot": -0.892072279892349,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-0-85-25.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999814028776787,
+      "previousOppositeNormals": 2252,
+      "minimumNormalDot": 0.9561707035755479,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-0-85-50.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999810024063209,
+      "previousOppositeNormals": 2897,
+      "minimumNormalDot": 0.8619300269127258,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-0-85-95.bin",
+      "oppositeNormals": 1,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999789025396585,
+      "previousOppositeNormals": 3763,
+      "minimumNormalDot": -0.007058823529411673,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-1-100-100.bin",
+      "oppositeNormals": 1,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999807386191405,
+      "previousOppositeNormals": 3565,
+      "minimumNormalDot": -0.2440753556324492,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-1-100-25.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.999979306129541,
+      "previousOppositeNormals": 2448,
+      "minimumNormalDot": 0.6426912725874664,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-1-100-50.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999783125243898,
+      "previousOppositeNormals": 3046,
+      "minimumNormalDot": 0.6206689734717414,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-1-100-95.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999801466299545,
+      "previousOppositeNormals": 3490,
+      "minimumNormalDot": 0.10360630526720488,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-1-25-100.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999794170906965,
+      "previousOppositeNormals": 2859,
+      "minimumNormalDot": 0.6752941176470588,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-1-25-25.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999799299029165,
+      "previousOppositeNormals": 2646,
+      "minimumNormalDot": 0.8281584006151481,
+      "maximumPositionChange": 1.8189894035458565e-12
+    },
+    {
+      "pose": "static-1-25-50.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999795568936649,
+      "previousOppositeNormals": 2798,
+      "minimumNormalDot": 0.80638216070742,
+      "maximumPositionChange": 9.5367431640625e-07
+    },
+    {
+      "pose": "static-1-25-95.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999795735545614,
+      "previousOppositeNormals": 2857,
+      "minimumNormalDot": 0.6514878892733563,
+      "maximumPositionChange": 7.62939453125e-06
+    },
+    {
+      "pose": "static-1-50-100.bin",
+      "oppositeNormals": 1,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999789619234727,
+      "previousOppositeNormals": 3554,
+      "minimumNormalDot": -0.5191695501730104,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-1-50-25.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999791266408522,
+      "previousOppositeNormals": 2953,
+      "minimumNormalDot": 0.9632449058054593,
+      "maximumPositionChange": 7.62939453125e-06
+    },
+    {
+      "pose": "static-1-50-50.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999796572389249,
+      "previousOppositeNormals": 3407,
+      "minimumNormalDot": 0.9171088043060361,
+      "maximumPositionChange": 2.9802322387695312e-08
+    },
+    {
+      "pose": "static-1-50-95.bin",
+      "oppositeNormals": 1,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999802445778181,
+      "previousOppositeNormals": 3641,
+      "minimumNormalDot": -0.8692502883506343,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-1-85-100.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999793643425576,
+      "previousOppositeNormals": 3658,
+      "minimumNormalDot": 0.14592848904267589,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-1-85-25.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999819993939421,
+      "previousOppositeNormals": 2507,
+      "minimumNormalDot": 0.7273971549404077,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-1-85-50.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999805785139394,
+      "previousOppositeNormals": 3040,
+      "minimumNormalDot": 0.7383160322952712,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-1-85-95.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999795986397398,
+      "previousOppositeNormals": 3586,
+      "minimumNormalDot": 0.4420299884659747,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-2-100-100.bin",
+      "oppositeNormals": 1,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999797724712379,
+      "previousOppositeNormals": 3564,
+      "minimumNormalDot": -0.19643214148404464,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-2-100-25.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999796444882608,
+      "previousOppositeNormals": 2339,
+      "minimumNormalDot": 0.6502883506343715,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-2-100-50.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999802913953664,
+      "previousOppositeNormals": 3033,
+      "minimumNormalDot": 0.613041138023837,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-2-100-95.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999801090822809,
+      "previousOppositeNormals": 3477,
+      "minimumNormalDot": 0.12129181084198376,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-2-25-100.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999804292677653,
+      "previousOppositeNormals": 2860,
+      "minimumNormalDot": 0.6835063437139561,
+      "maximumPositionChange": 7.450580596923828e-09
+    },
+    {
+      "pose": "static-2-25-25.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999779674523906,
+      "previousOppositeNormals": 2658,
+      "minimumNormalDot": 0.8133948481353326,
+      "maximumPositionChange": 7.62939453125e-06
+    },
+    {
+      "pose": "static-2-25-50.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999786686633172,
+      "previousOppositeNormals": 2796,
+      "minimumNormalDot": 0.7977393310265284,
+      "maximumPositionChange": 9.313225746154785e-10
+    },
+    {
+      "pose": "static-2-25-95.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999805560639384,
+      "previousOppositeNormals": 2856,
+      "minimumNormalDot": 0.6862745098039215,
+      "maximumPositionChange": 7.62939453125e-06
+    },
+    {
+      "pose": "static-2-50-100.bin",
+      "oppositeNormals": 1,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999796459096163,
+      "previousOppositeNormals": 3547,
+      "minimumNormalDot": -0.7022068435217222,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-2-50-25.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999807164986909,
+      "previousOppositeNormals": 2961,
+      "minimumNormalDot": 0.961368704344483,
+      "maximumPositionChange": 1.1641532182693481e-10
+    },
+    {
+      "pose": "static-2-50-50.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999798845597899,
+      "previousOppositeNormals": 3409,
+      "minimumNormalDot": 0.9249211841599385,
+      "maximumPositionChange": 2.3283064365386963e-10
+    },
+    {
+      "pose": "static-2-50-95.bin",
+      "oppositeNormals": 1,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999793521537315,
+      "previousOppositeNormals": 3625,
+      "minimumNormalDot": -0.6854748173779316,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-2-85-100.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.999981410956648,
+      "previousOppositeNormals": 3647,
+      "minimumNormalDot": 0.16346020761245672,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-2-85-25.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999799988846513,
+      "previousOppositeNormals": 2378,
+      "minimumNormalDot": 0.7274586697424069,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-2-85-50.bin",
+      "oppositeNormals": 0,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999793438323671,
+      "previousOppositeNormals": 2988,
+      "minimumNormalDot": 0.7321953094963476,
+      "maximumPositionChange": 0.0
+    },
+    {
+      "pose": "static-2-85-95.bin",
+      "oppositeNormals": 1,
+      "oppositeCollarNormals": 0,
+      "minimumGeometricNormalAgreement": 0.9999799448258896,
+      "previousOppositeNormals": 3708,
+      "minimumNormalDot": -0.043475586312956505,
+      "maximumPositionChange": 0.0
+    }
+  ]
+}

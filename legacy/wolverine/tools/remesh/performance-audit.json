@@ -1,0 +1,114 @@
+{
+  "baselineCommit": "2ea2b7b",
+  "method": "Three alternating pairs, 90 moving frames per process; CPU surface stage only, not in-game FPS",
+  "comparisons": {
+    "typical": {
+      "baseline": 26.276,
+      "compact": 22.031,
+      "surfaceReductionPercent": 16.155427005632518
+    },
+    "large": {
+      "baseline": 27.155,
+      "compact": 22.638,
+      "surfaceReductionPercent": 16.634137359602285
+    }
+  },
+  "runs": [
+    {
+      "size": "typical",
+      "pair": 0,
+      "version": "baseline",
+      "physicsMS": 3.932,
+      "surfaceMS": 27.522,
+      "output": "state=0 pulse=0 physics=3.932 surface=27.522 ms per frame\n  rest shape 0.003 ms\n  refinement 2.585 ms\n  pelvic attachment 0.203 ms\n  rounded surface 12.822 ms\n  gameplay surface 27.522 ms\n  pouch surface 4.819 ms\n  structural skin 3.749 ms\n  neck render 1.666 ms\n  collar solve 4.858 ms\n  junction finish 1.938 ms\n  structural stages 0.071 1.847 1.347 0.484 ms\n"
+    },
+    {
+      "size": "typical",
+      "pair": 0,
+      "version": "compact",
+      "physicsMS": 3.861,
+      "surfaceMS": 22.031,
+      "output": "state=0 pulse=0 physics=3.861 surface=22.031 ms per frame\n  rest shape 0.003 ms\n  refinement 2.560 ms\n  pelvic attachment 0.189 ms\n  rounded surface 10.831 ms\n  gameplay surface 22.031 ms\n  pouch surface 4.332 ms\n  structural skin 3.392 ms\n  neck render 1.068 ms\n  collar solve 2.211 ms\n  junction finish 1.827 ms\n  structural stages 0.068 1.540 1.313 0.471 ms\n"
+    },
+    {
+      "size": "typical",
+      "pair": 1,
+      "version": "compact",
+      "physicsMS": 3.882,
+      "surfaceMS": 22.334,
+      "output": "state=0 pulse=0 physics=3.882 surface=22.334 ms per frame\n  rest shape 0.003 ms\n  refinement 2.438 ms\n  pelvic attachment 0.194 ms\n  rounded surface 11.240 ms\n  gameplay surface 22.334 ms\n  pouch surface 4.560 ms\n  structural skin 3.423 ms\n  neck render 1.072 ms\n  collar solve 2.223 ms\n  junction finish 1.822 ms\n  structural stages 0.069 1.575 1.316 0.462 ms\n"
+    },
+    {
+      "size": "typical",
+      "pair": 1,
+      "version": "baseline",
+      "physicsMS": 3.858,
+      "surfaceMS": 26.274,
+      "output": "state=0 pulse=0 physics=3.858 surface=26.274 ms per frame\n  rest shape 0.004 ms\n  refinement 2.450 ms\n  pelvic attachment 0.186 ms\n  rounded surface 12.360 ms\n  gameplay surface 26.273 ms\n  pouch surface 4.575 ms\n  structural skin 3.743 ms\n  neck render 1.545 ms\n  collar solve 4.583 ms\n  junction finish 1.803 ms\n  structural stages 0.067 1.897 1.298 0.481 ms\n"
+    },
+    {
+      "size": "typical",
+      "pair": 2,
+      "version": "baseline",
+      "physicsMS": 3.863,
+      "surfaceMS": 26.276,
+      "output": "state=0 pulse=0 physics=3.863 surface=26.276 ms per frame\n  rest shape 0.003 ms\n  refinement 2.587 ms\n  pelvic attachment 0.196 ms\n  rounded surface 12.095 ms\n  gameplay surface 26.275 ms\n  pouch surface 4.470 ms\n  structural skin 3.580 ms\n  neck render 1.570 ms\n  collar solve 4.557 ms\n  junction finish 1.902 ms\n  structural stages 0.067 1.756 1.270 0.487 ms\n"
+    },
+    {
+      "size": "typical",
+      "pair": 2,
+      "version": "compact",
+      "physicsMS": 3.872,
+      "surfaceMS": 21.71,
+      "output": "state=0 pulse=0 physics=3.872 surface=21.710 ms per frame\n  rest shape 0.004 ms\n  refinement 2.400 ms\n  pelvic attachment 0.184 ms\n  rounded surface 10.779 ms\n  gameplay surface 21.710 ms\n  pouch surface 4.381 ms\n  structural skin 3.325 ms\n  neck render 1.042 ms\n  collar solve 2.149 ms\n  junction finish 1.822 ms\n  structural stages 0.069 1.538 1.246 0.472 ms\n"
+    },
+    {
+      "size": "large",
+      "pair": 0,
+      "version": "baseline",
+      "physicsMS": 3.951,
+      "surfaceMS": 27.155,
+      "output": "state=0 pulse=0 physics=3.951 surface=27.155 ms per frame\n  rest shape 0.004 ms\n  refinement 2.355 ms\n  pelvic attachment 0.186 ms\n  rounded surface 12.348 ms\n  gameplay surface 27.155 ms\n  pouch surface 4.542 ms\n  structural skin 3.731 ms\n  neck render 1.555 ms\n  collar solve 5.611 ms\n  junction finish 1.790 ms\n  structural stages 0.073 1.817 1.360 0.480 ms\n"
+    },
+    {
+      "size": "large",
+      "pair": 0,
+      "version": "compact",
+      "physicsMS": 3.921,
+      "surfaceMS": 22.409,
+      "output": "state=0 pulse=0 physics=3.921 surface=22.409 ms per frame\n  rest shape 0.004 ms\n  refinement 2.333 ms\n  pelvic attachment 0.188 ms\n  rounded surface 10.935 ms\n  gameplay surface 22.408 ms\n  pouch surface 4.323 ms\n  structural skin 3.479 ms\n  neck render 1.050 ms\n  collar solve 2.715 ms\n  junction finish 1.863 ms\n  structural stages 0.067 1.567 1.388 0.457 ms\n"
+    },
+    {
+      "size": "large",
+      "pair": 1,
+      "version": "compact",
+      "physicsMS": 3.948,
+      "surfaceMS": 22.638,
+      "output": "state=0 pulse=0 physics=3.948 surface=22.638 ms per frame\n  rest shape 0.003 ms\n  refinement 2.376 ms\n  pelvic attachment 0.183 ms\n  rounded surface 10.980 ms\n  gameplay surface 22.638 ms\n  pouch surface 4.297 ms\n  structural skin 3.499 ms\n  neck render 1.076 ms\n  collar solve 2.734 ms\n  junction finish 1.905 ms\n  structural stages 0.069 1.566 1.401 0.462 ms\n"
+    },
+    {
+      "size": "large",
+      "pair": 1,
+      "version": "baseline",
+      "physicsMS": 3.929,
+      "surfaceMS": 27.572,
+      "output": "state=0 pulse=0 physics=3.929 surface=27.572 ms per frame\n  rest shape 0.003 ms\n  refinement 2.406 ms\n  pelvic attachment 0.189 ms\n  rounded surface 12.285 ms\n  gameplay surface 27.572 ms\n  pouch surface 4.549 ms\n  structural skin 3.666 ms\n  neck render 1.580 ms\n  collar solve 5.811 ms\n  junction finish 1.940 ms\n  structural stages 0.067 1.748 1.369 0.481 ms\n"
+    },
+    {
+      "size": "large",
+      "pair": 2,
+      "version": "baseline",
+      "physicsMS": 3.901,
+      "surfaceMS": 26.813,
+      "output": "state=0 pulse=0 physics=3.901 surface=26.813 ms per frame\n  rest shape 0.003 ms\n  refinement 2.370 ms\n  pelvic attachment 0.183 ms\n  rounded surface 12.033 ms\n  gameplay surface 26.813 ms\n  pouch surface 4.487 ms\n  structural skin 3.608 ms\n  neck render 1.579 ms\n  collar solve 5.560 ms\n  junction finish 1.788 ms\n  structural stages 0.066 1.725 1.336 0.480 ms\n"
+    },
+    {
+      "size": "large",
+      "pair": 2,
+      "version": "compact",
+      "physicsMS": 3.925,
+      "surfaceMS": 23.218,
+      "output": "state=0 pulse=0 physics=3.925 surface=23.218 ms per frame\n  rest shape 0.004 ms\n  refinement 2.358 ms\n  pelvic attachment 0.188 ms\n  rounded surface 11.286 ms\n  gameplay surface 23.218 ms\n  pouch surface 4.485 ms\n  structural skin 3.515 ms\n  neck render 1.094 ms\n  collar solve 2.863 ms\n  junction finish 1.991 ms\n  structural stages 0.068 1.579 1.402 0.464 ms\n"
+    }
+  ]
+}

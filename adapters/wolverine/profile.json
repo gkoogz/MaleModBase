@@ -1,0 +1,14 @@
+{
+  "contractVersion": 1,
+  "id": "wolverine-ue3-d3d9",
+  "status": "reference-only",
+  "repository": "https://github.com/gkoogz/XMenOriginsWolverineMaleMod",
+  "sourceRuntime": "legacy/wolverine/src/runtime",
+  "vertexStrideBytes": 32,
+  "motionCageVertexCount": 2388,
+  "renderVertexCount": 17528,
+  "renderTriangleCount": 35000,
+  "jointMapping": {},
+  "units": "unresolved-source-model-units",
+  "requires": ["D3D9 draw hooks", "native bone palettes", "packed buffer decoding", "per-character solver extraction", "release packaging"]
+}

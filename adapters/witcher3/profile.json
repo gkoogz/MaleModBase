@@ -1,0 +1,10 @@
+{
+  "contractVersion": 1,
+  "id": "witcher3",
+  "status": "planned",
+  "repository": "https://github.com/gkoogz/TheWitcher3MaleMod",
+  "userProvidedInstallPath": "E:/SteamLibrary/steamapps/common/The Witcher 3",
+  "jointMapping": {},
+  "capabilities": {},
+  "requires": ["REDkit import workflow verification", "target skeleton and bind pose", "source palette calibration", "body seam fitting", "material conversion", "runtime physics integration decision", "packaging and live validation"]
+}
