@@ -1,0 +1,17 @@
+{
+  "contractVersion": 1,
+  "algorithmRevision": 1,
+  "id": "surface.rest-graft",
+  "owner": "MaleModBase",
+  "implementation": "malemod_base/graft.py",
+  "scope": "Offline rest-surface fitting and target attribute transfer",
+  "inputs": ["body and aligned module triangles in explicit common units", "selected interior body patch", "measured orthonormal boundary projection", "declared support distance and local repair budget", "target skin influence limit and discard budget"],
+  "outputs": ["continuous body and module seam with preserved render aliases", "sparse original-vertex lineage for both surfaces", "original-edge interpolation donors", "original-face lineage", "local orientation repair evidence", "seam-continuous attribute fields"],
+  "invariants": ["existing body part boundaries remain fixed", "seam position and skin attributes agree across aliases", "source UV and support banks remain available separately", "geometry and bindings version together", "source quantized skin sums are preserved"],
+  "unsupported": ["arbitrary non-star-shaped boundary correspondence", "global self-intersection guarantee", "dynamic collar or runtime physics", "automatic physical unit inference", "automatic distant LOD reduction"],
+  "spokes": {
+    "witcher3": "First target; native stock body rig and engine FBX transport live in adapter",
+    "wolverine": "Candidate backport for future character/graft authoring and invariant checks; authoritative native runtime untouched",
+    "future": "Supply observed bind frame, body patch and native skin limits; reuse the same fitting and lineage contract"
+  }
+}

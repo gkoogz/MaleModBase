@@ -20,7 +20,24 @@ package. Updating Base does not automatically change an installed game.
 runtime. Its source commit is `dc64bdc44e75fd5521f066cdb2975277e9c34302`;
 `provenance/wolverine.json` records hashes and omissions.
 
-## Where work stopped
+## Current shared work
+
+The first new spoke now uses Base's `surface.rest-graft` implementation. Read
+`docs/REST-GRAFT.md`, `modules/rest-graft.json` and `provenance/rest-graft.json`.
+It fits an actual body opening, preserves original-edge donors and UV lineage,
+transfers skin fields and repairs local orientation while locking the seam.
+The Witcher adapter owns the observed Geralt frame, native FBX and rig checks.
+Its preliminary official import/export preserved triangles, bones and the
+continuous seam. See the adapter handoff for its latest installation and user
+test state; native round-trip does not establish gameplay.
+
+Geralt's torso/legs are separate native resources. Preserve their existing waist
+join for this pelvis-only fit. If a later deformation reaches that boundary,
+implement shared two-part constraints before moving either side. Wolverine can
+adopt the reusable fitter and seam verification for future authoring; its current
+runtime remains unchanged. Secondary motion/live collar control remain pending.
+
+## Previous feature checkpoints
 
 - Base feature checkpoint: `cb86e7edd6907f7301cd1f7bd0d25a0c40191fe4`.
   Shared generic proxy, source geometry/bindings, extracted physics/clinical

@@ -63,5 +63,7 @@ Read [architecture](docs/ARCHITECTURE.md), [migration status](docs/MIGRATION.md)
 and [porting](docs/PORTING.md).
 The source-derived [pelvic collar](docs/PELVIC-COLLAR.md) now includes a portable
 metric kernel and offline coupled evaluator with hard body-edge seam constraints.
+The [rest graft fitter](docs/REST-GRAFT.md) adds reusable opening/seam fitting,
+vertex lineage, orientation repair and target skin transfer for new spokes.
 Commercial reuse rights are not established by this extraction: upstream has
 no root license, and game-derived assets retain their separate provenance.

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "feature": "surface.rest-graft",
+  "kind": "new shared implementation; not an exact legacy extraction",
+  "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
+  "sourceBank": "assets/wolverine-reference/geometry.npz",
+  "sourceBankSHA256": "435cb9b391e6bf1ee76a09524b075bfc356230920b30e523bac90448961b2f30",
+  "files": [
+    {
+      "path": "malemod_base/graft.py",
+      "sha256": "45ff81ff2282e59581110171af76cd26ed6d31956d3a6f25d13af6a9a25bdc79"
+    },
+    {
+      "path": "modules/rest-graft.json",
+      "sha256": "5d03e52e151c577490d13822ce379ebcb3a87e64934043fa0091297abe3c7b14"
+    },
+    {
+      "path": "tests/test_graft.py",
+      "sha256": "ea3517a763c0be7b51eaa8fc46bc04c327e6cc139b08dabd11d23f4c3f1df298"
+    }
+  ],
+  "omissions": [
+    "native rig and engine transport belong in adapters",
+    "no runtime dynamics or global intersection guarantee",
+    "physical source units remain unknown",
+    "no automatic module LOD reduction"
+  ]
+}

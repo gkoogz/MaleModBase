@@ -35,3 +35,6 @@ For body-root expansion read docs/PELVIC-COLLAR.md. Use the active final unified
 solver as the reference, preserve original-edge seam donors and UV aliases,
 and record source/offline/native/observed verification independently. A shared
 change must include an adoption path back to Wolverine and every other spoke.
+For new character attachments read docs/REST-GRAFT.md. Preserve existing body
+part boundaries; any deformation spanning two resources must drive both sides
+from shared boundary bindings. Record native round-trip and gameplay separately.
