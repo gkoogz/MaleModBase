@@ -22,6 +22,10 @@ runtime. Its source commit is `dc64bdc44e75fd5521f066cdb2975277e9c34302`;
 
 ## Current shared work
 
+Native cage authoring now has shared donor-field transfer and two-influence
+chain binding in `malemod_base/motion_binding.py`; read `MOTION-BINDING.md`.
+It is an offline authoring approximation, not a replacement anatomy solver.
+
 The next physics/menu pass has added the 18-control catalog and preference
 validation in `malemod_base/controls.py`. Read `docs/LIVE-CONTROLS.md`.
 `tools/export_controls.py --check` and `tools/verify.py` enforce its source and
