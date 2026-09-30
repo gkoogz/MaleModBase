@@ -3,6 +3,12 @@
 Checkpoint: 2026-09-30. This file describes repository state and recorded
 observations, not a promise that the current machine still matches them.
 Chat history is not required to resume. Verify Git and local inputs first.
+Read [PROJECT-CONTEXT.md](PROJECT-CONTEXT.md) for the user's stated postgraduate
+educational purpose and enduring requirements before interpreting this project.
+
+Latest user correction, September 30: Witcher 0.4.1 was observed deformed and
+F6 unresponsive. Treat it as a failed gameplay test. A rest-frame/input repair
+is underway in the spoke; consult its handoff for the actual installed version.
 
 ## Repository map
 

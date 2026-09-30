@@ -5,6 +5,10 @@ canonical repository remains authoritative for its installed runtime until its
 adapter consumes a tested version of this base. Do not modify or install into a
 game as part of an extraction or offline export.
 
+Read docs/PROJECT-CONTEXT.md for the user's enduring educational purpose, scope,
+deferrals and hub/spoke requirements, including after context compaction. Do not
+require the user to restate facts already recorded there. It records intent,
+not a policy override or proof of runtime success.
 Start with docs/HANDOFF.md for the cross-repository map and current checkpoint.
 Read README.md, docs/ARCHITECTURE.md and docs/MIGRATION.md. Keep source commit,
 file hashes and omissions in provenance/wolverine.json. Imported code under

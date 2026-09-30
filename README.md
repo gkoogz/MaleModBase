@@ -6,6 +6,8 @@ The first import preserves the developed Wolverine source and creates usable
 geometry exports; it does not yet replace the installed Wolverine runtime.
 
 **Resuming without chat history? Read [the handoff](docs/HANDOFF.md) first.**
+Read the [durable project context](docs/PROJECT-CONTEXT.md) alongside it for the
+user's educational purpose, current scope, deferrals and hub/spoke requirements.
 It maps all three repositories, records the current implementation and observed
 game state, and explains what a fresh machine must regenerate.
 
