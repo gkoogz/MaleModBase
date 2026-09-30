@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
+  "source": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+  "sourceSHA256": "ba9d6c5d02bdb9aba3019eae5ec898796803bba5c034480c40313e4c7b4ab41f",
+  "files": [
+    {
+      "path": "include/malemod/surface/collar_field.hpp",
+      "sha256": "5a74d8320f95cd7abf47d319f4012dd238bc6069f6cae0a301d85450f763f3c6"
+    },
+    {
+      "path": "tests/data/wolverine-collar-metric.inc",
+      "sha256": "8e62bed73a9ed5643bd1abb85378a3c1ed5c475f0be7841f40739e9fa47cf215"
+    }
+  ],
+  "relatedFiles": [
+    {
+      "path": "legacy/wolverine/src/runtime/unified_collar_data.h",
+      "sha256": "cabbaa41279878bf259ba51de89b9fb9f5b027fa8eb4a925b78e30205e995b31"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/pelvic_attachment.h",
+      "sha256": "8147f91f0ab1fb9104462344c89286abc5dce67d234b397a01641161e3397d98"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/anatomy_surface.h",
+      "sha256": "d4f6a49353045d92a4aee5c261586e057795ce247248eea52de212ba3615959d"
+    },
+    {
+      "path": "malemod_base/collar.py",
+      "sha256": "5f847ee44e16722d6342db5bc0b1e7348ea41f72934d1cd5391e2187f06b9b8c"
+    },
+    {
+      "path": "tests/data/wolverine-collar-metric.csv",
+      "sha256": "747c8461ac6fc486d5a0aca8acd0bd974ce1367ee685f272d8b30702d68247be"
+    },
+    {
+      "path": "tests/collar_test.cpp",
+      "sha256": "df1067051cc9f67d9ee1145a3c2c27fb44a7088cb985b856e71686e9f5378cf9"
+    },
+    {
+      "path": "modules/pelvic-collar.json",
+      "sha256": "2c32b0365206e560a55d5a18463fabae68faf2e47739df671a72a40f5f44e824"
+    }
+  ],
+  "scope": "Exact scalar metric extraction and source-derived offline coupled collar evaluator; not installed runtime parity",
+  "omissions": [
+    "packed game buffers and palette mappings",
+    "Raphe guide authoring/runtime",
+    "live pose/contact integration",
+    "source custom SIMD LDLT path",
+    "8-frame sequence phase correction",
+    "packed normal/tangent uploads"
+  ],
+  "units": "Uncalibrated source model units. A target must supply measured length scale and authoring frame."
+}

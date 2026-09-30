@@ -28,6 +28,10 @@ to the preserved anatomy geometry and records unresolved source calibration.
   It preallocates state and supports cached contact projections. It is not the
   original coupled lobe, collar, suspension and seam solver.
 - `clinical/`: shared CPU sequence, fluid, deposition and cue timing.
+- `surface/collar_field.hpp` and `malemod_base/collar.py`: source-derived
+  recruitment metric and offline coupled body/attachment solve with hard
+  original-edge seam constraints. See PELVIC-COLLAR.md for calibration, source
+  omissions and adoption back to each game spoke.
 
 Kernel arithmetic is checked against the archived source over randomized
 fixtures. Fixed-step chain checks cover frame rates, hitches and instance

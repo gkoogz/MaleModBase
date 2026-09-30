@@ -30,6 +30,7 @@ python -m pip install -r requirements.txt
 python tools/export_geometry.py
 python tools/extract_clinical.py --check
 python tools/extract_physics.py --check
+python tools/extract_collar.py --check
 python tools/build_generic.py
 python tools/verify.py
 python -m unittest discover -s tests -v
@@ -56,5 +57,7 @@ python tools/import_wolverine.py --source C:/path/to/wolverine
 Read [architecture](docs/ARCHITECTURE.md), [migration status](docs/MIGRATION.md),
 [asset contract](docs/ASSET-CONTRACT.md), [clinical sequence](docs/CLINICAL-SEQUENCE.md)
 and [porting](docs/PORTING.md).
+The source-derived [pelvic collar](docs/PELVIC-COLLAR.md) now includes a portable
+metric kernel and offline coupled evaluator with hard body-edge seam constraints.
 Commercial reuse rights are not established by this extraction: upstream has
 no root license, and game-derived assets retain their separate provenance.

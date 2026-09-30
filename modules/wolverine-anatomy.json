@@ -9,5 +9,6 @@
   "calibrationStatus":"required",
   "physics":"shared-xpbd-kernels; full authored suspension/contact parity pending",
   "sequence":"malemod::clinical::Session",
+  "deformationFeature":"surface.pelvic-collar",
   "requires":["observed source root/outlet landmarks","metric calibration","source cage mapping","target body seam fit"]
 }

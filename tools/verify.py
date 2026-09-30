@@ -6,6 +6,7 @@ import numpy as np
 from export_geometry import arrays
 from extract_clinical import generate, FILES
 from extract_physics import outputs as physics_outputs
+from extract_collar import outputs as collar_outputs
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -42,6 +43,15 @@ def main():
     for path,text in physics_outputs().items():
         if (ROOT/path).read_bytes()!=text.encode():
             raise ValueError('Physics extraction recipe differs: '+path)
+    collar=json.loads((ROOT/'provenance/collar.json').read_text())
+    if hashlib.sha256((ROOT/collar['source']).read_bytes()).hexdigest()!=collar['sourceSHA256']:
+        raise ValueError('Collar source provenance differs')
+    for item in collar['files']+collar['relatedFiles']:
+        if hashlib.sha256((ROOT/item['path']).read_bytes()).hexdigest()!=item['sha256']:
+            raise ValueError('Collar generated/related provenance differs: '+item['path'])
+    for path,text in collar_outputs().items():
+        if (ROOT/path).read_bytes()!=text.encode():
+            raise ValueError('Collar extraction recipe differs: '+path)
     generic=ROOT/'assets/generic-male'
     generic_manifest=json.loads((generic/'manifest.json').read_text())
     for name,digest in generic_manifest['files'].items():
@@ -62,6 +72,6 @@ def main():
         vertices = sum(line.startswith(b'v ') for line in data.splitlines())
         faces = sum(line.startswith(b'f ') for line in data.splitlines())
         if (vertices,faces) != (item['vertices'],item['triangles']): raise ValueError('Mesh counts mismatch')
-    print(f'PASS: {count} imported files, materials, {len(manifest["arrays"])} source arrays, exported meshes, generic reference and physics/clinical provenance.')
+    print(f'PASS: {count} imported files, materials, {len(manifest["arrays"])} source arrays, exported meshes, generic reference and collar/physics/clinical provenance.')
 
 if __name__ == '__main__': main()

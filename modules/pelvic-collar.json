@@ -1,0 +1,37 @@
+{
+  "contractVersion": 1,
+  "id": "surface.pelvic-collar",
+  "algorithmRevision": 1,
+  "owner": "MaleModBase",
+  "implementation": {
+    "metricKernel": "include/malemod/surface/collar_field.hpp",
+    "offlineCoupledEvaluator": "malemod_base/collar.py",
+    "provenance": "provenance/collar.json"
+  },
+  "referenceBindings": {
+    "asset": "assets/wolverine-reference/geometry.npz",
+    "topology": "unified_collar_data__ucFaces",
+    "sourceLineage": "unified_collar_data__ucKeep",
+    "renderAliases": "unified_collar_data__ucMap",
+    "edgeConstraints": "unified_collar_data__ucSeamVertices",
+    "interpolation": "unified_collar_data__ucSeamWeights"
+  },
+  "inputContract": {
+    "coordinates": "One measured module authoring frame: +X forward, +Y lateral, +Z body up",
+    "lengthScale": "Explicit measured target units per source model unit; never infer meters",
+    "uniquePositions": "Combined body and attachment, after pose and source morphology",
+    "seams": "slave vertex, original body-edge endpoints, interpolation; donors must be masters",
+    "guide": "Source-derived center/depth and radius samples per vertex; caller supplies actual module guide",
+    "versioning": "Topology ID/revision, source lineage, UV aliases, donors and support-point membership versioned together"
+  },
+  "outputContract": {
+    "positions": "Same combined topology with exact seam interpolation and fixed exterior",
+    "adapterResponsibilities": ["pose sampling", "character landmark calibration", "body opening and fitted seam binding", "normal/tangent regeneration", "UV alias expansion", "native morph or runtime deformation bridge", "uploads and collision"]
+  },
+  "adoption": {
+    "wolverine": "Existing native solver is authoritative; hub consumer pending full runtime parity",
+    "witcher3": "Bare body source and appearance override available; calibrated collar fit/runtime not implemented",
+    "futureGames": "Implement the input/output contract in a spoke; shared numerical changes return here"
+  },
+  "validationLevels": ["source arithmetic", "offline constrained geometry", "native runtime parity", "observed in-game behavior"]
+}

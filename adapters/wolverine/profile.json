@@ -10,5 +10,6 @@
   "renderTriangleCount": 35000,
   "jointMapping": {},
   "units": "unresolved-source-model-units",
+  "featureAdoption": {"surface.pelvic-collar": "Native reference remains authoritative; hub math/offline evaluator available; full consumer parity pending"},
   "requires": ["D3D9 draw hooks", "native bone palettes", "packed buffer decoding", "per-character solver extraction", "release packaging"]
 }

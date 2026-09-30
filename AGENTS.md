@@ -30,3 +30,7 @@ WitcherScript controller, native input/menu integration and cooker belong in the
 game adapter. Proactively explain when a requested game feature should be moved
 into Base so all ports benefit. Pin Base revisions in adapters; do not copy its
 source into an independently maintained fork. See docs/GENERIC-BASE.md.
+For body-root expansion read docs/PELVIC-COLLAR.md. Use the active final unified
+solver as the reference, preserve original-edge seam donors and UV aliases,
+and record source/offline/native/observed verification independently. A shared
+change must include an adoption path back to Wolverine and every other spoke.

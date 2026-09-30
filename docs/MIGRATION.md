@@ -30,6 +30,11 @@ semantic sockets, linear skinning, capsule projection and an instance-owned
 fixed-step chain using extracted distance/bend kernels. Kernel parity is tested;
 full authored solver parity and live engine integration are still pending.
 
+The final unified collar metric is extracted as standard C++ and its coupled
+energy/hard edge constraints are available in a per-character offline evaluator.
+Source arithmetic, sparse/dense agreement, expansion and seam checks pass;
+complete posed runtime parity remains pending. See PELVIC-COLLAR.md.
+
 Unavailable from Git: live capture banks, full character skeleton/palettes,
 some original authoring scripts, some build dependencies referenced by scripts,
 release runtime DLL and payload. The include/build audit records missing

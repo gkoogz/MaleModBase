@@ -33,6 +33,11 @@ and drive a separate generic fixed-step chain. Skinning, sockets and cached
 capsule projection are shared too; see GENERIC-BASE.md. The complete authored
 anatomy suspension/contact/collar solver remains coupled in legacy/wolverine.
 
+The active final collar's growing support metric and a source-derived offline
+coupled solve are now shared, with exact donor-edge seam elimination. The full
+posed runtime, guide inputs and graphics uploads remain separate integration
+work. See PELVIC-COLLAR.md for the feature contract and spoke adoption matrix.
+
 The XPBD solver uses globals for rod nodes, lobe transforms, previous poses,
 contact impulses and tuning. Moving its header alone does not make it portable.
 The next extraction must introduce per-character solver state, explicit inputs,

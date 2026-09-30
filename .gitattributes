@@ -3,6 +3,8 @@
 *.cpp text eol=lf
 *.md text eol=lf
 *.json text eol=lf
+CMakeLists.txt text eol=lf
+requirements.txt text eol=lf
 legacy/** -text
 assets/** -text
 include/malemod/detail/** -text
