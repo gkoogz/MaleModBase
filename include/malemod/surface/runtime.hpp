@@ -27,6 +27,13 @@ struct Output {
  std::array<Surface,2> body;
  std::vector<std::uint16_t> anatomyIndices;
  float proximalRadius=0,restLength=0;
+ // Source-local mechanical state, exported with the evaluated surface so an
+ // adapter does not infer guide stations from skin centroids. No engine bones.
+ std::array<Point,12> shaftGuide,restGuide;
+ std::array<Point,2> lobeCenters,lobeAnchors,lobeRadii;
+ std::array<std::array<Point,3>,2> lobeAxes;
+ Point rootDirection;
+ std::array<float,10> bendMultipliers;
 };
 // Each session owns a worker thread and all mutable source caches. Evaluation
 // is synchronous. Do not call from a render hook while holding engine locks.

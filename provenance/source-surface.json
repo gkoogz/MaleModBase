@@ -204,11 +204,11 @@
     },
     {
       "path": "include/malemod/surface/runtime.hpp",
-      "sha256": "267045e5b218a52500256ea2d25960741200edc6499059ecffd1cfc0a9043782"
+      "sha256": "e52ac79d4367252bd3d2e3ddb4d54e314ed2e140dc5ba76f372af8523a4f4cd6"
     },
     {
       "path": "src/surface/runtime.cpp",
-      "sha256": "2d25db482fb109420e6eb5f9de49b5c7055284f69bf3081a26368135369c4a30"
+      "sha256": "4452d5ef89771d05aa581416740ccbe64f9dc37cfdaa70bc72802786c37e1cf5"
     },
     {
       "path": "tools/extract_surface_runtime.py",
@@ -236,11 +236,11 @@
     },
     {
       "path": "tests/surface_runtime_cli.cpp",
-      "sha256": "e8b70260f91d74a1b4cf9b207c481635cf5681b91ae6ce1327476c5dc24b29b5"
+      "sha256": "0900a7fb94b888612a010a8ab3c2542b2a1484dd9952bc488924c5122902ff52"
     },
     {
       "path": "tests/surface_session_test.cpp",
-      "sha256": "48cf714bbb12f4f9732a6a83ef621a1d72645b8ea0514609b2aef054c97a14e2"
+      "sha256": "2ce8f231d10c4835c3a0362ffe6164720cf1d5f22ad9eaa3b0555bcd0d2ae539"
     },
     {
       "path": "tests/surface_trace_oracle.cpp",
@@ -249,6 +249,10 @@
     {
       "path": "tests/wolverine_surface_oracle.cpp",
       "sha256": "a6e459e12a1d70753869e9760ed519586dd22c68feca209977196f12acd9a362"
+    },
+    {
+      "path": "tools/export_default_baseline.py",
+      "sha256": "f031e4e2f367fcfd430a79e163fa7ed71fa9e468058b7ffa18105d5a9ee726f7"
     }
   ],
   "controls": "malemod_base.controls.ORDER",
@@ -1393,5 +1397,16 @@
       "executableSHA256": "08037335cc43177f2a90cceb0a6688f02f0c9c15887a4ebfe069b87801fb7b0d",
       "passed": true
     }
+  },
+  "mechanicalOutputVerification": {
+    "sameSessionGuide": true,
+    "segmentMetricToleranceSourceUnits": 0.02,
+    "sessionIsolationPassed": true,
+    "sessionExecutableSHA256": "03d7d3257673f50934749c23cd471d13bf39d03752630a50b6ba995c0b5ba8c2",
+    "physicsSurfaceCases": 33,
+    "maximumSurfaceError": 7.62939453125e-06,
+    "reportSHA256": "7417bba8b267a70e86749c6d4895246329034e29d08fd4044c0dfe82f9d7b6ad",
+    "executableSHA256": "cea2e638e0799fdc4079d5f9a648adda11d2028e86f6b744ddd8ec98ad7a3c8a",
+    "observedGameplay": false
   }
 }

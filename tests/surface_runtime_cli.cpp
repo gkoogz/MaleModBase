@@ -16,6 +16,13 @@ int main(int argc,char** argv){
  const unsigned steps=argc==4?unsigned(atoi(argv[3])):120;
  Session session(controls);for(unsigned i=0;i<steps;i++)session.Step();
  auto out=session.Read();std::ofstream file(argv[2],std::ios::binary);
+ std::ofstream mechanical(std::string(argv[2])+".mechanics.json");mechanical.precision(9);
+ auto points=[&](const auto& list){mechanical<<"[";bool first=true;for(auto p:list){if(!first)mechanical<<",";first=false;mechanical<<"["<<p.x<<","<<p.y<<","<<p.z<<"]";}mechanical<<"]";};
+ mechanical<<"{\"steps\":"<<steps<<",\"restLength\":"<<out.restLength<<",\"proximalRadius\":"<<out.proximalRadius<<",\"shaftGuide\":";points(out.shaftGuide);
+ mechanical<<",\"restGuide\":";points(out.restGuide);mechanical<<",\"lobeCenters\":";points(out.lobeCenters);
+ mechanical<<",\"lobeAnchors\":";points(out.lobeAnchors);mechanical<<",\"lobeRadii\":";points(out.lobeRadii);
+ mechanical<<",\"lobeAxes\":[";points(out.lobeAxes[0]);mechanical<<",";points(out.lobeAxes[1]);mechanical<<"],\"rootDirection\":";points(std::array<Point,1>{out.rootDirection});
+ mechanical<<",\"bendMultipliers\":[";for(unsigned i=0;i<10;i++){if(i)mechanical<<",";mechanical<<out.bendMultipliers[i];}mechanical<<"]}\n";
  file.write(reinterpret_cast<const char*>(out.anatomy.positions.data()),out.anatomy.positions.size()*sizeof(Point));
  if(!Write(argv[2],".normals",out.anatomy.normals)||!Write(argv[2],".tangents",out.anatomy.tangents)||!Write(argv[2],".uv",out.anatomy.uv)||!Write(argv[2],".indices",out.anatomyIndices)||!Write(argv[2],".body0",out.body[0].positions)||!Write(argv[2],".body1",out.body[1].positions))return 4;
  printf("session vertices=%zu indices=%zu radius=%.9g length=%.9g\n",out.anatomy.positions.size(),out.anatomyIndices.size(),out.proximalRadius,out.restLength);

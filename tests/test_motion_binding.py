@@ -45,3 +45,17 @@ class MotionBindingTests(unittest.TestCase):
         for knots in ([0, 0], [1, 0], [0, np.nan], [0]):
             with self.assertRaises(ValueError):
                 linear_chain_weights([.5], knots)
+
+    def test_mechanical_guide_is_continuous_and_rigid_frame_invariant(self):
+        from malemod_base.motion_binding import sample_mechanical_guide
+        p=np.column_stack([np.arange(12)*2.,np.zeros(12),-np.arange(12)**2*.05])
+        p[:2,2]=0
+        a,ta=sample_mechanical_guide(p,np.arange(1,11)/11-1e-7)
+        b,tb=sample_mechanical_guide(p,np.arange(1,11)/11+1e-7)
+        self.assertLess(np.linalg.norm(a-b,axis=1).max(),1e-5)
+        self.assertLess(np.linalg.norm(ta-tb,axis=1).max(),1e-5)
+        r=np.array([[0,-1,0],[1,0,0],[0,0,1]])
+        c,d=sample_mechanical_guide(p,np.linspace(0,1,73))
+        ct,dt=sample_mechanical_guide(p@r.T+10,np.linspace(0,1,73))
+        np.testing.assert_allclose(ct,c@r.T+10,atol=1e-12)
+        np.testing.assert_allclose(dt,d@r.T,atol=1e-12)

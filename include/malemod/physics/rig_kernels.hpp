@@ -1,6 +1,18 @@
 #pragma once
 #include "xpbd_kernels.hpp"
 namespace malemod::physics {
+// Source SampleShaftChain's C1 Hermite guide. The first interval is kinematic;
+// its chord therefore equals LiveRootDirection times the segment length.
+inline void SampleGuide(const State& state,int count,float t,V3& center,V3& tangent){
+ float u=max(0.f,min(1.f,t))*(count-1),q,q2,q3;
+ int span=int(u);if(span>=count-1)span=count-2;
+ q=u-span;q2=q*q;q3=q2*q;
+ V3 p0=state.position[span],p1=state.position[span+1],m0,m1;
+ if(span==0)m0=p1-p0;else m0=(state.position[span+1]-state.position[span-1])*.5f;
+ if(span+1==count-1)m1=p1-p0;else m1=(state.position[span+2]-state.position[span])*.5f;
+ center=p0*(2*q3-3*q2+1)+m0*(q3-2*q2+q)+p1*(-2*q3+3*q2)+m1*(q3-q2);
+ tangent=Unit(p0*(6*q2-6*q)+m0*(3*q2-4*q+1)+p1*(-6*q2+6*q)+m1*(3*q2-2*q));
+}
 // A curved authored rest metric. With zero rest curvature this is exactly the
 // extracted Wolverine Kelvin-Voigt bend. Rest curvature is supplied by a spoke.
 inline void SolveRestBend(State& state,int i,const PDBendData& data,V3 rest,V3 oldRest,V3& lambda){

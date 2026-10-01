@@ -1,5 +1,13 @@
 # Secondary motion on a fixed authored rig
 
+The default-baseline revision exports the actual source mechanical guide with
+the evaluated surface. `SampleGuide` and Python `sample_mechanical_guide` use
+the source C1 Hermite interpolation, including its kinematic first interval.
+Witcher now uses twelve physics stations independently of eight shaft skin
+joints, the source zero-curvature bend target, uniform source segment lengths
+and the exact exported raphe multipliers. The older curved-rest kernel remains
+available for genuinely authored curved metrics, not for this reset baseline.
+
 Contract 1 adds SDK-free kernels in `include/malemod/physics/rig_kernels.hpp`.
 They adapt the active source solver's distance, Kelvin-Voigt bend, tension-only
 suspension, transverse material shear, and contact recovery to point generalized

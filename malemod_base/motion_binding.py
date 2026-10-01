@@ -6,6 +6,21 @@ that are not rendered. It is an authoring operation, not the Wolverine solver.
 import numpy as np
 from scipy.sparse import csr_matrix
 
+def sample_mechanical_guide(points, coordinate):
+    """Source C1 guide and tangent; the first two guide points are kinematic."""
+    p=np.asarray(points,dtype=float);t=np.asarray(coordinate,dtype=float)
+    if p.ndim!=2 or p.shape[1]!=3 or len(p)<3 or not np.isfinite(p).all() or not np.isfinite(t).all():
+        raise ValueError('Invalid mechanical guide')
+    u=np.clip(t,0,1)*(len(p)-1);s=np.minimum(u.astype(int),len(p)-2);q=u-s;q2=q*q;q3=q2*q
+    p0=p[s];p1=p[s+1]
+    m0=np.where((s==0)[...,None],p1-p0,(p[s+1]-p[np.maximum(s-1,0)])*.5)
+    m1=np.where((s+1==len(p)-1)[...,None],p1-p0,(p[np.minimum(s+2,len(p)-1)]-p[s])*.5)
+    c=p0*(2*q3-3*q2+1)[...,None]+m0*(q3-2*q2+q)[...,None]+p1*(-2*q3+3*q2)[...,None]+m1*(q3-q2)[...,None]
+    d=p0*(6*q2-6*q)[...,None]+m0*(3*q2-4*q+1)[...,None]+p1*(-6*q2+6*q)[...,None]+m1*(3*q2-2*q)[...,None]
+    length=np.linalg.norm(d,axis=-1,keepdims=True)
+    if np.any(length<1e-8):raise ValueError('Collapsed guide tangent')
+    return c,d/length
+
 
 def reference_fields(bank):
     """Transfer coarse mechanical fields through R14/support/final bindings.

@@ -93,6 +93,19 @@ struct Session::Impl {
   for(unsigned i=0;i<2;i++)out.body[i]=Decode(kernel::sharedBodyOutput[i],kernel::sharedBodyCount[i],kernel::sharedBodyFirst[i]);
   out.anatomyIndices.assign(kernel::nrIndices,kernel::nrIndices+kernel::nrIndexCount);
   out.proximalRadius=kernel::logicalShaftBodyRadius;out.restLength=kernel::constraintRestLength;
+  auto point=[](kernel::V3 p){return Point{p.x,p.y,p.z};};
+  for(unsigned i=0;i<12;i++){
+   out.shaftGuide[i]=point(kernel::shaftNodes[i]);
+   kernel::V3 center{},tangent{};kernel::SampleRestShaftFrame(i/11.f,center,tangent);
+   out.restGuide[i]=point(center);
+  }
+  for(unsigned i=0;i<2;i++){
+   out.lobeCenters[i]=point(kernel::CPCenter(i));
+   out.lobeAnchors[i]=point(kernel::BallAnchor(i));out.lobeRadii[i]=point(kernel::CPRadii(i));
+   for(unsigned j=0;j<3;j++)out.lobeAxes[i][j]=point(kernel::cpBasis[i][j]);
+  }
+  out.rootDirection=point(kernel::LiveRootDirection());
+  for(unsigned i=0;i<10;i++)out.bendMultipliers[i]=kernel::RapheTubeBendMultiplier((i+1)/11.f);
   for(auto p:out.anatomy.positions)if(!std::isfinite(p.x)||!std::isfinite(p.y)||!std::isfinite(p.z))throw std::runtime_error("Non-finite surface");
   return out;
  }

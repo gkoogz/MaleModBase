@@ -1,5 +1,21 @@
 # Complete evaluated source surface
 
+## Default baseline with mechanical bindings
+
+`Output` now returns the same-session 12-point guide, rest guide, lobe centers,
+anchors, radii and axes, root direction and ten raphe bend multipliers. This
+avoids inferring a physics rest shape from rendered vertex centroids.
+`tools/export_default_baseline.py build/<new-name>` runs the verified Win32
+session at state 2 and all seventeen UI values 50, for 120 source frames. It
+exports geometry, topology IDs and mechanical data with hashes together. Its
+pose uses source reference thigh capsules and zero gait input, not live capture.
+The existing measured source-to-character scale must remain explicit; changing
+the graft boundary width must not silently enlarge the default anatomy.
+
+Witcher consumes this export for its fixed baseline. Wolverine and future
+spokes can adopt the same output contract after replay and native validation;
+this addition does not modify Wolverine's installed runtime or source snapshot.
+
 The static `derived__final_reference_positions` export is a posed authoring
 reference, not Wolverine's evaluated neutral anatomy. Both have 17,528 vertices
 and the same 35,000 triangles, but the evaluated neutral differs by RMS 24.593439

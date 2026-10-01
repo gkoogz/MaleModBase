@@ -6,11 +6,11 @@
   "files": [
     {
       "path": "malemod_base/motion_binding.py",
-      "sha256": "b9c86b0d109243979d6017f6be5cd49c7a9e6f2afe1d574d1c77022e9234980d"
+      "sha256": "829c6f301dacfe403b19f19da2843cdf4bd747045269931c23fc5f31901d003e"
     },
     {
       "path": "tests/test_motion_binding.py",
-      "sha256": "2b830d2c785548f0cc8f1115e1c9019ee3db11845c1de86c829e597d2f007be7"
+      "sha256": "46de537a43df6100459e3952d65f7046fbd57cf7453ed033f0b55386c1a041a4"
     },
     {
       "path": "docs/MOTION-BINDING.md",

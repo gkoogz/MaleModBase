@@ -1,5 +1,12 @@
 # Durable project context
 
+Latest October 1 clarification: fixed Witcher anatomy means a close match to
+Wolverine's actual full-floppy reset defaults (state 2 and all UI controls 50),
+including size and relaxed shape. It does not mean retaining the oversized
+posed authoring export. The user observed movement in the first physics build
+but rejected its default shape and behavior. Keep Witcher controls absent until
+this baseline is confirmed; Wolverine remains unchanged.
+
 Recorded from the user's instructions, September 30, 2026. Read this before
 resuming after compaction, switching accounts, or taking over from another agent.
 This is the project's purpose and scope; `HANDOFF.md` records implementation state.

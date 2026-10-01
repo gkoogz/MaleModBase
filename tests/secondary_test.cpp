@@ -47,6 +47,12 @@ int main(){
  for(int i=0;i<3;i++){small.position[i]=small.position[i]*.01f;small.oldPosition[i]=small.oldPosition[i]*.01f;}
  float largeLambda=0,smallLambda=0;SolveDistance(big,1,2,1,.0001f,largeLambda,1.f/60);SolveDistance(small,1,2,.01f,.0001f,smallLambda,1.f/60);
  for(int i=0;i<3;i++)CHECK(Length(big.position[i]*.01f-small.position[i])<1e-7f);
+ // Render samples must reproduce a straight guide and be C1 across stations.
+ State guide;for(int i=0;i<12;i++)guide.position.push_back({float(i)*2,0,0});
+ V3 center,tangent;SampleGuide(guide,12,.12f,center,tangent);
+ CHECK(Length(center-V3{2.64f,0,0})<1e-6f);CHECK(Length(tangent-V3{1,0,0})<1e-6f);
+ for(int i=2;i<12;i++)guide.position[i].z=-.05f*i*i;
+ for(int i=1;i<11;i++){V3 ca,cb,ta,tb;SampleGuide(guide,12,i/11.f-1e-6f,ca,ta);SampleGuide(guide,12,i/11.f+1e-6f,cb,tb);CHECK(Length(ca-cb)<.0001f);CHECK(Length(ta-tb)<.0001f);}
  // Moving curved-rest rod, suspended lobes and obstacle: 10 seconds, fixed dt.
  State s;s.position={{0,0,0},{0,.13f,.02f},{0,.18f,.05f},{0,.21f,.1f},{0,.25f,.12f},{0,.28f,.18f},{0,.31f,.2f},{0,.36f,.22f},{-.05f,.14f,-.21f},{.05f,.14f,-.21f}};
  auto reference=s.position;s.oldPosition=s.position;s.velocity.resize(10);s.invMass={0,0,1,1,1,1,1,1,1,1};float lengths[7];

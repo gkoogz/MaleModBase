@@ -1,5 +1,13 @@
 # Resume here: cross-repository handoff
 
+Latest clarification: the Witcher first physics build moves in game, but does
+not match Wolverine reset defaults. Shared `surface::Output` now exports the
+source mechanical state alongside geometry, and `export_default_baseline.py`
+exports state 2/all-50 after 120 reference frames. Base adds C1 guide sampling
+for independently mapped rendering joints. Witcher is rebuilding this evaluated
+default instead of retaining the posed large reference. Full native/gameplay
+parity remains a separate gate; do not revive sliders or capture hotkeys.
+
 Checkpoint: 2026-10-01. This file describes repository state and recorded
 observations, not a promise that the current machine still matches them.
 Chat history is not required to resume. Verify Git and local inputs first.
