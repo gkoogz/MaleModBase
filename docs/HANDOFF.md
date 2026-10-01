@@ -69,7 +69,8 @@ Native name/parent/rest checks alone do not establish animation inheritance.
 No per-frame script solver was added.
 The next installed candidate is **0.4.15-authored-rest-test**, package
 `publish/20261001-014011-2cda1b`, built against Base `466aebb` with the unchanged
-`ca78de0` cage. Gameplay observations are pending. It restores reference local
+`ca78de0` cage. **FAILED observed animation following:** the user reports that
+it follows WASD movement but stays steady during idle sway, stretching the base. It restores reference local
 transforms only on the ten authored joints before scale; all stock animated
 bones and root motion retain the preceding player graph output. Native checks
 verify the exact full-weight bone mask, 23 connected pose nodes, eight unpacked
@@ -80,6 +81,17 @@ regression repair that serialization defect. The native rest-mask mechanism
 belongs in Witcher; every future spoke should separately verify attachment
 following under movement and non-default numeric values through its serializer.
 This does not establish full controls, pelvis deformation or active physics.
+**0.4.17-full-joint-lod is now installed; gameplay is pending**, package
+`publish/20261001-021142-cf7e81`, built against Base `3b10594` and cage `ca78de0`.
+Review found the private 104-joint rig retained a 40-joint reduced-detail update
+limit. Native CalcTransforms limits model-space computation by this count,
+excluding all added joints at indices 94..103 when that LOD is selected.
+The private rig now retains all 104 joints in that update range. Native cook,
+explicit LOD coverage, 23 connected pose nodes, eight unpacked resources, five
+installed hashes and 47 adapter tests pass. A bounded six-second read-only pose
+measurement reports pelvis/root motion and parent-relative error in the menu;
+it stops afterward. 0.4.16 was measurement-only and never installed.
+See REST-GRAFT.md for the shared LOD coverage requirement and adoption path.
 The first-graph helper InputNode candidate 0.4.13 is held/uninstalled because
 native PrepareForSample resets its input to reference pose. The private player
 and parent template redirects belong only in Witcher; shared rig resources for

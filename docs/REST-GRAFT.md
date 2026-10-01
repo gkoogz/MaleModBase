@@ -49,6 +49,16 @@ skin continuity under independent affine bone transforms, local orientation
 repair and rejection, and deterministic influence limiting. Native round-trip
 and observed gameplay are separately recorded by the Witcher adapter.
 
+An extended skeleton also requires coverage by every active pose-update LOD.
+Valid names, parent indices and bind transforms do not prove that an engine
+updates an added joint during animation. Each spoke must verify that all joints
+referenced by its skin weights fall inside the native update range, or supply
+a tested LOD remapping. Test idle, gait and detail-level transitions separately.
+This is a shared adoption check for Wolverine and future spokes; native LOD
+counts and resource changes remain in the adapter. Witcher's private 104-joint
+rig inherited a 40-joint reduced-detail cutoff; the adapter is testing complete
+coverage. Its runtime outcome remains separate from this requirement.
+
 Wolverine can adopt the fitting tools for future character authoring, and the
 seam/skin/orientation checks can strengthen its export regression gates. Offer
 that backport when this first spoke has passed user testing. Do not replace its
