@@ -1,6 +1,6 @@
 # Resume here: cross-repository handoff
 
-Checkpoint: 2026-09-30. This file describes repository state and recorded
+Checkpoint: 2026-10-01. This file describes repository state and recorded
 observations, not a promise that the current machine still matches them.
 Chat history is not required to resume. Verify Git and local inputs first.
 Read [PROJECT-CONTEXT.md](PROJECT-CONTEXT.md) for the user's stated postgraduate
@@ -47,8 +47,8 @@ the user also reports an ankle gap. Its historical package is
 native attachment reset instead of reintroducing animated Root; 93 stock
 alignments, ten vector scales and 60 scalar channels survive native cooking
 and connected-output/packed-byte verification. 35 adapter tests pass.
-The root-only hypothesis did not resolve it. Witcher has installed
-**0.4.12-model-pose-test, observed improved but FAILED gait parity**, package
+The root-only hypothesis did not resolve it. Historical
+**0.4.12-model-pose-test improved but FAILED gait parity**, package
 `publish/20260930-231057-0fb1c4`, built against Base `c7f78e3`. It reads parent model-space bone matrices instead of
 the local animation sample context. The user reports a smaller gap that closes
 at idle but bobs open with every step. Latest scale/ankle readouts were not
@@ -56,6 +56,17 @@ provided. The 0.4.11 secondary-motion package is held,
 never installed, because it retains the failing local pose path. Consult the
 spoke's current installation receipt/handoff. Native connected graph traversal,
 six exact packed resources, five installed hashes and 37 adapter tests pass.
+Witcher now has **0.4.14-player-stack-test installed, gameplay pending**, package
+`publish/20261001-005951-7981b3`, built against Base `0af9e5c` with unchanged
+`ca78de0` cage. It appends an InputNode graph to Geralt's existing animation stack
+instead of sampling another lower-body pose. Native checks retain all 94 stock
+bones/rest frames and ten authored joints, stock player behavior/ragdoll/steering
+bindings, 21 connected pose nodes, eight exact unpacked resources and five
+installed hashes. 44 adapter tests pass. No per-frame script solver was added.
+The first-graph helper InputNode candidate 0.4.13 is held/uninstalled because
+native PrepareForSample resets its input to reference pose. The private player
+and parent template redirects belong only in Witcher; shared rig resources for
+other characters are not overridden. See the spoke's docs/PLAYER-STACK.md.
 Full controls
 and dynamic pelvis remain incomplete; this newer shared stage is not in that
 installed runtime. Root-pose policy belongs in Witcher; the numerical regularizer
