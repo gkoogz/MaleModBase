@@ -3173,7 +3173,7 @@
   "upstreamRootLicense": "not-present",
   "independentShapeTransport": {
     "module": "malemod_base/shape_transport.py",
-    "sourceStage": "AuthoredShape verified coarse stage",
+    "sourceStage": "AuthoredShape coarse stage and SourceRestFrame measurement; calibrated coherent dimension transport",
     "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
     "sourceBankSHA256": "435cb9b391e6bf1ee76a09524b075bfc356230920b30e523bac90448961b2f30",
     "omissions": [
@@ -3181,7 +3181,8 @@
       "logical sections and egg fitting",
       "folded glans vertex transition",
       "coupled UnifiedCollar",
-      "posed dynamics/contact"
+      "posed dynamics/contact",
+      "short-profile previous-length fallback uses measured neutral rather than live history"
     ],
     "verification": "offline positive independent section fits; not native or observed gameplay"
   }

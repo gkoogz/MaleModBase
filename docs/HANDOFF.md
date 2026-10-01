@@ -300,3 +300,12 @@ RMS dimensions and centroid offsets, with defaults and source branch knots.
 See SHAPE-TRANSPORT.md for limitations and every-spoke adoption. Three section
 transport tests and four existing original-C++ authored stage tests pass.
 Native installation and observed gameplay belong to the Witcher checkpoint.
+
+The next user screenshot shows 0.4.22 is closer but still has a sharp distal bend
+and uneven contour. The current shared transport replaces independent shaft
+section fitting with SourceRestFrame radius/span ratios in the measured export
+axis. The source UI-default coarse pose and the installed large reference export
+are different; raw displacement vectors between them are not valid transport.
+Two crown joints now implement one similarity transform; lobe fits remain separate.
+Three coherent transport tests, three source rest-frame oracle tests and four
+authored-stage oracle tests pass. See SHAPE-TRANSPORT.md for remaining limitations.

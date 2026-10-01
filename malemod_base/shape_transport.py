@@ -6,6 +6,8 @@ Native names, frames, units and hierarchy are supplied by the adapter.
 import numpy as np
 from .authored_shape import AuthoredShape, MORPH_REFERENCE
 from .controls import defaults, mapped, limits
+from .rest_frame import SourceRestFrame
+from .collar import smoother
 
 AXES = ('overall', 'width', 'length', 'scrotum')
 
@@ -51,6 +53,20 @@ class ShapeTransport:
         if min(m.sum() for m in self.masks) < 8:
             raise ValueError('Insufficient source support for cage fit')
         self.reference = s.evaluate(defaults()).coarse
+        self.measure = SourceRestFrame(bank)
+        self.reference_frame = self.measure_frame(defaults())
+        span=self.origins[7]-self.origins[0]
+        if np.linalg.norm(span)<1e-6:raise ValueError('Missing calibrated rest shaft span')
+        self.axis=span/np.linalg.norm(span)
+
+    def measure_frame(self, preferences):
+        ui=defaults();ui.update(preferences)
+        stage=self.shape.evaluate(ui)
+        return self.measure.evaluate(stage.coarse,angle_degrees=mapped('angle',ui['angle']),
+            overall=mapped('overall',ui['overall']),width=mapped('width',ui['width']),
+            physics_state=ui['state'],previous_length=(self.reference_frame.rest_length
+                if hasattr(self,'reference_frame') else float(np.linalg.norm(self.origins[7]-self.origins[0]))),
+            pelvic_ramp_blend=float(smoother(stage.growth-.15)))
 
     def evaluate(self, preferences=None):
         target = self.shape.evaluate(preferences or defaults()).coarse
@@ -72,7 +88,28 @@ class ShapeTransport:
             if not np.isfinite(scale).all() or np.min(scale)<=0:
                 raise ValueError('Source fit inverted a cage axis')
             result.append(np.r_[translation,scale,rotation.reshape(-1)])
-        return np.array(result)
+        result=np.array(result)
+        # The native rest export is a large reference in a different pose from
+        # AuthoredShape's UI defaults. Apply dimensional ratios in its measured
+        # frame, never raw coarse donor displacements in the export's frame.
+        measured=self.measure_frame(preferences or defaults())
+        radial=measured.body_radius/self.reference_frame.body_radius
+        axial=measured.rest_length/self.reference_frame.rest_length
+        root=self.origins[0]
+        crown=root+.76*(self.origins[7]-root)
+        # Source rigid/flexible modes use a common straight measured rest line.
+        # Keep the calibrated export's curve, transporting each shaft section
+        # with one radius and axial law. No independent section rotations/scales.
+        deformation=radial*np.eye(3)+(axial-radial)*np.outer(self.axis,self.axis)
+        crown_target=root+deformation@(crown-root)
+        for i in range(8):
+            origin=self.origins[i];frame=self.frames[i]
+            desired=(crown_target+radial*(origin-crown) if i>=6
+                     else root+deformation@(origin-root))
+            result[i,:3]=frame.T@(desired-origin)
+            result[i,3:6]=radial
+            result[i,6:]=np.eye(3).reshape(-1)
+        return result
 
     def lattice(self):
         knots = [mapped_knots(key) for key in AXES]
