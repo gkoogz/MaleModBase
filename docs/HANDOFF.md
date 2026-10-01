@@ -67,6 +67,19 @@ the anatomy stays unnaturally steady during idle sway, stretching the base.
 Waist/ankle gait parity was not independently reported in that feedback.
 Native name/parent/rest checks alone do not establish animation inheritance.
 No per-frame script solver was added.
+The next installed candidate is **0.4.15-authored-rest-test**, package
+`publish/20261001-014011-2cda1b`, built against Base `466aebb` with the unchanged
+`ca78de0` cage. Gameplay observations are pending. It restores reference local
+transforms only on the ten authored joints before scale; all stock animated
+bones and root motion retain the preceding player graph output. Native checks
+verify the exact full-weight bone mask, 23 connected pose nodes, eight unpacked
+resources and five installed hashes; 46 adapter tests pass. An earlier build
+was rejected before packaging because integer Float JSON tokens were silently
+ignored by the vendor converter. Float token authoring and a binary round-trip
+regression repair that serialization defect. The native rest-mask mechanism
+belongs in Witcher; every future spoke should separately verify attachment
+following under movement and non-default numeric values through its serializer.
+This does not establish full controls, pelvis deformation or active physics.
 The first-graph helper InputNode candidate 0.4.13 is held/uninstalled because
 native PrepareForSample resets its input to reference pose. The private player
 and parent template redirects belong only in Witcher; shared rig resources for
