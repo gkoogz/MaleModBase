@@ -1,0 +1,31 @@
+{
+  "contractVersion": 1,
+  "feature": "physics.secondary-rig",
+  "sourceCommit": null,
+  "sources": [
+    {
+      "path": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "sha256": "3d7ebe41cdfecb0e1bf40343bb1bfc232ba066e0cbb4100583b9284cf6bdef75"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "sha256": "d554eab27b8565287f2b3ba6c70cde045b9c501ab1da7a970fef1e4f9381284a"
+    }
+  ],
+  "files": [
+    {
+      "path": "include/malemod/physics/rig_kernels.hpp",
+      "sha256": "a3cae6b0ce2f8222ee48d4c54e1ee5f4ab758b7e790db929f8bcc727ad8467f9"
+    },
+    {
+      "path": "tests/secondary_test.cpp",
+      "sha256": "8966b5c3f9947ad1b3b9a770a601bdba7372f6b91050a8d44b9f55311fadf9f4"
+    }
+  ],
+  "adaptations": [
+    "curved-rest subtraction",
+    "point generalized masses",
+    "moving-surface history without recovery rebound"
+  ],
+  "fullCoupledPhysicsParity": false
+}

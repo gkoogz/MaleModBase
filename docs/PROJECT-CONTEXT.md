@@ -48,11 +48,12 @@ games are anticipated. They are not independent forks of the shared algorithms.
 
 ## Current authorized work and deferrals
 
-Current Witcher work is porting every Wolverine size/deformation/physics slider
-and reconstructing the dynamic coupled pelvis. The user confirms the native
-pause-menu category is visible, accepts it as an interim interface and prefers
-live editing. Efficient native execution and minimal CPU cost remain requirements.
-Control labels or saved preferences do not count as implemented deformation.
+Current Witcher work was reset on October 1: remove all Witcher sliders and
+scaling controls, keep the initial fitted mesh at unit scale and the observed
+working skeleton attachment, then adapt Base physics and collision for the rod
+and suspended lobes. Wolverine's controls, source and installed runtime must
+remain unchanged. Efficient native execution remains a requirement. Earlier
+slider reconstruction and capture work is superseded by this fixed-rest phase.
 
 The user explicitly deferred (1) animation sequences, (2) fluid and (3) audio
 for this phase. Their presence in historical source or this project's future

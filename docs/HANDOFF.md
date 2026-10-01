@@ -6,11 +6,12 @@ Chat history is not required to resume. Verify Git and local inputs first.
 Read [PROJECT-CONTEXT.md](PROJECT-CONTEXT.md) for the user's stated postgraduate
 educational purpose and enduring requirements before interpreting this project.
 
-Latest user observations, September 30: the 0.4.2 rest-frame repair restored the
-shape; the 0.4.4 native pause-menu category is now visible. Earlier crushed-shape
-and missing-menu reports remain failed historical tests. Physics tuning effects
-and persistence are not confirmed. The user now requests all 18 source controls
-and reconstruction of the coupled pelvis, with animation/fluid/audio deferred.
+October 1 scope reset supersedes slider reconstruction: remove Witcher sliders,
+retain the initial unit scale and observed working skeleton attachment, and
+adapt Base physics/collision for rod and suspended lobes. Wolverine remains
+unchanged. See `SECONDARY-RIG-PHYSICS.md` for SDK-free point-mass adaptations,
+source support extraction, limitations and adoption gates. Numerical tests and
+native compilation do not establish observed Witcher secondary motion.
 
 ## Repository map
 

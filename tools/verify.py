@@ -18,6 +18,11 @@ from extract_root_profile import outputs as root_profile_outputs
 ROOT = Path(__file__).resolve().parents[1]
 
 def main():
+    secondary=json.loads((ROOT/'provenance/secondary-rig.json').read_text())
+    for item in secondary['sources']+secondary['files']:
+        if hashlib.sha256((ROOT/item['path']).read_bytes()).hexdigest()!=item['sha256']:
+            raise ValueError('Secondary-rig source/implementation differs: '+item['path'])
+    subprocess.run([sys.executable,str(ROOT/'tools/extract_ovoid_support.py'),'--check'],check=True)
     subprocess.run([sys.executable,str(ROOT/'tools/extract_surface_runtime.py'),'--verify-provenance'],check=True)
     for path,content in root_profile_outputs().items():
         if (ROOT/path).read_bytes()!=content.encode():

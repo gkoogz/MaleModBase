@@ -1,0 +1,11 @@
+{
+  "source": "legacy\\wolverine\\src\\runtime\\pouch_contact.h",
+  "sourceSHA256": "d554eab27b8565287f2b3ba6c70cde045b9c501ab1da7a970fef1e4f9381284a",
+  "file": "include\\malemod\\physics\\ovoid_support.hpp",
+  "sha256": "c9a1e48807ecbc60e2ec293478f7a178a54e656c1e1b07782217cfc9ae719560",
+  "changes": [
+    "float Newton arithmetic for backends without double",
+    "finite pole clamp 0.999999"
+  ],
+  "fullCoupledPhysicsParity": false
+}
