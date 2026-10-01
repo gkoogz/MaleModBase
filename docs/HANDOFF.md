@@ -34,10 +34,31 @@ runtime. Its source commit is `dc64bdc44e75fd5521f066cdb2975277e9c34302`;
 stage, with cached reference weights and the explicit prior-length fallback.
 3,240 original C++ fixture rows and all 46 Base Python tests pass. It consumes
 caller-supplied prepared source geometry; preceding fairing, logical/glans
-construction and native output remain separate gates. The Witcher 0.4.7 direct
-pose test also failed observed gameplay: variable accepted was true, but no size
-change and lower-body misalignment persisted. Its working 0.4.4 baseline was
-restored. Investigate runtime sampling/parent pose handoff before another release.
+construction and native output remain separate gates.
+
+Witcher 0.4.7 FAILED despite variable accepted=true, and 0.4.8 FAILED too:
+torso idle motion did not reach the replacement legs, and no resizing occurred.
+Native inspection isolated disconnected cooked pose/scale inputs. The adapter
+supplied compiled graph tables but omitted sourceDataRemoved=true, so REDkit
+rebuilt inputs from absent editor sockets and cleared them. This is an adapter
+serialization defect; the shared source shape/material laws were unchanged.
+
+**Witcher 0.4.9-connected-graph-test is installed, gameplay pending.** Its native
+cook retains all 94 stock pose alignments and ten named scale inputs connected
+to the output. Full path/rig-name checks, six exact unpacked resources/buffers,
+33 adapter tests and five installed-file hashes pass. Its menu has one scale
+probe and three disabled diagnostic rows; full source controls and dynamic
+pelvis remain incomplete. Installed Base revision is `95da934`, with native cage
+geometry from `ca78de0`. See the spoke's docs/HANDOFF.md and
+[the native graph failure/fix](https://github.com/gkoogz/TheWitcher3MaleMod/blob/main/docs/NATIVE-POSE-GRAPH.md).
+Recovery baseline remains its verified 0.4.4 package. Do not reinstall earlier
+deformation candidates: the strengthened native output gate rejects them.
+
+The shared lesson for every spoke: distinguish parameter acceptance, resource
+presence, a fully connected native output path and observed rendered results.
+For proposed Wolverine backports, adopt the Base shape/rest/material oracles and
+seam/boundary tests first; its authoritative full runtime remains unchanged.
+Do not copy a REDengine serialization flag into another engine's adapter.
 
 `PHYSICS-CONTROLS.md` documents the active eight-control material-law evaluator.
 Its 600 original C++ float32 profiles and all 43 Base Python tests pass. It is a
@@ -51,7 +72,7 @@ Read `AUTHORED-SHAPE.md` for the new source-derived early coarse-shape evaluator
 1,300 original-code fixture samples, coupled graft collar domain and protected
 native part boundaries. The checked correction preserves both sides of the
 seam and prevents inverted triangles. An actual-Geralt synthetic stress probe
-passes those invariants in both LODs but accepts only 17–36% of its requested
+passes those invariants in both LODs but accepts only 17â€“36% of its requested
 correction: the full-range deformation envelope is NOT established. Actual
 guide/rest-stage completion and native output remain required. The spoke has a
 native-cooked isolated scale graph; pose/dangle compatibility is not verified.
