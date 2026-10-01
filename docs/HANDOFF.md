@@ -56,13 +56,17 @@ provided. The 0.4.11 secondary-motion package is held,
 never installed, because it retains the failing local pose path. Consult the
 spoke's current installation receipt/handoff. Native connected graph traversal,
 six exact packed resources, five installed hashes and 37 adapter tests pass.
-Witcher now has **0.4.14-player-stack-test installed, gameplay pending**, package
+Witcher has **0.4.14-player-stack-test installed, FAILED authored joint follow**, package
 `publish/20261001-005951-7981b3`, built against Base `0af9e5c` with unchanged
 `ca78de0` cage. It appends an InputNode graph to Geralt's existing animation stack
 instead of sampling another lower-body pose. Native checks retain all 94 stock
 bones/rest frames and ten authored joints, stock player behavior/ragdoll/steering
 bindings, 21 connected pose nodes, eight exact unpacked resources and five
-installed hashes. 44 adapter tests pass. No per-frame script solver was added.
+installed hashes. 44 adapter tests pass. The user confirms scaling but reports
+the anatomy stays unnaturally steady during idle sway, stretching the base.
+Waist/ankle gait parity was not independently reported in that feedback.
+Native name/parent/rest checks alone do not establish animation inheritance.
+No per-frame script solver was added.
 The first-graph helper InputNode candidate 0.4.13 is held/uninstalled because
 native PrepareForSample resets its input to reference pose. The private player
 and parent template redirects belong only in Witcher; shared rig resources for
