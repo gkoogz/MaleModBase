@@ -291,3 +291,12 @@ Update this checkpoint and the affected adapter's feature/provenance status
 when work stops. Record completed work, remaining gates, actual verification
 and installed-versus-source revisions. Keep the adapter's Base pin current for
 intentional adoption; do not imply that a new pin rebuilds an installed package.
+
+## October 1 source-backed size repair
+
+The user reports distorted maximum Witcher size sliders in 0.4.21. Base now
+provides shape_transport.py: authored coarse morph section rotations, positive
+RMS dimensions and centroid offsets, with defaults and source branch knots.
+See SHAPE-TRANSPORT.md for limitations and every-spoke adoption. Three section
+transport tests and four existing original-C++ authored stage tests pass.
+Native installation and observed gameplay belong to the Witcher checkpoint.
