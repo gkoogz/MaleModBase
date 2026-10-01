@@ -1,0 +1,42 @@
+{
+  "format": "malemod.root-profile-provenance",
+  "version": 1,
+  "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
+  "files": [
+    {
+      "path": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "sha256": "20779d89b389ca315a27f77d7e804d9fa290129fe7b2137e896149c344467e30"
+    },
+    {
+      "path": "malemod_base/root_profile.py",
+      "sha256": "efbd4fee17d41a0b4b1a856f326627aa9f62b72750a7b647a8b6ff8278750f6f"
+    },
+    {
+      "path": "tests/root_profile_oracle.cpp",
+      "sha256": "6d3395ee387658cb1633341edd889bd7dfab0779df5e5f511a4a56781fe7f922"
+    },
+    {
+      "path": "tools/build_root_profile_fixture.py",
+      "sha256": "b0fed7bad57b26940cb678dab3d11dc6abc5119a757b6cafd1a9146d865e868f"
+    },
+    {
+      "path": "tests/test_root_profile.py",
+      "sha256": "0a8a4ed37ac4e552d99ad504180dcac14786957051a89bdcc15f2fec6e8a2094"
+    },
+    {
+      "path": "tests/data/wolverine-root-profile.npy",
+      "sha256": "95078e2ddbd5bd02825bf9f7732b011858fb888e46faf067d66ab2f16d677860"
+    }
+  ],
+  "oracle": "tests/data/wolverine-root-profile.inc",
+  "oracleSHA256": "ad7c8bb8aae2f8c428cc7ba605aa6764835a58c3aabf2b4658bc34651afdd1f2",
+  "scope": "Angular root-profile stage on identical caller-supplied float32 source geometry and measured rest frame",
+  "omissions": [
+    "preceding fairing",
+    "logical/glans render construction",
+    "egg rest fitting",
+    "final UnifiedCollar solve",
+    "complete coupled dynamics",
+    "native output"
+  ]
+}

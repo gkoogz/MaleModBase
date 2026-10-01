@@ -30,6 +30,27 @@ runtime. Its source commit is `dc64bdc44e75fd5521f066cdb2975277e9c34302`;
 
 ## Current shared work
 
+`ROOT-PROFILE.md` adds the active source angular regularization stage: 24 sectors,
+original sparse filling, shaft/pouch ownership, quintic seam fade and bounded
+root correction. 143,280 original C++ vertex comparisons pass. It consumes caller
+positions and RestFrame; preceding fairing, logical/glans/egg construction,
+final UnifiedCollar and native full-control output remain separate gates.
+
+New observed Witcher result: **0.4.9 resizes visibly at 0.8 and 1.2** and greatly
+improves torso/leg tracking. Screenshot: active=true, accepted=true, 27 callbacks,
+requested/readback=0.8, frozen=false. Some animations still open a temporary
+vertical waist gap. Grey menu rows are intentional diagnostic readouts.
+**0.4.10-root-pose-test is installed, gameplay pending**, package
+`publish/20260930-224402-e6260b`, built against Base `81fe047` with unchanged
+`ca78de0` cage. Its graph preserves observed bone-zero identity, matching the
+native attachment reset instead of reintroducing animated Root; 93 stock
+alignments, ten vector scales and 60 scalar channels survive native cooking
+and connected-output/packed-byte verification. 35 adapter tests pass.
+The root-gap fix remains a hypothesis until gameplay confirms it. Full controls
+and dynamic pelvis remain incomplete; this newer shared stage is not in that
+installed runtime. Root-pose policy belongs in Witcher; the numerical regularizer
+belongs here and has an explicit adoption path for every spoke.
+
 `REST-FRAME.md` documents the source rest-centerline/radius/length measurement
 stage, with cached reference weights and the explicit prior-length fallback.
 3,240 original C++ fixture rows and all 46 Base Python tests pass. It consumes
@@ -43,7 +64,7 @@ supplied compiled graph tables but omitted sourceDataRemoved=true, so REDkit
 rebuilt inputs from absent editor sockets and cleared them. This is an adapter
 serialization defect; the shared source shape/material laws were unchanged.
 
-**Witcher 0.4.9-connected-graph-test is installed, gameplay pending.** Its native
+Historical **Witcher 0.4.9-connected-graph-test** native
 cook retains all 94 stock pose alignments and ten named scale inputs connected
 to the output. Full path/rig-name checks, six exact unpacked resources/buffers,
 33 adapter tests and five installed-file hashes pass. Its menu has one scale

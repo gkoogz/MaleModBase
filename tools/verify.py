@@ -11,10 +11,14 @@ from export_controls import outputs as control_outputs
 from extract_authored_shape import outputs as authored_outputs
 from extract_physics_controls import outputs as physics_control_outputs
 from extract_rest_frame import outputs as rest_frame_outputs
+from extract_root_profile import outputs as root_profile_outputs
 
 ROOT = Path(__file__).resolve().parents[1]
 
 def main():
+    for path,content in root_profile_outputs().items():
+        if (ROOT/path).read_bytes()!=content.encode():
+            raise ValueError('Root-profile extraction/provenance differs: '+path)
     for path,content in rest_frame_outputs().items():
         if (ROOT/path).read_bytes()!=content.encode():
             raise ValueError('Rest frame extraction/provenance differs: '+path)

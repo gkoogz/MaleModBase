@@ -1,0 +1,12 @@
+{
+  "id": "anatomy.source-root-profile",
+  "version": 1,
+  "implementation": "malemod_base/root_profile.py",
+  "sourceCoordinateSystem": "Explicit Wolverine reference coordinates; SI units not established",
+  "sectors": 24,
+  "input": ["prepared 2388-point source positions", "measured RestFrame", "source collar growth", "matching geometry/binding bank"],
+  "output": ["regularized positions", "angular sector radius", "changed-vertex mask"],
+  "nativeRuntimeSupport": false,
+  "fullPreparedShapeParity": false,
+  "documentation": "docs/ROOT-PROFILE.md"
+}

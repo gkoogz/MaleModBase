@@ -76,5 +76,8 @@ These are offline stages; the complete live slider port remains unfinished.
 The [source rest frame](docs/REST-FRAME.md) measures the caller's prepared
 centerline, radius, length and explicit prior-length fallback. It is verified
 against original-code fixtures and still requires a native output bridge.
+The [angular root profile](docs/ROOT-PROFILE.md) regularizes the shared proximal
+shaft/collar with source pouch exclusions and bounded radial correction;
+143,280 original C++ vertex comparisons pass. Full preparation remains incomplete.
 Commercial reuse rights are not established by this extraction: upstream has
 no root license, and game-derived assets retain their separate provenance.
