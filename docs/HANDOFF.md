@@ -81,16 +81,24 @@ regression repair that serialization defect. The native rest-mask mechanism
 belongs in Witcher; every future spoke should separately verify attachment
 following under movement and non-default numeric values through its serializer.
 This does not establish full controls, pelvis deformation or active physics.
-**0.4.17-full-joint-lod is now installed; gameplay is pending**, package
+**0.4.17-full-joint-lod FAILED observed gameplay**, package
 `publish/20261001-021142-cf7e81`, built against Base `3b10594` and cage `ca78de0`.
 Review found the private 104-joint rig retained a 40-joint reduced-detail update
 limit. Native CalcTransforms limits model-space computation by this count,
 excluding all added joints at indices 94..103 when that LOD is selected.
 The private rig now retains all 104 joints in that update range. Native cook,
 explicit LOD coverage, 23 connected pose nodes, eight unpacked resources, five
-installed hashes and 47 adapter tests pass. A bounded six-second read-only pose
-measurement reports pelvis/root motion and parent-relative error in the menu;
-it stops afterward. 0.4.16 was measurement-only and never installed.
+installed hashes and 47 adapter tests pass. These offline/native gates did not
+predict the runtime failure. The user's 2026-10-01 02:25 screenshot shows
+`Graph active: false`, `accepted: false`, `Slider changes: 0`, requested scale
+1.0, graph readback 0.0, zero pose samples, zero pelvis/root motion, and default
+bone indices/counts (pelvis 0, root 0, parent entries 0). The displayed UI thumb
+is 0.94. Thus the six-second measurement did not run; its zero motion/error
+values are unavailable measurements, not evidence of successful tracking.
+User reports the attachment follows WASD roughly but remains anchored away from
+Geralt's animated hips/idle pose. The full-joint-LOD gameplay hypothesis is
+not confirmed and this build is a failure, not a working fix. 0.4.16 was
+measurement-only and never installed.
 See REST-GRAFT.md for the shared LOD coverage requirement and adoption path.
 The first-graph helper InputNode candidate 0.4.13 is held/uninstalled because
 native PrepareForSample resets its input to reference pose. The private player
