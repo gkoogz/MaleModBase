@@ -1,0 +1,12 @@
+{
+  "id": "anatomy.source-rest-frame",
+  "version": 1,
+  "implementation": "malemod_base/rest_frame.py",
+  "sourceCoordinateSystem": "Explicit Wolverine reference coordinates; SI units not established",
+  "samples": 18,
+  "input": ["prepared source positions", "mapped angle/overall/width", "discrete physics mode", "pelvic ramp blend", "previous measured length"],
+  "output": ["centerline", "surface flex", "pelvic root follow", "body radius", "rest length", "prior-length dependency flag"],
+  "nativeRuntimeSupport": false,
+  "fullPreparedShapeParity": false,
+  "documentation": "docs/REST-FRAME.md"
+}

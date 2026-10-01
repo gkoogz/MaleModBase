@@ -30,6 +30,15 @@ runtime. Its source commit is `dc64bdc44e75fd5521f066cdb2975277e9c34302`;
 
 ## Current shared work
 
+`REST-FRAME.md` documents the source rest-centerline/radius/length measurement
+stage, with cached reference weights and the explicit prior-length fallback.
+3,240 original C++ fixture rows and all 46 Base Python tests pass. It consumes
+caller-supplied prepared source geometry; preceding fairing, logical/glans
+construction and native output remain separate gates. The Witcher 0.4.7 direct
+pose test also failed observed gameplay: variable accepted was true, but no size
+change and lower-body misalignment persisted. Its working 0.4.4 baseline was
+restored. Investigate runtime sampling/parent pose handoff before another release.
+
 `PHYSICS-CONTROLS.md` documents the active eight-control material-law evaluator.
 Its 600 original C++ float32 profiles and all 43 Base Python tests pass. It is a
 shared numerical input layer; a complete coupled simulator and native output

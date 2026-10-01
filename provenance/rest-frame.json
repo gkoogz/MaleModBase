@@ -1,0 +1,40 @@
+{
+  "format": "malemod.rest-frame-provenance",
+  "version": 1,
+  "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
+  "files": [
+    {
+      "path": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "sha256": "20779d89b389ca315a27f77d7e804d9fa290129fe7b2137e896149c344467e30"
+    },
+    {
+      "path": "malemod_base/rest_frame.py",
+      "sha256": "76401c439e19706438d6cc66409cf02d9b62a44befa5a2ae067e0438ce32c5c7"
+    },
+    {
+      "path": "tests/rest_frame_oracle.cpp",
+      "sha256": "a472b49af2dcf33fea7d621cd8318d9e0b47135f0b032d8f0dfff3948e7fb56b"
+    },
+    {
+      "path": "tools/build_rest_frame_fixture.py",
+      "sha256": "69639855fc6e316180b833127bcd526c8b14d1be419008701febe300c6218417"
+    },
+    {
+      "path": "tests/test_rest_frame.py",
+      "sha256": "1ab394a692af1cb227b467b617d4ad79fce4cc3540b86b86be7a2b7f8cf9be3e"
+    },
+    {
+      "path": "tests/data/wolverine-rest-frame.csv",
+      "sha256": "8e427c1cd83261f050877b02999743362803c1133d3241a565cb977c7d71fdf3"
+    }
+  ],
+  "oracle": "tests/data/wolverine-rest-frame.inc",
+  "oracleSHA256": "743142e3bf7e2263a3b7a280570639ba5d49aa5e7379c4b5e65ff669caafd295",
+  "scope": "Rest measurement of caller-supplied source geometry; fixture input is the separately verified early stage",
+  "omissions": [
+    "preceding fairing/root-profile preparation",
+    "logical/glans render stages",
+    "complete coupled dynamics",
+    "native visible output"
+  ]
+}
