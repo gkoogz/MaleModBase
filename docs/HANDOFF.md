@@ -57,17 +57,28 @@ The 05:05 user screenshot confirms that the live player still has 94 bones.
 Witcher **0.4.19 FAILED observed loading-screen CTDs** twice. Windows records
 access violations at witcher3.exe RVA 0x1e06862; SDK source-cache preservation
 was not game-loader compatibility and is now blocked.
-**0.4.20-shipped-player-load-test is installed, gameplay pending**, package
+**0.4.20-shipped-player-load-test has observed working load/pose**, package
 `publish/20261001-061552-504edb`, built against Base `9966388` and cage `ca78de0`.
 The concrete gameplay and Geralt appearance templates are now extracted from
 the shipped game bundle through official unbundle. Only rig imports and CRCs
 change; all shipped cooked flags, embedded data and other bytes are preserved.
 Native inspection compares against those same shipped bytes, not the SDK's
 different loaded source view. Native template/rig/graph checks, 56 adapter tests,
-ten exact unpacked resources/buffers and five installed hashes pass. Loading
-the same save, then observing boot/pose/following, remain independent gates.
+ten exact unpacked resources/buffers and five installed hashes pass. The 06:21
+user screenshot confirms attached first-attempt boot, active/accepted graph,
+60 samples, 104 parent entries and max parent-follow error 0.000116.
 See the spoke's `docs/ANIMATION-FOLLOW.md` and provenance for the archived CTD.
-No shared anatomy or physics algorithm is changed. Future cage adoption in
+
+**0.4.21-size-controls-test is installed, new controls gameplay pending**,
+package `publish/20261001-063505-7a41a8`, built against Base `15758e5` and unchanged
+`ca78de0` cage. The new shared `control_transport` module supplies normalized
+mapping for five size controls; native UI/storage/joint assignments remain in
+the adapter. Defaults preserve the fitted rest asset; this cage preview is not
+source morph, refined glans, coupled pelvis or physics parity. Three shared
+transport tests, Base provenance, 58 adapter tests, native cook/binding checks,
+ten exact unpacked resources and five installed hashes pass. 0.4.20 is now the
+managed working rollback. See CONTROL-TRANSPORT.md for every-spoke adoption.
+Future cage adoption in
 Wolverine and every spoke must validate effective runtime bone mapping and
 animated parent inheritance, in addition to resource names and rest frames.
 **0.4.10-root-pose-test FAILED observed gameplay:** waist separation persists and

@@ -34,8 +34,11 @@ requires a verified deformation output; storing a slider value is insufficient.
 ## Spoke adoption
 
 Witcher owns native bones/graphs, script declarations, UI/input and packaging.
-The native deformation path remains under investigation; it is not established
-by this catalog. Its verified installed 0.3.0 asset is still a fixed rest shape.
+The 0.4.20 layer now has observed attached boot and animated parent following.
+0.4.21 introduces the first five live size controls through a normalized cage
+preview; new-control gameplay and persistence remain pending. See
+CONTROL-TRANSPORT.md and the adapter's handoff/provenance. The remaining controls
+and full authored surface/physics parity are not established by the catalog.
 
 Wolverine can adopt the catalog and preference validation first, then compare
 all control samples against its current executable mapping before replacing
