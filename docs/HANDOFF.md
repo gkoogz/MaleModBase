@@ -51,8 +51,16 @@ does not establish hip following; see the spoke handoff and F6 boot diagnostics.
 The new adapter investigation traces native name-to-provider skinning mapping:
 missing bone names use identity transforms, without falling back to their authored
 parent. Geralt's observed movement animation set uses the 94-joint stock rig.
-A body-follow baseline using only the existing stock palette is being prepared
-to isolate normal character skinning from authored-joint graph execution.
+An offline stock-palette control preserves the graft seam and pelvis-local
+binding under observed idle/walk/run clips (streamed tail uses native fallback).
+The 05:05 user screenshot confirms that the live player still has 94 bones.
+Witcher **0.4.19-effective-player-test is installed, gameplay pending**, package
+`publish/20261001-054712-e7bb5a`, built against Base `bff38a3` and cage `ca78de0`.
+The concrete gameplay and Geralt appearance templates now import the private
+rig. Their existing native compiled caches preserve all eight stock behavior
+slots; recooking alone dropped seven slots and was rejected. Native loaded
+template/rig/graph checks, 54 adapter tests, ten exact unpacked resources/buffers
+and five installed files pass. See the spoke's `docs/ANIMATION-FOLLOW.md`.
 No shared anatomy or physics algorithm is changed. Future cage adoption in
 Wolverine and every spoke must validate effective runtime bone mapping and
 animated parent inheritance, in addition to resource names and rest frames.
