@@ -54,13 +54,19 @@ parent. Geralt's observed movement animation set uses the 94-joint stock rig.
 An offline stock-palette control preserves the graft seam and pelvis-local
 binding under observed idle/walk/run clips (streamed tail uses native fallback).
 The 05:05 user screenshot confirms that the live player still has 94 bones.
-Witcher **0.4.19-effective-player-test is installed, gameplay pending**, package
-`publish/20261001-054712-e7bb5a`, built against Base `bff38a3` and cage `ca78de0`.
-The concrete gameplay and Geralt appearance templates now import the private
-rig. Their existing native compiled caches preserve all eight stock behavior
-slots; recooking alone dropped seven slots and was rejected. Native loaded
-template/rig/graph checks, 54 adapter tests, ten exact unpacked resources/buffers
-and five installed files pass. See the spoke's `docs/ANIMATION-FOLLOW.md`.
+Witcher **0.4.19 FAILED observed loading-screen CTDs** twice. Windows records
+access violations at witcher3.exe RVA 0x1e06862; SDK source-cache preservation
+was not game-loader compatibility and is now blocked.
+**0.4.20-shipped-player-load-test is installed, gameplay pending**, package
+`publish/20261001-061552-504edb`, built against Base `9966388` and cage `ca78de0`.
+The concrete gameplay and Geralt appearance templates are now extracted from
+the shipped game bundle through official unbundle. Only rig imports and CRCs
+change; all shipped cooked flags, embedded data and other bytes are preserved.
+Native inspection compares against those same shipped bytes, not the SDK's
+different loaded source view. Native template/rig/graph checks, 56 adapter tests,
+ten exact unpacked resources/buffers and five installed hashes pass. Loading
+the same save, then observing boot/pose/following, remain independent gates.
+See the spoke's `docs/ANIMATION-FOLLOW.md` and provenance for the archived CTD.
 No shared anatomy or physics algorithm is changed. Future cage adoption in
 Wolverine and every spoke must validate effective runtime bone mapping and
 animated parent inheritance, in addition to resource names and rest frames.
