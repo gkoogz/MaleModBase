@@ -30,6 +30,18 @@ runtime. Its source commit is `dc64bdc44e75fd5521f066cdb2975277e9c34302`;
 
 ## Current shared work
 
+The October 1 07:54 screenshot reports Witcher 0.4.23 is better but still fails
+shape quality. First-principles reconstruction found that the static final
+reference is a posed authoring mesh, not evaluated neutral. The complete source
+numerical surface pipeline is now extracted into an SDK-free per-character
+`surface::Session`: 17,528 vertices, original 35,000 triangles, lighting/UVs and
+both coupled body sections. Read [SOURCE-SURFACE.md](SOURCE-SURFACE.md) and
+`provenance/source-surface.json` before using it. 37 shape and 33 physics fixtures
+and a changing 180-frame trace pass against the original 32-bit source. Strict
+arithmetic is required. The 64-bit parity gate fails and remains blocked; no
+complete Witcher surface upload, new installation or gameplay success is claimed.
+Wolverine remains authoritative until its adapter adopts a verified Base pin.
+
 `ROOT-PROFILE.md` adds the active source angular regularization stage: 24 sectors,
 original sparse filling, shaft/pouch ownership, quintic seam fade and bounded
 root correction. 143,280 original C++ vertex comparisons pass. It consumes caller

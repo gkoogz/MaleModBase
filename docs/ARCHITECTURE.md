@@ -31,18 +31,22 @@ with per-character state and adapter callbacks. See CLINICAL-SEQUENCE.md.
 The distance and damped-bending XPBD kernels now have explicit instance state,
 and drive a separate generic fixed-step chain. Skinning, sockets and cached
 capsule projection are shared too; see GENERIC-BASE.md. The complete authored
-anatomy suspension/contact/collar solver remains coupled in legacy/wolverine.
+anatomy suspension/contact/collar solver now also has an extracted SDK-free
+32-bit surface session; see SOURCE-SURFACE.md. The immutable snapshot remains
+its provenance input, with a hash-checked declaration recipe.
 
 The active final collar's growing support metric and a source-derived offline
 coupled solve are now shared, with exact donor-edge seam elimination. The full
 posed runtime, guide inputs and graphics uploads remain separate integration
 work. See PELVIC-COLLAR.md for the feature contract and spoke adoption matrix.
 
-The XPBD solver uses globals for rod nodes, lobe transforms, previous poses,
-contact impulses and tuning. Moving its header alone does not make it portable.
-The next extraction must introduce per-character solver state, explicit inputs,
-and fixed-step evaluation while checking parity against the original fixtures.
-Multiple characters must never share the old static mutable arrays.
+The original XPBD solver uses globals for rod nodes, lobe transforms, previous
+poses, contact impulses and tuning. The complete surface extraction isolates
+mutable globals and function-local caches on each session's owned worker thread.
+It exposes explicit controls, timestep, motion forces and optional thigh inputs.
+Simultaneous sessions and changing original-source traces pass offline gates.
+64-bit arithmetic, target fitting and engine uploads remain unresolved; the
+existing authoritative Wolverine runtime has not migrated to this interface.
 
 ## Lessons retained from Wolverine
 

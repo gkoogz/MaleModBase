@@ -3185,5 +3185,21 @@
       "short-profile previous-length fallback uses measured neutral rather than live history"
     ],
     "verification": "offline positive independent section fits; not native or observed gameplay"
+  },
+  "completeNumericalSurface": {
+    "module": "include/malemod/surface/runtime.hpp",
+    "provenance": "provenance/source-surface.json",
+    "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
+    "verifiedArchitecture": "32-bit MSVC strict arithmetic",
+    "sourceTopologyAndLineagePreserved": true,
+    "verification": "offline source parity; 64-bit failed; native and observed Witcher parity pending",
+    "omissions": [
+      "engine input/motion filtering and transforms",
+      "native buffers, skinning palettes, uploads, synchronization and materials",
+      "world collision queries; missing thigh endpoints use source reference pose",
+      "source packed W/skin/color flags are not an adapter contract",
+      "animation sequences, pulses, fluid and audio deferred",
+      "64-bit source parity remains failed; do not link into Witcher as verified"
+    ]
   }
 }

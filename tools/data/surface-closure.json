@@ -1,0 +1,5934 @@
+{
+  "declarations": [
+    {
+      "name": "ResetCompliantDynamics",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 1024,
+      "end": 1167,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "InitializeConstraintSolver",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 31914,
+      "end": 32988,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "UpdateConstraintSolver",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 44856,
+      "end": 44962,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "MapControl100",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 46744,
+      "end": 46915,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "MapLength100",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 47290,
+      "end": 47593,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "EvaluateAnatomy",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/anatomy_surface.h",
+      "start": 211,
+      "end": 5928,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ResetSharedBodySurface",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/shared_body_surface.h",
+      "start": 1510,
+      "end": 1725,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pelvisControlFirstVertex",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvis_control.h",
+      "start": 82,
+      "end": 135,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "graftStride",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 2103,
+      "end": 2152,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "V3",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 4386,
+      "end": 4410,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PrepareShape",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/prepared_shape.h",
+      "start": 5099,
+      "end": 7809,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "constraintSolverReady",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 7378,
+      "end": 7411,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "graftCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 2103,
+      "end": 2136,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "graftDeformedPositions",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 7078,
+      "end": 7122,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "phys_scrotum_weight",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/physics_weights.h",
+      "start": 38637,
+      "end": 54562,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "phys_shaft_weight",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/physics_weights.h",
+      "start": 14,
+      "end": 17561,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "phys_attachment_weight",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/physics_weights.h",
+      "start": 54565,
+      "end": 73760,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "suspensionWeight",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/suspension_weights.h",
+      "start": 97,
+      "end": 41136,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ApplySuspendedSkin",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 106557,
+      "end": 108150,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ApplyConstraintCurve",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 97690,
+      "end": 99810,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ConstructLogicalShaftSurface",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 77456,
+      "end": 78566,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "FinishScrotalJunction",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 112210,
+      "end": 116356,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "Smoother01",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 56005,
+      "end": 56128,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "graftRestFlex",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 6691,
+      "end": 6729,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "operator+",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 4497,
+      "end": 4576,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "operator*",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 4659,
+      "end": 4735,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "SculptVentralContourStudy",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 99812,
+      "end": 102074,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ResolveSuspendedSkinContact",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 109527,
+      "end": 111976,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PreserveEggSupports",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 108283,
+      "end": 109525,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "graftDynamicNormalSums",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 7078,
+      "end": 7168,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "graftDynamicTangentSums",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 7078,
+      "end": 7204,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "collarTangentSums",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 7287,
+      "end": 7375,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "graftTriangleIndexCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/graft_normals.h",
+      "start": 34,
+      "end": 86,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "graftTriangleIndices",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/graft_normals.h",
+      "start": 89,
+      "end": 65744,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "operator-",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 4578,
+      "end": 4657,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "Cross",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 5025,
+      "end": 5124,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "graftNormalGroup",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/graft_normals.h",
+      "start": 65747,
+      "end": 77122,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "graftUVs",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/graft_normals.h",
+      "start": 183069,
+      "end": 242068,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "operator/",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 4737,
+      "end": 4947,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "Unit",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 5225,
+      "end": 5308,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "graftCollarGroups",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/collar_fairing.h",
+      "start": 566524,
+      "end": 580041,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RebuildUnifiedCollarNormals",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 90385,
+      "end": 93682,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RebuildUnifiedCollarTangents",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 93684,
+      "end": 95219,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "collarNormalSums",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 7287,
+      "end": 7335,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "graftBaseNormals",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/graft_normals.h",
+      "start": 77177,
+      "end": 169153,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "graftSeamNormalLock",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/graft_normals.h",
+      "start": 169156,
+      "end": 183066,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "Dot",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 4949,
+      "end": 5023,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PackSigned",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 89639,
+      "end": 89774,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "UpdateR14",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_runtime.h",
+      "start": 9834,
+      "end": 17656,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ApplyPelvicAttachment",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment.h",
+      "start": 999,
+      "end": 6490,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ApplyRoundedShape",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_shape.h",
+      "start": 1490,
+      "end": 11534,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "sharedBodyDeform",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/shared_body_surface.h",
+      "start": 1969,
+      "end": 2054,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsPacked",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_runtime.h",
+      "start": 216,
+      "end": 257,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paSeamCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 180611,
+      "end": 180738,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paSeamR14",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 177927,
+      "end": 178054,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paBodyNormalIDs",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 122870,
+      "end": 126177,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paSeamBody",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 178057,
+      "end": 178173,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "UpdateMenuRetargetBodyWeld",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/shared_body_surface.h",
+      "start": 2056,
+      "end": 2480,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "UpdateNeckRender",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/neck_render.h",
+      "start": 252,
+      "end": 3490,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "Apply",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 8523,
+      "end": 14216,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "Length",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 5126,
+      "end": 5223,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ShaftRoot",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 29932,
+      "end": 29979,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "constraintRestLength",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 7448,
+      "end": 7508,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PerfScope",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/performance_metrics.h",
+      "start": 684,
+      "end": 909,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "Topology",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 1645,
+      "end": 2393,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "Read",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 2394,
+      "end": 2759,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "SampleShaftChain",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 96921,
+      "end": 97688,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "logicalShaftBodyRadius",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 6876,
+      "end": 6911,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cachedControls",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 1189,
+      "end": 1221,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "hangUI",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 3129,
+      "end": 3153,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "glansUI",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 3156,
+      "end": 3181,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "sliderUI",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 3184,
+      "end": 3245,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "Timeline",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/teaching_sequence.h",
+      "start": 1022,
+      "end": 2038,
+      "parent": "teaching"
+    },
+    {
+      "name": "teachingTimeline",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 5401,
+      "end": 5443,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "valid",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 1152,
+      "end": 1187,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "metricSequencePhase",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 1111,
+      "end": 1151,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "Mat",
+      "kind": "CursorKind.TYPE_ALIAS_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 437,
+      "end": 501,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "solved",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 979,
+      "end": 1010,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "ucCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_data.h",
+      "start": 167,
+      "end": 206,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "mode",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 1111,
+      "end": 1129,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "physicsState",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 4198,
+      "end": 4223,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "revision",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 1082,
+      "end": 1110,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "geometryRestRevision",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 7037,
+      "end": 7075,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "throbMode",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 3467,
+      "end": 3487,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cachedRadius",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 1189,
+      "end": 1236,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "cachedLength",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 1189,
+      "end": 1251,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "Build",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 2760,
+      "end": 7159,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "PerfClock",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/performance_metrics.h",
+      "start": 472,
+      "end": 682,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "target",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 979,
+      "end": 1003,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "before",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 979,
+      "end": 996,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "targetIDs",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 720,
+      "end": 758,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "Point",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 1551,
+      "end": 1644,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "RapheChainFrame",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 1210,
+      "end": 1608,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RapheRadius",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 3083,
+      "end": 3185,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RapheFrame",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 807,
+      "end": 844,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RapheDepth",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 3261,
+      "end": 3628,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "mask",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 939,
+      "end": 970,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "profile",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 1313,
+      "end": 1339,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "freeIDs",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 613,
+      "end": 657,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "projectionOffsets",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 720,
+      "end": 776,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "projectionSources",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 720,
+      "end": 794,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "screen",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 939,
+      "end": 977,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "projectionWeights",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 828,
+      "end": 872,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "boundaryOffsets",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 720,
+      "end": 810,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "boundarySources",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 720,
+      "end": 826,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "boundaryWeights",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 828,
+      "end": 888,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "SolveXYZ",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 7385,
+      "end": 8522,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "factor",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 532,
+      "end": 571,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "masters",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 613,
+      "end": 649,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "ucSeamCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_data.h",
+      "start": 167,
+      "end": 259,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ucSeamVertices",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_data.h",
+      "start": 1721067,
+      "end": 1721740,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ucSeamWeights",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_data.h",
+      "start": 1721743,
+      "end": 1722370,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "transitionCorrection",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 1012,
+      "end": 1043,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "transitionFrames",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 1045,
+      "end": 1079,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "normalFaces",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 668,
+      "end": 708,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "ucFaces",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_data.h",
+      "start": 436718,
+      "end": 1721064,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "packedIDs",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 668,
+      "end": 718,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "ucMap",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_data.h",
+      "start": 214528,
+      "end": 436715,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "Packed",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 1341,
+      "end": 1550,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "nrCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/neck_render_data.h",
+      "start": 175,
+      "end": 210,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "nrPositions",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/neck_render.h",
+      "start": 180,
+      "end": 210,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "sharedBodyCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/shared_body_surface.h",
+      "start": 568,
+      "end": 668,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "sharedBodyOutput",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/shared_body_surface.h",
+      "start": 769,
+      "end": 862,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "solveMS",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 1253,
+      "end": 1286,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "menuRetargetBodyDynamic0",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/shared_body_surface.h",
+      "start": 216,
+      "end": 294,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "menuRetargetBodyDynamic1",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/shared_body_surface.h",
+      "start": 297,
+      "end": 375,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "menuRetargetBodyPacked1",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/menu_retarget_body_data.h",
+      "start": 2115597,
+      "end": 2717284,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "menuRetargetBodyPacked0",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/menu_retarget_body_data.h",
+      "start": 207,
+      "end": 1649517,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "menuRetargetBodyVertexCount0",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/menu_retarget_body_data.h",
+      "start": 95,
+      "end": 148,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "menuRetargetBodyVertexCount1",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/menu_retarget_body_data.h",
+      "start": 2115486,
+      "end": 2115538,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "nrPacked",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_runtime.h",
+      "start": 291,
+      "end": 332,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "Sp",
+      "kind": "CursorKind.TYPE_ALIAS_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 363,
+      "end": 399,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "inverseDiagonal",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 573,
+      "end": 611,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "rapheTubeEnd",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 560,
+      "end": 590,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheTubeEndDepth",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 560,
+      "end": 612,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RapheCover",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 3186,
+      "end": 3260,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RapheTubeRadiusRatio",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_profile.h",
+      "start": 170,
+      "end": 348,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheChain",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 846,
+      "end": 878,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "Triplet",
+      "kind": "CursorKind.TYPE_ALIAS_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 400,
+      "end": 436,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "ucFaceCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_data.h",
+      "start": 167,
+      "end": 224,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "P",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 503,
+      "end": 514,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "fixedIDs",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 613,
+      "end": 666,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "freeOf",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 890,
+      "end": 929,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "fixedOf",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 890,
+      "end": 937,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "ucPackedCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_data.h",
+      "start": 167,
+      "end": 244,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "A",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 503,
+      "end": 516,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "fixedCoupling",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 503,
+      "end": 530,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "buildMS",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 1253,
+      "end": 1276,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "builds",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 1287,
+      "end": 1311,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "BoundedFrameAdvance",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/teaching_sequence.h",
+      "start": 336,
+      "end": 439,
+      "parent": "teaching"
+    },
+    {
+      "name": "sequenceEnd",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/teaching_sequence.h",
+      "start": 197,
+      "end": 226,
+      "parent": "teaching"
+    },
+    {
+      "name": "Sample",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/teaching_sequence.h",
+      "start": 937,
+      "end": 1020,
+      "parent": "teaching"
+    },
+    {
+      "name": "Ease",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/teaching_sequence.h",
+      "start": 440,
+      "end": 512,
+      "parent": "teaching"
+    },
+    {
+      "name": "peaks",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/teaching_sequence.h",
+      "start": 563,
+      "end": 632,
+      "parent": "teaching"
+    },
+    {
+      "name": "PulseEnvelopeAt",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/teaching_sequence.h",
+      "start": 634,
+      "end": 762,
+      "parent": "teaching"
+    },
+    {
+      "name": "Clamp",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/teaching_sequence.h",
+      "start": 228,
+      "end": 294,
+      "parent": "teaching"
+    },
+    {
+      "name": "maxFrameAdvance",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/teaching_sequence.h",
+      "start": 295,
+      "end": 334,
+      "parent": "teaching"
+    },
+    {
+      "name": "shaftNodeCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 6195,
+      "end": 6229,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "shaftNodes",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 6232,
+      "end": 6268,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "LiveRootDirection",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 28138,
+      "end": 28449,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rootDriveReady",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 27865,
+      "end": 27891,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rootDriveAngle",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 27817,
+      "end": 27844,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "sliderValues",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 3393,
+      "end": 3464,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "Spring2",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 4255,
+      "end": 4314,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "shaftSpring",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 4317,
+      "end": 4345,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "Fluid",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/teaching_volume.h",
+      "start": 144,
+      "end": 13210,
+      "parent": "teaching"
+    },
+    {
+      "name": "teachingFluid",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 5648,
+      "end": 5691,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "Settings",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/fluid_types.h",
+      "start": 1216,
+      "end": 1885,
+      "parent": "volumeFluid"
+    },
+    {
+      "name": "F4",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/fluid_types.h",
+      "start": 200,
+      "end": 226,
+      "parent": "volumeFluid"
+    },
+    {
+      "name": "collisionCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/fluid_types.h",
+      "start": 1175,
+      "end": 1213,
+      "parent": "volumeFluid"
+    },
+    {
+      "name": "FluidImpact",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/fluid_types.h",
+      "start": 313,
+      "end": 584,
+      "parent": "volumeFluid"
+    },
+    {
+      "name": "ClearStrand",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/clear_strand.h",
+      "start": 194,
+      "end": 4265,
+      "parent": "teaching"
+    },
+    {
+      "name": "ViscousThread",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/viscous_thread.h",
+      "start": 477,
+      "end": 10576,
+      "parent": "teaching"
+    },
+    {
+      "name": "LiquidMesh",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/thread_mesh.h",
+      "start": 148,
+      "end": 3995,
+      "parent": "teaching"
+    },
+    {
+      "name": "Particle",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/fluid_types.h",
+      "start": 148,
+      "end": 197,
+      "parent": "volumeFluid"
+    },
+    {
+      "name": "config",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/fluid_types.h",
+      "start": 1888,
+      "end": 1910,
+      "parent": "volumeFluid"
+    },
+    {
+      "name": "ThreadNode",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/viscous_thread.h",
+      "start": 288,
+      "end": 385,
+      "parent": "teaching"
+    },
+    {
+      "name": "ThreadLink",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/viscous_thread.h",
+      "start": 387,
+      "end": 474,
+      "parent": "teaching"
+    },
+    {
+      "name": "CollisionPath",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/fluid_types.h",
+      "start": 888,
+      "end": 1173,
+      "parent": "volumeFluid"
+    },
+    {
+      "name": "collisionDeferred",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/fluid_types.h",
+      "start": 851,
+      "end": 886,
+      "parent": "volumeFluid"
+    },
+    {
+      "name": "collisionSweep",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/fluid_types.h",
+      "start": 665,
+      "end": 709,
+      "parent": "volumeFluid"
+    },
+    {
+      "name": "CollisionSweep",
+      "kind": "CursorKind.TYPEDEF_DECL",
+      "file": "legacy/wolverine/src/runtime/fluid_types.h",
+      "start": 587,
+      "end": 662,
+      "parent": "volumeFluid"
+    },
+    {
+      "name": "LiquidVertex",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/thread_mesh.h",
+      "start": 117,
+      "end": 146,
+      "parent": "teaching"
+    },
+    {
+      "name": "(lambda at C:\\Users\\Administrator\\Documents\\ChatGPT\\MaleMod\\legacy\\wolverine\\src\\runtime\\thread_mesh.h:13:12)",
+      "kind": "CursorKind.CLASS_DECL",
+      "file": "legacy/wolverine/src/runtime/thread_mesh.h",
+      "start": 708,
+      "end": 709,
+      "parent": "Tube"
+    },
+    {
+      "name": "FLUID_IMPACT_WORLD",
+      "kind": "CursorKind.ENUM_CONSTANT_DECL",
+      "file": "legacy/wolverine/src/runtime/fluid_types.h",
+      "start": 268,
+      "end": 288,
+      "parent": "FluidImpactKind"
+    },
+    {
+      "name": "FluidImpactKind",
+      "kind": "CursorKind.ENUM_DECL",
+      "file": "legacy/wolverine/src/runtime/fluid_types.h",
+      "start": 229,
+      "end": 310,
+      "parent": "volumeFluid"
+    },
+    {
+      "name": "FLUID_IMPACT_BODY",
+      "kind": "CursorKind.ENUM_CONSTANT_DECL",
+      "file": "legacy/wolverine/src/runtime/fluid_types.h",
+      "start": 289,
+      "end": 308,
+      "parent": "FluidImpactKind"
+    },
+    {
+      "name": "ucKeep",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_data.h",
+      "start": 262,
+      "end": 214525,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ready",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 1152,
+      "end": 1175,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "masterOf",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "start": 890,
+      "end": 922,
+      "parent": "UnifiedCollar"
+    },
+    {
+      "name": "perfMetrics",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/performance_metrics.h",
+      "start": 171,
+      "end": 469,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PerfMetric",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/performance_metrics.h",
+      "start": 92,
+      "end": 168,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "nrAttributes",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/neck_render_data.h",
+      "start": 6692679,
+      "end": 7759071,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_render_data.h",
+      "start": 3285871,
+      "end": 3285906,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "GeometryFor",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 565,
+      "end": 1270,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "nrDirect",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/neck_render_data.h",
+      "start": 575318,
+      "end": 677050,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "nrRows",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/neck_render_data.h",
+      "start": 677053,
+      "end": 784173,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "nrSources",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/neck_render_data.h",
+      "start": 784176,
+      "end": 2239509,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "nrWeights",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/neck_render_data.h",
+      "start": 2239512,
+      "end": 6692676,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "nrIndexCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/neck_render_data.h",
+      "start": 175,
+      "end": 230,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "nrIndices",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/neck_render_data.h",
+      "start": 233,
+      "end": 575315,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "nrNormals",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/neck_render.h",
+      "start": 180,
+      "end": 229,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "nrTangents",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/neck_render.h",
+      "start": 180,
+      "end": 249,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "nrMaterialSources",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/neck_render_data.h",
+      "start": 7759074,
+      "end": 8051562,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "nrMaterialWeights",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/neck_render_data.h",
+      "start": 8051565,
+      "end": 8951384,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "nrNormalMix",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/neck_render_data.h",
+      "start": 8951387,
+      "end": 9251352,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "EnsureSharedBody",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/shared_body_surface.h",
+      "start": 1115,
+      "end": 1319,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "sharedBodyFirst",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/shared_body_surface.h",
+      "start": 511,
+      "end": 565,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "menuRetargetBodyUploadPending",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/shared_body_surface.h",
+      "start": 378,
+      "end": 469,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "sharedBodyRevision",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/shared_body_surface.h",
+      "start": 471,
+      "end": 507,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "menuRetargetBodyDynamicReady",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/shared_body_surface.h",
+      "start": 378,
+      "end": 424,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "sharedBodyBase",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/shared_body_surface.h",
+      "start": 671,
+      "end": 766,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsBefore",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_shape.h",
+      "start": 203,
+      "end": 231,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14Positions",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_runtime.h",
+      "start": 445,
+      "end": 477,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsStep",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_shape.h",
+      "start": 203,
+      "end": 248,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsBodyStep",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_shape.h",
+      "start": 311,
+      "end": 350,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ModeValue",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 27613,
+      "end": 27782,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsShapeCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_render_data.h",
+      "start": 3285871,
+      "end": 3285943,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsShapeLobeFade",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_render_data.h",
+      "start": 765570,
+      "end": 771629,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsShapeIDs",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_render_data.h",
+      "start": 705532,
+      "end": 710099,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RSFrameOffset",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_shape.h",
+      "start": 708,
+      "end": 1005,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsShapeFrame",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_render_data.h",
+      "start": 710102,
+      "end": 723694,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsShapeCoeff",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_render_data.h",
+      "start": 723697,
+      "end": 765567,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14Count",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 90,
+      "end": 122,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheSupportCoreCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_support_data.h",
+      "start": 253716,
+      "end": 253762,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheSupportCore",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_support_data.h",
+      "start": 139062,
+      "end": 139175,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "AxialMaterialFlex",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/axial_raphe.h",
+      "start": 3896,
+      "end": 4157,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "axialCoreRadius",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/axial_raphe.h",
+      "start": 305,
+      "end": 349,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheSupportFreeCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_support_data.h",
+      "start": 253716,
+      "end": 253788,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheSupportFree",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_support_data.h",
+      "start": 139180,
+      "end": 141391,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheSupportWeights",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_support_data.h",
+      "start": 141396,
+      "end": 253711,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paBodyNormalCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 180611,
+      "end": 180685,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paBodyBefore",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment.h",
+      "start": 210,
+      "end": 251,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsBodyCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_render_data.h",
+      "start": 3285871,
+      "end": 3286020,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsBodyIDs",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_render_data.h",
+      "start": 3282750,
+      "end": 3283147,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PARead",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment.h",
+      "start": 573,
+      "end": 652,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsBodyDelta",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_render_data.h",
+      "start": 3283150,
+      "end": 3285868,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "geometryRoundedFaces",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/geometry_binding_data.h",
+      "start": 96849,
+      "end": 109343,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14Indices",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 15298653,
+      "end": 15619556,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RSSafeFraction",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_shape.h",
+      "start": 409,
+      "end": 706,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paBodyFaceCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 180611,
+      "end": 180705,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paBodyNormalFaces",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 146219,
+      "end": 154860,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsAppliedFraction",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_shape.h",
+      "start": 353,
+      "end": 387,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsPositions",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_shape.h",
+      "start": 203,
+      "end": 269,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsFineCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_render_data.h",
+      "start": 3285871,
+      "end": 3285961,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RSPreparedFrame",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_shape.h",
+      "start": 1007,
+      "end": 1426,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "geometryFineFrameCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/geometry_binding_data.h",
+      "start": 226,
+      "end": 275,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "geometryFineFrames",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/geometry_binding_data.h",
+      "start": 278,
+      "end": 29638,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "GeometryFor",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 565,
+      "end": 1270,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsFineSource",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_render_data.h",
+      "start": 771632,
+      "end": 973220,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsFineBary",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_render_data.h",
+      "start": 973223,
+      "end": 1745472,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsFineLobeFade",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_render_data.h",
+      "start": 2542905,
+      "end": 2800352,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "geometryFineFrameIDs",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/geometry_binding_data.h",
+      "start": 29641,
+      "end": 96846,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsFineCoeff",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_render_data.h",
+      "start": 1745475,
+      "end": 2542902,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "geometryFineFaces",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/geometry_binding_data.h",
+      "start": 109346,
+      "end": 236414,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsIndices",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_render_data.h",
+      "start": 173,
+      "end": 545763,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsFineFraction",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_shape.h",
+      "start": 353,
+      "end": 406,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ApplyPouchSurface",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "start": 5060,
+      "end": 11450,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ApplyRapheTubeSkin",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 8252,
+      "end": 14930,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14Packed",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_runtime.h",
+      "start": 523,
+      "end": 566,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14Bones",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 15619559,
+      "end": 15709316,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14Weights",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 15709319,
+      "end": 15820339,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14UV",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 12978738,
+      "end": 13253810,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsIndexCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_render_data.h",
+      "start": 3285871,
+      "end": 3285925,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsNormals",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_shape.h",
+      "start": 203,
+      "end": 288,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rsTangents",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/rounded_shape.h",
+      "start": 203,
+      "end": 308,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paBodyNormals",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment.h",
+      "start": 210,
+      "end": 314,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paBodyGroupNormals",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment.h",
+      "start": 396,
+      "end": 442,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paBodyNormalGroup",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 154863,
+      "end": 156966,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpNormalCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface_data.h",
+      "start": 10910821,
+      "end": 10910916,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpNormalIDs",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface_data.h",
+      "start": 10425613,
+      "end": 10523250,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheNormalNeeded",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 489,
+      "end": 558,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paBodyNormalWrite",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 156969,
+      "end": 158111,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14UploadPending",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_runtime.h",
+      "start": 705,
+      "end": 754,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paBodyGroupCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 180611,
+      "end": 180780,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "shaftRestFrameReady",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 6914,
+      "end": 6945,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "BuildRapheTube",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 3629,
+      "end": 7677,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14Offsets",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 13253813,
+      "end": 13325288,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14Sources",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 13325291,
+      "end": 15298650,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14Weight",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 822780,
+      "end": 7214152,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheSkinBall",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 707,
+      "end": 744,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "GeometryFor",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 565,
+      "end": 1270,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RapheCollarShift",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 7678,
+      "end": 8251,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RapheClosest",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 1609,
+      "end": 3082,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PreparedSurfaceLimit",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/surface_limit.h",
+      "start": 955,
+      "end": 1696,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "(lambda at C:\\Users\\Administrator\\Documents\\ChatGPT\\MaleMod\\legacy\\wolverine\\src\\runtime\\raphe_tube_surface.h:176:20)",
+      "kind": "CursorKind.CLASS_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 11965,
+      "end": 11966,
+      "parent": "ApplyRapheTubeSkin"
+    },
+    {
+      "name": "rapheSkinFraction",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 560,
+      "end": 634,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheSkinChanged",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 636,
+      "end": 670,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheSkinDelta",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 672,
+      "end": 705,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheSearchAxis",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 1124,
+      "end": 1149,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheBoundsMin",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 972,
+      "end": 999,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheBoundsMax",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 972,
+      "end": 1017,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheSegments4",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 1083,
+      "end": 1122,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RapheSegments4",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 1019,
+      "end": 1081,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheCollarRoot",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 1151,
+      "end": 1208,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheCollarAxis",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 1151,
+      "end": 1176,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheCollarDown",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 1151,
+      "end": 1192,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RotateFromTo",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 96656,
+      "end": 96919,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RapheSegment",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 880,
+      "end": 931,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheSegments",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 933,
+      "end": 970,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "(lambda at C:\\Users\\Administrator\\Documents\\ChatGPT\\MaleMod\\legacy\\wolverine\\src\\runtime\\raphe_tube_surface.h:73:15)",
+      "kind": "CursorKind.CLASS_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 4175,
+      "end": 4176,
+      "parent": "BuildRapheTube"
+    },
+    {
+      "name": "(lambda at C:\\Users\\Administrator\\Documents\\ChatGPT\\MaleMod\\legacy\\wolverine\\src\\runtime\\raphe_tube_surface.h:74:14)",
+      "kind": "CursorKind.CLASS_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 4338,
+      "end": 4339,
+      "parent": "BuildRapheTube"
+    },
+    {
+      "name": "RestShaftDirection",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 27476,
+      "end": 27582,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14NewStart",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 16574280,
+      "end": 16574314,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14SegmentCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 16574280,
+      "end": 16574351,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheTubeRings",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 171,
+      "end": 214,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheTubeCenters",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 364,
+      "end": 406,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheTubeOuter",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 408,
+      "end": 451,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheTubeParameters",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 408,
+      "end": 487,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheTubeSides",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 171,
+      "end": 232,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheTubeWall",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 234,
+      "end": 290,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheTubeLumenRatio",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_profile.h",
+      "start": 349,
+      "end": 396,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheTubeTopologyReady",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 489,
+      "end": 529,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheTubeFaces",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 292,
+      "end": 362,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "(lambda at C:\\Users\\Administrator\\Documents\\ChatGPT\\MaleMod\\legacy\\wolverine\\src\\runtime\\raphe_tube_surface.h:106:27)",
+      "kind": "CursorKind.CLASS_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "start": 6853,
+      "end": 6854,
+      "parent": "BuildRapheTube"
+    },
+    {
+      "name": "eggRestReady",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 7650,
+      "end": 7680,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPEnsure",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 1492,
+      "end": 1752,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpCenters",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "start": 127,
+      "end": 149,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPCenter",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 2439,
+      "end": 2520,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpRenderRadii",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "start": 127,
+      "end": 206,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPRadii",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 360,
+      "end": 524,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPDiv",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 297,
+      "end": 358,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpSkinRadii",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "start": 127,
+      "end": 221,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPMul",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 234,
+      "end": 295,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpInverseBasis",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "start": 127,
+      "end": 170,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPInverse",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 2231,
+      "end": 2337,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpWorldBasis",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "start": 127,
+      "end": 189,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPTransform",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 2133,
+      "end": 2229,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPPouchLevel",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "start": 522,
+      "end": 659,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPLocalPoint",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "start": 255,
+      "end": 393,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpSurfaceK",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "start": 224,
+      "end": 252,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "GeometryFor",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 565,
+      "end": 1270,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpActiveCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface_data.h",
+      "start": 10910821,
+      "end": 10910862,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpDirections",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface_data.h",
+      "start": 232974,
+      "end": 764817,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPRayLevel4",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "start": 661,
+      "end": 1238,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpActive",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface_data.h",
+      "start": 167,
+      "end": 60704,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpWeights",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface_data.h",
+      "start": 60707,
+      "end": 232971,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "BallAnchor",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 104539,
+      "end": 104803,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpNeckCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface_data.h",
+      "start": 10910821,
+      "end": 10910896,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpNeckIDs",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface_data.h",
+      "start": 2646491,
+      "end": 2674161,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpNeckRows",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface_data.h",
+      "start": 2674164,
+      "end": 2705345,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpNeckSources",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface_data.h",
+      "start": 2705348,
+      "end": 4685853,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpReference",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface_data.h",
+      "start": 1319737,
+      "end": 2646488,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpTemplate",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "start": 71,
+      "end": 124,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpSurfaceDelta",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "start": 71,
+      "end": 104,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpNeckWeights",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface_data.h",
+      "start": 4685856,
+      "end": 10346940,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpNeckBlend",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface_data.h",
+      "start": 10346943,
+      "end": 10425610,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpFairCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface_data.h",
+      "start": 10910821,
+      "end": 10910879,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpFair",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface_data.h",
+      "start": 764820,
+      "end": 806732,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpRows",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface_data.h",
+      "start": 925975,
+      "end": 1068400,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpFairWeight",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface_data.h",
+      "start": 806735,
+      "end": 925972,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpNeighbors",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface_data.h",
+      "start": 1068403,
+      "end": 1319734,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPKeepSkinOutside",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "start": 2805,
+      "end": 5058,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPKeepSkinOutside",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "start": 2805,
+      "end": 5058,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "GeometryFor",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 565,
+      "end": 1270,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPPoints4",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "start": 1618,
+      "end": 1650,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPBasis4",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "start": 1831,
+      "end": 2316,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPSplat",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "start": 1653,
+      "end": 1707,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPLevel4",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "start": 2318,
+      "end": 2771,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPSelect",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "start": 1709,
+      "end": 1829,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "GeometryFor",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 565,
+      "end": 1270,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RestBallAnchor",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 104171,
+      "end": 104537,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "SampleRestShaftFrame",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 66684,
+      "end": 67059,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "shaftRestSampleCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 6597,
+      "end": 6637,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "shaftRestCenters",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 6640,
+      "end": 6688,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "LobePressureOffset",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 31493,
+      "end": 31811,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPPairPressure",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 1957,
+      "end": 2131,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPOrient",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 1754,
+      "end": 1847,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpBasis",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 115,
+      "end": 138,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpCompression",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 168,
+      "end": 199,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpNormal",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 115,
+      "end": 165,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "lobeCompression",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 31260,
+      "end": 31291,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "lobePressureNormal",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 31294,
+      "end": 31344,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPUnorient",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 1849,
+      "end": 1955,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "eggRadii",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 7588,
+      "end": 7647,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ballNodes",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 6500,
+      "end": 6522,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpReady",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 87,
+      "end": 112,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPDesiredUp",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 1261,
+      "end": 1491,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpOmega",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 115,
+      "end": 149,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPRotate",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 1050,
+      "end": 1184,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "SurfaceCorrectionLimit",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/surface_limit.h",
+      "start": 292,
+      "end": 951,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ClosestRestShaftFlex",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 61852,
+      "end": 62375,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "AxialMaterialRest",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/axial_raphe.h",
+      "start": 3648,
+      "end": 3894,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ComputeAxialMaterialRest",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/axial_raphe.h",
+      "start": 3331,
+      "end": 3646,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14Base",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 146,
+      "end": 390759,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "firmLobeRestSkin",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 6996,
+      "end": 7034,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14Reference",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 734346,
+      "end": 822777,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "shaftMode",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 27584,
+      "end": 27610,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paAppliedFraction",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment.h",
+      "start": 536,
+      "end": 570,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paReferenceAxis",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 122737,
+      "end": 122867,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paR14Step",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment.h",
+      "start": 317,
+      "end": 346,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paBodyStep",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment.h",
+      "start": 210,
+      "end": 281,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paBodyCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 180611,
+      "end": 180648,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paBodyIDs",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 103,
+      "end": 2327,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "GeometryRotation",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 1428,
+      "end": 1784,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paBodyDelta",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 15698,
+      "end": 58946,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paR14Count",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 180611,
+      "end": 180663,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paR14Delta",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 61002,
+      "end": 118681,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paR14IDs",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 58949,
+      "end": 60999,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paRotateWeight",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 118684,
+      "end": 122734,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paR14FaceCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 180611,
+      "end": 180800,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paR14NormalFaces",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 160752,
+      "end": 177924,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paNewNormals",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment.h",
+      "start": 317,
+      "end": 369,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paNewTangents",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment.h",
+      "start": 317,
+      "end": 393,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paNormalCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 180611,
+      "end": 180723,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paR14NormalIDs",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 158114,
+      "end": 160749,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "R14Scale",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_runtime.h",
+      "start": 9302,
+      "end": 9591,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "GlansControlV4",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 47888,
+      "end": 48008,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "R14LowerFactor",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_runtime.h",
+      "start": 9593,
+      "end": 9684,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14FrameCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 16137213,
+      "end": 16137247,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14FrameSources",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 16137250,
+      "end": 16137511,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14FrameLinear",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 16137514,
+      "end": 16139708,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14Growth",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 390762,
+      "end": 734343,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14GrowthWeight",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 7214155,
+      "end": 12978735,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "GeometryFor",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 565,
+      "end": 1270,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14LowerDelta",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 16139711,
+      "end": 16514450,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14Ready",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_runtime.h",
+      "start": 705,
+      "end": 731,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14RingCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 16574280,
+      "end": 16574331,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14CrownRing",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 16574280,
+      "end": 16574368,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "GeometryFairPass",
+      "kind": "CursorKind.CLASS_TEMPLATE",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 2020,
+      "end": 3287,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "GeometryFairPass",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 2020,
+      "end": 3287,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheSmoothCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/continuous_raphe_data.h",
+      "start": 13936225,
+      "end": 13936267,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheSmoothIDs",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/continuous_raphe_data.h",
+      "start": 13725374,
+      "end": 13727863,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheSmoothNeighbors",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/continuous_raphe_data.h",
+      "start": 13730632,
+      "end": 13745336,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheSmoothOffsets",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/continuous_raphe_data.h",
+      "start": 13727866,
+      "end": 13730629,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheSmoothMask",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/continuous_raphe_data.h",
+      "start": 13745339,
+      "end": 13754996,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14IndexCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 90,
+      "end": 143,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "debugSmoothFraction",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 4413,
+      "end": 4494,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ShapeObliqueLobes",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_runtime.h",
+      "start": 2405,
+      "end": 5942,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "TightenInterLobeWeb",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_runtime.h",
+      "start": 5944,
+      "end": 9046,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "undersideBlendMoved",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/underside_blend.h",
+      "start": 343,
+      "end": 385,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PreserveRigidLobeSurfaces",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/firm_lobes.h",
+      "start": 199,
+      "end": 3170,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PreserveShaftRaphe",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_support.h",
+      "start": 242,
+      "end": 1521,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PreserveAxialRaphe",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/axial_raphe.h",
+      "start": 4159,
+      "end": 6263,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14Normals",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_runtime.h",
+      "start": 445,
+      "end": 498,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14Tangents",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_runtime.h",
+      "start": 445,
+      "end": 520,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "firmLobeMask",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/firm_lobes.h",
+      "start": 161,
+      "end": 196,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "interLobeWebMask",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_runtime.h",
+      "start": 2316,
+      "end": 2358,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "obliqueLobeMask",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_runtime.h",
+      "start": 2361,
+      "end": 2402,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheSmoothFull",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/continuous_raphe_data.h",
+      "start": 13754999,
+      "end": 13936222,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14CustomNormals",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 15951883,
+      "end": 16137210,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "r14Flex",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_asset.h",
+      "start": 15820342,
+      "end": 15951880,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PreserveBuriedAxialSupport",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/axial_raphe.h",
+      "start": 1557,
+      "end": 3317,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "axialReferenceT",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/axial_raphe.h",
+      "start": 305,
+      "end": 333,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "axialMoved",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/axial_raphe.h",
+      "start": 244,
+      "end": 302,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "BuildAxialRapheCore",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/axial_raphe.h",
+      "start": 352,
+      "end": 1555,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheSupportMask",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_support_data.h",
+      "start": 49,
+      "end": 139057,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "axialSamples",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/axial_raphe.h",
+      "start": 165,
+      "end": 202,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "axialCenters",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/axial_raphe.h",
+      "start": 205,
+      "end": 241,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "axialRadii",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/axial_raphe.h",
+      "start": 244,
+      "end": 281,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rapheSupportMoved",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_support.h",
+      "start": 199,
+      "end": 239,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "BallShapeScale",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 30157,
+      "end": 30252,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "EggSurface",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 105298,
+      "end": 105506,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "constraintBallRest",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 7511,
+      "end": 7585,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "undersideNeighbors",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/underside_blend_data.h",
+      "start": 265783,
+      "end": 312473,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "undersideRows",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/underside_blend_data.h",
+      "start": 256968,
+      "end": 265780,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "EggTaper",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 105227,
+      "end": 105296,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "OverallShapeScale",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 29981,
+      "end": 30057,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "SliderSpec",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 2163314,
+      "end": 2163412,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "sliderSpecs",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 2163415,
+      "end": 2163934,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_overall_lo",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 90009,
+      "end": 181239,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_overall_hi",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 181242,
+      "end": 270934,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_length_lo",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 270937,
+      "end": 360857,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_length_hi",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 360860,
+      "end": 450795,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_width_lo",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 450798,
+      "end": 541181,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_width_hi",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 541184,
+      "end": 630990,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_scrotum_lo",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 630993,
+      "end": 721129,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_scrotum_hi",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 721132,
+      "end": 811015,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_angle_lo",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 811018,
+      "end": 900954,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_angle_hi",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 900957,
+      "end": 990893,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_forward_lo",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 990896,
+      "end": 1080841,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_forward_hi",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 1080844,
+      "end": 1170764,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_vertical_lo",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 1170767,
+      "end": 1260717,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_vertical_hi",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 1260720,
+      "end": 1350661,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "LIVE_COUNT",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 34,
+      "end": 71,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "Smooth01",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 55902,
+      "end": 56003,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "N",
+      "kind": "CursorKind.TEMPLATE_NON_TYPE_PARAMETER",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 2029,
+      "end": 2039,
+      "parent": "GeometryFairPass"
+    },
+    {
+      "name": "Row",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 2070,
+      "end": 2124,
+      "parent": "GeometryFairPass"
+    },
+    {
+      "name": "Add",
+      "kind": "CursorKind.FUNCTION_TEMPLATE",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 2216,
+      "end": 2530,
+      "parent": "GeometryFairPass"
+    },
+    {
+      "name": "Index",
+      "kind": "CursorKind.TEMPLATE_TYPE_PARAMETER",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 2225,
+      "end": 2236,
+      "parent": "Add"
+    },
+    {
+      "name": "operator==",
+      "kind": "CursorKind.OVERLOADED_DECL_REF",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 2323,
+      "end": 2325,
+      "parent": ""
+    },
+    {
+      "name": "operator-",
+      "kind": "CursorKind.OVERLOADED_DECL_REF",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 2404,
+      "end": 2405,
+      "parent": ""
+    },
+    {
+      "name": "insert",
+      "kind": "CursorKind.OVERLOADED_DECL_REF",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 2436,
+      "end": 2442,
+      "parent": ""
+    },
+    {
+      "name": "_mm_add_ps",
+      "kind": "CursorKind.OVERLOADED_DECL_REF",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 2891,
+      "end": 2901,
+      "parent": ""
+    },
+    {
+      "name": "_mm_add_ps",
+      "kind": "CursorKind.OVERLOADED_DECL_REF",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 2947,
+      "end": 2957,
+      "parent": ""
+    },
+    {
+      "name": "_mm_mul_ps",
+      "kind": "CursorKind.OVERLOADED_DECL_REF",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 2973,
+      "end": 2983,
+      "parent": ""
+    },
+    {
+      "name": "_mm_sub_ps",
+      "kind": "CursorKind.OVERLOADED_DECL_REF",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 2984,
+      "end": 2994,
+      "parent": ""
+    },
+    {
+      "name": "_mm_div_ps",
+      "kind": "CursorKind.OVERLOADED_DECL_REF",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 2995,
+      "end": 3005,
+      "parent": ""
+    },
+    {
+      "name": "_mm_set_ps1",
+      "kind": "CursorKind.OVERLOADED_DECL_REF",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 3011,
+      "end": 3022,
+      "parent": ""
+    },
+    {
+      "name": "_mm_set_ps1",
+      "kind": "CursorKind.OVERLOADED_DECL_REF",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 3051,
+      "end": 3062,
+      "parent": ""
+    },
+    {
+      "name": "operator*",
+      "kind": "CursorKind.OVERLOADED_DECL_REF",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 3071,
+      "end": 3072,
+      "parent": ""
+    },
+    {
+      "name": "_mm_storeu_ps",
+      "kind": "CursorKind.OVERLOADED_DECL_REF",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 3214,
+      "end": 3227,
+      "parent": ""
+    },
+    {
+      "name": "R16PreviousScale",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_runtime.h",
+      "start": 9139,
+      "end": 9300,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "R14LegacyScale",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/r14_runtime.h",
+      "start": 9048,
+      "end": 9137,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "LegacyGlansControl",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 47739,
+      "end": 47812,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "collarFairGroupCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/collar_fairing.h",
+      "start": 34,
+      "end": 82,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "collarFairNeighborOffsets",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/collar_fairing.h",
+      "start": 13406,
+      "end": 19410,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "collarFairA",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 7207,
+      "end": 7250,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "collarFairNeighbors",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/collar_fairing.h",
+      "start": 19413,
+      "end": 48264,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "collarFairNeighborWeights",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/collar_fairing.h",
+      "start": 48267,
+      "end": 125638,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "collarFairWeights",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/collar_fairing.h",
+      "start": 125641,
+      "end": 140557,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "collarNormalTriangleCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/collar_fairing.h",
+      "start": 223725,
+      "end": 223778,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ReadAnyCollarPosition",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 89776,
+      "end": 90383,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "collarNormalTriangleIndices",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/collar_fairing.h",
+      "start": 223781,
+      "end": 271281,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "collarNormalTriangleGroups",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/collar_fairing.h",
+      "start": 271284,
+      "end": 304996,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "collarFairBaseNormals",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/collar_fairing.h",
+      "start": 156337,
+      "end": 201360,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "collarFairMemberOffsets",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/collar_fairing.h",
+      "start": 191,
+      "end": 5416,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "collarFairMembers",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/collar_fairing.h",
+      "start": 5419,
+      "end": 13403,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "collarNormalTriangleBasePositions",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/collar_fairing.h",
+      "start": 304999,
+      "end": 566521,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "graftNormalGroupCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/graft_normals.h",
+      "start": 77125,
+      "end": 77174,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "EggLevel",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 108152,
+      "end": 108281,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CollisionCapsules",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 43618,
+      "end": 44587,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CrouchFactor",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 44589,
+      "end": 44821,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "LogicalShaftOvalRadius",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 76935,
+      "end": 77454,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "LogicalShaftRadius",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 76624,
+      "end": 76933,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "(lambda at C:\\Users\\Administrator\\Documents\\ChatGPT\\MaleMod\\legacy\\wolverine\\src\\runtime\\d3d9_proxy.cpp:1558:23)",
+      "kind": "CursorKind.CLASS_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 109861,
+      "end": 109862,
+      "parent": "ResolveSuspendedSkinContact"
+    },
+    {
+      "name": "collisionCapsuleOverride",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 10204,
+      "end": 10240,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "overrideLeftA",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 10243,
+      "end": 10266,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "overrideLeftB",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 10243,
+      "end": 10280,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "overrideRightA",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 10243,
+      "end": 10295,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "overrideRightB",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 10243,
+      "end": 10310,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "motionCollisionBonesReady",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 10023,
+      "end": 10060,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "InverseRigidPoint",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 27295,
+      "end": 27474,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "motionPelvisMatrix",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 9932,
+      "end": 9967,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "TransformPoint",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 27136,
+      "end": 27293,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "motionLeftThighMatrix",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 9932,
+      "end": 9993,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "motionRightThighMatrix",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 9932,
+      "end": 10020,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "phys_flex_coordinate",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/physics_weights.h",
+      "start": 73763,
+      "end": 98848,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CompactProfile",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 71722,
+      "end": 71857,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "FirmProfile",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 71859,
+      "end": 72130,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "neckActiveCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/scrotal_junction.h",
+      "start": 144,
+      "end": 186,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "neckRows",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/scrotal_junction.h",
+      "start": 42768,
+      "end": 46023,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "neckColumns",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/scrotal_junction.h",
+      "start": 46026,
+      "end": 729796,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "neckCoefficients",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/scrotal_junction.h",
+      "start": 729799,
+      "end": 3225550,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "neckActive",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/scrotal_junction.h",
+      "start": 233,
+      "end": 2705,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "neckFaceCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/scrotal_junction.h",
+      "start": 100,
+      "end": 141,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "neckFaces",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/scrotal_junction.h",
+      "start": 3320408,
+      "end": 3326586,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "neckPairCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/scrotal_junction.h",
+      "start": 189,
+      "end": 230,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "neckFacePairs",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/scrotal_junction.h",
+      "start": 3302910,
+      "end": 3320405,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "neckNeighborOffsets",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/scrotal_junction.h",
+      "start": 3225553,
+      "end": 3238125,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "neckNeighbors",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/scrotal_junction.h",
+      "start": 3238128,
+      "end": 3302907,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "neckSupport",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/scrotal_junction.h",
+      "start": 2708,
+      "end": 42765,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "logicalShaftOwnership",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 6779,
+      "end": 6825,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "LogicalShaftOwner",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 75794,
+      "end": 76622,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "logicalShaftRestRadial",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 6732,
+      "end": 6776,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "logicalShaftRestTangent",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 6828,
+      "end": 6873,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "preparedPelvicRootFollow",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 474,
+      "end": 517,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ShaftPouchBlend",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 30948,
+      "end": 31030,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "BallCollisionRadius",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 30574,
+      "end": 30650,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "SculptEggRestPoint",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 106333,
+      "end": 106555,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "neckNodes",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 6500,
+      "end": 6578,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PreparedShapeKey",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/prepared_shape.h",
+      "start": 261,
+      "end": 495,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pelvisControlCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvis_control.h",
+      "start": 34,
+      "end": 79,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "effectiveHangUI",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 3357,
+      "end": 3390,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "preparedShapeReady",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/prepared_shape.h",
+      "start": 498,
+      "end": 534,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "restFrameUsesPreviousLength",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 6948,
+      "end": 6993,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "BuildPreparedShape",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/prepared_shape.h",
+      "start": 597,
+      "end": 5097,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pelvisControlIndices",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvis_control.h",
+      "start": 138,
+      "end": 3078,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "preparedShapeBuilds",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/prepared_shape.h",
+      "start": 537,
+      "end": 574,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "preparedShapeHits",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/prepared_shape.h",
+      "start": 537,
+      "end": 594,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PelvisCollarGrowth",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 56130,
+      "end": 56519,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "preparedPelvicRampBlend",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 474,
+      "end": 545,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "preparedPelvicSeamLift",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 548,
+      "end": 588,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "preparedPelvicLateralGrowth",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 548,
+      "end": 620,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pelvisControlBasePositions",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvis_control.h",
+      "start": 3081,
+      "end": 18845,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ApplyPelvisCollar",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 56521,
+      "end": 58754,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pelvisControlDistances",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvis_control.h",
+      "start": 24538,
+      "end": 29561,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "SampleOverallWidthVertex",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 116360,
+      "end": 117022,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "neutralShape",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 2499,
+      "end": 2576,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_base",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 74,
+      "end": 90006,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "graftCollarDistances",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/collar_fairing.h",
+      "start": 201363,
+      "end": 223722,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ApplyShaftPoseAngle",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 59082,
+      "end": 59692,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "FlareAttachment",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 59694,
+      "end": 61850,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "FairUnifiedCollar",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 87715,
+      "end": 89492,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "FairRetopologyBands",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 86924,
+      "end": 87713,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "BuildShaftRestFrame",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 62377,
+      "end": 66682,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RegularizeSharedRootProfile",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 67061,
+      "end": 71720,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "SculptConvergentVentralRaphe",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 72132,
+      "end": 74900,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "FinishPelvicRamp",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 80587,
+      "end": 86922,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "HangOffset",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 104805,
+      "end": 105065,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "FitEggRestShapes",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 105508,
+      "end": 106331,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "BroadenScrotalNeck",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/hourglass_neck.h",
+      "start": 189,
+      "end": 1368,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CaptureLogicalShaftSurface",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 78568,
+      "end": 79021,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "hourglassAppliedFraction",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/hourglass_neck.h",
+      "start": 145,
+      "end": 186,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RampRadialFrame",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 80026,
+      "end": 80585,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ReadCollarMember",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 79023,
+      "end": 79401,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rampSupport",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_ramp.h",
+      "start": 104,
+      "end": 20213,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rampRowOffsets",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_ramp.h",
+      "start": 20216,
+      "end": 27776,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rampColumns",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_ramp.h",
+      "start": 27779,
+      "end": 846812,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rampCoefficients",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_ramp.h",
+      "start": 846815,
+      "end": 4228422,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "debugRampFraction",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 4413,
+      "end": 4447,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "WriteCollarMember",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 79403,
+      "end": 79783,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ShaftWidthScale",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 30059,
+      "end": 30155,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pelvicRootFollow",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_root_binding.h",
+      "start": 92,
+      "end": 19088,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pelvicRootMask",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_root_binding.h",
+      "start": 19091,
+      "end": 36821,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "GeometryFairPass",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "start": 2020,
+      "end": 3287,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pelvicAngleFollow",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_root_binding.h",
+      "start": 36824,
+      "end": 52380,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "overallWidthTargets",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 7742,
+      "end": 7936,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_ow_lo_lo",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 1350664,
+      "end": 1442164,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_ow_lo_def",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 1442167,
+      "end": 1533396,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_ow_lo_hi",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 1533399,
+      "end": 1623992,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_ow_def_lo",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 1623995,
+      "end": 1714379,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_ow_def_def",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 1714382,
+      "end": 1804320,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_ow_def_hi",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 1804323,
+      "end": 1894130,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_ow_hi_lo",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 1894133,
+      "end": 1984126,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_ow_hi_def",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 1984129,
+      "end": 2073820,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "morph_ow_hi_hi",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/morph_targets.h",
+      "start": 2073823,
+      "end": 2163311,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "UpdateCompliantDynamics",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 29509,
+      "end": 30445,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDInput",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 20721,
+      "end": 20848,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDReadInput",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 20909,
+      "end": 21308,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdInputReady",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 20876,
+      "end": 20906,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdReady",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 893,
+      "end": 918,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdInput",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 20851,
+      "end": 20873,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdThigh",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 750,
+      "end": 787,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "constraintAccumulator",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 7448,
+      "end": 7482,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDSetInput",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 21310,
+      "end": 21881,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "StepConstraintSolver",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 21883,
+      "end": 29505,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "constraintSolverState",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 7412,
+      "end": 7447,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "StepRootSuspension",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 28451,
+      "end": 29930,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdBroadRadius",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 17530,
+      "end": 17559,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdPairForce",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 921,
+      "end": 949,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdShaftForce",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 921,
+      "end": 967,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdPressureDirection",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 970,
+      "end": 1021,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 226,
+      "end": 290,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdVelocity",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 675,
+      "end": 747,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdPreviousAnchor",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 9173,
+      "end": 9202,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdPreviousMaterial",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 9173,
+      "end": 9224,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDMaterialTarget",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 9284,
+      "end": 9485,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "physValues",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 4127,
+      "end": 4195,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdPosition",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 675,
+      "end": 704,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdInvMass",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 804,
+      "end": 835,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdBody0",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 226,
+      "end": 265,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdInvInertia",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 804,
+      "end": 851,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdOldBasis",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 750,
+      "end": 776,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDRecoverPouchVentral",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 16856,
+      "end": 17528,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdOldPosition",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 675,
+      "end": 727,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "physUI",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 4060,
+      "end": 4124,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDRotateBody",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 1169,
+      "end": 1646,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDSuspensionData",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 12954,
+      "end": 13029,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDPrepareSuspension",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 13032,
+      "end": 13390,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDConstraint",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 293,
+      "end": 566,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDBendData",
+      "kind": "CursorKind.STRUCT_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 7821,
+      "end": 7878,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDPrepareBend",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 7881,
+      "end": 8436,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RapheTubeBendMultiplier",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_profile.h",
+      "start": 608,
+      "end": 975,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdContactCount",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 608,
+      "end": 635,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdVelocityPass",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 638,
+      "end": 670,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDDistance",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 7389,
+      "end": 7819,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDBendPrepared",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 8438,
+      "end": 8821,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDSync",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 1648,
+      "end": 1759,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDSuspensionShear",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 13392,
+      "end": 14392,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDSuspension",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 14394,
+      "end": 15453,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDBodyCapsule",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 19218,
+      "end": 19560,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdOldThigh",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 750,
+      "end": 801,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDRodBody",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 19562,
+      "end": 20567,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDClosest",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 15455,
+      "end": 15574,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDContact",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 6814,
+      "end": 7387,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDPair",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 18629,
+      "end": 19216,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDKeepPouchVentral",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 16225,
+      "end": 16499,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDSolveContactVelocities",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 3293,
+      "end": 4751,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDVentralHeight",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 15868,
+      "end": 16223,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "shaftPrevious",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 6232,
+      "end": 6298,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ballPrevious",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 6500,
+      "end": 6538,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "nutNodes",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 6500,
+      "end": 6550,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "neckPrevious",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 6500,
+      "end": 6594,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "nutPrevious",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 6500,
+      "end": 6565,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdMaxTetherRatio",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 804,
+      "end": 872,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpLastGap",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 168,
+      "end": 231,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPSupport",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 3398,
+      "end": 3497,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "cpMinimumGap",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 168,
+      "end": 217,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdMinimumGap",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 804,
+      "end": 890,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPSupportLocal",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 2522,
+      "end": 3396,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPTranspose",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 2339,
+      "end": 2437,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "pdContacts",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 569,
+      "end": 605,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDPointVelocity",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 2652,
+      "end": 2799,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDEffectiveMass",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 1761,
+      "end": 1966,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDVelocityImpulse",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 2801,
+      "end": 3032,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "(lambda at C:\\Users\\Administrator\\Documents\\ChatGPT\\MaleMod\\legacy\\wolverine\\src\\runtime\\compliant_dynamics.h:68:13)",
+      "kind": "CursorKind.CLASS_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 3793,
+      "end": 3794,
+      "parent": "PDSolveContactVelocities"
+    },
+    {
+      "name": "(lambda at C:\\Users\\Administrator\\Documents\\ChatGPT\\MaleMod\\legacy\\wolverine\\src\\runtime\\compliant_dynamics.h:66:17)",
+      "kind": "CursorKind.CLASS_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 3614,
+      "end": 3615,
+      "parent": "PDSolveContactVelocities"
+    },
+    {
+      "name": "(lambda at C:\\Users\\Administrator\\Documents\\ChatGPT\\MaleMod\\legacy\\wolverine\\src\\runtime\\compliant_dynamics.h:70:14)",
+      "kind": "CursorKind.CLASS_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 3959,
+      "end": 3960,
+      "parent": "PDSolveContactVelocities"
+    },
+    {
+      "name": "PDRecord",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 3034,
+      "end": 3291,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDAnchorContact",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 4753,
+      "end": 5204,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDApply",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 1968,
+      "end": 2174,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDStaticFriction",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 5206,
+      "end": 6812,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDPreviousPoint",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 2176,
+      "end": 2413,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDCapsuleMayContact",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 17562,
+      "end": 17855,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDContactNormal",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 18084,
+      "end": 18627,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDSkinSupport",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 16501,
+      "end": 16854,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDSuspensionMass",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 10713,
+      "end": 12475,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDApplySuspension",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 12477,
+      "end": 12727,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDSuspensionMassFiniteDifference",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 9487,
+      "end": 10474,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "PDLateralSlack",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "start": 9227,
+      "end": 9282,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "CPRestSlack",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "start": 746,
+      "end": 1049,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "RapheTubeSecondMoment",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/raphe_tube_profile.h",
+      "start": 398,
+      "end": 607,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rootDriveVelocity",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 27817,
+      "end": 27862,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "rootDriveOmega",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 28050,
+      "end": 28088,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "lobeAnchorPrevious",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 31880,
+      "end": 31911,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "Log",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "start": 135285,
+      "end": 135804,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "ResetPelvicAttachmentBody",
+      "kind": "CursorKind.FUNCTION_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment.h",
+      "start": 654,
+      "end": 997,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paSavedBasis",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment.h",
+      "start": 445,
+      "end": 500,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paBasisSaved",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment.h",
+      "start": 503,
+      "end": 533,
+      "parent": "translation-unit"
+    },
+    {
+      "name": "paBodyNormalBase",
+      "kind": "CursorKind.VAR_DECL",
+      "file": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "start": 126180,
+      "end": 146216,
+      "parent": "translation-unit"
+    }
+  ],
+  "external": [
+    "D3DXFLOAT16",
+    "D3DXFloat16To32Array",
+    "D3DXFloat32To16Array",
+    "Dynamic",
+    "InnerIterator",
+    "LONG",
+    "Matrix",
+    "RowMajor",
+    "RowVector3d",
+    "SimplicialLDLT",
+    "SparseMatrix",
+    "Success",
+    "Triplet",
+    "UINT",
+    "Vector3d",
+    "VectorXd",
+    "Zero",
+    "_InterlockedExchange",
+    "_Vector_const_iterator",
+    "__m128",
+    "__m128d",
+    "_finite",
+    "_mm_add_ps",
+    "_mm_and_ps",
+    "_mm_andnot_ps",
+    "_mm_cmplt_ps",
+    "_mm_cvtss_f32",
+    "_mm_div_ps",
+    "_mm_loadu_pd",
+    "_mm_max_ps",
+    "_mm_min_ps",
+    "_mm_movemask_ps",
+    "_mm_mul_pd",
+    "_mm_mul_ps",
+    "_mm_or_ps",
+    "_mm_set1_pd",
+    "_mm_set_ps",
+    "_mm_set_ps1",
+    "_mm_set_ss",
+    "_mm_setzero_ps",
+    "_mm_sqrt_ps",
+    "_mm_sqrt_ss",
+    "_mm_storeu_pd",
+    "_mm_storeu_ps",
+    "_mm_sub_pd",
+    "_mm_sub_ps",
+    "allFinite",
+    "assign",
+    "atan2f",
+    "back",
+    "begin",
+    "cbrtf",
+    "ceilf",
+    "clear",
+    "col",
+    "compute",
+    "copysignf",
+    "cosf",
+    "cross",
+    "cwiseInverse",
+    "data",
+    "dot",
+    "emplace_back",
+    "empty",
+    "end",
+    "erase",
+    "expf",
+    "fabs",
+    "fabsf",
+    "fill",
+    "find",
+    "floorf",
+    "info",
+    "innerIndexPtr",
+    "isfinite",
+    "lower_bound",
+    "matrixL",
+    "max",
+    "max_element",
+    "memcmp",
+    "memcpy",
+    "memset",
+    "min",
+    "nestedExpression",
+    "norm",
+    "operator bool",
+    "operator()",
+    "operator*",
+    "operator+",
+    "operator++",
+    "operator+=",
+    "operator,",
+    "operator-",
+    "operator<<",
+    "operator=",
+    "operator==",
+    "operator[]",
+    "outerIndexPtr",
+    "outerSize",
+    "permutationP",
+    "permutationPinv",
+    "pow",
+    "powf",
+    "push_back",
+    "reserve",
+    "resize",
+    "row",
+    "rows",
+    "setFromTriplets",
+    "sinf",
+    "size",
+    "size_t",
+    "sort",
+    "sqrt",
+    "sqrtf",
+    "string",
+    "swap",
+    "transpose",
+    "uint16_t",
+    "uint32_t",
+    "unique",
+    "value",
+    "valuePtr",
+    "vector",
+    "vectorD"
+  ],
+  "sources": [
+    {
+      "path": "legacy/wolverine/src/runtime/anatomy_surface.h",
+      "sha256": "d4f6a49353045d92a4aee5c261586e057795ce247248eea52de212ba3615959d"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/axial_raphe.h",
+      "sha256": "49ea9fbe2d72d9d9cf0071a11f9d55a2a92f79be8970b103bca91e41df87e043"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/clear_strand.h",
+      "sha256": "cb431a911f1f18987cd40616db6286d594f05c0db4bb2cc7cbf3ea56cd2f16ce"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/collar_fairing.h",
+      "sha256": "ac3e48fe78158e4967926f629744e1477c94bbca55fb82cad21b4e0bd6af3870"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "sha256": "3d7ebe41cdfecb0e1bf40343bb1bfc232ba066e0cbb4100583b9284cf6bdef75"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/continuous_raphe_data.h",
+      "sha256": "a75c22763bdba8f8eeee9adea1f4cfde7e402b43e4d6fcb58bee0bc2abae78b0"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "sha256": "20779d89b389ca315a27f77d7e804d9fa290129fe7b2137e896149c344467e30"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/firm_lobes.h",
+      "sha256": "2b5d0e868c0185204f8d96c89c786527c2b083de47cff4064704550194019bd0"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/fluid_types.h",
+      "sha256": "6c0686aaa7cbf1e55853926f86f6502557d8121c1fb3e93dd0e61412cff9aa2a"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/geometry_binding_data.h",
+      "sha256": "f7c9ddcf3ebdb5f9aeace1d4bf18a517e85be016d2c95c4d61650897f0487a4f"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/geometry_pass.h",
+      "sha256": "9034e2e734d37d77cb8f999770fab5b6fd14b138b3d79db966c827b05bbcc2b6"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/graft_normals.h",
+      "sha256": "831ce043d071b831c6fdef6775e5216c19a0f59dfbc356aeb96dd49f61560783"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/hourglass_neck.h",
+      "sha256": "bd20156f0257174c17e7dc4518ea6984031a5f2c9521fe4e155b50a985fe9517"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/menu_retarget_body_data.h",
+      "sha256": "c4075718353b229faafa3c2a6b558d3a07c74785336b0b0f703f20bbfa818f25"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/morph_targets.h",
+      "sha256": "84c9f91e3f627fa79df76d303c678527275af756493f896940b52e3117dbd072"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/neck_render.h",
+      "sha256": "5fcad77831936baa90061d467ee640880b1a31710c9002432197ad3bd8a0954b"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/neck_render_data.h",
+      "sha256": "bc839e91e8a3707670e2be03c06d04b42df31f206d94b240587dfdf09e95ebd4"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/pelvic_attachment.h",
+      "sha256": "8147f91f0ab1fb9104462344c89286abc5dce67d234b397a01641161e3397d98"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/pelvic_attachment_data.h",
+      "sha256": "817a02208f99df38ea296c95c3320435230f3668704a57dfca21d55182c60450"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/pelvic_ramp.h",
+      "sha256": "a9138785af50e62a5ccf138d3abc85b5b3c882304fb02915f0a94457afa5e9af"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/pelvic_root_binding.h",
+      "sha256": "011b9f6d4c108078a234ee048d431a42157031daf015b5d5587c4407a2b5c8d1"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/pelvis_control.h",
+      "sha256": "81d653ad00190a6b1a29d9d12e2b204d0434c29b5054d616fa418bfcc6d96c9d"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/performance_metrics.h",
+      "sha256": "f2b885c4d02d069c24dd893ebdfe8f8cd9221670ed9ed5f151ef46e9e7b4d418"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/physics_weights.h",
+      "sha256": "2ad09b90805d185c650871f19e6913001b0857934dd8f22f09b9031c7ce4fa28"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/pouch_contact.h",
+      "sha256": "d554eab27b8565287f2b3ba6c70cde045b9c501ab1da7a970fef1e4f9381284a"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/pouch_surface.h",
+      "sha256": "019070b8b2d49065ac8af0cb12b6ef755ca6ee124f6b5dacf39da490339d24cb"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/pouch_surface_data.h",
+      "sha256": "5c8a7f4be282f5e30c95101546c3e413c52681fd2bd1466bd840fe0a53926467"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/prepared_shape.h",
+      "sha256": "c64997b3bf51f03fafcd71159878e39b2234a40061dcc2bb3867f4040981e7bc"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/r14_asset.h",
+      "sha256": "7b62dde4c879c835ee44474fd5b0955cf80dc95d1ab1334e6ee214882ce70957"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/r14_runtime.h",
+      "sha256": "a9b39f2925fb811af90ca1d5c5a0c3e4e975c26932279804a25c358e1b3884d7"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/raphe_support.h",
+      "sha256": "217d43b14da1eb2fb9242cae2a1bac2db6803a98543eae6de8a7964fab04d788"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/raphe_support_data.h",
+      "sha256": "b257db06764b69f746c807b5e3877c4364e4e747332d8a07c85ebfd13398bdd6"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/raphe_tube_profile.h",
+      "sha256": "85f39f16e112498defbfd475c2a58b2015c2e9afd65d66b87600bc68eb327474"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/raphe_tube_surface.h",
+      "sha256": "cc4f7df3d2e8cad488894706b890dca9547a1fdbd582557026f5cc09c7fc1c04"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/rounded_render_data.h",
+      "sha256": "9be05760a90779885f352151d79a3bb362f4c1b1f2b88d2e6f692c905310ca6a"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/rounded_shape.h",
+      "sha256": "4ec8f6818a65941fd9927c939a450c5232bacbeb0a3a2006254aeacf79f41b95"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/scrotal_junction.h",
+      "sha256": "d9ac96c213df1f9396d07cb22681268c58a17dad36a69814159730cb9eaff1a3"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/shared_body_surface.h",
+      "sha256": "0ce42d2a3f0f6439d3d8b1e2776f20757407cd3fd6f23fdf7bac71e46590f945"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/surface_limit.h",
+      "sha256": "7fcaff99fc3cb587fb3a50a8f212cf0bfb31eb5f3f73e1a58a0101797477b748"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/suspension_weights.h",
+      "sha256": "475353fba30236e4d593cf10cd248e2341d2fe47ba446430aaf591a5a2f43336"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/teaching_sequence.h",
+      "sha256": "ff55423282a73210997ca058b2048e5c0f6d9c7215b871b6b516f6f51e03b524"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/teaching_volume.h",
+      "sha256": "1398069503db0e5832b4e93f8e04dd8fb8ef84801beade1fb81caecbb61686a4"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/thread_mesh.h",
+      "sha256": "d5561b5442b2ab8c64e76605bcabcb1a28a5826e94252c06a3a708b1c1e7a313"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/underside_blend.h",
+      "sha256": "31e6ea2427849f1bc7ea6855a07dd4d9f5a1c642bfe7b69a4382db1ba04f8efa"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/underside_blend_data.h",
+      "sha256": "5aadec1b6b58c3a85e881ed782783a0cedd622b550f41be7ddbbf463198daf5a"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/unified_collar_data.h",
+      "sha256": "cabbaa41279878bf259ba51de89b9fb9f5b027fa8eb4a925b78e30205e995b31"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/unified_collar_solver.h",
+      "sha256": "ba9d6c5d02bdb9aba3019eae5ec898796803bba5c034480c40313e4c7b4ab41f"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/viscous_thread.h",
+      "sha256": "5f77112c620415a1fa0dc080aa7248558a3140507637e20d625e0bd71693dc61"
+    }
+  ],
+  "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302"
+}

@@ -1,6 +1,8 @@
 """Verify import provenance and decoded geometry against its source tables."""
 import hashlib
 import json
+import subprocess
+import sys
 from pathlib import Path
 import numpy as np
 from export_geometry import arrays
@@ -16,6 +18,7 @@ from extract_root_profile import outputs as root_profile_outputs
 ROOT = Path(__file__).resolve().parents[1]
 
 def main():
+    subprocess.run([sys.executable,str(ROOT/'tools/extract_surface_runtime.py'),'--verify-provenance'],check=True)
     for path,content in root_profile_outputs().items():
         if (ROOT/path).read_bytes()!=content.encode():
             raise ValueError('Root-profile extraction/provenance differs: '+path)

@@ -21,14 +21,16 @@ simulation, mesh generation, deposition and audio cue scheduling. The existing
 sequence is usable through a per-character Session and adapter callbacks; see
 CLINICAL-SEQUENCE.md and provenance/clinical.json. Full anatomy XPBD, seam/collar
 evaluation, alternate GPU particle compute and material rendering remain in the
-reference runtime. No complete engine-independent anatomy runtime or Witcher port is
-claimed. Profiles expose known requirements rather than pretending that
-engine or skeleton mappings are solved.
+reference snapshot. A complete numerical anatomy surface session is now extracted
+and verified for 32-bit MSVC with strict arithmetic, including both body sections.
+See SOURCE-SURFACE.md for its scope, source spans and failed 64-bit gate.
+Native output integration and the complete Witcher port remain unfinished.
 
 The generic framework adds a metric skinned proxy, body preference controls,
 semantic sockets, linear skinning, capsule projection and an instance-owned
 fixed-step chain using extracted distance/bend kernels. Kernel parity is tested;
-full authored solver parity and live engine integration are still pending.
+live engine integration remains pending. Full surface source parity is recorded
+separately by the new 32-bit session and does not establish native gameplay.
 
 The final unified collar metric is extracted as standard C++ and its coupled
 energy/hard edge constraints are available in a per-character offline evaluator.

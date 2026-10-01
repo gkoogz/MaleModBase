@@ -78,6 +78,11 @@ centerline, radius, length and explicit prior-length fallback. It is verified
 against original-code fixtures and still requires a native output bridge.
 The [angular root profile](docs/ROOT-PROFILE.md) regularizes the shared proximal
 shaft/collar with source pouch exclusions and bounded radial correction;
-143,280 original C++ vertex comparisons pass. Full preparation remains incomplete.
+143,280 original C++ vertex comparisons pass.
+The [complete evaluated surface](docs/SOURCE-SURFACE.md) now reconstructs all
+source slider stages, dynamics and coupled body output in an SDK-free 32-bit
+per-character session. 70 isolated slider fixtures and a changing 180-frame
+trace match the original source within the recorded numerical gate. The 64-bit
+gate fails; full native delivery and observed Witcher parity remain unfinished.
 Commercial reuse rights are not established by this extraction: upstream has
 no root license, and game-derived assets retain their separate provenance.
