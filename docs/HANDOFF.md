@@ -48,9 +48,11 @@ native attachment reset instead of reintroducing animated Root; 93 stock
 alignments, ten vector scales and 60 scalar channels survive native cooking
 and connected-output/packed-byte verification. 35 adapter tests pass.
 The root-only hypothesis did not resolve it. Witcher has installed
-**0.4.12-model-pose-test, gameplay pending**, package
+**0.4.12-model-pose-test, observed improved but FAILED gait parity**, package
 `publish/20260930-231057-0fb1c4`, built against Base `c7f78e3`. It reads parent model-space bone matrices instead of
-the local animation sample context. The 0.4.11 secondary-motion package is held,
+the local animation sample context. The user reports a smaller gap that closes
+at idle but bobs open with every step. Latest scale/ankle readouts were not
+provided. The 0.4.11 secondary-motion package is held,
 never installed, because it retains the failing local pose path. Consult the
 spoke's current installation receipt/handoff. Native connected graph traversal,
 six exact packed resources, five installed hashes and 37 adapter tests pass.
