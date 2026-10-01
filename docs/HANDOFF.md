@@ -40,13 +40,21 @@ New observed Witcher result: **0.4.9 resizes visibly at 0.8 and 1.2** and greatl
 improves torso/leg tracking. Screenshot: active=true, accepted=true, 27 callbacks,
 requested/readback=0.8, frozen=false. Some animations still open a temporary
 vertical waist gap. Grey menu rows are intentional diagnostic readouts.
-**0.4.10-root-pose-test is installed, gameplay pending**, package
+**0.4.10-root-pose-test FAILED observed gameplay:** waist separation persists and
+the user also reports an ankle gap. Its historical package is
 `publish/20260930-224402-e6260b`, built against Base `81fe047` with unchanged
 `ca78de0` cage. Its graph preserves observed bone-zero identity, matching the
 native attachment reset instead of reintroducing animated Root; 93 stock
 alignments, ten vector scales and 60 scalar channels survive native cooking
 and connected-output/packed-byte verification. 35 adapter tests pass.
-The root-gap fix remains a hypothesis until gameplay confirms it. Full controls
+The root-only hypothesis did not resolve it. Witcher has installed
+**0.4.12-model-pose-test, gameplay pending**, package
+`publish/20260930-231057-0fb1c4`, built against Base `c7f78e3`. It reads parent model-space bone matrices instead of
+the local animation sample context. The 0.4.11 secondary-motion package is held,
+never installed, because it retains the failing local pose path. Consult the
+spoke's current installation receipt/handoff. Native connected graph traversal,
+six exact packed resources, five installed hashes and 37 adapter tests pass.
+Full controls
 and dynamic pelvis remain incomplete; this newer shared stage is not in that
 installed runtime. Root-pose policy belongs in Witcher; the numerical regularizer
 belongs here and has an explicit adoption path for every spoke.
