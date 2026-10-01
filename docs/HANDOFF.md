@@ -40,6 +40,12 @@ New observed Witcher result: **0.4.9 resizes visibly at 0.8 and 1.2** and greatl
 improves torso/leg tracking. Screenshot: active=true, accepted=true, 27 callbacks,
 requested/readback=0.8, frozen=false. Some animations still open a temporary
 vertical waist gap. Grey menu rows are intentional diagnostic readouts.
+**0.4.18-boot-recovery-test is installed, gameplay pending:** Witcher package
+`publish/20261001-031309-f1ed02` pins Base `4b4719f` and retains cage
+`ca78de0`. The adapter now reports graph boot exits and retries transient player
+root/skeleton readiness for at most five seconds. Native cooking, 47 adapter
+tests, eight exact unpacked resources/buffers and installed hashes pass. This
+does not establish hip following; see the spoke handoff and F6 boot diagnostics.
 **0.4.10-root-pose-test FAILED observed gameplay:** waist separation persists and
 the user also reports an ankle gap. Its historical package is
 `publish/20260930-224402-e6260b`, built against Base `81fe047` with unchanged
