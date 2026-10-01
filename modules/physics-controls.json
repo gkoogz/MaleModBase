@@ -1,0 +1,11 @@
+{
+  "id": "physics.controls",
+  "version": 1,
+  "implementation": "malemod_base.physics_controls",
+  "preferences": "malemod.controls@1",
+  "inputs": ["smoothed mechanical mode", "measured source-space rest-guide length"],
+  "output": "source-derived shaft/lobe/root material coefficients",
+  "verification": "600 original float32 C++ fixture profiles",
+  "nativeCapability": "unproven; each adapter must verify its output bridge",
+  "adoption": "docs/PHYSICS-CONTROLS.md"
+}

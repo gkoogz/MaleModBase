@@ -30,6 +30,14 @@ runtime. Its source commit is `dc64bdc44e75fd5521f066cdb2975277e9c34302`;
 
 ## Current shared work
 
+`PHYSICS-CONTROLS.md` documents the active eight-control material-law evaluator.
+Its 600 original C++ float32 profiles and all 43 Base Python tests pass. It is a
+shared numerical input layer; a complete coupled simulator and native output
+remain incomplete. The Witcher 0.4.5 graph/dangle test failed observed gameplay:
+the test scale did not visibly resize the mesh, and the lower body was offset.
+Do not reuse that candidate as a proven deformation backend. The spoke records
+the restoration and next isolated pose/output investigation.
+
 Read `AUTHORED-SHAPE.md` for the new source-derived early coarse-shape evaluator,
 1,300 original-code fixture samples, coupled graft collar domain and protected
 native part boundaries. The checked correction preserves both sides of the

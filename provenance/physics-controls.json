@@ -1,0 +1,50 @@
+{
+  "format": "malemod.physics-controls-provenance",
+  "version": 1,
+  "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
+  "sourceFiles": [
+    {
+      "path": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+      "sha256": "20779d89b389ca315a27f77d7e804d9fa290129fe7b2137e896149c344467e30"
+    },
+    {
+      "path": "legacy/wolverine/src/runtime/compliant_dynamics.h",
+      "sha256": "3d7ebe41cdfecb0e1bf40343bb1bfc232ba066e0cbb4100583b9284cf6bdef75"
+    }
+  ],
+  "files": [
+    {
+      "path": "malemod_base/physics_controls.py",
+      "sha256": "8568a36097ba060de0ef7075686f6aac9bb2dec63bab54a87608c0eeaa6dad11"
+    },
+    {
+      "path": "tests/test_physics_controls.py",
+      "sha256": "812c9f5099e3a33609dd7af8e0ec1303cf1ddd4467d90ccc874a4c9af07aa0f3"
+    },
+    {
+      "path": "tests/physics_controls_oracle.cpp",
+      "sha256": "c9de69845a4af96ffb1046da539cc22fb8d77ad19846ceff3c99ea33be2388f9"
+    },
+    {
+      "path": "tests/data/physics-controls.csv",
+      "sha256": "075d7e060a9614601f6c7c5f6084d525c3e77488bb68bdcd76a20ff37e78063a"
+    },
+    {
+      "path": "tools/extract_physics_controls.py",
+      "sha256": "455c7bea256b70e69f1eedb1c6e5551c83f5bc5407193f6add77f3d1a901db03"
+    },
+    {
+      "path": "tools/build_physics_controls_fixture.py",
+      "sha256": "665075d2a3723876358f1f888cb7cb06b33f21ba965de2fe9fd539d63ac8c7d3"
+    }
+  ],
+  "oracleIncludeSHA256": "5a4d3e7604cc4728105d092a79ddaccd1c56bd1860cf9a678e83c809f72c8f8e",
+  "scope": "Active raw UI and mapped-value scalar laws; no complete solver or native runtime parity",
+  "sourceUnits": "Caller measured source rest space; no SI inference",
+  "deferred": [
+    "clinical modulation",
+    "contact geometry",
+    "rest-guide generation",
+    "native output"
+  ]
+}
