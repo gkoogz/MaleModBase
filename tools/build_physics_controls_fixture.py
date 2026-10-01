@@ -33,7 +33,7 @@ def main():
     writer.writerow(['mode','rest_length',*keys,*['mapped_'+k for k in keys],*['source_'+str(i) for i in range(22)]])
     writer.writerows([*case,*row] for case,row in zip(cases,rows))
     path=ROOT/'tests/data/physics-controls.csv'
-    path.write_text(output.getvalue(),encoding='utf-8')
+    path.write_bytes(output.getvalue().encode('utf-8'))
     print('Captured',len(rows),'original-code material profiles')
 
 

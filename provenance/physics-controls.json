@@ -27,7 +27,7 @@
     },
     {
       "path": "tests/data/physics-controls.csv",
-      "sha256": "075d7e060a9614601f6c7c5f6084d525c3e77488bb68bdcd76a20ff37e78063a"
+      "sha256": "98f9fb405978f5329f93e06729917004d69bb04a09472ff1c930cea529b3be07"
     },
     {
       "path": "tools/extract_physics_controls.py",
@@ -35,7 +35,7 @@
     },
     {
       "path": "tools/build_physics_controls_fixture.py",
-      "sha256": "665075d2a3723876358f1f888cb7cb06b33f21ba965de2fe9fd539d63ac8c7d3"
+      "sha256": "06c01a3a98f84c7d741ebdefb4b95d9f65ffc7e2856f34dc0a94933d6a38dc9c"
     }
   ],
   "oracleIncludeSHA256": "5a4d3e7604cc4728105d092a79ddaccd1c56bd1860cf9a678e83c809f72c8f8e",
