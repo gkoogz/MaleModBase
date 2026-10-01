@@ -1,7 +1,7 @@
 {
   "contractVersion": 1,
   "feature": "physics.secondary-rig",
-  "sourceCommit": null,
+  "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
   "sources": [
     {
       "path": "legacy/wolverine/src/runtime/compliant_dynamics.h",

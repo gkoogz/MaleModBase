@@ -19,6 +19,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def main():
     secondary=json.loads((ROOT/'provenance/secondary-rig.json').read_text())
+    if secondary['sourceCommit']!=json.loads((ROOT/'provenance/wolverine.json').read_text())['commit']:
+        raise ValueError('Secondary rig source commit differs')
     for item in secondary['sources']+secondary['files']:
         if hashlib.sha256((ROOT/item['path']).read_bytes()).hexdigest()!=item['sha256']:
             raise ValueError('Secondary-rig source/implementation differs: '+item['path'])
