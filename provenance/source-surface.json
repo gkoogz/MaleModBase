@@ -256,11 +256,11 @@
     },
     {
       "path": "include/malemod/surface/wire.hpp",
-      "sha256": "a4203be6f47e042c42483ecc87320bb896d387023bd75da0b35381e6371f9866"
+      "sha256": "023aae4ab0f2b95b37783ac466d3f27372635f592b4d61946d100b4814c63048"
     },
     {
       "path": "tests/surface_wire_test.cpp",
-      "sha256": "cfeda000883b878f3cdb42db2afc2755bf2138071b4ce8d9a23c7794ae1ba393"
+      "sha256": "03568ee883e64fe00757e80899bba022556fd3a66d9d4982e66a6eecff891735"
     },
     {
       "path": "tests/surface_collision_test.cpp",
@@ -3661,5 +3661,6 @@
         ]
       }
     }
-  ]
+  ],
+  "wireEncoding": "version-3 byte-identical bulk UV, lineage and widened INDEX16 output, bounded and finite validated"
 }

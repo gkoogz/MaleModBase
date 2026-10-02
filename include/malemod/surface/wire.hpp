@@ -20,6 +20,19 @@ struct Writer {
  void U32(std::uint32_t x){for(int i=0;i<4;i++)bytes.push_back(std::uint8_t(x>>(i*8)));}
  void Float(float x){if(!std::isfinite(x))throw std::invalid_argument("Non-finite wire value");std::uint32_t b;std::memcpy(&b,&x,4);U32(b);}
  void Point3(Point p){Float(p.x);Float(p.y);Float(p.z);}
+ void UVs(const std::vector<std::array<float,2>>& uv){
+  if(LittleEndian()&&sizeof(std::array<float,2>)==8){
+   for(auto p:uv)if(!std::isfinite(p[0])||!std::isfinite(p[1]))throw std::invalid_argument("Non-finite wire value");
+   const auto n=uv.size()*8;if(n>maximumBytes||bytes.size()>maximumBytes-n)throw std::invalid_argument("Oversize wire packet");
+   const auto offset=bytes.size();bytes.resize(offset+n);if(n)std::memcpy(bytes.data()+offset,uv.data(),n);
+  }else for(auto p:uv){Float(p[0]);Float(p[1]);}
+ }
+ void IDs(const std::vector<std::uint32_t>& ids){
+  if(LittleEndian()){
+   const auto n=ids.size()*4;if(n>maximumBytes||bytes.size()>maximumBytes-n)throw std::invalid_argument("Oversize wire packet");
+   const auto offset=bytes.size();bytes.resize(offset+n);if(n)std::memcpy(bytes.data()+offset,ids.data(),n);
+  }else for(auto id:ids)U32(id);
+ }
  template<class T>void Points(const T& points){
   if(LittleEndian()&&sizeof(Point)==12){
    for(auto p:points)if(!std::isfinite(p.x)||!std::isfinite(p.y)||!std::isfinite(p.z))throw std::invalid_argument("Non-finite wire value");
@@ -34,6 +47,19 @@ struct Reader {
  std::uint32_t U32(){if(bytes.size()-offset<4)throw std::invalid_argument("Truncated wire packet");std::uint32_t x=0;for(int i=0;i<4;i++)x|=std::uint32_t(bytes[offset++])<<(8*i);return x;}
  float Float(){auto b=U32();float x;std::memcpy(&x,&b,4);if(!std::isfinite(x))throw std::invalid_argument("Non-finite wire value");return x;}
  Point Point3(){Point p;p.x=Float();p.y=Float();p.z=Float();return p;}
+ void UVs(std::vector<std::array<float,2>>& uv){
+  if(LittleEndian()&&sizeof(std::array<float,2>)==8){
+   const auto n=uv.size()*8;if(n>bytes.size()-offset)throw std::invalid_argument("Truncated wire packet");
+   if(n)std::memcpy(uv.data(),bytes.data()+offset,n);offset+=n;
+   for(auto p:uv)if(!std::isfinite(p[0])||!std::isfinite(p[1]))throw std::invalid_argument("Non-finite wire value");
+  }else for(auto& p:uv){p[0]=Float();p[1]=Float();}
+ }
+ void IDs(std::vector<std::uint32_t>& ids){
+  if(LittleEndian()){
+   const auto n=ids.size()*4;if(n>bytes.size()-offset)throw std::invalid_argument("Truncated wire packet");
+   if(n)std::memcpy(ids.data(),bytes.data()+offset,n);offset+=n;
+  }else for(auto& id:ids)id=U32();
+ }
  template<class T>void Points(T& points){
   if(LittleEndian()&&sizeof(Point)==12){
    const auto n=points.size()*12;if(n>bytes.size()-offset)throw std::invalid_argument("Truncated wire packet");
@@ -86,20 +112,22 @@ inline void WriteSurface(Writer& w,const Surface& s){
  auto n=s.positions.size();
  if(n>maximumVertices||s.normals.size()!=n||s.tangents.size()!=n||s.uv.size()!=n||s.sourceVertexIDs.size()!=n)throw std::invalid_argument("Invalid wire surface layout");
  w.U32(std::uint32_t(n));w.Points(s.positions);w.Points(s.normals);w.Points(s.tangents);
- for(auto uv:s.uv){w.Float(uv[0]);w.Float(uv[1]);}for(auto id:s.sourceVertexIDs)w.U32(id);
+ w.UVs(s.uv);w.IDs(s.sourceVertexIDs);
 }
 inline Surface ReadSurface(Reader& r){
  auto n=r.U32();if(n>maximumVertices||std::size_t(n)*48>r.bytes.size()-r.offset)throw std::invalid_argument("Invalid wire vertex count");
  Surface s;s.positions.resize(n);s.normals.resize(n);s.tangents.resize(n);s.uv.resize(n);s.sourceVertexIDs.resize(n);
  r.Points(s.positions);r.Points(s.normals);r.Points(s.tangents);
- for(auto& uv:s.uv){uv[0]=r.Float();uv[1]=r.Float();}for(auto& id:s.sourceVertexIDs)id=r.U32();return s;
+ r.UVs(s.uv);r.IDs(s.sourceVertexIDs);return s;
 }
 inline Bytes Encode(const Output& o){
  auto capacity=512+(o.anatomy.positions.size()+o.body[0].positions.size()+o.body[1].positions.size())*48+o.anatomyIndices.size()*4;
  if(capacity>maximumBytes)throw std::invalid_argument("Oversize wire output");
  Writer w;w.bytes.reserve(capacity);w.U32(version);WriteSurface(w,o.anatomy);for(const auto& b:o.body)WriteSurface(w,b);
  if(o.anatomyIndices.size()>maximumIndices||o.anatomyIndices.size()%3)throw std::invalid_argument("Invalid wire topology");
- w.U32(std::uint32_t(o.anatomyIndices.size()));for(auto i:o.anatomyIndices){if(i>=o.anatomy.positions.size())throw std::invalid_argument("Invalid wire triangle");w.U32(i);}
+ w.U32(std::uint32_t(o.anatomyIndices.size()));
+ std::vector<std::uint32_t> indices;indices.reserve(o.anatomyIndices.size());
+ for(auto i:o.anatomyIndices){if(i>=o.anatomy.positions.size())throw std::invalid_argument("Invalid wire triangle");indices.push_back(i);}w.IDs(indices);
  w.Float(o.proximalRadius);w.Float(o.restLength);w.Points(o.shaftGuide);w.Points(o.restGuide);w.Points(o.lobeCenters);w.Points(o.lobeAnchors);w.Points(o.lobeRadii);
  for(const auto& axes:o.lobeAxes)w.Points(axes);w.Point3(o.rootDirection);for(float x:o.bendMultipliers)w.Float(x);
  w.Point3(o.collarMetric.root);w.Point3(o.collarMetric.axis);w.Point3(o.collarMetric.up);

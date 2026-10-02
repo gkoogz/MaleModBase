@@ -13,6 +13,15 @@ int main(){
  o.anatomy=s;o.body={s,s};o.anatomyIndices={0,1,2};o.restLength=24;o.proximalRadius=3;o.rootDirection={1,0,0};
  o.collarMetric={{10,0,83},{1,0,0},{0,0,1},3,24,27};
  auto encoded=wire::Encode(o);if(wire::Encode(wire::DecodeOutput(encoded))!=encoded)return 2;
+ // Bulk UV/lineage encoding must retain the scalar version-3 byte sequence.
+ wire::Writer scalar;scalar.U32(3);
+ for(const auto* section:{&o.anatomy,&o.body[0],&o.body[1]}){
+  scalar.U32(std::uint32_t(section->positions.size()));
+  for(const auto* points:{&section->positions,&section->normals,&section->tangents})for(auto p:*points)scalar.Point3(p);
+  for(auto uv:section->uv){scalar.Float(uv[0]);scalar.Float(uv[1]);}for(auto id:section->sourceVertexIDs)scalar.U32(id);
+ }
+ scalar.U32(std::uint32_t(o.anatomyIndices.size()));for(auto i:o.anatomyIndices)scalar.U32(i);
+ if(!std::equal(scalar.bytes.begin(),scalar.bytes.end(),encoded.begin()))return 12;
  auto expectReject=[](auto fn){try{fn();return false;}catch(const std::invalid_argument&){return true;}};
  auto truncated=encoded;truncated.pop_back();if(!expectReject([&]{wire::DecodeOutput(truncated);}))return 3;
  auto trailing=bytes;trailing.push_back(0);if(!expectReject([&]{wire::DecodeRequest(trailing);}))return 4;
@@ -24,5 +33,6 @@ int main(){
  q.controls.values[5]=50;q.frame.collision->pelvisRadius=-1;if(!expectReject([&]{wire::Encode(q);}))return 9;
  q.frame.collision->pelvisRadius=6;q.frame.thighEndpoints.reset();if(!expectReject([&]{wire::Encode(q);}))return 10;
  s.positions[0].z=std::numeric_limits<float>::infinity();o.anatomy=s;if(!expectReject([&]{wire::Encode(o);}))return 11;
+ s.positions[0].z=3;s.uv[0][0]=std::numeric_limits<float>::quiet_NaN();o.anatomy=s;if(!expectReject([&]{wire::Encode(o);}))return 13;
  std::puts("PASS lossless controls/frames/surfaces and malformed packet rejection");
 }
