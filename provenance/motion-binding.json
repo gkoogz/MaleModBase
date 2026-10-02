@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
-  "algorithm": "signed donor-field transfer with final scalar clamp and linear two-influence chain partition",
+  "algorithm": "signed donor-field transfer with final scalar clamp and linear two-influence chain partition; source reset-default suspended-skin lateral partition",
   "runtimeParity": false,
   "files": [
     {
       "path": "malemod_base/motion_binding.py",
-      "sha256": "829c6f301dacfe403b19f19da2843cdf4bd747045269931c23fc5f31901d003e"
+      "sha256": "7655c447af5510ed11d88e6ca3ffeffd581f72ba3c0ae902ddc55e3d6ce8ab8d"
     },
     {
       "path": "tests/test_motion_binding.py",

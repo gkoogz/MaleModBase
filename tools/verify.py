@@ -18,6 +18,10 @@ from extract_root_profile import outputs as root_profile_outputs
 ROOT = Path(__file__).resolve().parents[1]
 
 def main():
+    rigid=json.loads((ROOT/'provenance/rigid-cluster.json').read_text())
+    for item in rigid['files']:
+        if hashlib.sha256((ROOT/item['path']).read_bytes()).hexdigest()!=item['sha256']:
+            raise ValueError('Rigid-cluster implementation/provenance differs: '+item['path'])
     secondary=json.loads((ROOT/'provenance/secondary-rig.json').read_text())
     if secondary['sourceCommit']!=json.loads((ROOT/'provenance/wolverine.json').read_text())['commit']:
         raise ValueError('Secondary rig source commit differs')

@@ -1,15 +1,13 @@
 # Resume here: cross-repository handoff
 
-Latest correction: the user rejected Witcher .29's protected head/lobe binding
-as a workaround and requested investigation of a possibly missing motion axis.
-The opt-in protected binding API and tests are removed; motion_binding.py and
-its provenance are restored to the pre-change contract. Witcher has restored
-installed .28 and its original uniform render stations. The adapter's read-only
-native instruction audit finds full-rank XYZ translation and rotation on all
-ten joints, but still reproduces nonuniform surface distortion. Tangent-only
-orientation has no independent material roll; the reference also uses shortest
-rotation, so this is not established as the observed defect. See the adapter's
-MOTION-AXIS-AUDIT.md for exact evidence and runtime limits. Wolverine is unchanged.
+Latest repair: user rejected the restored .28 visual result and authorized a
+concrete fix. New SDK-free rigid-cluster physics supplies volume-bearing
+material supports and a full 3D orientation, coupled to the flexible rod. The
+adapter measures those supports from the approved mesh, preserves distal mass,
+and recovers existing render joints without changing shaft binding knots.
+Source suspended-skin lateral partition is shared separately. Read
+RIGID-CLUSTER.md; source/offline/native/installed/observed results remain separate.
+Wolverine is unchanged. This does not claim full source solver parity.
 
 Latest user observation: Witcher .26 shape and form are approved, but its motion
 slides sideways and feels wavy and light. Preserve that evaluated mesh/cage and

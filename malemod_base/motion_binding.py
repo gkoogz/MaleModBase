@@ -6,6 +6,19 @@ that are not rendered. It is an authoring operation, not the Wolverine solver.
 import numpy as np
 from scipy.sparse import csr_matrix
 
+def source_lobe_partition(lateral, ball_shape_scale=1.):
+    """ApplySuspendedSkin's sideBlend at the source's stated length scale.
+
+    Reset defaults have BallShapeScale=1, BallCollisionRadius=2.70 and a
+    max(.20, radius*.13) suspension web. This is not a target-world cutoff.
+    """
+    x=np.asarray(lateral,dtype=float)
+    if not np.isfinite(x).all() or not np.isfinite(ball_shape_scale) or ball_shape_scale<=0:
+        raise ValueError('Invalid source suspension frame')
+    radius=max(.20,max(.85,2.70*ball_shape_scale)*.13)
+    t=np.clip(.5+x/(2*radius),0,1);right=t*t*(3-2*t)
+    return np.column_stack([1-right,right])
+
 def sample_mechanical_guide(points, coordinate):
     """Source C1 guide and tangent; the first two guide points are kinematic."""
     p=np.asarray(points,dtype=float);t=np.asarray(coordinate,dtype=float)

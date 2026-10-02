@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "algorithm": "3D proper-rotation covariance fit and solid cluster projection; new portable numerical backend",
+  "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
+  "sourceRelation": "Inspired by reference volumetric material/solid core and generalized inertia; not an exact extraction of its solver",
+  "runtimeParity": false,
+  "files": [
+    {
+      "path": "include/malemod/physics/rigid_cluster.hpp",
+      "sha256": "f9c58e4a9dc07e74445aed859408feeec79b664cfd13d27bc6a44ded7fa09a74"
+    },
+    {
+      "path": "tests/rigid_cluster_test.cpp",
+      "sha256": "4acab73ab3eb379885f7fe45e5a04ce7920ddb6c839957fb20e761c7d4d70628"
+    }
+  ],
+  "verification": {
+    "threeAxes": true,
+    "frames": 540,
+    "maximumFitError": 3.00486853e-08,
+    "maximumPairDistanceError": 4.47034836e-08
+  }
+}

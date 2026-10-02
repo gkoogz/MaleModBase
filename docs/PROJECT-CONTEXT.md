@@ -5,11 +5,11 @@ and form, then rejected sideways, wavy motion and lack of weight/solidness.
 Preserve geometry and size while fixing physics frame consistency and inertia.
 Wolverine remains unchanged; sliders/toggles stay deferred.
 
-Latest correction: the user rejected .29's protected head/lobe binding as a
-workaround and requested investigation of a possibly missing movement axis.
-Remove that change, restore .28, and establish the actual 3D motion and surface
-transport before another correction. Preserve approved shape and size; no
-further locking of material regions is authorized by the previous proposal.
+Latest correction: after .29 was removed, the user rejected .28 again and
+explicitly requested a fix. Preserve the approved mesh and size; replace the
+point-only distal representation with a volume-bearing 3D material body and
+correct the suspended-skin source partition. Native and observed validation
+remain separate. Do not revive sliders, capture keys or change Wolverine.
 
 Latest October 1 clarification: fixed Witcher anatomy means a close match to
 Wolverine's actual full-floppy reset defaults (state 2 and all UI controls 50),

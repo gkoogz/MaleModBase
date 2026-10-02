@@ -200,7 +200,7 @@
   "files": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "08d832fc6e753455bdf9de0829f5e418659df41a4f508dca19f44a8dbe61de28"
+      "sha256": "33bae8f1d5bfb26cd1f5b72311743b5af7a046235654328ecba56eead0616eac"
     },
     {
       "path": "include/malemod/surface/runtime.hpp",
@@ -1408,5 +1408,6 @@
     "reportSHA256": "7417bba8b267a70e86749c6d4895246329034e29d08fd4044c0dfe82f9d7b6ad",
     "executableSHA256": "cea2e638e0799fdc4079d5f9a648adda11d2028e86f6b744ddd8ec98ad7a3c8a",
     "observedGameplay": false
-  }
+  },
+  "buildMetadataChange": "Added independent rigid_cluster_test target; surface runtime implementation and parity evidence unchanged"
 }
