@@ -5,11 +5,15 @@
 #include <mutex>
 #include <stdexcept>
 #include <thread>
+#include <atomic>
 #include "surface-kernel.inc"
 
 namespace malemod::surface {
 namespace {
 namespace kernel=source;
+#ifdef MALEMOD_SURFACE_PROCESS_ISOLATED
+std::atomic<bool> processSessionOwned{false};
+#endif
 constexpr float lowShape[7]={.85f,1.0f,.95f,1.0f,-80.f,-2.f,-3.f};
 constexpr float neutralPhys[8]={78.f,86.f,12.f,62.f,28.f,94.f,18.f,72.f};
 constexpr float lowPhys[8]={-100,0,0,10,0,0,0,10};
@@ -77,7 +81,26 @@ struct Session::Impl {
   if(frame.thighEndpoints){
    for(auto p:*frame.thighEndpoints)if(!std::isfinite(p.x)||!std::isfinite(p.y)||!std::isfinite(p.z))throw std::invalid_argument("Invalid thigh endpoint");
   }
+  auto finite=[](Point p){return std::isfinite(p.x)&&std::isfinite(p.y)&&std::isfinite(p.z);};
+  if(frame.collision){
+   if(!frame.thighEndpoints)throw std::invalid_argument("Collision calibration requires measured thigh endpoints");
+   const auto& c=*frame.collision;
+   for(float r:c.thighRadii)if(!std::isfinite(r)||r<=0)throw std::invalid_argument("Invalid measured thigh radius");
+   if(!std::isfinite(c.pelvisRadius)||c.pelvisRadius<=0)throw std::invalid_argument("Invalid measured pelvis radius");
+   for(unsigned i=0;i<2;i++)if(!finite(c.pelvisEndpoints[i]))throw std::invalid_argument("Invalid measured pelvis endpoint");
+  }
+#ifdef MALEMOD_SURFACE_PROCESS_ISOLATED
+  for(double& value:kernel::surfaceGeometryMilliseconds)value=0;
+#endif
   kernel::collisionCapsuleOverride=bool(frame.thighEndpoints);
+  kernel::surfaceCollisionEnabled=bool(frame.collision);
+  if(frame.collision){
+   const auto& c=*frame.collision;kernel::surfaceTargetPelvisRadius=c.pelvisRadius;
+   for(unsigned i=0;i<2;i++){
+    kernel::surfaceTargetThighRadii[i]=c.thighRadii[i];
+    auto p=c.pelvisEndpoints[i];kernel::surfaceTargetPelvis[i]={p.x,p.y,p.z};
+   }
+  }
   if(frame.thighEndpoints){
    const auto& p=*frame.thighEndpoints;
    kernel::overrideLeftA={p[0].x,p[0].y,p[0].z};kernel::overrideLeftB={p[1].x,p[1].y,p[1].z};
@@ -110,9 +133,30 @@ struct Session::Impl {
   return out;
  }
 };
-Session::Session(const Controls& controls):impl_(std::make_unique<Impl>(controls)){}
-Session::~Session()=default;
+Session::Session(const Controls& controls){
+#ifdef MALEMOD_SURFACE_PROCESS_ISOLATED
+ bool expected=false;
+ if(!processSessionOwned.compare_exchange_strong(expected,true))throw std::logic_error("Parallel source session requires one character per process");
+ try{impl_=std::make_unique<Impl>(controls);}catch(...){processSessionOwned=false;throw;}
+#else
+ impl_=std::make_unique<Impl>(controls);
+#endif
+}
+Session::~Session(){
+ impl_.reset();
+#ifdef MALEMOD_SURFACE_PROCESS_ISOLATED
+ // Source globals/caches cannot be reinitialized by constructing a second
+ // character. A reset replaces the owned worker process, not this session.
+#endif
+}
 void Session::SetControls(const Controls& controls){impl_->Call([&]{Map(controls);});}
 void Session::Step(const Frame& frame){impl_->Call([&]{impl_->Advance(frame);});}
 Output Session::Read(){Output output;impl_->Call([&]{output=impl_->Capture();});return output;}
+Diagnostics Session::ReadDiagnostics(){
+ Diagnostics result;
+#ifdef MALEMOD_SURFACE_PROCESS_ISOLATED
+ impl_->Call([&]{std::copy(std::begin(kernel::surfaceGeometryMilliseconds),std::end(kernel::surfaceGeometryMilliseconds),result.geometryMilliseconds.begin());});
+#endif
+ return result;
+}
 }

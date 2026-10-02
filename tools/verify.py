@@ -18,6 +18,12 @@ from extract_root_profile import outputs as root_profile_outputs
 ROOT = Path(__file__).resolve().parents[1]
 
 def main():
+    graft_runtime=json.loads((ROOT/'provenance/graft-runtime.json').read_text())
+    if graft_runtime['sourceCommit']!=json.loads((ROOT/'provenance/wolverine.json').read_text())['commit']:
+        raise ValueError('C++ graft source revision differs')
+    for item in graft_runtime['files']:
+        if hashlib.sha256((ROOT/item['path']).read_bytes()).hexdigest()!=item['sha256']:
+            raise ValueError('C++ graft implementation/provenance differs: '+item['path'])
     overall=json.loads((ROOT/'provenance/overall-recruitment.json').read_text())
     for item in overall['files']:
         if hashlib.sha256((ROOT/item['path']).read_bytes()).hexdigest()!=item['sha256']:

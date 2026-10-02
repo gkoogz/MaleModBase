@@ -11,11 +11,20 @@ struct Point {float x,y,z;};
 struct Controls {
  std::array<float,18> values={2,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50};
 };
+// Measured character contact envelope in calibrated source-local coordinates.
+// The adapter owns bone selection and world-to-local conversion. Do not infer
+// another character's dimensions from the source's reference pose.
+struct CollisionCalibration {
+ std::array<float,2> thighRadii;
+ std::array<Point,2> pelvisEndpoints;
+ float pelvisRadius;
+};
 struct Frame {
  float seconds=1.f/60.f,pitchForce=0,yawForce=0;
  // Four source-local endpoints: left A/B, right A/B. Empty uses the source
  // reference pose; it must not be described as observing another game's legs.
  std::optional<std::array<Point,4>> thighEndpoints;
+ std::optional<CollisionCalibration> collision;
 };
 struct Surface {
  std::vector<Point> positions,normals,tangents;
@@ -35,6 +44,7 @@ struct Output {
  Point rootDirection;
  std::array<float,10> bendMultipliers;
 };
+struct Diagnostics {std::array<double,16> geometryMilliseconds{};};
 // Each session owns a worker thread and all mutable source caches. Evaluation
 // is synchronous. Do not call from a render hook while holding engine locks.
 // No game/graphics SDK, engine skin palette, input or upload API is exposed.
@@ -47,6 +57,7 @@ class Session {
   void SetControls(const Controls& controls);
   void Step(const Frame& frame={});
   Output Read();
+  Diagnostics ReadDiagnostics();
  private:
   struct Impl;
   std::unique_ptr<Impl> impl_;

@@ -1,5 +1,12 @@
 # Resume here: cross-repository handoff
 
+October 2 full-runtime phase supersedes the narrower scope entries below. Read
+FULL-RUNTIME-ADOPTION.md. All 18 preference values are authorized in Witcher;
+Wolverine remains unchanged. The strict source core and C++ Geralt collar pass
+offline gates; the process-parallel experiment fails one shape gate and is
+diagnostic only. Full native vertex output, calibrated live motion/contacts and
+the overlay are unfinished. No new game package was installed in this phase.
+
 New authorized phase: user accepts .30 motion as serviceable and asks for only
 Overall, with Wolverine's pelvic recruitment. Base exports complete evaluated
 source states and both body sections; coupled displacement reconciliation keeps

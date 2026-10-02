@@ -1,5 +1,10 @@
 # Complete evaluated source surface
 
+For the full Witcher phase, explicit collision calibration, process-transport
+contract and C++ target collar adoption, read FULL-RUNTIME-ADOPTION.md. Optional
+measured contacts preserve the uncalibrated reference branch. Process-parallel
+state relocation has a failed shape gate and must not replace the verified core.
+
 ## Default baseline with mechanical bindings
 
 `Output` now returns the same-session 12-point guide, rest guide, lobe centers,

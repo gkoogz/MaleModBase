@@ -6,6 +6,14 @@ serial scheduling, inactive sequence projection and half conversion are explicit
 """
 import argparse,json,re
 from pathlib import Path
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--output',type=Path)
+parser.add_argument('--check',action='store_true')
+parser.add_argument('--verify-provenance',action='store_true')
+parser.add_argument('--process-isolated',action='store_true',help='One character per process; restore source parallel geometry')
+parser.add_argument('--serial-geometry',action='store_true',help='Diagnostic only: isolate global storage from source scheduling')
+args=parser.parse_args()
+if args.serial_geometry and not args.process_isolated:parser.error('--serial-geometry requires --process-isolated')
 root=Path(__file__).resolve().parents[1]
 runtime=root/'legacy/wolverine/src/runtime'
 data=json.loads((root/'tools/data/surface-closure.json').read_text())
@@ -94,6 +102,24 @@ template<class F>static void GeometryFor(unsigned n,const F& f){for(unsigned i=0
 namespace teaching { struct DisabledTimeline {bool active=false;double time=0;struct Sample{float firm=0;};Sample Get()const{return {};}}; }
 '''
 parts=[prelude]
+if args.process_isolated:
+ # Process isolation lets independent geometry workers see the one character's
+ # shared state, exactly as in the source. Constraint/reduction order is unchanged.
+ geometry=(runtime/'geometry_pass.h').read_text()
+ parallel=geometry[geometry.index('static Concurrency::Scheduler* GeometryScheduler()'):geometry.index('// Prepared arithmetic')]
+ if 'constexpr unsigned batches=16' not in parallel or 'template<class Function>' not in parallel:raise ValueError('Source bounded geometry dispatcher changed')
+ prelude=prelude.replace('#include <Eigen/Geometry>','#include <Eigen/Geometry>\n#include <ppl.h>')
+ prelude=prelude.replace('template<class F>static void GeometryFor(unsigned n,const F& f){for(unsigned i=0;i<n;i++)f(i);}',parallel)
+ if args.serial_geometry:
+  prelude=prelude.replace(parallel,'template<class F>static void GeometryFor(unsigned n,const F& f){for(unsigned i=0;i<n;i++)f(i);}')
+ prelude=prelude.replace('#include <ppl.h>','#include <ppl.h>\n#include <chrono>')
+ prelude=prelude.replace('struct PerfScope { explicit PerfScope(int){} };', '''static double surfaceGeometryMilliseconds[16]{};
+struct PerfScope {
+ int id;std::chrono::steady_clock::time_point begin;
+ explicit PerfScope(int value):id(value),begin(std::chrono::steady_clock::now()){}
+ ~PerfScope(){surfaceGeometryMilliseconds[id]+=std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-begin).count();}
+};''')
+ parts=[prelude]
 for d in sorted(decl,key=position):
  s=d['source'].replace('\r\n','\n').replace('\r','')
  if d['kind']=='CursorKind.FUNCTION_DECL':
@@ -101,24 +127,45 @@ for d in sorted(decl,key=position):
   if prefix.startswith('template<'):s=prefix+s
  if d['name']=='teachingTimeline':s='static teaching::DisabledTimeline teachingTimeline'
  if d['name']=='LiveRootDirection':s=re.sub(r'\s*if\(teachingTimeline.active\)yaw\+=teachingFluid.MainLateralYaw\(teachingTimeline.time\);','',s)
+ if d['name']=='PDInput':
+  storage='static ' if args.process_isolated else 'static thread_local '
+  parts.append(storage+'bool surfaceCollisionEnabled=false;\n'+storage+'float surfaceThighRadii[2]{7.2f,7.2f},surfacePelvisRadius=6.4f,surfaceTargetThighRadii[2]{},surfaceTargetPelvisRadius=0;\n'+storage+'V3 surfacePelvis[2]{{3.f,0.f,70.f},{5.4f,0.f,86.f}},surfaceOldPelvis[2]{},surfaceTargetPelvis[2]{};')
+  s=s.replace('float gait,side;', 'float gait,side; V3 surfacePelvis[2];float surfaceThighRadii[2],surfacePelvisRadius;')
+ if d['name']=='PDReadInput':
+  s=s.replace('return x;', 'for(unsigned i=0;i<2;i++){x.surfacePelvis[i]=surfaceCollisionEnabled?surfaceTargetPelvis[i]:(i?V3{5.4f,0.f,86.f}:V3{3.f,0.f,70.f});x.surfaceThighRadii[i]=surfaceCollisionEnabled?surfaceTargetThighRadii[i]:7.2f;}x.surfacePelvisRadius=surfaceCollisionEnabled?surfaceTargetPelvisRadius:6.4f;return x;')
+ if d['name']=='PDSetInput':
+  at=s.rfind('}')
+  s=s[:at]+'for(unsigned i=0;i<2;i++){surfaceOldPelvis[i]=surfacePelvis[i];surfacePelvis[i]=a.surfacePelvis[i]+(b.surfacePelvis[i]-a.surfacePelvis[i])*t;surfaceThighRadii[i]=a.surfaceThighRadii[i]+(b.surfaceThighRadii[i]-a.surfaceThighRadii[i])*t;}surfacePelvisRadius=a.surfacePelvisRadius+(b.surfacePelvisRadius-a.surfacePelvisRadius)*t;\n'+s[at:]
+ if d['name']=='UpdateCompliantDynamics':
+  s=s.replace('memcpy(pdThigh,target.thigh,sizeof(pdThigh));', 'memcpy(pdThigh,target.thigh,sizeof(pdThigh));memcpy(surfacePelvis,target.surfacePelvis,sizeof(surfacePelvis));')
+ if d['name']=='StepConstraintSolver':
+  # Optional measured collision envelope. Keep the original expressions in the
+  # reference branch so its strict floating-point replay is unchanged.
+  substitutions={
+   'pdOldThigh[j*2+1],7.2f,dt)':
+    'pdOldThigh[j*2+1],surfaceCollisionEnabled?surfaceThighRadii[j]:7.2f,dt)',
+   'PDBodyCapsule(pelvis[s],s,{3.f,0.f,70.f},{5.4f,0.f,86.f},{3.f,0.f,70.f},{5.4f,0.f,86.f},6.4f,dt)':
+    'PDBodyCapsule(pelvis[s],s,surfaceCollisionEnabled?surfacePelvis[0]:V3{3.f,0.f,70.f},surfaceCollisionEnabled?surfacePelvis[1]:V3{5.4f,0.f,86.f},surfaceCollisionEnabled?surfaceOldPelvis[0]:V3{3.f,0.f,70.f},surfaceCollisionEnabled?surfaceOldPelvis[1]:V3{5.4f,0.f,86.f},surfaceCollisionEnabled?surfacePelvisRadius:6.4f,dt)',
+   'Length(pdPosition[i]-q)-7.2f-logicalShaftBodyRadius*.85f':
+    'Length(pdPosition[i]-q)-(surfaceCollisionEnabled?surfaceThighRadii[j]:7.2f)-logicalShaftBodyRadius*.85f',
+  }
+  for before,after in substitutions.items():
+   if s.count(before)!=1:raise ValueError('Source character collision span changed: '+before)
+   s=s.replace(before,after)
  # Mutable numerical state belongs to a session's worker thread. Immutable
  # source tables remain shared. Function-local caches require the same rule.
- if d['kind']=='CursorKind.VAR_DECL' and not re.match(r'static\s+(?:const|constexpr)\b',s):
+ if not args.process_isolated and d['kind']=='CursorKind.VAR_DECL' and not re.match(r'static\s+(?:const|constexpr)\b',s):
   s=s.replace('static ','static thread_local ',1)
- if d['kind']=='CursorKind.FUNCTION_DECL':
+ if not args.process_isolated and d['kind']=='CursorKind.FUNCTION_DECL':
   brace=s.find('{');s=s[:brace+1]+re.sub(r'\bstatic\s+(?!const\b|constexpr\b)', 'static thread_local ',s[brace+1:])
  if d['kind'] not in ['CursorKind.FUNCTION_DECL','forward']:s+=';'
  if d['parent']=='UnifiedCollar':s='namespace UnifiedCollar {\n'+s+'\n}'
  parts.append(s)
-parser=argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--output',type=Path,default=root/'build/surface-runtime/surface-kernel.inc')
-parser.add_argument('--check',action='store_true')
-parser.add_argument('--verify-provenance',action='store_true')
-args=parser.parse_args()
-output=args.output
+output=args.output or root/'build/surface-runtime/surface-kernel.inc'
 output.parent.mkdir(parents=True,exist_ok=True)
 content='\n'.join(parts)+'\n} // namespace malemod::surface::source\n'
 if args.verify_provenance:
+ if args.process_isolated:raise ValueError('Process variant uses its own measured replay provenance')
  report=json.loads((root/'provenance/source-surface.json').read_text())
  if report['sourceCommit']!=data['sourceCommit']:raise ValueError('Surface source revision differs')
  for item in report['files']:

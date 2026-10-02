@@ -1,0 +1,115 @@
+#pragma once
+#include "runtime.hpp"
+#include <cmath>
+#include <cstring>
+#include <stdexcept>
+#include <limits>
+
+// Versioned numerical messages. Transport, process handles, engine resources
+// and graphics buffers belong to the adapter. Never transmit C++ object layouts.
+namespace malemod::surface::wire {
+constexpr std::uint32_t version=2;
+constexpr std::size_t maximumBytes=16*1024*1024;
+constexpr std::uint32_t maximumVertices=60000,maximumIndices=360000;
+using Bytes=std::vector<std::uint8_t>;
+static_assert(sizeof(float)==4&&std::numeric_limits<float>::is_iec559,"Wire requires IEEE binary32");
+inline bool LittleEndian(){const std::uint32_t x=1;return *reinterpret_cast<const std::uint8_t*>(&x)==1;}
+struct Request {Controls controls;Frame frame;bool reset=false;};
+struct Writer {
+ Bytes bytes;
+ void U32(std::uint32_t x){for(int i=0;i<4;i++)bytes.push_back(std::uint8_t(x>>(i*8)));}
+ void Float(float x){if(!std::isfinite(x))throw std::invalid_argument("Non-finite wire value");std::uint32_t b;std::memcpy(&b,&x,4);U32(b);}
+ void Point3(Point p){Float(p.x);Float(p.y);Float(p.z);}
+ template<class T>void Points(const T& points){
+  if(LittleEndian()&&sizeof(Point)==12){
+   for(auto p:points)if(!std::isfinite(p.x)||!std::isfinite(p.y)||!std::isfinite(p.z))throw std::invalid_argument("Non-finite wire value");
+   const auto n=points.size()*12;if(n>maximumBytes||bytes.size()>maximumBytes-n)throw std::invalid_argument("Oversize wire packet");
+   const auto offset=bytes.size();bytes.resize(offset+n);if(n)std::memcpy(bytes.data()+offset,points.data(),n);
+  }else for(auto p:points)Point3(p);
+ }
+};
+struct Reader {
+ const Bytes& bytes;std::size_t offset=0;
+ explicit Reader(const Bytes& b):bytes(b){if(b.size()>maximumBytes)throw std::invalid_argument("Oversize wire packet");}
+ std::uint32_t U32(){if(bytes.size()-offset<4)throw std::invalid_argument("Truncated wire packet");std::uint32_t x=0;for(int i=0;i<4;i++)x|=std::uint32_t(bytes[offset++])<<(8*i);return x;}
+ float Float(){auto b=U32();float x;std::memcpy(&x,&b,4);if(!std::isfinite(x))throw std::invalid_argument("Non-finite wire value");return x;}
+ Point Point3(){Point p;p.x=Float();p.y=Float();p.z=Float();return p;}
+ template<class T>void Points(T& points){
+  if(LittleEndian()&&sizeof(Point)==12){
+   const auto n=points.size()*12;if(n>bytes.size()-offset)throw std::invalid_argument("Truncated wire packet");
+   if(n)std::memcpy(points.data(),bytes.data()+offset,n);offset+=n;
+   for(auto p:points)if(!std::isfinite(p.x)||!std::isfinite(p.y)||!std::isfinite(p.z))throw std::invalid_argument("Non-finite wire value");
+  }else for(auto& p:points)p=Point3();
+ }
+ void End(){if(offset!=bytes.size())throw std::invalid_argument("Trailing wire data");}
+};
+inline void Validate(const Controls& c){
+ for(unsigned i=0;i<c.values.size();i++){
+  float x=c.values[i],lo=i==0||i==2||i==4?0.f:1.f,hi=i==0?2.f:100.f;
+  if(!std::isfinite(x)||x<lo||x>hi||(i==0&&x!=std::floor(x)))throw std::invalid_argument("Invalid wire control");
+ }
+}
+inline void Validate(const Frame& f){
+ if(!std::isfinite(f.seconds)||f.seconds<0||f.seconds>.15f||!std::isfinite(f.pitchForce)||!std::isfinite(f.yawForce))throw std::invalid_argument("Invalid wire frame");
+ auto finite=[](Point p){return std::isfinite(p.x)&&std::isfinite(p.y)&&std::isfinite(p.z);};
+ if(f.thighEndpoints)for(auto p:*f.thighEndpoints)if(!finite(p))throw std::invalid_argument("Invalid wire thigh endpoint");
+ if(f.collision){
+  if(!f.thighEndpoints)throw std::invalid_argument("Collision calibration requires measured thigh endpoints");
+  for(float r:f.collision->thighRadii)if(!std::isfinite(r)||r<=0)throw std::invalid_argument("Invalid wire thigh radius");
+  for(auto p:f.collision->pelvisEndpoints)if(!finite(p))throw std::invalid_argument("Invalid wire pelvis endpoint");
+  if(!std::isfinite(f.collision->pelvisRadius)||f.collision->pelvisRadius<=0)throw std::invalid_argument("Invalid wire pelvis radius");
+ }
+}
+inline Bytes Encode(const Request& q){
+ Validate(q.controls);Validate(q.frame);
+ Writer w;w.U32(version);w.U32(q.reset?1:0);
+ for(float x:q.controls.values)w.Float(x);
+ w.Float(q.frame.seconds);w.Float(q.frame.pitchForce);w.Float(q.frame.yawForce);
+ w.U32(q.frame.thighEndpoints?1:0);if(q.frame.thighEndpoints)w.Points(*q.frame.thighEndpoints);
+ w.U32(q.frame.collision?1:0);if(q.frame.collision){for(float r:q.frame.collision->thighRadii)w.Float(r);w.Points(q.frame.collision->pelvisEndpoints);w.Float(q.frame.collision->pelvisRadius);}
+ return w.bytes;
+}
+inline Request DecodeRequest(const Bytes& bytes){
+ Reader r(bytes);if(r.U32()!=version)throw std::invalid_argument("Wire version mismatch");
+ Request q;auto reset=r.U32();if(reset>1)throw std::invalid_argument("Invalid reset flag");q.reset=reset!=0;
+ for(float& x:q.controls.values)x=r.Float();Validate(q.controls);
+ q.frame.seconds=r.Float();q.frame.pitchForce=r.Float();q.frame.yawForce=r.Float();
+ if(q.frame.seconds<0||q.frame.seconds>.15f)throw std::invalid_argument("Invalid wire timestep");
+ auto thigh=r.U32();if(thigh>1)throw std::invalid_argument("Invalid thigh flag");
+ if(thigh){q.frame.thighEndpoints=std::array<Point,4>{};r.Points(*q.frame.thighEndpoints);}
+ auto calibrated=r.U32();if(calibrated>1)throw std::invalid_argument("Invalid collision flag");
+ if(calibrated){q.frame.collision=CollisionCalibration{};for(float& radius:q.frame.collision->thighRadii)radius=r.Float();r.Points(q.frame.collision->pelvisEndpoints);q.frame.collision->pelvisRadius=r.Float();}
+ Validate(q.frame);
+ r.End();return q;
+}
+inline void WriteSurface(Writer& w,const Surface& s){
+ auto n=s.positions.size();
+ if(n>maximumVertices||s.normals.size()!=n||s.tangents.size()!=n||s.uv.size()!=n||s.sourceVertexIDs.size()!=n)throw std::invalid_argument("Invalid wire surface layout");
+ w.U32(std::uint32_t(n));w.Points(s.positions);w.Points(s.normals);w.Points(s.tangents);
+ for(auto uv:s.uv){w.Float(uv[0]);w.Float(uv[1]);}for(auto id:s.sourceVertexIDs)w.U32(id);
+}
+inline Surface ReadSurface(Reader& r){
+ auto n=r.U32();if(n>maximumVertices||std::size_t(n)*48>r.bytes.size()-r.offset)throw std::invalid_argument("Invalid wire vertex count");
+ Surface s;s.positions.resize(n);s.normals.resize(n);s.tangents.resize(n);s.uv.resize(n);s.sourceVertexIDs.resize(n);
+ r.Points(s.positions);r.Points(s.normals);r.Points(s.tangents);
+ for(auto& uv:s.uv){uv[0]=r.Float();uv[1]=r.Float();}for(auto& id:s.sourceVertexIDs)id=r.U32();return s;
+}
+inline Bytes Encode(const Output& o){
+ auto capacity=512+(o.anatomy.positions.size()+o.body[0].positions.size()+o.body[1].positions.size())*48+o.anatomyIndices.size()*4;
+ if(capacity>maximumBytes)throw std::invalid_argument("Oversize wire output");
+ Writer w;w.bytes.reserve(capacity);w.U32(version);WriteSurface(w,o.anatomy);for(const auto& b:o.body)WriteSurface(w,b);
+ if(o.anatomyIndices.size()>maximumIndices||o.anatomyIndices.size()%3)throw std::invalid_argument("Invalid wire topology");
+ w.U32(std::uint32_t(o.anatomyIndices.size()));for(auto i:o.anatomyIndices){if(i>=o.anatomy.positions.size())throw std::invalid_argument("Invalid wire triangle");w.U32(i);}
+ w.Float(o.proximalRadius);w.Float(o.restLength);w.Points(o.shaftGuide);w.Points(o.restGuide);w.Points(o.lobeCenters);w.Points(o.lobeAnchors);w.Points(o.lobeRadii);
+ for(const auto& axes:o.lobeAxes)w.Points(axes);w.Point3(o.rootDirection);for(float x:o.bendMultipliers)w.Float(x);
+ if(w.bytes.size()>maximumBytes)throw std::invalid_argument("Oversize wire output");return w.bytes;
+}
+inline Output DecodeOutput(const Bytes& bytes){
+ Reader r(bytes);if(r.U32()!=version)throw std::invalid_argument("Wire version mismatch");
+ Output o;o.anatomy=ReadSurface(r);for(auto& b:o.body)b=ReadSurface(r);
+ auto n=r.U32();if(n>maximumIndices||n%3||std::size_t(n)*4>r.bytes.size()-r.offset)throw std::invalid_argument("Invalid wire index count");
+ o.anatomyIndices.resize(n);for(auto& i:o.anatomyIndices){auto id=r.U32();if(id>=o.anatomy.positions.size()||id>65535)throw std::invalid_argument("Invalid wire triangle");i=std::uint16_t(id);}
+ o.proximalRadius=r.Float();o.restLength=r.Float();r.Points(o.shaftGuide);r.Points(o.restGuide);r.Points(o.lobeCenters);r.Points(o.lobeAnchors);r.Points(o.lobeRadii);
+ for(auto& axes:o.lobeAxes)r.Points(axes);o.rootDirection=r.Point3();for(float& x:o.bendMultipliers)x=r.Float();r.End();return o;
+}
+}

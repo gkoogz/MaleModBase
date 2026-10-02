@@ -1,5 +1,13 @@
 # Durable project context
 
+Latest authorization (October 2): implement the complete shared solver/surface
+and every existing anatomy/physics control in Witcher, without reducing the
+Wolverine behavior. The user confirms Overall scaling and rejects the physics.
+Use compiled native execution where required; investigate actual supported
+engine integration, preserve parity gates and implement a separate overlay.
+Wolverine remains unchanged. Sequences, fluid and audio remain deferred for
+this phase; the full 18-value anatomy/physics contract is now authorized.
+
 Latest scope: the user calls Witcher's .30 physics serviceable and authorizes
 restoring only the Overall slider. Reconstruct Wolverine's prepared anatomy
 and final pelvic recruitment, including coupled body/attachment growth and

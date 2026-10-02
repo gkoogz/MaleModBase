@@ -3199,7 +3199,9 @@
       "world collision queries; missing thigh endpoints use source reference pose",
       "source packed W/skin/color flags are not an adapter contract",
       "animation sequences, pulses, fluid and audio deferred",
-      "64-bit source parity remains failed; do not link into Witcher as verified"
-    ]
+      "64-bit source parity remains failed; do not link into Witcher as verified",
+      "process-relocated parallel surface variant fails extreme shape parity; diagnostic only"
+    ],
+    "characterCalibration": "Optional measured collision envelope and SDK-free coordinate/lineage/coupled target collar; see provenance/graft-runtime.json and docs/FULL-RUNTIME-ADOPTION.md"
   }
 }
