@@ -7,7 +7,7 @@
   "files": [
     {
       "path": "include/malemod/physics/rigid_cluster.hpp",
-      "sha256": "f9c58e4a9dc07e74445aed859408feeec79b664cfd13d27bc6a44ded7fa09a74"
+      "sha256": "b515a5e1ca6bb9de53b4f7c7188a343e42444ccc2a72b183cdb851884f524142"
     },
     {
       "path": "tests/rigid_cluster_test.cpp",
@@ -19,5 +19,6 @@
     "frames": 540,
     "maximumFitError": 3.00486853e-08,
     "maximumPairDistanceError": 4.47034836e-08
-  }
+  },
+  "virtualBindTranslation": "shared material-pivot transport with fixed engine inverse binds"
 }

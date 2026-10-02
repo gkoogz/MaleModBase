@@ -18,6 +18,10 @@ from extract_root_profile import outputs as root_profile_outputs
 ROOT = Path(__file__).resolve().parents[1]
 
 def main():
+    overall=json.loads((ROOT/'provenance/overall-recruitment.json').read_text())
+    for item in overall['files']:
+        if hashlib.sha256((ROOT/item['path']).read_bytes()).hexdigest()!=item['sha256']:
+            raise ValueError('Overall recruitment provenance differs: '+item['path'])
     rigid=json.loads((ROOT/'provenance/rigid-cluster.json').read_text())
     for item in rigid['files']:
         if hashlib.sha256((ROOT/item['path']).read_bytes()).hexdigest()!=item['sha256']:

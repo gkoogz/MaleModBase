@@ -16,6 +16,12 @@ inline V3 RotateCluster(Q4 q,V3 p){
  V3 cross=Cross(axis,p)*2.f;
  return p+cross*q.w+Cross(axis,cross);
 }
+// A morph changes the material pivot without changing the engine rig bind.
+// Keep its skin map R*(vertex-material)+current exactly, including rotation.
+inline V3 VirtualBindTranslation(V3 bind,V3 material,V3 current,Q4 rotation){
+ V3 offset=material-bind;
+ return current-material+offset-RotateCluster(rotation,offset);
+}
 // Horn's proper-rotation fit, with a positive spectral shift. The off-axis
 // supports must span 3D. The caller supplies the previous accepted rotation as
 // the warm start; no independently inferred tangent or missing roll axis.

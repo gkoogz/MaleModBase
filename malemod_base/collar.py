@@ -177,3 +177,24 @@ class CollarPlan:
         if not np.isfinite(expanded).all():
             raise RuntimeError('Collar solve returned nonfinite positions')
         return np.asarray(expanded) * self.scale
+
+    def solve_displacement(self, displacements):
+        """Transfer prepared shape changes while retaining the fitted neutral.
+
+        Fixed exterior rows use the supplied prepared displacement (zero for
+        protected body-part boundaries). Fine edge slaves are still eliminated
+        into their original donor ends. This avoids smoothing an approved rest
+        mesh again when a control is neutral.
+        """
+        target = _points(displacements) / self.scale
+        if target.shape != self.before.shape:
+            raise ValueError('Displacement topology differs from the plan')
+        solved = target[self.masters].copy()
+        if self._factor is not None:
+            rhs = (self.projection.T @ (target * self.screen[:, None]))[self.free]
+            rhs -= self.boundary @ solved[self.fixed]
+            solved[self.free] = self._factor.solve(rhs)
+        expanded = self.projection @ solved
+        if not np.isfinite(expanded).all():
+            raise RuntimeError('Nonfinite recruited displacement')
+        return np.asarray(expanded) * self.scale

@@ -1,5 +1,12 @@
 # Durable project context
 
+Latest scope: the user calls Witcher's .30 physics serviceable and authorizes
+restoring only the Overall slider. Reconstruct Wolverine's prepared anatomy
+and final pelvic recruitment, including coupled body/attachment growth and
+original-edge welds. Physics dimensions and collision supports must follow the
+selected size. Other sliders, toggles, sequences, fluid and audio remain deferred.
+Wolverine's source and installation remain unchanged.
+
 Current refinement: the user approved Witcher's evaluated reset-default shape
 and form, then rejected sideways, wavy motion and lack of weight/solidness.
 Preserve geometry and size while fixing physics frame consistency and inertia.

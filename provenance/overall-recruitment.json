@@ -1,0 +1,47 @@
+{
+  "contractVersion": 1,
+  "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
+  "files": [
+    {
+      "path": "malemod_base/recruitment_transfer.py",
+      "sha256": "4e9d999852fab3d6926d24fef64d46af64196b83e254cadd76d79699d71434a3"
+    },
+    {
+      "path": "malemod_base/collar.py",
+      "sha256": "87e9ef10a1df9b0c7751b1a16e697003ec8764e98037720ae49d33df80d98a89"
+    },
+    {
+      "path": "malemod_base/graft_collar.py",
+      "sha256": "3df4ac970e7f8ddaa905a93383213fb5da23470a54ca368f8973dacbd0ee3f9c"
+    },
+    {
+      "path": "tests/test_recruitment_transfer.py",
+      "sha256": "aab08ca96d769ce61de8deb0cafad08ff83cded5843e8c98bc32ac64c3be77bb"
+    },
+    {
+      "path": "tools/export_overall_bank.py",
+      "sha256": "014ef92dabfd73be779e36b6e6d56b16147a25dd466256417ccf8e528bc68b63"
+    },
+    {
+      "path": "include/malemod/physics/rigid_cluster.hpp",
+      "sha256": "b515a5e1ca6bb9de53b4f7c7188a343e42444ccc2a72b183cdb851884f524142"
+    }
+  ],
+  "sourceRelation": "complete evaluated source shape/body outputs transferred to calibrated target topology; source-derived coupled displacement reconciliation",
+  "immutableCanonicalSourceFilesRechecked": [
+    "prepared_shape.h",
+    "unified_collar_solver.h",
+    "anatomy_surface.h",
+    "d3d9_proxy.cpp"
+  ],
+  "verification": {
+    "sharedTransferTests": 3,
+    "collarTests": 10,
+    "observedGameplay": false
+  },
+  "omissions": [
+    "different character topology field transfer",
+    "linear native interpolation between source bakes",
+    "target live pose/collision and frame cost"
+  ]
+}

@@ -77,6 +77,22 @@ class GraftCollar:
         targets=radial_targets(self.rest,frame,plan.mask,centers[self.unique],radii[self.unique])
         return plan.solve(targets)[self.aliases]
 
+    def solve_recruited(self, displacements, frame):
+        """Reconcile an evaluated source shape with the target's welded domain.
+
+        The caller supplies prepared anatomy/body displacements and zeros on
+        protected native boundaries. Source shape evaluation and target mesh
+        transfer remain separate from this hard-edge coupled reconciliation.
+        """
+        displacements=np.asarray(displacements,dtype=float)
+        if displacements.shape!=self.points.shape or not np.isfinite(displacements).all():
+            raise ValueError('Expected finite prepared displacement on this domain')
+        plan=self.prepare(frame)
+        result=plan.solve_displacement(displacements[self.unique])
+        if np.max(np.abs(result[self.locked]),initial=0)>1e-10:
+            raise ValueError('Prepared displacement moves a protected boundary')
+        return self.points+result[self.aliases]
+
     def solve_checked(self, targets, frame, area_floor):
         """Bound the whole correction, maintaining every hard linear constraint.
 

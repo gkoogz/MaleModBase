@@ -28,11 +28,11 @@
     },
     {
       "path": "malemod_base/collar.py",
-      "sha256": "1b7c5eef622b3262eb7bdd4097d7c22abedf10dbaca5ee4efce0db57dbb9df2e"
+      "sha256": "87e9ef10a1df9b0c7751b1a16e697003ec8764e98037720ae49d33df80d98a89"
     },
     {
       "path": "malemod_base/graft_collar.py",
-      "sha256": "8d9b95915b13bfc36d03cc2176d05dac973ed99071129b3d61a18f08a692efdf"
+      "sha256": "3df4ac970e7f8ddaa905a93383213fb5da23470a54ca368f8973dacbd0ee3f9c"
     },
     {
       "path": "malemod_base/surface_limit.py",

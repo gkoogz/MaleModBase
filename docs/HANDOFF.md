@@ -1,5 +1,14 @@
 # Resume here: cross-repository handoff
 
+New authorized phase: user accepts .30 motion as serviceable and asks for only
+Overall, with Wolverine's pelvic recruitment. Base exports complete evaluated
+source states and both body sections; coupled displacement reconciliation keeps
+an approved target rest mesh exact at UI 50, eliminates fine seam rows into
+original body-edge donors, and protects native body-part boundaries. New shared
+material-field transfer and virtual-bind pivot translation support native morph
+adapters without forking shape laws. See OVERALL-RECRUITMENT.md. No Wolverine
+changes or automatic gameplay-success claims are authorized by this adoption.
+
 Latest repair: user rejected the restored .28 visual result and authorized a
 concrete fix. New SDK-free rigid-cluster physics supplies volume-bearing
 material supports and a full 3D orientation, coupled to the flexible rod. The
