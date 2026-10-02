@@ -32,6 +32,17 @@ WitcherScript runtime cost or establish gameplay success.
 
 ## Adoption
 
+The pelvis-relative extension supplies `FrameAcceleration`, `FilterMotion` and
+`IntegrateRelative`. Relative velocity damping is invariant under constant
+world translation. Measured frame translation and angular acceleration, plus
+centrifugal and Coriolis terms, supply inertia in local coordinates. An adapter
+must rotate gravity and colliders into that same space and publish local points
+directly, including render frames without a physics substep. Input smoothing,
+acceleration limits and measured frame timing are explicit adapter calibration,
+not source replay parity. No rest geometry, mass, bend or suspension coefficient
+changes are required. Regression cases cover translation invariance, signed
+acceleration response, angular terms and rotation covariance.
+
 Wolverine's canonical runtime and install remain unchanged by this work, per the
 user's October 1 clarification. It may later consume these headers in its adapter
 after source replay and gameplay validation, with its existing full angular and

@@ -1,5 +1,10 @@
 # Durable project context
 
+Current refinement: the user approved Witcher's evaluated reset-default shape
+and form, then rejected sideways, wavy motion and lack of weight/solidness.
+Preserve geometry and size while fixing physics frame consistency and inertia.
+Wolverine remains unchanged; sliders/toggles stay deferred.
+
 Latest October 1 clarification: fixed Witcher anatomy means a close match to
 Wolverine's actual full-floppy reset defaults (state 2 and all UI controls 50),
 including size and relaxed shape. It does not mean retaining the oversized

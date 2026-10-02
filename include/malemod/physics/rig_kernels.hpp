@@ -1,6 +1,25 @@
 #pragma once
 #include "xpbd_kernels.hpp"
 namespace malemod::physics {
+// Motion is relative to a rigid attachment frame. The adapter measures the
+// frame's world velocities, differentiates them, and rotates these inputs into
+// solver space. Constant world translation must not become a drag force.
+inline V3 FilterMotion(V3 previous,V3 measured,float response,float limit,float dt){
+ V3 filtered=previous+(measured-previous)*(1.f-expf(-response*dt));
+ float length=Length(filtered);
+ if(length>limit)filtered=filtered*(limit/length);
+ return filtered;
+}
+inline V3 FrameAcceleration(V3 position,V3 velocity,V3 linear,V3 angularVelocity,V3 angularAcceleration){
+ return linear+Cross(angularAcceleration,position)+Cross(angularVelocity,Cross(angularVelocity,position))+Cross(angularVelocity,velocity)*2.f;
+}
+inline void IntegrateRelative(State& state,int i,V3 gravity,V3 linear,V3 angularVelocity,V3 angularAcceleration,float accelerationLimit,float drag,float dt){
+ V3 acceleration=FrameAcceleration(state.position[i],state.velocity[i],linear,angularVelocity,angularAcceleration);
+ float length=Length(acceleration);
+ if(length>accelerationLimit)acceleration=acceleration*(accelerationLimit/length);
+ state.velocity[i]=(state.velocity[i]+(gravity-acceleration)*dt)*expf(-drag*dt);
+ state.position[i]=state.position[i]+state.velocity[i]*dt;
+}
 // Source SampleShaftChain's C1 Hermite guide. The first interval is kinematic;
 // its chord therefore equals LiveRootDirection times the segment length.
 inline void SampleGuide(const State& state,int count,float t,V3& center,V3& tangent){

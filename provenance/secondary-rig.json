@@ -1,5 +1,5 @@
 {
-  "contractVersion": 1,
+  "contractVersion": 2,
   "feature": "physics.secondary-rig",
   "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
   "sources": [
@@ -15,17 +15,19 @@
   "files": [
     {
       "path": "include/malemod/physics/rig_kernels.hpp",
-      "sha256": "fb39d10e3c676376590c00e7cf44dac8e605f0c8975b5d0870c886984e876523"
+      "sha256": "c20b9dd19da5d81819646f1ddc37bd772a0bb56e33fa287d93132c796bb6e959"
     },
     {
       "path": "tests/secondary_test.cpp",
-      "sha256": "8a8bfbc9a720a15028793c867ec0575db671300b8766a2cab264bbd112f9727c"
+      "sha256": "f59721d984cfca2369d9bfdacb42d6c99dc5101149a9f85ac374e3961b38611d"
     }
   ],
   "adaptations": [
     "curved-rest subtraction",
     "point generalized masses",
-    "moving-surface history without recovery rebound"
+    "moving-surface history without recovery rebound",
+    "pelvis-relative integration with measured rigid-frame inertial forces"
   ],
-  "fullCoupledPhysicsParity": false
+  "fullCoupledPhysicsParity": false,
+  "adapterMotionCalibrationIsSourceParity": false
 }

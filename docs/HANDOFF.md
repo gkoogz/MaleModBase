@@ -1,5 +1,15 @@
 # Resume here: cross-repository handoff
 
+Latest user observation: Witcher .26 shape and form are approved, but its motion
+slides sideways and feels wavy and light. Preserve that evaluated mesh/cage and
+all source default material coefficients. The shared secondary-rig contract 2
+adds relative-frame integration and inertial terms; Witcher measures pelvis
+motion, rotates gravity/capsules into pelvis coordinates, and publishes local
+points. Constant world translation must not cause drag or render-frame drift.
+This is an explicit adapter motion calibration, not full Wolverine parity.
+Wolverine stays unchanged; sliders/toggles remain absent. See adapter handoff
+for native cook, installation and observed gameplay status.
+
 Latest clarification: the Witcher first physics build moves in game, but does
 not match Wolverine reset defaults. Shared `surface::Output` now exports the
 source mechanical state alongside geometry, and `export_default_baseline.py`

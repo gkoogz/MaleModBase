@@ -9,6 +9,31 @@ using malemod::V3;using std::min;using std::max;
 using namespace malemod;using namespace malemod::physics;
 #define CHECK(x) do{if(!(x)){std::cerr<<"FAIL "<<__LINE__<<" "<<#x<<'\n';return 1;}}while(0)
 int main(){
+ // A constant world velocity must not create drag in attachment-local space.
+ // The previous world-velocity damping violates this invariant immediately.
+ State relative;relative.position={{0,.2f,-.1f}};relative.oldPosition=relative.position;relative.velocity={{0,0,0}};
+ V3 world=relative.position[0],worldVelocity={3,0,0},origin={};
+ for(int frame=0;frame<600;frame++){
+  float dt=1.f/60;origin=origin+V3{3,0,0}*dt;
+  worldVelocity=worldVelocity*expf(-1.8f*dt);world=world+worldVelocity*dt;
+  IntegrateRelative(relative,0,{},{},{},{},6.f,1.8f,dt);
+ }
+ CHECK(Length(relative.position[0]-V3{0,.2f,-.1f})==0);
+ CHECK(Length(world-origin-relative.position[0])>20.f);
+ // Linear acceleration produces signed lag; release dissipates energy rather
+ // than retaining an arbitrary offset in free relative velocity.
+ IntegrateRelative(relative,0,{},{2,0,0},{},{},6.f,1.8f,1.f/60);
+ CHECK(relative.velocity[0].x<0);CHECK(relative.position[0].x<0);
+ float speed=Length(relative.velocity[0]);
+ for(int frame=0;frame<180;frame++)IntegrateRelative(relative,0,{},{},{},{},6.f,1.8f,1.f/60);
+ CHECK(Length(relative.velocity[0])<speed*.005f);
+ // Euler, centrifugal and Coriolis terms in a rotating solver frame.
+ CHECK(Length(FrameAcceleration({1,0,0},{0,1,0},{},{0,0,2},{0,0,3})-V3{-8,3,0})<1e-6f);
+ auto rotate=[](V3 a){return V3{-a.y,a.x,a.z};};
+ V3 p{.2f,.1f,-.3f},vel{.4f,-.2f,.1f},lin{1,-2,3},omega{1,2,-1},alpha{-.3f,.2f,1};
+ CHECK(Length(FrameAcceleration(rotate(p),rotate(vel),rotate(lin),rotate(omega),rotate(alpha))-rotate(FrameAcceleration(p,vel,lin,omega,alpha)))<1e-6f);
+ CHECK(Length(FilterMotion({},{100,0,0},20.f,4.f,1.f/60))<=4.000001f);
+ std::cout<<"PASS relative-frame translation invariant, acceleration lag, rotation covariance and bounded inputs\n";
  std::mt19937 random(729);std::uniform_real_distribution<float> v(-1,1);float worst=0;
  for(int i=0;i<5000;i++){
   V3 n=Unit({v(random),v(random),v(random)}),r={5.724f,4.86f,7.93f};
