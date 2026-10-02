@@ -1,0 +1,38 @@
+#pragma once
+#include <array>
+#include <vector>
+#include <cmath>
+#include <cstdint>
+#include <stdexcept>
+
+namespace malemod::surface {
+// Target topology lighting, independent of graphics packing and game shaders.
+// Normal groups preserve authored hard edges while welding UV aliases. Tangents
+// remain per render vertex, retaining each UV island's handedness.
+using LightingPoint=std::array<double,3>;
+struct LightingFrame {LightingPoint normal,tangent;double sign=1;};
+inline LightingPoint LightingSub(LightingPoint a,LightingPoint b){for(unsigned i=0;i<3;i++)a[i]-=b[i];return a;}
+inline LightingPoint LightingCross(LightingPoint a,LightingPoint b){return {a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]};}
+inline double LightingDot(LightingPoint a,LightingPoint b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}
+inline LightingPoint LightingUnit(LightingPoint p,LightingPoint fallback){double s=LightingDot(p,p);if(s<1e-24){p=fallback;s=LightingDot(p,p);}if(!std::isfinite(s)||s<1e-24)throw std::invalid_argument("Degenerate lighting direction");for(auto& x:p)x/=std::sqrt(s);return p;}
+inline std::vector<LightingFrame> RebuildLighting(const std::vector<LightingPoint>& positions,
+ const std::vector<std::array<double,2>>& uv,const std::vector<std::array<std::uint32_t,3>>& faces,
+ const std::vector<std::uint32_t>& normalGroups,const std::vector<LightingFrame>& fallback){
+ const auto n=positions.size();if(!n||uv.size()!=n||normalGroups.size()!=n||fallback.size()!=n)throw std::invalid_argument("Lighting topology dimensions differ");
+ std::vector<LightingPoint> normals(n),tangents(n),bitangents(n);
+ for(unsigned i=0;i<n;i++){if(normalGroups[i]>=n)throw std::invalid_argument("Lighting alias outside topology");for(auto x:positions[i])if(!std::isfinite(x))throw std::invalid_argument("Nonfinite lighting position");for(auto x:uv[i])if(!std::isfinite(x))throw std::invalid_argument("Nonfinite lighting UV");}
+ for(auto face:faces){for(auto i:face)if(i>=n)throw std::invalid_argument("Lighting triangle outside topology");
+  auto e1=LightingSub(positions[face[1]],positions[face[0]]),e2=LightingSub(positions[face[2]],positions[face[0]]),normal=LightingCross(e1,e2);
+  const double u1=uv[face[1]][0]-uv[face[0]][0],v1=uv[face[1]][1]-uv[face[0]][1],u2=uv[face[2]][0]-uv[face[0]][0],v2=uv[face[2]][1]-uv[face[0]][1],det=u1*v2-v1*u2;
+  LightingPoint tangent{},bitangent{};if(std::abs(det)>1e-20)for(unsigned a=0;a<3;a++){tangent[a]=(e1[a]*v2-e2[a]*v1)/det;bitangent[a]=(e2[a]*u1-e1[a]*u2)/det;}
+  for(auto i:face)for(unsigned a=0;a<3;a++){normals[normalGroups[i]][a]+=normal[a];tangents[i][a]+=tangent[a];bitangents[i][a]+=bitangent[a];}
+ }
+ std::vector<LightingFrame> out(n);
+ for(unsigned i=0;i<n;i++){auto normal=LightingUnit(normals[normalGroups[i]],fallback[i].normal);auto tangent=tangents[i];double dot=LightingDot(normal,tangent);for(unsigned a=0;a<3;a++)tangent[a]-=normal[a]*dot;
+  auto prior=fallback[i].tangent;dot=LightingDot(normal,prior);for(unsigned a=0;a<3;a++)prior[a]-=normal[a]*dot;
+  if(LightingDot(prior,prior)<1e-24)prior=LightingCross(normal,std::abs(normal[2])<.9?LightingPoint{0,0,1}:LightingPoint{0,1,0});
+  tangent=LightingUnit(tangent,prior);double sign=LightingDot(LightingCross(normal,tangent),bitangents[i]);out[i]={normal,tangent,std::abs(sign)<1e-20?fallback[i].sign:(sign<0?-1.:1.)};
+ }
+ return out;
+}
+}

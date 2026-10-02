@@ -1,5 +1,11 @@
 # Resume here: cross-repository handoff
 
+October 2 target lighting addition: portable `surface/lighting.hpp` builds final
+target normals and UV tangents while preserving normal aliases and mirrored UV
+handedness. Its independent SDK-free test and import provenance pass. Read the
+target lighting section of FULL-RUNTIME-ADOPTION.md. Source solver/collar arithmetic
+and Wolverine are unchanged; native Witcher output is still an adapter gate.
+
 October 2 full-runtime phase supersedes the narrower scope entries below. Read
 FULL-RUNTIME-ADOPTION.md and FRAME-CALIBRATION.md. The active source motion filter
 is now extracted with x86/x64 bit-exact original-function checks. Full affine

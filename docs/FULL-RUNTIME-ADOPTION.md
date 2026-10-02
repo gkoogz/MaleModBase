@@ -1,5 +1,22 @@
 # Full shared runtime adoption
 
+## Target surface lighting
+
+`surface/lighting.hpp` reconstructs area-weighted normals from final target
+triangles, with explicit normal groups for UV aliases and authored hard edges.
+UV tangents remain per render vertex and retain mirrored-island handedness.
+Degenerate UVs use the supplied authored tangent projected onto the new normal.
+The API needs no game or graphics SDK and does not change source solver arithmetic.
+Run `python tools/verify_target_lighting.py`; proof is `provenance/target-lighting.json`.
+The rotated/nonuniform, alias, mirrored-UV and degenerate tests pass offline.
+
+Witcher can adopt it with its actual cooked vertex lineage, UVs and normal groups;
+packing and native pose application remain in the adapter. Wolverine and future
+spokes may consume this utility for target graft lighting after deliberate pinning
+and native/observed verification. Wolverine's existing source surface normals and
+installed runtime remain authoritative and unchanged. This utility is not proof
+of native Witcher output or lighting parity with another character.
+
 The user authorizes the full source solver, surface reconstruction, all 17
 anatomy/physics sliders and the 3-state selector in Witcher, with a separate
 overlay. Wolverine remains unchanged. Sequences, fluid and audio are deferred.

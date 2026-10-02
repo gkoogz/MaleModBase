@@ -1,0 +1,23 @@
+{
+  "files": [
+    {
+      "path": "include/malemod/surface/lighting.hpp",
+      "sha256": "b4bc234b292d2ccd5ae04737f37b47f316671422fc575607f1d57378f8ad4367"
+    },
+    {
+      "path": "tests/surface_lighting_test.cpp",
+      "sha256": "69ddfc60eb86ef13e6d3d52c03c38d6ac7fd8b4915720b0969679904a8dbf0d9"
+    },
+    {
+      "path": "tools/verify_target_lighting.py",
+      "sha256": "00b4d0bb627f195a4fc3af390466847feb22286e2ed41cd0aca87824668ac909"
+    }
+  ],
+  "sdkFree": true,
+  "executableSHA256": "ec3ec48ac62a42b077dab0cc61617a6171169aff965ad0505fcfce24f749a30d",
+  "reportSHA256": "184098e28575eb2d173773aef82838f3f241ef24b27dbc08dc7d85d262498259",
+  "exitCode": 0,
+  "sourceSolverChanged": false,
+  "wolverineChanged": false,
+  "observedGameplay": false
+}
