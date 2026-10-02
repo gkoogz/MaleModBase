@@ -78,3 +78,9 @@ rollback and observed gameplay gates. Existing source calibration remains the
 default; optional character contacts are enabled only by measured adapter data.
 Future spokes follow the same coordinate, lineage, collar, native-output and
 gameplay gates. Shared numerical additions never install into another game.
+
+The C++ graft API also exposes GraftRecruitmentWeight for body-field support
+selection. Spokes consume this shared law; do not duplicate recruitment
+threshold arithmetic in native adapters. Its weight outputs are checked against
+Base Python in all 22 current Geralt Overall/LOD cases (1e-12 gate). This does
+not add native output or change Wolverine.

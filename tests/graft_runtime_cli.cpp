@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <chrono>
+#include <string>
 using namespace malemod::surface;
 template<class T>void Read(std::ifstream& f,T& value){if(!f.read(reinterpret_cast<char*>(&value),sizeof(value)))throw std::runtime_error("Truncated graft fixture");}
 template<class T>void ReadList(std::ifstream& f,std::vector<T>& list){for(auto& item:list)Read(f,item);}
@@ -23,6 +24,9 @@ int main(int argc,char** argv){
   for(unsigned i=0;i<16;i++)if(plan.SolveDisplacement(delta)!=result)throw std::runtime_error("Cached graft solve changed its output");
   auto solved=std::chrono::steady_clock::now();std::ofstream out(argv[2],std::ios::binary);
   out.write(reinterpret_cast<const char*>(result.data()),result.size()*sizeof(PrecisePoint));if(!out)throw std::runtime_error("Cannot write graft result");
+  std::ofstream weights(std::string(argv[2])+".weights",std::ios::binary);
+  for(auto p:d.points){double w=GraftRecruitmentWeight(p,frame);weights.write(reinterpret_cast<const char*>(&w),sizeof(w));}
+  if(!weights)throw std::runtime_error("Cannot write graft recruitment weights");
   std::cout<<"graft unique="<<n<<" seams="<<seams<<" protected="<<locked<<"\n";
   std::cout<<"planMs="<<std::chrono::duration<double,std::milli>(prepared-start).count()<<" cachedSolveMs="<<std::chrono::duration<double,std::milli>(solved-prepared).count()/17<<"\n";
  }catch(const std::exception& e){std::cerr<<e.what()<<"\n";return 1;}

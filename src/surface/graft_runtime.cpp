@@ -25,6 +25,12 @@ double Recruitment(Vector p,const GraftFrame& f){
  w*=Smoother((p.z()-(root.z()-radius*2.1-2))/4);return w;
 }
 }
+double GraftRecruitmentWeight(PrecisePoint point,const GraftFrame& frame){
+ if(!Finite(point)||!Finite(frame.root)||!Finite(frame.axis)||!Finite(frame.up)||!std::isfinite(frame.sourceLengthScale)||frame.sourceLengthScale<=0||!std::isfinite(frame.radius)||frame.radius<=0||!std::isfinite(frame.length)||frame.length<=0)throw std::invalid_argument("Invalid graft recruitment input");
+ const auto axis=V(frame.axis),up=V(frame.up);
+ if(std::abs(axis.norm()-1)>1e-5||std::abs(up.norm()-1)>1e-5||std::abs(axis.dot(up))>1e-5||std::abs(axis.y())>1e-5||std::abs(up.y())>1e-5)throw std::invalid_argument("Invalid graft recruitment basis");
+ return Recruitment(V(point)/frame.sourceLengthScale,frame);
+}
 struct GraftPlan::Impl {
  double scale;
  std::size_t count;

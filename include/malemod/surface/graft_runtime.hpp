@@ -19,6 +19,9 @@ struct GraftDomain {
  std::vector<EdgeConstraint> seams;
  std::vector<std::uint32_t> protectedVertices;
 };
+// The same support law used by the target collar matrix. Adapters can suppress
+// distant body-field inputs without maintaining another copy of that law.
+double GraftRecruitmentWeight(PrecisePoint,const GraftFrame&);
 // C++ adoption of Base's malemod_base.collar.CollarPlan displacement solve.
 // No game, graphics or skeleton SDK. Reuse the factorization until the supplied
 // rest metric/frame changes; it is not a deformable-bone approximation.
