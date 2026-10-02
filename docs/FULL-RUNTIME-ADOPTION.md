@@ -84,3 +84,11 @@ selection. Spokes consume this shared law; do not duplicate recruitment
 threshold arithmetic in native adapters. Its weight outputs are checked against
 Base Python in all 22 current Geralt Overall/LOD cases (1e-12 gate). This does
 not add native output or change Wolverine.
+
+GraftPlan.UpdateFrame retains immutable topology, curvature and mass operators.
+Every supplied root/direction/radius/length still updates recruitment and the
+numeric factorization; frames are neither frozen nor quantized. Symbolic analysis
+is reused only for an identical sparse pattern. A changed unit scale requires a
+new plan. The CLI compares five changed frames per fixture with newly constructed
+plans using exact vector equality, then restores the original result. Every spoke
+can adopt this same API; Wolverine remains unchanged until explicit adoption.

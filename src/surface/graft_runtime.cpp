@@ -35,13 +35,16 @@ struct GraftPlan::Impl {
  double scale;
  std::size_t count;
  std::vector<std::uint32_t> masters,free,fixed,protectedVertices;
- Sparse projection,boundary,attraction;
+ std::vector<Vector> points;
+ Eigen::VectorXd area;
+ Sparse projection,boundary,attraction,baseMetric;
+ std::vector<int> patternOuter,patternInner;
  Eigen::SimplicialLDLT<Sparse> factor;
  Impl(const GraftDomain& domain,const GraftFrame& frame):scale(frame.sourceLengthScale),count(domain.points.size()){
   if(!count||count>1000000||!Finite(frame.root)||!Finite(frame.axis)||!Finite(frame.up)||!std::isfinite(scale)||scale<=0||!std::isfinite(frame.radius)||frame.radius<=0||!std::isfinite(frame.length)||frame.length<=0)throw std::invalid_argument("Invalid graft frame/domain");
   const auto axis=V(frame.axis),up=V(frame.up);
   if(std::abs(axis.norm()-1)>1e-5||std::abs(up.norm()-1)>1e-5||std::abs(axis.dot(up))>1e-5||std::abs(axis.y())>1e-5||std::abs(up.y())>1e-5)throw std::invalid_argument("Graft axis/up must be orthonormal in the source XZ plane");
-  std::vector<Vector> points;points.reserve(count);for(auto p:domain.points){if(!Finite(p))throw std::invalid_argument("Non-finite graft rest point");points.push_back(V(p)/scale);}
+  points.reserve(count);for(auto p:domain.points){if(!Finite(p))throw std::invalid_argument("Non-finite graft rest point");points.push_back(V(p)/scale);}
   std::vector<bool> slaves(count,false),locked(count,false);
   for(const auto& e:domain.seams){
    if(e.slave>=count||e.a>=count||e.b>=count||e.slave==e.a||e.slave==e.b||e.a==e.b||slaves[e.slave]||!std::isfinite(e.weight)||e.weight<0||e.weight>1)throw std::invalid_argument("Invalid original-edge seam");
@@ -59,7 +62,7 @@ struct GraftPlan::Impl {
    entries.emplace_back(e.slave,masterOf[e.a],1-e.weight);entries.emplace_back(e.slave,masterOf[e.b],e.weight);
   }
   projection.resize(int(count),int(masters.size()));projection.setFromTriplets(entries.begin(),entries.end());
-  Eigen::VectorXd area=Eigen::VectorXd::Zero(count),screen(count),mask(count);
+  area=Eigen::VectorXd::Zero(count);
   entries.clear();
   if(domain.triangles.empty())throw std::invalid_argument("Empty graft triangles");
   for(auto face:domain.triangles){
@@ -73,14 +76,30 @@ struct GraftPlan::Impl {
    }
   }
   Sparse curvature(count,count);curvature.setFromTriplets(entries.begin(),entries.end());
-  std::vector<Entry> inverseArea,screenEntries;
+  std::vector<Entry> inverseArea;
   for(unsigned i=0;i<count;i++){
-   area[i]=std::max(area[i],.005);mask[i]=Recruitment(points[i],frame);screen[i]=area[i]*(2.5+2*std::pow(1-mask[i],4));
-   inverseArea.emplace_back(i,i,1/area[i]);screenEntries.emplace_back(i,i,screen[i]);
+   area[i]=std::max(area[i],.005);
+   inverseArea.emplace_back(i,i,1/area[i]);
   }
-  Sparse inverse(count,count),screenMatrix(count,count);inverse.setFromTriplets(inverseArea.begin(),inverseArea.end());screenMatrix.setFromTriplets(screenEntries.begin(),screenEntries.end());
+  Sparse inverse(count,count);inverse.setFromTriplets(inverseArea.begin(),inverseArea.end());
   Sparse cp=curvature*projection;
-  Sparse metric=cp.transpose()*inverse*cp*8+projection.transpose()*curvature*projection*2+projection.transpose()*screenMatrix*projection;
+  baseMetric=cp.transpose()*inverse*cp*8+projection.transpose()*curvature*projection*2;
+  Update(frame);
+ }
+ void Update(const GraftFrame& frame){
+  if(!Finite(frame.root)||!Finite(frame.axis)||!Finite(frame.up)||frame.sourceLengthScale!=scale||!std::isfinite(frame.radius)||frame.radius<=0||!std::isfinite(frame.length)||frame.length<=0)throw std::invalid_argument("Invalid updated graft frame/scale");
+  const auto axis=V(frame.axis),up=V(frame.up);
+  if(std::abs(axis.norm()-1)>1e-5||std::abs(up.norm()-1)>1e-5||std::abs(axis.dot(up))>1e-5||std::abs(axis.y())>1e-5||std::abs(up.y())>1e-5)throw std::invalid_argument("Invalid updated graft basis");
+  Eigen::VectorXd screen(count),mask(count);std::vector<Entry> screenEntries;
+  screenEntries.reserve(count);
+  for(unsigned i=0;i<count;i++){
+   mask[i]=Recruitment(points[i],frame);screen[i]=area[i]*(2.5+2*std::pow(1-mask[i],4));
+   screenEntries.emplace_back(i,i,screen[i]);
+  }
+  Sparse screenMatrix(count,count);screenMatrix.setFromTriplets(screenEntries.begin(),screenEntries.end());
+  Sparse metric=baseMetric+projection.transpose()*screenMatrix*projection;
+  std::vector<bool> locked(count,false);for(auto id:protectedVertices)locked[id]=true;
+  free.clear();fixed.clear();
   std::vector<int> freeOf(masters.size(),-1),fixedOf(masters.size(),-1);
   for(unsigned i=0;i<masters.size();i++){
    if(mask[masters[i]]>1e-4&&!locked[masters[i]]){freeOf[i]=int(free.size());free.push_back(i);}
@@ -95,7 +114,13 @@ struct GraftPlan::Impl {
   Sparse freeMetric(free.size(),free.size());freeMetric.setFromTriplets(freeEntries.begin(),freeEntries.end());
   boundary.resize(free.size(),fixed.size());boundary.setFromTriplets(boundaryEntries.begin(),boundaryEntries.end());
   attraction=projection.transpose()*screenMatrix;
-  if(!free.empty()){factor.compute(freeMetric);if(factor.info()!=Eigen::Success)throw std::runtime_error("Graft factorization failed");}
+  if(!free.empty()){
+   freeMetric.makeCompressed();
+   std::vector<int> outer(freeMetric.outerIndexPtr(),freeMetric.outerIndexPtr()+freeMetric.outerSize()+1);
+   std::vector<int> inner(freeMetric.innerIndexPtr(),freeMetric.innerIndexPtr()+freeMetric.nonZeros());
+   if(outer!=patternOuter||inner!=patternInner){factor.analyzePattern(freeMetric);patternOuter=std::move(outer);patternInner=std::move(inner);}
+   factor.factorize(freeMetric);if(factor.info()!=Eigen::Success)throw std::runtime_error("Graft factorization failed");
+  }
  }
  std::vector<PrecisePoint> Solve(const std::vector<PrecisePoint>& input)const{
   if(input.size()!=count)throw std::invalid_argument("Graft displacement topology differs");
@@ -117,5 +142,6 @@ struct GraftPlan::Impl {
 };
 GraftPlan::GraftPlan(const GraftDomain& d,const GraftFrame& f):impl_(std::make_unique<Impl>(d,f)){}
 GraftPlan::~GraftPlan()=default;
+void GraftPlan::UpdateFrame(const GraftFrame& frame){impl_->Update(frame);}
 std::vector<PrecisePoint> GraftPlan::SolveDisplacement(const std::vector<PrecisePoint>& displacement)const{return impl_->Solve(displacement);}
 }

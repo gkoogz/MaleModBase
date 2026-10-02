@@ -31,6 +31,9 @@ class GraftPlan {
   ~GraftPlan();
   GraftPlan(const GraftPlan&)=delete;
   GraftPlan& operator=(const GraftPlan&)=delete;
+  // Reuse immutable topology operators while updating the exact support law.
+  // A different sourceLengthScale requires a new plan. No frame quantization.
+  void UpdateFrame(const GraftFrame&);
   std::vector<PrecisePoint> SolveDisplacement(const std::vector<PrecisePoint>&)const;
  private:
   struct Impl;std::unique_ptr<Impl> impl_;
