@@ -1,7 +1,11 @@
 # Resume here: cross-repository handoff
 
 October 2 full-runtime phase supersedes the narrower scope entries below. Read
-FULL-RUNTIME-ADOPTION.md. All 18 preference values are authorized in Witcher;
+FULL-RUNTIME-ADOPTION.md and FRAME-CALIBRATION.md. The active source motion filter
+is now extracted with x86/x64 bit-exact original-function checks. Full affine
+skin-delta calibration includes the different model origins. Witcher measured
+240 animated actor-local pelvis/thigh samples; live solver/output adoption is
+still unfinished. All 18 preference values are authorized in Witcher;
 Wolverine remains unchanged. The strict source core and C++ Geralt collar pass
 offline gates. The process-global `/fp:strict` experiment failed one shape gate;
 matching Wolverine's `/fp:precise` arithmetic passes the parallel recipe's

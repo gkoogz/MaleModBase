@@ -67,6 +67,11 @@ source parity, or hide these costs behind the existence of a menu.
 
 ## Adoption by every spoke
 
+Animated frame calibration and the source motion filter are now shared Base
+contracts; see FRAME-CALIBRATION.md. The full affine mapping and exact source
+filter have independent tests on x86 and x64. This does not change the separate
+x86-only surface kernel gate or establish observed target output.
+
 Witcher pins the committed Base revision before cooking/deployment; it does not
 maintain copied numerical source. Its engine probe uses the actual game
 executable hash and observed RVAs, not different-build REDkit addresses.

@@ -18,6 +18,11 @@ from extract_root_profile import outputs as root_profile_outputs
 ROOT = Path(__file__).resolve().parents[1]
 
 def main():
+    subprocess.run([sys.executable,str(ROOT/'tools/extract_motion_filter.py')],check=True)
+    motion=json.loads((ROOT/'provenance/motion-filter.json').read_text())
+    for item in motion['files']:
+        if hashlib.sha256((ROOT/item['path']).read_bytes()).hexdigest()!=item['sha256']:
+            raise ValueError('Motion/calibration provenance differs: '+item['path'])
     graft_runtime=json.loads((ROOT/'provenance/graft-runtime.json').read_text())
     if graft_runtime['sourceCommit']!=json.loads((ROOT/'provenance/wolverine.json').read_text())['commit']:
         raise ValueError('C++ graft source revision differs')

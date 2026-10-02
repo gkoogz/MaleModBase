@@ -1,0 +1,62 @@
+{
+  "contractVersion": 1,
+  "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
+  "sourcePath": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
+  "sourceSHA256": "20779d89b389ca315a27f77d7e804d9fa290129fe7b2137e896149c344467e30",
+  "sourceFunctionSHA256": "a2bfdc5aea824a45394974dab3b617025f7a6befee78b02d2cbc11e51e7bdd3d",
+  "headerSHA256": "180955a83eed09fb550c1bf6543b7f545c2889b400ed452370d0223276d13368",
+  "recipeSHA256": "904f23b1cc23a904e56684d34887beac85b58cae80d3dd4fc6eabeb903fae422",
+  "oracleSHA256": "994a6a7bdda9e60a3b402254fd633545852aa0109dc7bfe9b73d9d1004bee70e",
+  "changes": [
+    "Clock supplied as uint32 milliseconds",
+    "Diagnostics removed",
+    "Per-instance source state",
+    "Nonfinite inputs rejected before state changes"
+  ],
+  "numericalExpressionsUnchanged": true,
+  "actorLocalToWorldExcluded": true,
+  "installed": false,
+  "observedGameplay": false,
+  "verification": {
+    "x86": {
+      "reportSHA256": "e0b888a36fb753fc0524815de09af39bcb124bb274aa88a155961e2245f315e3",
+      "motionTestSHA256": "32c317f9fb435cc4eb49309466c33406336a068709befe0ddc6865e6e279001f",
+      "calibrationTestSHA256": "c958ca761ad81cf58e8183d25c0ffb1cc67745d5cce9d943f76b3f2c3df8951c",
+      "sourceStates": 2000,
+      "forceOnlyStates": 400,
+      "calibrationCases": 500,
+      "passed": true
+    },
+    "x64": {
+      "reportSHA256": "80187bfbdd25af0eb27a6e90d7033865e2ad59fe045f1b479a51d22b55896b39",
+      "motionTestSHA256": "fa869621d7330d410e84202599fec8a65414fef7d3f0d2b5604a2f832279bdfc",
+      "calibrationTestSHA256": "84c32a3cf5fe22ad1c693fe66c4ca87c603efc2f1d9937d4841dc0d9a824131b",
+      "sourceStates": 2000,
+      "forceOnlyStates": 400,
+      "calibrationCases": 500,
+      "passed": true
+    }
+  },
+  "files": [
+    {
+      "path": "tests/motion_filter_test.cpp",
+      "sha256": "3bc080efd2053391380340d5dde52106f44b7eff952f50fb8dea2d04f53ac25f"
+    },
+    {
+      "path": "tests/skin_delta_calibration_test.cpp",
+      "sha256": "b2a343771a315df8fe56b10f7cee1114e95faa3fe7c899574378be3cda408e94"
+    },
+    {
+      "path": "include/malemod/surface/binding.hpp",
+      "sha256": "1d4ba94a14e2f7ffa3ea21334748f9937d31c4a37e449544497c9c2a5749da8d"
+    },
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "e9a57a8875ba959d44e910c5a82c7824a8ee163dfeadc74038c33f5fc5bdbba4"
+    },
+    {
+      "path": "docs/FRAME-CALIBRATION.md",
+      "sha256": "61c9cc28116756a16d1e714a17eed51b24d1a05e8af12de3c93207118ab85067"
+    }
+  ]
+}

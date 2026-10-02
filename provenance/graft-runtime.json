@@ -9,7 +9,7 @@
     },
     {
       "path": "include/malemod/surface/binding.hpp",
-      "sha256": "06f106d42648a3b9926dd0dc1e0a858bc446dcf8499bb823fa236cc94522a77e"
+      "sha256": "1d4ba94a14e2f7ffa3ea21334748f9937d31c4a37e449544497c9c2a5749da8d"
     },
     {
       "path": "src/surface/graft_runtime.cpp",

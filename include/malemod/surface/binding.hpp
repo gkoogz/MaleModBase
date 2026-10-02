@@ -36,6 +36,21 @@ struct CoordinateCalibration {
  }
  double LengthToTarget(double length)const{return length*targetUnitsPerSourceUnit;}
  double LengthToSource(double length)const{return length/targetUnitsPerSourceUnit;}
+ // Conjugate a row-major affine model-space skin delta by the calibrated
+ // source-to-target map. Rotating its translation alone loses the offset
+ // between the two model origins and introduces false inertial motion.
+ std::array<double,16> SkinDeltaToSource(const std::array<double,16>& delta)const{
+  Validate();for(double x:delta)if(!std::isfinite(x))throw std::invalid_argument("Non-finite skin delta");
+  if(delta[12]!=0||delta[13]!=0||delta[14]!=0||delta[15]!=1)throw std::invalid_argument("Expected affine skin delta");
+  auto apply=[&](PrecisePoint p,bool position){PrecisePoint out{};
+   for(unsigned i=0;i<3;i++){for(unsigned j=0;j<3;j++)out[i]+=delta[i*4+j]*p[j];if(position)out[i]+=delta[i*4+3];}return out;};
+  std::array<double,16> out{};out[15]=1;
+  const auto translation=PointToSource(apply(PointToTarget({0,0,0}),true));
+  for(unsigned i=0;i<3;i++)out[i*4+3]=translation[i];
+  for(unsigned column=0;column<3;column++){PrecisePoint unit{};unit[column]=1;
+   const auto axis=VectorToSource(apply(VectorToTarget(unit),false));for(unsigned row=0;row<3;row++)out[row*4+column]=axis[row];}
+  return out;
+ }
 };
 // Exact sparse lineage, usable for source vertex interpolation and body-field
 // donors. Do not use a nearest rendered vertex as a replacement for its rows.
