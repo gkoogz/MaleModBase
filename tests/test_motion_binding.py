@@ -4,6 +4,34 @@ from malemod_base.motion_binding import linear_chain_weights, reference_fields, 
 
 
 class MotionBindingTests(unittest.TestCase):
+    def test_protected_head_is_rigid_under_independent_bone_motion(self):
+        from malemod_base.motion_binding import protected_cage_weights
+        fields = np.array([[1, 0, t] for t in np.linspace(.78, 1, 100)])
+        w = protected_cage_weights(fields, np.zeros(100), 2, np.full(100, 10.), 5)
+        rng = np.random.default_rng(16)
+        p = rng.normal(size=(100, 3))
+        transforms = np.tile(np.eye(4), (10, 1, 1))
+        for i in range(10):
+            q, _ = np.linalg.qr(rng.normal(size=(3, 3)))
+            transforms[i, :3, :3] = q
+            transforms[i, :3, 3] = rng.normal(size=3)
+        moved = np.einsum('nb,bij,nj->ni', w, transforms[:, :3], np.c_[p, np.ones(100)])
+        np.testing.assert_allclose(np.linalg.norm(np.diff(moved, axis=0), axis=1),
+                                   np.linalg.norm(np.diff(p, axis=0), axis=1), atol=1e-12)
+        np.testing.assert_array_equal(w[:, 7], np.ones(100))
+        self.assertEqual(np.count_nonzero(w), 100)
+
+    def test_protected_binding_keeps_web_seam_and_coordinate_scale(self):
+        from malemod_base.motion_binding import protected_cage_weights
+        fields = np.array([[1, 0, .99], [0, 1, .99], [1, 0, .5], [1, 0, .7799999], [1, 0, .78]])
+        w = protected_cage_weights(fields, [0, -4, 0, 0, 0], 2, [0, 10, 10, 10, 10], 5)
+        np.testing.assert_array_equal(w[0], np.zeros(10))
+        self.assertEqual(w[1, 8], 1)
+        np.testing.assert_allclose(w[2:].sum(1), 1)
+        self.assertLess(np.linalg.norm(w[3]-w[4]), 2e-6)
+        scaled = protected_cage_weights(fields, [0, -.04, 0, 0, 0], .02, [0, .1, .1, .1, .1], .05)
+        np.testing.assert_allclose(w, scaled)
+
     def test_cage_keeps_seam_fixed_and_bounds_overlapping_fields(self):
         fields=np.array([[1,1,.5],[1,0,.5],[0,1,.5],[0,1,.5]])
         weights=reference_cage_weights(fields,[0,0,-4,4],2,[0,5,5,5],5)

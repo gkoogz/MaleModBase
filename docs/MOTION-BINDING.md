@@ -20,3 +20,22 @@ Wolverine adoption: use the field transfer and partition tests for future native
 rig exports; retain its authoritative full XPBD/contact solver. Future spokes
 can consume the same transfer through a pinned Base revision and provide their
 own motion cage. Native secondary-motion solvers need independent calibration.
+# Protected distal shape (opt-in contract 2)
+
+`protected_cage_weights` places eight shaft render stations from flex 0 to .78.
+Beyond .78, shaft/head material belongs entirely to the final render joint.
+This boundary comes from the source `ScaleGlansIndependently` crown protection,
+not a target-world bounding box. Lobe/web fields and fixed seam donors retain
+their previous ownership. All adapters must use `PROTECTED_SHAFT_KNOTS` for both
+rest placement and runtime sampling; the historical binding API is unchanged.
+
+Witcher adopts this version to prevent independent distal transforms from
+changing the glans shape. Wolverine can use the binding in a future native
+skeletal export, while retaining its existing cross-section surface solver.
+Other spokes may opt in when their renderer uses a small bone cage. Neither
+Wolverine nor any installed spoke changes merely by updating Base.
+
+This guarantees rigid head transport, not complete source surface parity.
+Flexible shaft blends still have native linear-skinning volume loss, and the
+point collision guide is not a rigid glans collision mesh. Native import and
+actual gameplay remain independent gates.
