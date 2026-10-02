@@ -1,14 +1,15 @@
 # Resume here: cross-repository handoff
 
-Latest observation: user rejects Witcher .28 glans and other material regions
-deforming severely during motion. The uniform eight-station linear cage lacks
-the source's cross-section reconstruction. `protected_cage_weights` is an opt-in
-binding contract 2: eight render stations end at source flex .78; pure distal
-shaft/head vertices use one transform. Witcher must place and sample the same
-knots. Original reference bindings and Wolverine runtime remain unchanged.
-Shared binding/provenance tests pass; native and gameplay results are recorded
-in the spoke. Flexible shaft volume loss and collision-guide mismatch remain
-explicit limits, not full source parity.
+Latest correction: the user rejected Witcher .29's protected head/lobe binding
+as a workaround and requested investigation of a possibly missing motion axis.
+The opt-in protected binding API and tests are removed; motion_binding.py and
+its provenance are restored to the pre-change contract. Witcher has restored
+installed .28 and its original uniform render stations. The adapter's read-only
+native instruction audit finds full-rank XYZ translation and rotation on all
+ten joints, but still reproduces nonuniform surface distortion. Tangent-only
+orientation has no independent material roll; the reference also uses shortest
+rotation, so this is not established as the observed defect. See the adapter's
+MOTION-AXIS-AUDIT.md for exact evidence and runtime limits. Wolverine is unchanged.
 
 Latest user observation: Witcher .26 shape and form are approved, but its motion
 slides sideways and feels wavy and light. Preserve that evaluated mesh/cage and

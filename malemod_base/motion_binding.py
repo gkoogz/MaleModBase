@@ -107,37 +107,3 @@ def reference_cage_centres(points, fields, root, lateral, lobe_exclusion):
         if mask.sum()<8:raise ValueError('Insufficient field support for motion cage')
         centres.append(points[mask].mean(0))
     return np.asarray(centres)
-
-
-# The source ScaleGlansIndependently protects the crown beyond flex .78.
-# A native skin adapter must stop varying transforms inside that material region.
-PROTECTED_SHAFT_KNOTS = np.linspace(0., .78, 8)
-
-
-def protected_cage_weights(fields, lateral, half_width, seam_distance, blend_distance):
-    """Flexible proximal shaft, single-transform distal head, original lobe web.
-
-    The rendering joints must be placed/sampled at PROTECTED_SHAFT_KNOTS.
-    This opt-in law leaves the historical reference cage unchanged. The head's
-    entire row belongs to the last shaft joint, independent of its donor flex
-    coordinate. Source membership excludes lobe/web vertices from that lock.
-    """
-    result = reference_cage_weights(fields, lateral, half_width, seam_distance, blend_distance)
-    f = np.clip(np.asarray(fields, dtype=float), 0, 1)
-    old_axial = result[:, :8].sum(1)
-    result[:, :8] = linear_chain_weights(f[:, 2], PROTECTED_SHAFT_KNOTS) * old_axial[:, None]
-    head = (f[:, 2] >= PROTECTED_SHAFT_KNOTS[-1]) & (f[:, 0] > .9) & (f[:, 1] < .05)
-    # Preserve the exact attachment boundary even for malformed overlapping fields.
-    head &= np.asarray(seam_distance) >= blend_distance
-    result[head] = 0
-    result[head, 7] = 1
-    # Keep the inter-lobe web flexible, but stop mixing the two rigid interiors.
-    # Smoothly reach full single-lobe ownership before the core; distances are
-    # supplied by the adapter and scale together with half_width.
-    smooth = lambda x: np.clip((lambda u: u*u*u*(u*(6*u-15)+10))(np.clip(x, 0, 1)), 0, 1)
-    lock = smooth((f[:, 1]-.8)/.18) * smooth((np.abs(lateral)/half_width-.10)/.05)
-    lock *= smooth((.05-f[:, 0])/.05) * smooth(np.asarray(seam_distance)/blend_distance)
-    rigid = np.zeros_like(result)
-    rigid[np.arange(len(f)), np.where(np.asarray(lateral) < 0, 8, 9)] = 1
-    result = result*(1-lock[:, None]) + rigid*lock[:, None]
-    return result

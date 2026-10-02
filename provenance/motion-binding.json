@@ -1,20 +1,20 @@
 {
   "schemaVersion": 1,
   "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
-  "algorithm": "signed donor-field transfer with final scalar clamp and linear two-influence chain partition; optional protected distal head with matching axial render stations",
+  "algorithm": "signed donor-field transfer with final scalar clamp and linear two-influence chain partition",
   "runtimeParity": false,
   "files": [
     {
       "path": "malemod_base/motion_binding.py",
-      "sha256": "84ec036e323dae40f906e73618348048e03c0779cf050c1c09888b2c9872ae00"
+      "sha256": "829c6f301dacfe403b19f19da2843cdf4bd747045269931c23fc5f31901d003e"
     },
     {
       "path": "tests/test_motion_binding.py",
-      "sha256": "dc2af1bbf24c8f0c573c58c622471f342f9331c59e75952e9159d3782d2701f6"
+      "sha256": "46de537a43df6100459e3952d65f7046fbd57cf7453ed033f0b55386c1a041a4"
     },
     {
       "path": "docs/MOTION-BINDING.md",
-      "sha256": "dc467a60e48f6d76a2935dab641b4b20489d2d47856265754d196ed1640c6721"
+      "sha256": "a23fd46573760e94be12e403e93df0fd19793595f86054cb6285db1e89c89616"
     },
     {
       "path": "assets/wolverine-reference/geometry.npz",
@@ -26,6 +26,5 @@
     "native bone mappings",
     "runtime rest-shape output",
     "engine input and menus"
-  ],
-  "protectedShapeContract": 2
+  ]
 }
