@@ -6,7 +6,7 @@
   "files": [
     {
       "path": "malemod_base/motion_binding.py",
-      "sha256": "a7ebfb0ce563481cdb4b39fddbcf4b8785373df8beff11eb82c809ddd45835ed"
+      "sha256": "84ec036e323dae40f906e73618348048e03c0779cf050c1c09888b2c9872ae00"
     },
     {
       "path": "tests/test_motion_binding.py",
