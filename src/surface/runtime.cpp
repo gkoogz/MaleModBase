@@ -129,6 +129,10 @@ struct Session::Impl {
   }
   out.rootDirection=point(kernel::LiveRootDirection());
   for(unsigned i=0;i<10;i++)out.bendMultipliers[i]=kernel::RapheTubeBendMultiplier((i+1)/11.f);
+  const auto* metric=kernel::UnifiedCollar::surfaceMetricFrame;
+  out.collarMetric={{metric[0],metric[1],metric[2]},{metric[3],metric[4],metric[5]},
+   {metric[6],metric[7],metric[8]},metric[9],metric[10],kernel::UnifiedCollar::surfaceMetricGeneration};
+  if(!out.collarMetric.generation)throw std::runtime_error("Source collar metric not built");
   for(auto p:out.anatomy.positions)if(!std::isfinite(p.x)||!std::isfinite(p.y)||!std::isfinite(p.z))throw std::runtime_error("Non-finite surface");
   return out;
  }
@@ -137,7 +141,9 @@ Session::Session(const Controls& controls){
 #ifdef MALEMOD_SURFACE_PROCESS_ISOLATED
  bool expected=false;
  if(!processSessionOwned.compare_exchange_strong(expected,true))throw std::logic_error("Parallel source session requires one character per process");
- try{impl_=std::make_unique<Impl>(controls);}catch(...){processSessionOwned=false;throw;}
+ // Even a failed initialization can change process-global source caches.
+ // Replace the worker process to reset the character lifetime.
+ impl_=std::make_unique<Impl>(controls);
 #else
  impl_=std::make_unique<Impl>(controls);
 #endif

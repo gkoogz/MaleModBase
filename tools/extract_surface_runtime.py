@@ -131,6 +131,15 @@ for d in sorted(decl,key=position):
   storage='static ' if args.process_isolated else 'static thread_local '
   parts.append(storage+'bool surfaceCollisionEnabled=false;\n'+storage+'float surfaceThighRadii[2]{7.2f,7.2f},surfacePelvisRadius=6.4f,surfaceTargetThighRadii[2]{},surfaceTargetPelvisRadius=0;\n'+storage+'V3 surfacePelvis[2]{{3.f,0.f,70.f},{5.4f,0.f,86.f}},surfaceOldPelvis[2]{},surfaceTargetPelvis[2]{};')
   s=s.replace('float gait,side;', 'float gait,side; V3 surfacePelvis[2];float surfaceThighRadii[2],surfacePelvisRadius;')
+ if d['name']=='Build' and d['parent']=='UnifiedCollar':
+  # Observe the actual cache rebuild; do not duplicate its invalidation policy
+  # in an adapter or modify the source numerical expressions.
+  storage='static ' if args.process_isolated else 'static thread_local '
+  parts.append('namespace UnifiedCollar {\n'+storage+'float surfaceMetricFrame[11]{};\n'+storage+'uint32_t surfaceMetricGeneration=0;\n}')
+  at=s.find('{')+1
+  s=s[:at]+'''\n const float observed[11]={root.x,root.y,root.z,axis.x,axis.y,axis.z,up.x,up.y,up.z,radius,length};
+ memcpy(surfaceMetricFrame,observed,sizeof(observed));++surfaceMetricGeneration;
+'''+s[at:]
  if d['name']=='PDReadInput':
   s=s.replace('return x;', 'for(unsigned i=0;i<2;i++){x.surfacePelvis[i]=surfaceCollisionEnabled?surfaceTargetPelvis[i]:(i?V3{5.4f,0.f,86.f}:V3{3.f,0.f,70.f});x.surfaceThighRadii[i]=surfaceCollisionEnabled?surfaceTargetThighRadii[i]:7.2f;}x.surfacePelvisRadius=surfaceCollisionEnabled?surfaceTargetPelvisRadius:6.4f;return x;')
  if d['name']=='PDSetInput':

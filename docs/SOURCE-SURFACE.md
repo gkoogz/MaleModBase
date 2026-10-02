@@ -62,9 +62,12 @@ the portable output does not promise unchanged source packed W/skin/color bytes.
 
 ## Build and verify
 
-The strict floating-point setting is required. State relocation under ordinary
-MSVC arithmetic changed a sensitive collar case by 0.059 source units. Strict
-arithmetic restored the source comparisons; do not relax the gate to hide it.
+The TLS session recipe requires strict arithmetic. The process-isolated recipe
+uses source-global storage, Wolverine's `/fp:precise` arithmetic and its bounded
+parallel geometry dispatcher. These are separate verified recipes. Combining
+process-global storage with `/fp:strict` failed the scrotum-100 gate; disabling
+optimization also failed it. Matching the original arithmetic repaired that
+case without changing the geometry, constraints or tolerance.
 
 ```powershell
 cmake -S . -B build/surface-cmake -A Win32 -DMALEMOD_BUILD_SURFACE_RUNTIME=ON
@@ -99,7 +102,7 @@ Other compilers have not passed parity gates.
   reference compilation. Neither failure is waived.
 
 These are source/offline results. No full-surface Witcher bridge was installed.
-The existing 0.4.23 joint preview remains installed. Native buffer correspondence,
+The existing 0.4.31 joint preview remains installed. Native buffer correspondence,
 target fitting, protected body boundaries, upload synchronization, loader behavior,
 performance and observed gameplay are still required.
 
@@ -114,3 +117,28 @@ and pin this Base revision. Its 64-bit process cannot directly link this current
 verified 32-bit library: an explicitly tested service bridge or repaired 64-bit
 arithmetic is required. Future spokes follow the same source, binding, native,
 installed and observed gates. A menu or a two-mesh blend does not establish them.
+
+## Source metric lifecycle and process recipe
+
+Output now includes `collarMetric`: the actual root, axis, up, radius and length
+passed to UnifiedCollar::Build, plus a generation counter. The extraction recipe
+observes that call; it does not mirror or replace source invalidation rules.
+Ordinary motion changes the live guide and fresh target displacements while the
+support metric remains cached. Shape/state changes rebuild it under the source
+policy. Adapters must use this support frame for their target collar metric,
+while retaining the moving guide for actual anatomy and skeleton transport.
+Wire version 3 carries both frames and rejects older packet versions.
+
+The parallel Win32 recipe permits one Session lifetime per process. A reset
+requires a new worker process because source-global caches survive destruction.
+It preserves sequential constraints, reductions and collision publication;
+only the original independent geometry work is dispatched in parallel.
+Wolverine remains unchanged. Its future adapter can adopt either verified
+recipe with source/native/gameplay gates; every other spoke uses the same Base
+contracts, without independently copied solver or cache rules.
+
+```powershell
+cmake -S . -B build/surface-process-verified-cmake -A Win32 -DMALEMOD_BUILD_SURFACE_RUNTIME=ON -DMALEMOD_SURFACE_PROCESS_ISOLATED=ON
+cmake --build build/surface-process-verified-cmake --config Release --target surface_runtime_cli surface_session_test surface_wire_test
+ctest --test-dir build/surface-process-verified-cmake -C Release -R "surface_session|surface_wire" --output-on-failure
+```

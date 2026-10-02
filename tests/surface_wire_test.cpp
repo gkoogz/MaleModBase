@@ -11,6 +11,7 @@ int main(){
  if(wire::Encode(decoded)!=bytes)return 1;
  Output o{};Surface s;s.positions={{1,2,3},{2,3,4},{3,4,5}};s.normals={{0,0,1},{0,0,1},{0,0,1}};s.tangents={{1,0,0},{1,0,0},{1,0,0}};s.uv={{{0,0}},{{.5f,1}},{{1,0}}};s.sourceVertexIDs={10,11,12};
  o.anatomy=s;o.body={s,s};o.anatomyIndices={0,1,2};o.restLength=24;o.proximalRadius=3;o.rootDirection={1,0,0};
+ o.collarMetric={{10,0,83},{1,0,0},{0,0,1},3,24,27};
  auto encoded=wire::Encode(o);if(wire::Encode(wire::DecodeOutput(encoded))!=encoded)return 2;
  auto expectReject=[](auto fn){try{fn();return false;}catch(const std::invalid_argument&){return true;}};
  auto truncated=encoded;truncated.pop_back();if(!expectReject([&]{wire::DecodeOutput(truncated);}))return 3;

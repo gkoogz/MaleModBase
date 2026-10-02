@@ -22,7 +22,9 @@ int main(int argc,char** argv){
  mechanical<<",\"restGuide\":";points(out.restGuide);mechanical<<",\"lobeCenters\":";points(out.lobeCenters);
  mechanical<<",\"lobeAnchors\":";points(out.lobeAnchors);mechanical<<",\"lobeRadii\":";points(out.lobeRadii);
  mechanical<<",\"lobeAxes\":[";points(out.lobeAxes[0]);mechanical<<",";points(out.lobeAxes[1]);mechanical<<"],\"rootDirection\":";points(std::array<Point,1>{out.rootDirection});
- mechanical<<",\"bendMultipliers\":[";for(unsigned i=0;i<10;i++){if(i)mechanical<<",";mechanical<<out.bendMultipliers[i];}mechanical<<"]}\n";
+ mechanical<<",\"bendMultipliers\":[";for(unsigned i=0;i<10;i++){if(i)mechanical<<",";mechanical<<out.bendMultipliers[i];}mechanical<<"],\"collarMetric\":{\"root\":";points(std::array<Point,1>{out.collarMetric.root});
+ mechanical<<",\"axis\":";points(std::array<Point,1>{out.collarMetric.axis});mechanical<<",\"up\":";points(std::array<Point,1>{out.collarMetric.up});
+ mechanical<<",\"radius\":"<<out.collarMetric.radius<<",\"length\":"<<out.collarMetric.length<<",\"generation\":"<<out.collarMetric.generation<<"}}\n";
  file.write(reinterpret_cast<const char*>(out.anatomy.positions.data()),out.anatomy.positions.size()*sizeof(Point));
  if(!Write(argv[2],".normals",out.anatomy.normals)||!Write(argv[2],".tangents",out.anatomy.tangents)||!Write(argv[2],".uv",out.anatomy.uv)||!Write(argv[2],".indices",out.anatomyIndices)||!Write(argv[2],".body0",out.body[0].positions)||!Write(argv[2],".body1",out.body[1].positions))return 4;
  printf("session vertices=%zu indices=%zu radius=%.9g length=%.9g\n",out.anatomy.positions.size(),out.anatomyIndices.size(),out.proximalRadius,out.restLength);

@@ -8,7 +8,7 @@
 // Versioned numerical messages. Transport, process handles, engine resources
 // and graphics buffers belong to the adapter. Never transmit C++ object layouts.
 namespace malemod::surface::wire {
-constexpr std::uint32_t version=2;
+constexpr std::uint32_t version=3;
 constexpr std::size_t maximumBytes=16*1024*1024;
 constexpr std::uint32_t maximumVertices=60000,maximumIndices=360000;
 using Bytes=std::vector<std::uint8_t>;
@@ -102,6 +102,8 @@ inline Bytes Encode(const Output& o){
  w.U32(std::uint32_t(o.anatomyIndices.size()));for(auto i:o.anatomyIndices){if(i>=o.anatomy.positions.size())throw std::invalid_argument("Invalid wire triangle");w.U32(i);}
  w.Float(o.proximalRadius);w.Float(o.restLength);w.Points(o.shaftGuide);w.Points(o.restGuide);w.Points(o.lobeCenters);w.Points(o.lobeAnchors);w.Points(o.lobeRadii);
  for(const auto& axes:o.lobeAxes)w.Points(axes);w.Point3(o.rootDirection);for(float x:o.bendMultipliers)w.Float(x);
+ w.Point3(o.collarMetric.root);w.Point3(o.collarMetric.axis);w.Point3(o.collarMetric.up);
+ w.Float(o.collarMetric.radius);w.Float(o.collarMetric.length);w.U32(o.collarMetric.generation);
  if(w.bytes.size()>maximumBytes)throw std::invalid_argument("Oversize wire output");return w.bytes;
 }
 inline Output DecodeOutput(const Bytes& bytes){
@@ -110,6 +112,8 @@ inline Output DecodeOutput(const Bytes& bytes){
  auto n=r.U32();if(n>maximumIndices||n%3||std::size_t(n)*4>r.bytes.size()-r.offset)throw std::invalid_argument("Invalid wire index count");
  o.anatomyIndices.resize(n);for(auto& i:o.anatomyIndices){auto id=r.U32();if(id>=o.anatomy.positions.size()||id>65535)throw std::invalid_argument("Invalid wire triangle");i=std::uint16_t(id);}
  o.proximalRadius=r.Float();o.restLength=r.Float();r.Points(o.shaftGuide);r.Points(o.restGuide);r.Points(o.lobeCenters);r.Points(o.lobeAnchors);r.Points(o.lobeRadii);
- for(auto& axes:o.lobeAxes)r.Points(axes);o.rootDirection=r.Point3();for(float& x:o.bendMultipliers)x=r.Float();r.End();return o;
+ for(auto& axes:o.lobeAxes)r.Points(axes);o.rootDirection=r.Point3();for(float& x:o.bendMultipliers)x=r.Float();
+ o.collarMetric.root=r.Point3();o.collarMetric.axis=r.Point3();o.collarMetric.up=r.Point3();
+ o.collarMetric.radius=r.Float();o.collarMetric.length=r.Float();o.collarMetric.generation=r.U32();r.End();return o;
 }
 }

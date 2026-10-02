@@ -3,8 +3,10 @@
 October 2 full-runtime phase supersedes the narrower scope entries below. Read
 FULL-RUNTIME-ADOPTION.md. All 18 preference values are authorized in Witcher;
 Wolverine remains unchanged. The strict source core and C++ Geralt collar pass
-offline gates; the process-parallel experiment fails one shape gate and is
-diagnostic only. Full native vertex output, calibrated live motion/contacts and
+offline gates. The process-global `/fp:strict` experiment failed one shape gate;
+matching Wolverine's `/fp:precise` arithmetic passes the parallel recipe's
+shape, physics and changing-motion checks. Wire 3 exports the actual source
+collar metric cache separately from the moving guide. Full native vertex output, calibrated live motion/contacts and
 the overlay are unfinished. No new game package was installed in this phase.
 
 New authorized phase: user accepts .30 motion as serviceable and asks for only

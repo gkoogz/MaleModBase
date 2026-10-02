@@ -21,6 +21,8 @@ int main(){
  for(unsigned i=0;i<actual.anatomy.positions.size();i++)if(actual.anatomy.sourceVertexIDs[i]!=i)return 4;
  // The guide and surface must be captured from the same isolated worker state.
  if(std::memcmp(expected.shaftGuide.data(),actual.shaftGuide.data(),sizeof(actual.shaftGuide))||std::memcmp(expected.lobeCenters.data(),actual.lobeCenters.data(),sizeof(actual.lobeCenters)))return 7;
+ const auto metric=actual.collarMetric;
+ if(!metric.generation||metric.radius<=0||metric.length<=0)return 10;
  for(unsigned i=1;i<12;i++){
   auto a=actual.shaftGuide[i-1],b=actual.shaftGuide[i];float d=std::sqrt((b.x-a.x)*(b.x-a.x)+(b.y-a.y)*(b.y-a.y)+(b.z-a.z)*(b.z-a.z));
   if(!std::isfinite(d)||std::abs(d-actual.restLength/11.f)>.02f)return 8;
@@ -31,5 +33,9 @@ int main(){
  if(!Same(actual,first.Read()))return 6;
  // A rejected request must leave the worker usable and its state unchanged.
  first.Step();
+ const auto moved=first.Read();
+ if(moved.collarMetric.generation!=metric.generation||std::memcmp(&moved.collarMetric.root,&metric.root,sizeof(Point)*3))return 11;
+ first.SetControls(large);first.Step();
+ if(first.Read().collarMetric.generation<=metric.generation)return 12;
  std::puts("PASS: simultaneous instance isolation, full topology/body output and rejected input recovery");
 }

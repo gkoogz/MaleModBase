@@ -31,6 +31,13 @@ struct Surface {
  std::vector<std::array<float,2>> uv;
  std::vector<std::uint32_t> sourceVertexIDs;
 };
+// Actual support frame last used by the source collar metric. Its lifecycle is
+// controlled by the source solver, independently of the moving guide frame.
+struct CollarMetric {
+ Point root{},axis{},up{};
+ float radius=0,length=0;
+ std::uint32_t generation=0;
+};
 struct Output {
  Surface anatomy;
  std::array<Surface,2> body;
@@ -43,11 +50,14 @@ struct Output {
  std::array<std::array<Point,3>,2> lobeAxes;
  Point rootDirection;
  std::array<float,10> bendMultipliers;
+ CollarMetric collarMetric;
 };
 struct Diagnostics {std::array<double,16> geometryMilliseconds{};};
 // Each session owns a worker thread and all mutable source caches. Evaluation
 // is synchronous. Do not call from a render hook while holding engine locks.
 // No game/graphics SDK, engine skin palette, input or upload API is exposed.
+// A process-isolated build permits one Session lifetime per process. Replace
+// the process to reset its character; the ordinary TLS build supports instances.
 class Session {
  public:
   explicit Session(const Controls& controls={});

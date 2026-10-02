@@ -98,3 +98,13 @@ rejected real solver output under lateral motion. Axis/up remain orthonormal;
 the support arithmetic deliberately retains the active source's q.y lateral
 coordinate and body-space guards. This broadens valid inputs without changing
 the existing planar source law or rotating it into a different cylinder model.
+
+The source session now exports the actual cached collar support frame and its
+generation, separately from the live guide. Target adapters consume that frame
+and update GraftPlan only when its values change. They continue solving fresh
+displacements each frame; this follows the source cache lifecycle and does not
+freeze the anatomy. Wire version 3 is required on both sides of the transport.
+The process-isolated Win32 kernel now uses Wolverine's `/fp:precise` arithmetic
+with the original bounded parallel geometry. Source controls, original trace
+and process lifetime gates are recorded in source-surface provenance. Native
+uploads, pose contacts, lighting, overlay and gameplay remain adapter gates.
