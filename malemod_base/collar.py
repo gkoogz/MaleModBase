@@ -27,8 +27,8 @@ class CollarFrame:
             raise ValueError('Measured scale, radius and length must be positive')
         axis, up = vectors[1], vectors[2]
         if (abs(np.linalg.norm(axis) - 1) > 1e-5 or abs(np.linalg.norm(up) - 1) > 1e-5 or
-                abs(axis @ up) > 1e-5 or abs(axis[1]) > 1e-5 or abs(up[1]) > 1e-5):
-            raise ValueError('Axis/up must be orthonormal in the module XZ plane')
+                abs(axis @ up) > 1e-5):
+            raise ValueError('Axis/up must be orthonormal')
         return vectors[0] / scale, axis, up, self.radius / scale, self.length / scale, scale
 
 
@@ -49,6 +49,8 @@ def recruitment(points, frame):
     root, axis, up, radius, length, scale = frame.canonical()
     p = _points(points) / scale
     q = p - root
+    # Preserve the active source's body-lateral coordinate even when the
+    # simulated root yaws. This is its support law, not a rotated cylinder.
     s, y, z = q @ axis, q[:, 1], q @ up
     rho = np.sqrt(y * y + z * z)
     upper = (z / np.maximum(rho, 1e-8) + 1) * .5

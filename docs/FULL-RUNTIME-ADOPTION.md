@@ -92,3 +92,9 @@ is reused only for an identical sparse pattern. A changed unit scale requires a
 new plan. The CLI compares five changed frames per fixture with newly constructed
 plans using exact vector equality, then restores the original result. Every spoke
 can adopt this same API; Wolverine remains unchanged until explicit adoption.
+
+The root axis may yaw in three dimensions. The previous XZ-only validation
+rejected real solver output under lateral motion. Axis/up remain orthonormal;
+the support arithmetic deliberately retains the active source's q.y lateral
+coordinate and body-space guards. This broadens valid inputs without changing
+the existing planar source law or rotating it into a different cylinder model.

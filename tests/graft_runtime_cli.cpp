@@ -29,15 +29,22 @@ int main(int argc,char** argv){
   for(auto p:d.points){double w=GraftRecruitmentWeight(p,frame);weights.write(reinterpret_cast<const char*>(&w),sizeof(w));}
   if(!weights)throw std::runtime_error("Cannot write graft recruitment weights");
   double updateMs=0,freshMs=0;
+  std::ofstream changedWeights(std::string(argv[2])+".updated.weights",std::ios::binary);
   for(unsigned i=0;i<5;i++){
    auto changed=frame;double angle=(int(i)-2)*.011;
    changed.axis={frame.axis[0]*std::cos(angle)-frame.axis[2]*std::sin(angle),0,frame.axis[0]*std::sin(angle)+frame.axis[2]*std::cos(angle)};
-   changed.up={-changed.axis[2],0,changed.axis[0]};changed.radius*=1+(int(i)-2)*.013;changed.length*=1+(int(i)-2)*.007;changed.root[2]+=(int(i)-2)*.03;
+   double yaw=(int(i)-2)*.013,x=changed.axis[0],y=changed.axis[1];
+   changed.axis[0]=x*std::cos(yaw)-y*std::sin(yaw);changed.axis[1]=x*std::sin(yaw)+y*std::cos(yaw);
+   changed.up={-changed.axis[2],0,changed.axis[0]};double norm=std::sqrt(changed.up[0]*changed.up[0]+changed.up[2]*changed.up[2]);
+   for(auto& component:changed.up)component/=norm;
+   changed.radius*=1+(int(i)-2)*.013;changed.length*=1+(int(i)-2)*.007;changed.root[2]+=(int(i)-2)*.03;
    auto begin=std::chrono::steady_clock::now();plan.UpdateFrame(changed);auto updated=std::chrono::steady_clock::now();
    GraftPlan fresh(d,changed);auto rebuilt=std::chrono::steady_clock::now();
    if(plan.SolveDisplacement(delta)!=fresh.SolveDisplacement(delta))throw std::runtime_error("Updated graft frame differs from a fresh exact plan");
+   for(auto p:d.points){double w=GraftRecruitmentWeight(p,changed);changedWeights.write(reinterpret_cast<const char*>(&w),sizeof(w));}
    updateMs+=std::chrono::duration<double,std::milli>(updated-begin).count();freshMs+=std::chrono::duration<double,std::milli>(rebuilt-updated).count();
   }
+  if(!changedWeights)throw std::runtime_error("Cannot write updated recruitment weights");
   plan.UpdateFrame(frame);if(plan.SolveDisplacement(delta)!=result)throw std::runtime_error("Restoring graft frame changed its output");
   std::cout<<"graft unique="<<n<<" seams="<<seams<<" protected="<<locked<<"\n";
   std::cout<<"planMs="<<std::chrono::duration<double,std::milli>(prepared-start).count()<<" cachedSolveMs="<<std::chrono::duration<double,std::milli>(solved-prepared).count()/17<<"\n";

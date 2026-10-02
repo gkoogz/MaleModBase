@@ -28,6 +28,18 @@ def patch():
 
 
 class CollarTests(unittest.TestCase):
+    def test_yawed_root_preserves_source_lateral_support_and_dense_weld(self):
+        points,faces,seams=patch()
+        axis=np.array([.8,.3,-.5196152422706632]);axis/=np.linalg.norm(axis)
+        up=np.cross(axis,[0,1,0]);up/=np.linalg.norm(up)
+        f=CollarFrame((9,0,84.3),tuple(axis),tuple(up),6,30,1)
+        plan=CollarPlan(points,faces,seams,f)
+        delta=np.zeros_like(points);delta[:,1]=.7;delta[:,2]=1.2
+        result=plan.solve_displacement(delta)
+        self.assertTrue(np.isfinite(result).all())
+        np.testing.assert_allclose(result[64],result[27]*.3+result[28]*.7,atol=1e-12)
+        self.assertTrue(np.all((plan.mask>=0)&(plan.mask<=1)))
+
     def test_metric_matches_native_active_source_fixtures(self):
         path = ROOT / 'tests/data/wolverine-collar-metric.csv'
         with path.open() as handle:

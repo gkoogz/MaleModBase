@@ -28,7 +28,7 @@ double Recruitment(Vector p,const GraftFrame& f){
 double GraftRecruitmentWeight(PrecisePoint point,const GraftFrame& frame){
  if(!Finite(point)||!Finite(frame.root)||!Finite(frame.axis)||!Finite(frame.up)||!std::isfinite(frame.sourceLengthScale)||frame.sourceLengthScale<=0||!std::isfinite(frame.radius)||frame.radius<=0||!std::isfinite(frame.length)||frame.length<=0)throw std::invalid_argument("Invalid graft recruitment input");
  const auto axis=V(frame.axis),up=V(frame.up);
- if(std::abs(axis.norm()-1)>1e-5||std::abs(up.norm()-1)>1e-5||std::abs(axis.dot(up))>1e-5||std::abs(axis.y())>1e-5||std::abs(up.y())>1e-5)throw std::invalid_argument("Invalid graft recruitment basis");
+ if(std::abs(axis.norm()-1)>1e-5||std::abs(up.norm()-1)>1e-5||std::abs(axis.dot(up))>1e-5)throw std::invalid_argument("Invalid graft recruitment basis");
  return Recruitment(V(point)/frame.sourceLengthScale,frame);
 }
 struct GraftPlan::Impl {
@@ -43,7 +43,7 @@ struct GraftPlan::Impl {
  Impl(const GraftDomain& domain,const GraftFrame& frame):scale(frame.sourceLengthScale),count(domain.points.size()){
   if(!count||count>1000000||!Finite(frame.root)||!Finite(frame.axis)||!Finite(frame.up)||!std::isfinite(scale)||scale<=0||!std::isfinite(frame.radius)||frame.radius<=0||!std::isfinite(frame.length)||frame.length<=0)throw std::invalid_argument("Invalid graft frame/domain");
   const auto axis=V(frame.axis),up=V(frame.up);
-  if(std::abs(axis.norm()-1)>1e-5||std::abs(up.norm()-1)>1e-5||std::abs(axis.dot(up))>1e-5||std::abs(axis.y())>1e-5||std::abs(up.y())>1e-5)throw std::invalid_argument("Graft axis/up must be orthonormal in the source XZ plane");
+  if(std::abs(axis.norm()-1)>1e-5||std::abs(up.norm()-1)>1e-5||std::abs(axis.dot(up))>1e-5)throw std::invalid_argument("Graft axis/up must be orthonormal");
   points.reserve(count);for(auto p:domain.points){if(!Finite(p))throw std::invalid_argument("Non-finite graft rest point");points.push_back(V(p)/scale);}
   std::vector<bool> slaves(count,false),locked(count,false);
   for(const auto& e:domain.seams){
@@ -89,7 +89,7 @@ struct GraftPlan::Impl {
  void Update(const GraftFrame& frame){
   if(!Finite(frame.root)||!Finite(frame.axis)||!Finite(frame.up)||frame.sourceLengthScale!=scale||!std::isfinite(frame.radius)||frame.radius<=0||!std::isfinite(frame.length)||frame.length<=0)throw std::invalid_argument("Invalid updated graft frame/scale");
   const auto axis=V(frame.axis),up=V(frame.up);
-  if(std::abs(axis.norm()-1)>1e-5||std::abs(up.norm()-1)>1e-5||std::abs(axis.dot(up))>1e-5||std::abs(axis.y())>1e-5||std::abs(up.y())>1e-5)throw std::invalid_argument("Invalid updated graft basis");
+  if(std::abs(axis.norm()-1)>1e-5||std::abs(up.norm()-1)>1e-5||std::abs(axis.dot(up))>1e-5)throw std::invalid_argument("Invalid updated graft basis");
   Eigen::VectorXd screen(count),mask(count);std::vector<Entry> screenEntries;
   screenEntries.reserve(count);
   for(unsigned i=0;i<count;i++){
