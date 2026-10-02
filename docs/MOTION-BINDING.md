@@ -26,7 +26,8 @@ own motion cage. Native secondary-motion solvers need independent calibration.
 Beyond .78, shaft/head material belongs entirely to the final render joint.
 This boundary comes from the source `ScaleGlansIndependently` crown protection,
 not a target-world bounding box. Lobe/web fields and fixed seam donors retain
-their previous ownership. All adapters must use `PROTECTED_SHAFT_KNOTS` for both
+their boundaries. Pure lobe interiors smoothly reach one lobe transform;
+the central inter-lobe web still blends. All adapters must use `PROTECTED_SHAFT_KNOTS` for both
 rest placement and runtime sampling; the historical binding API is unchanged.
 
 Witcher adopts this version to prevent independent distal transforms from

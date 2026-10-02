@@ -6,15 +6,15 @@
   "files": [
     {
       "path": "malemod_base/motion_binding.py",
-      "sha256": "fa3a963eb7ce43111789058403334ca32ae184d8dd2d3414f509e5127a15e681"
+      "sha256": "a7ebfb0ce563481cdb4b39fddbcf4b8785373df8beff11eb82c809ddd45835ed"
     },
     {
       "path": "tests/test_motion_binding.py",
-      "sha256": "6726e483389846131d58c985e47902734d508a8eb59335004d70318f90ca508e"
+      "sha256": "dc2af1bbf24c8f0c573c58c622471f342f9331c59e75952e9159d3782d2701f6"
     },
     {
       "path": "docs/MOTION-BINDING.md",
-      "sha256": "6289717916ae07161c247159c0c7355083719b89badd1533f54156bfa22810bc"
+      "sha256": "dc467a60e48f6d76a2935dab641b4b20489d2d47856265754d196ed1640c6721"
     },
     {
       "path": "assets/wolverine-reference/geometry.npz",

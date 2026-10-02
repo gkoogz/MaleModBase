@@ -131,4 +131,13 @@ def protected_cage_weights(fields, lateral, half_width, seam_distance, blend_dis
     head &= np.asarray(seam_distance) >= blend_distance
     result[head] = 0
     result[head, 7] = 1
+    # Keep the inter-lobe web flexible, but stop mixing the two rigid interiors.
+    # Smoothly reach full single-lobe ownership before the core; distances are
+    # supplied by the adapter and scale together with half_width.
+    smooth = lambda x: (lambda u: u*u*u*(u*(6*u-15)+10))(np.clip(x, 0, 1))
+    lock = smooth((f[:, 1]-.8)/.18) * smooth((np.abs(lateral)/half_width-.10)/.05)
+    lock *= smooth((.05-f[:, 0])/.05) * smooth(np.asarray(seam_distance)/blend_distance)
+    rigid = np.zeros_like(result)
+    rigid[np.arange(len(f)), np.where(np.asarray(lateral) < 0, 8, 9)] = 1
+    result = result*(1-lock[:, None]) + rigid*lock[:, None]
     return result

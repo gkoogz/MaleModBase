@@ -32,6 +32,17 @@ class MotionBindingTests(unittest.TestCase):
         scaled = protected_cage_weights(fields, [0, -.04, 0, 0, 0], .02, [0, .1, .1, .1, .1], .05)
         np.testing.assert_allclose(w, scaled)
 
+    def test_lobe_interiors_do_not_mix_and_web_stays_continuous(self):
+        from malemod_base.motion_binding import protected_cage_weights
+        x = np.array([-2, -.3, -.2, 0, .2, .3, 2.])
+        f = np.tile([0, 1, .5], (len(x), 1))
+        w = protected_cage_weights(f, x, 2, np.full(len(x), 10.), 5)
+        np.testing.assert_allclose(w[[0, 1], 8], [1, 1], atol=1e-15)
+        np.testing.assert_allclose(w[[-2, -1], 9], [1, 1], atol=1e-15)
+        np.testing.assert_allclose(w[3, 8:], [.5, .5])
+        w2 = protected_cage_weights(np.tile([0, 1, .5], (2, 1)), [.3-1e-7, .3+1e-7], 2, [10, 10], 5)
+        self.assertLess(np.linalg.norm(w2[0]-w2[1]), 1e-10)
+
     def test_cage_keeps_seam_fixed_and_bounds_overlapping_fields(self):
         fields=np.array([[1,1,.5],[1,0,.5],[0,1,.5],[0,1,.5]])
         weights=reference_cage_weights(fields,[0,0,-4,4],2,[0,5,5,5],5)
