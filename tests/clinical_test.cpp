@@ -1,4 +1,6 @@
 #include <malemod/clinical/session.hpp>
+#include <malemod/clinical/ambient.hpp>
+#include <malemod/clinical/deposit_mesh.hpp>
 #include <iostream>
 #include <limits>
 
@@ -127,6 +129,7 @@ bool Deposits(const char* bakePath){
  c::volumeFluid::SplatBakes bakes;REQUIRE(!bakes.Load({1,2,3}));REQUIRE(bakes.LoadFile(bakePath));
  REQUIRE(!bakes.Load({})&&bakes.Open());
  c::volumeFluid::SplatModel model;model.splatBakes=bakes;
+ model.project=[](const auto& contact,V3 p,auto& result){result=contact;result.p={p.x,p.y,0};result.n={0,0,1};return true;};
  float translate=0;
  model.resolve=[&](const c::volumeFluid::FluidImpact& anchor,V3& p,V3& n){p=anchor.p+V3{translate,0,0};n=anchor.n;return true;};
  c::volumeFluid::FluidImpact impact{};impact.p={0,0,0};impact.n={0,0,1};impact.velocity={10,0,-5};impact.volume=5;
@@ -134,10 +137,14 @@ bool Deposits(const char* bakePath){
  const auto& mark=model.marks[0];double volume=0;float texel=mark.span/c::volumeFluid::splatTexture;
  for(float density:mark.density)volume+=density*texel*texel;
  REQUIRE(std::abs(volume-5)<.0001);
+ auto mesh=c::BuildDepositMesh(model,3000);REQUIRE(!mesh.vertices.empty()&&!mesh.indices.empty());
+ for(auto id:mesh.indices)REQUIRE(id<mesh.vertices.size());
+ for(auto v:mesh.vertices)REQUIRE(std::abs(v.p.z-.027f)<1e-5&&v.alpha>=0&&v.alpha<=1);
  V3 before,n,x,y,after;REQUIRE(model.Frame(mark,before,n,x,y));translate=10;REQUIRE(model.Frame(mark,after,n,x,y));
  REQUIRE(Length(after-before-V3{10,0,0})<1e-5);
  c::volumeFluid::SplatModel other;other.splatBakes=bakes;REQUIRE(other.marks.empty());
  model.Update(20200);REQUIRE(model.marks.empty());
+ REQUIRE(c::BuildDepositMesh(model,20200).indices.empty());
  std::cout<<"PASS portable baked loading, malformed input, deposition volume, moving receiver and expiry.\n";return true;
 }
 

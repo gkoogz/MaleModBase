@@ -76,6 +76,10 @@ def main():
             raise ValueError(f'Material changed: {item["name"]}')
     if (ROOT/'include/malemod/detail/surface_limit.h').read_bytes() != (ROOT/'legacy/wolverine/src/runtime/surface_limit.h').read_bytes():
         raise ValueError('Portable limiter differs from imported numerical implementation')
+    support=json.loads((ROOT/'provenance/radial-clinical-support.json').read_text())
+    for item in support['files']:
+        if hashlib.sha256((ROOT/item['path']).read_bytes()).hexdigest()!=item['sha256']:
+            raise ValueError('Radial/clinical support provenance differs: '+item['path'])
     clinical=json.loads((ROOT/'provenance/clinical.json').read_text())
     for item in clinical['files']:
         if hashlib.sha256((ROOT/item['source']).read_bytes()).hexdigest()!=item['sourceSHA256']:

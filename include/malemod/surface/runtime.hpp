@@ -25,6 +25,16 @@ struct Frame {
  // reference pose; it must not be described as observing another game's legs.
  std::optional<std::array<Point,4>> thighEndpoints;
  std::optional<CollisionCalibration> collision;
+ // Target character rest samples, already calibrated into source coordinates.
+ // The source evaluates its final radial target law here without donor blur.
+ std::vector<Point> collarQueries;
+ struct ClinicalProjection {
+  bool active=false;double time=0;
+  std::uint32_t throbMode=0;
+  float sizeTime=0,twitchTime=0,lateralWobbleDegrees=0;
+  std::array<float,4> lateralGain{};
+  std::array<float,4> angleGain={1,1,1,1};
+ } clinical;
 };
 struct Surface {
  std::vector<Point> positions,normals,tangents;
@@ -51,6 +61,8 @@ struct Output {
  Point rootDirection;
  std::array<float,10> bendMultipliers;
  CollarMetric collarMetric;
+ std::vector<Point> collarDisplacements;
+ Point nozzlePosition{},nozzleDirection{1,0,0};
 };
 struct Diagnostics {std::array<double,16> geometryMilliseconds{};};
 // Each session owns a worker thread and all mutable source caches. Evaluation

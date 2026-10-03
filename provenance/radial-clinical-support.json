@@ -1,0 +1,37 @@
+{
+  "contractVersion": 1,
+  "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
+  "files": [
+    {
+      "path": "malemod_base/skin_match.py",
+      "sha256": "593d1270bc5765024afa5856a76f38931c99538b9d46e02a3d3bccb048941838"
+    },
+    {
+      "path": "malemod_base/refinement.py",
+      "sha256": "2a208d7508c2cee8a84a033c8d51e98c03e833077ba6091e30d93d100ab706c4"
+    },
+    {
+      "path": "tests/test_skin_refinement.py",
+      "sha256": "2ebc03b2d9d4dc0f95cf7e1498ff40a336b8e4837a06c1783b3a8aa62724b802"
+    },
+    {
+      "path": "include/malemod/clinical/ambient.hpp",
+      "sha256": "43fb693bc82fbcd6650f31408129ed1f14041181d8ef69e3720e65162dc1aa34"
+    },
+    {
+      "path": "include/malemod/clinical/deposit_mesh.hpp",
+      "sha256": "23d14882c4e5c837fc08871c112b39cdf720d9dcae18d7039557f06dc0903e38"
+    },
+    {
+      "path": "tests/clinical_test.cpp",
+      "sha256": "5db2140b9d1be4befd8b9a9be7ad2c3eba537b93c9b1cd19c0870c0e7be8ae51"
+    }
+  ],
+  "verification": {
+    "pythonTests": 68,
+    "clinicalSourceParity": true,
+    "nativeRendering": false,
+    "observedGameplay": false
+  },
+  "adoption": "docs/RADIAL-CLINICAL-ADOPTION.md"
+}

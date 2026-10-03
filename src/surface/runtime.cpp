@@ -7,6 +7,7 @@
 #include <thread>
 #include <atomic>
 #include "surface-kernel.inc"
+#include <malemod/surface/collar_field.hpp>
 
 namespace malemod::surface {
 namespace {
@@ -53,6 +54,8 @@ struct Session::Impl {
  bool stop=false;
  std::thread worker;
  std::vector<unsigned char> seed;
+ std::vector<Point> collarQueries;
+ Controls controls;
  explicit Impl(const Controls& controls):worker([this]{Loop();}){
   try{Call([&]{Initialize(controls);});}catch(...){Stop();throw;}
  }
@@ -70,6 +73,7 @@ struct Session::Impl {
   {std::lock_guard<std::mutex> guard(mutex);job=[task]{(*task)();};}cv.notify_one();done.get();
  }
  void Initialize(const Controls& controls){
+  this->controls=controls;
   Map(controls);seed.resize(50915*32);
   for(unsigned i=0;i<kernel::collarNormalTriangleCount*3;i++)std::memcpy(seed.data()+kernel::collarNormalTriangleIndices[i]*32,kernel::collarNormalTriangleBasePositions+i*3,12);
   for(unsigned i=0;i<kernel::pelvisControlCount;i++)std::memcpy(seed.data()+kernel::pelvisControlIndices[i]*32,kernel::pelvisControlBasePositions+i*3,12);
@@ -77,6 +81,17 @@ struct Session::Impl {
   kernel::ResetCompliantDynamics();kernel::ResetPelvicAttachmentBody(seed.data());kernel::EvaluateAnatomy(seed.data(),47050);
  }
  void Advance(const Frame& frame){
+  collarQueries=frame.collarQueries;
+  Map(controls);
+  const auto& c=frame.clinical;
+  kernel::teachingTimeline.active=c.active;kernel::teachingTimeline.time=c.time;
+  kernel::throbMode=int(c.throbMode);kernel::teachingFluid.settings.lateralWobbleDegrees=c.lateralWobbleDegrees;
+  std::copy(c.lateralGain.begin(),c.lateralGain.end(),kernel::teachingFluid.lateralGain);
+  std::copy(c.angleGain.begin(),c.angleGain.end(),kernel::teachingFluid.angleGain);
+  kernel::throbSizePulse=kernel::ThrobEnvelope(c.sizeTime,.20f,1.05f,false);
+  kernel::throbTwitchPulse=kernel::ThrobEnvelope(c.twitchTime,1.15f,4.6f,true);
+  kernel::throbAngleSizePulse=kernel::ThrobEnvelope(c.twitchTime,1.15f,1.05f,true);
+  if(c.active||c.throbMode)kernel::ApplyControlMapping();
   if(!std::isfinite(frame.seconds)||frame.seconds<0||!std::isfinite(frame.pitchForce)||!std::isfinite(frame.yawForce))throw std::invalid_argument("Invalid frame");
   if(frame.thighEndpoints){
    for(auto p:*frame.thighEndpoints)if(!std::isfinite(p.x)||!std::isfinite(p.y)||!std::isfinite(p.z))throw std::invalid_argument("Invalid thigh endpoint");
@@ -128,11 +143,29 @@ struct Session::Impl {
    for(unsigned j=0;j<3;j++)out.lobeAxes[i][j]=point(kernel::cpBasis[i][j]);
   }
   out.rootDirection=point(kernel::LiveRootDirection());
+  auto ring=[](unsigned id){kernel::V3 sum{};for(unsigned i=0;i<kernel::r14SegmentCount;i++)sum=sum+kernel::r14Positions[kernel::r14NewStart+id*kernel::r14SegmentCount+i];return sum/float(kernel::r14SegmentCount);};
+  auto lip=ring(kernel::r14RingCount-6),back=ring(kernel::r14CrownRing+(kernel::r14RingCount-kernel::r14CrownRing)/2);auto direction=kernel::Unit(lip-back);
+  out.nozzlePosition=point(lip+direction*.06f);out.nozzleDirection=point(direction);
   for(unsigned i=0;i<10;i++)out.bendMultipliers[i]=kernel::RapheTubeBendMultiplier((i+1)/11.f);
   const auto* metric=kernel::UnifiedCollar::surfaceMetricFrame;
   out.collarMetric={{metric[0],metric[1],metric[2]},{metric[3],metric[4],metric[5]},
    {metric[6],metric[7],metric[8]},metric[9],metric[10],kernel::UnifiedCollar::surfaceMetricGeneration};
   if(!out.collarMetric.generation)throw std::runtime_error("Source collar metric not built");
+  // Exact active source target expressions on the target character samples.
+  // The cached metric masks and the moving guide are separate, as in Wolverine.
+  kernel::V3 root{},axis{};kernel::SampleShaftChain(0,root,axis);
+  const auto up=kernel::Unit(kernel::Cross(axis,{0,1,0}));
+  float length=0;auto previous=root;
+  for(unsigned k=1;k<=100;k++){kernel::V3 p,t;kernel::SampleShaftChain(k*.01f,p,t);length+=kernel::Length(p-previous);previous=p;}
+  length=std::max(.01f,length);const float radius=kernel::logicalShaftBodyRadius,growth=kernel::Smoother01((radius-2.9f)/4.72f);
+  for(auto query:collarQueries){
+   kernel::V3 p{query.x,query.y,query.z},q=p-root;float s=kernel::Dot(q,axis),y=q.y,z=kernel::Dot(q,up),radial=sqrtf(y*y+z*z);
+   auto cv=[](Point p){return malemod::V3{p.x,p.y,p.z};};
+   const double mask=collar::EvaluateMetricRow({p.x,p.y,p.z},cv(out.collarMetric.root),cv(out.collarMetric.axis),cv(out.collarMetric.up),out.collarMetric.radius,out.collarMetric.length,1).mask;
+   if(radial<1e-8f||mask==0){out.collarDisplacements.push_back({0,0,0});continue;}
+   auto delta=kernel::UnifiedCollar::RadialTargetDelta(p,root,axis,up,radius,length,mask);
+   out.collarDisplacements.push_back(point(delta));
+  }
   for(auto p:out.anatomy.positions)if(!std::isfinite(p.x)||!std::isfinite(p.y)||!std::isfinite(p.z))throw std::runtime_error("Non-finite surface");
   return out;
  }
@@ -155,7 +188,7 @@ Session::~Session(){
  // character. A reset replaces the owned worker process, not this session.
 #endif
 }
-void Session::SetControls(const Controls& controls){impl_->Call([&]{Map(controls);});}
+void Session::SetControls(const Controls& controls){impl_->Call([&]{Map(controls);impl_->controls=controls;});}
 void Session::Step(const Frame& frame){impl_->Call([&]{impl_->Advance(frame);});}
 Output Session::Read(){Output output;impl_->Call([&]{output=impl_->Capture();});return output;}
 Diagnostics Session::ReadDiagnostics(){

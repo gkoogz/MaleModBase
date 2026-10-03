@@ -72,6 +72,7 @@ prelude='''// Generated full numerical kernel; see tools/extract_surface_runtime
 #include <xmmintrin.h>
 #include <Eigen/SparseCholesky>
 #include <Eigen/Geometry>
+#include <malemod/clinical/teaching_sequence.h>
 #ifndef _MSC_VER
 #define __forceinline inline
 #define _finite std::isfinite
@@ -99,7 +100,13 @@ static void Log(const char*,...){}
 struct PerfScope { explicit PerfScope(int){} };
 static double PerfClock(){return 0;}
 template<class F>static void GeometryFor(unsigned n,const F& f){for(unsigned i=0;i<n;i++)f(i);}
-namespace teaching { struct DisabledTimeline {bool active=false;double time=0;struct Sample{float firm=0;};Sample Get()const{return {};}}; }
+static thread_local float surfaceClinicalLateralYaw=0;
+namespace teaching {
+using ::malemod::clinical::teaching::WeightedMainPulse;
+using ::malemod::clinical::teaching::PulseEnvelopeAt;
+using ::malemod::clinical::teaching::Ease;
+struct ProjectedTimeline {bool active=false;double time=0;::malemod::clinical::teaching::Sample Get()const{::malemod::clinical::teaching::Timeline t;t.active=active;t.time=time;return t.Get();}};
+}
 '''
 parts=[prelude]
 if args.process_isolated:
@@ -109,6 +116,7 @@ if args.process_isolated:
  parallel=geometry[geometry.index('static Concurrency::Scheduler* GeometryScheduler()'):geometry.index('// Prepared arithmetic')]
  if 'constexpr unsigned batches=16' not in parallel or 'template<class Function>' not in parallel:raise ValueError('Source bounded geometry dispatcher changed')
  prelude=prelude.replace('#include <Eigen/Geometry>','#include <Eigen/Geometry>\n#include <ppl.h>')
+ prelude=prelude.replace('static thread_local float surfaceClinicalLateralYaw','static float surfaceClinicalLateralYaw')
  prelude=prelude.replace('template<class F>static void GeometryFor(unsigned n,const F& f){for(unsigned i=0;i<n;i++)f(i);}',parallel)
  if args.serial_geometry:
   prelude=prelude.replace(parallel,'template<class F>static void GeometryFor(unsigned n,const F& f){for(unsigned i=0;i<n;i++)f(i);}')
@@ -125,8 +133,8 @@ for d in sorted(decl,key=position):
  if d['kind']=='CursorKind.FUNCTION_DECL':
   raw=(root/d['file']).read_bytes();start=raw.rfind(b'\n',0,d['start'])+1;prefix=raw[start:d['start']].decode()
   if prefix.startswith('template<'):s=prefix+s
- if d['name']=='teachingTimeline':s='static teaching::DisabledTimeline teachingTimeline'
- if d['name']=='LiveRootDirection':s=re.sub(r'\s*if\(teachingTimeline.active\)yaw\+=teachingFluid.MainLateralYaw\(teachingTimeline.time\);','',s)
+ if d['name']=='teachingTimeline':s='static teaching::ProjectedTimeline teachingTimeline'
+
  if d['name']=='PDInput':
   storage='static ' if args.process_isolated else 'static thread_local '
   parts.append(storage+'bool surfaceCollisionEnabled=false;\n'+storage+'float surfaceThighRadii[2]{7.2f,7.2f},surfacePelvisRadius=6.4f,surfaceTargetThighRadii[2]{},surfaceTargetPelvisRadius=0;\n'+storage+'V3 surfacePelvis[2]{{3.f,0.f,70.f},{5.4f,0.f,86.f}},surfaceOldPelvis[2]{},surfaceTargetPelvis[2]{};')
@@ -170,6 +178,35 @@ for d in sorted(decl,key=position):
  if d['kind'] not in ['CursorKind.FUNCTION_DECL','forward']:s+=';'
  if d['parent']=='UnifiedCollar':s='namespace UnifiedCollar {\n'+s+'\n}'
  parts.append(s)
+# Exact clinical control projection from the hash-checked reference. Geometry
+# and physics expressions remain source-owned; clock/input ownership is external.
+proxy=(runtime/'d3d9_proxy.cpp').read_text()
+def function(name):
+ start=proxy.index('static float '+name+'(') if name!='ApplyControlMapping' else proxy.index('static void ApplyControlMapping(){')
+ brace=proxy.index('{',start);end=brace+1;depth=1
+ while depth:
+  depth+=(proxy[end]=='{')-(proxy[end]=='}');end+=1
+ return proxy[start:end]
+storage='static ' if args.process_isolated else 'static thread_local '
+extra='''static const float coherentShapeLow[7]={.85f,1.0f,.95f,1.0f,-80.f,-2.f,-3.f};
+static const float neutralPhysics[8]={78.f,86.f,12.f,62.f,28.f,94.f,18.f,72.f};
+struct ClinicalPhysSpec{float lo,hi;};
+static const ClinicalPhysSpec physSpecs[8]={{-100,400},{0,100},{0,100},{10,200},{0,100},{0,100},{0,100},{10,200}};
+'''+storage+'float effectiveShapeUI[7]{},effectiveGlansUI=50,throbSizePulse=0,throbTwitchPulse=0,throbAngleSizePulse=0;\n'+storage+'teaching::ClinicalFluidProjection teachingFluid;\n'
+fluid=(runtime/'teaching_volume.h').read_text()
+def member(signature):
+ start=fluid.index(signature);brace=fluid.index('{',start);end=brace+1;depth=1
+ while depth:
+  depth+=(fluid[end]=='{')-(fluid[end]=='}');end+=1
+ return fluid[start:end]
+parts[0]+='\nnamespace teaching { struct ClinicalFluidProjection {float angleGain[4]={1,1,1,1},lateralGain[4]{};struct {float lateralWobbleDegrees=0;} settings;'+member('static float EventTime(')+member('float MainLateralYaw(')+'}; }\n'
+parts.insert(1,extra)
+for name in ['UnmapControl100','ThrobEnvelope','AdvanceTwitchClock','ApplyControlMapping']:parts.append(function(name))
+collar=(runtime/'unified_collar_solver.h').read_text()
+a=collar.index('  V3 p=Point(before,i),q=p-root;',collar.index('target=before;'))
+b=collar.index('  target.row(i)+=',a)
+body=collar[a:b].replace('V3 p=Point(before,i),q=p-root;','V3 q=p-root;').replace('if(radial<1e-8f)continue;','if(radial<1e-8f)return {};').replace('(float)mask[i]','(float)mask')
+parts.append('namespace UnifiedCollar { static V3 RadialTargetDelta(V3 p,V3 root,V3 axis,V3 up,float radius,float length,double mask){float growth=Smoother01((radius-2.9f)/4.72f);\n'+body+'return delta;} }')
 output=args.output or root/'build/surface-runtime/surface-kernel.inc'
 output.parent.mkdir(parents=True,exist_ok=True)
 content='\n'.join(parts)+'\n} // namespace malemod::surface::source\n'

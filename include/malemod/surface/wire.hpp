@@ -8,7 +8,7 @@
 // Versioned numerical messages. Transport, process handles, engine resources
 // and graphics buffers belong to the adapter. Never transmit C++ object layouts.
 namespace malemod::surface::wire {
-constexpr std::uint32_t version=3;
+constexpr std::uint32_t version=4;
 constexpr std::size_t maximumBytes=16*1024*1024;
 constexpr std::uint32_t maximumVertices=60000,maximumIndices=360000;
 using Bytes=std::vector<std::uint8_t>;
@@ -19,6 +19,7 @@ struct Writer {
  Bytes bytes;
  void U32(std::uint32_t x){for(int i=0;i<4;i++)bytes.push_back(std::uint8_t(x>>(i*8)));}
  void Float(float x){if(!std::isfinite(x))throw std::invalid_argument("Non-finite wire value");std::uint32_t b;std::memcpy(&b,&x,4);U32(b);}
+ void Double(double x){static_assert(sizeof(double)==8&&std::numeric_limits<double>::is_iec559);if(!std::isfinite(x))throw std::invalid_argument("Non-finite wire clock");std::uint64_t b;std::memcpy(&b,&x,8);U32(std::uint32_t(b));U32(std::uint32_t(b>>32));}
  void Point3(Point p){Float(p.x);Float(p.y);Float(p.z);}
  void UVs(const std::vector<std::array<float,2>>& uv){
   if(LittleEndian()&&sizeof(std::array<float,2>)==8){
@@ -46,6 +47,7 @@ struct Reader {
  explicit Reader(const Bytes& b):bytes(b){if(b.size()>maximumBytes)throw std::invalid_argument("Oversize wire packet");}
  std::uint32_t U32(){if(bytes.size()-offset<4)throw std::invalid_argument("Truncated wire packet");std::uint32_t x=0;for(int i=0;i<4;i++)x|=std::uint32_t(bytes[offset++])<<(8*i);return x;}
  float Float(){auto b=U32();float x;std::memcpy(&x,&b,4);if(!std::isfinite(x))throw std::invalid_argument("Non-finite wire value");return x;}
+ double Double(){std::uint64_t b=U32();b|=std::uint64_t(U32())<<32;double x;std::memcpy(&x,&b,8);if(!std::isfinite(x))throw std::invalid_argument("Non-finite wire clock");return x;}
  Point Point3(){Point p;p.x=Float();p.y=Float();p.z=Float();return p;}
  void UVs(std::vector<std::array<float,2>>& uv){
   if(LittleEndian()&&sizeof(std::array<float,2>)==8){
@@ -79,6 +81,12 @@ inline void Validate(const Frame& f){
  if(!std::isfinite(f.seconds)||f.seconds<0||f.seconds>.15f||!std::isfinite(f.pitchForce)||!std::isfinite(f.yawForce))throw std::invalid_argument("Invalid wire frame");
  auto finite=[](Point p){return std::isfinite(p.x)&&std::isfinite(p.y)&&std::isfinite(p.z);};
  if(f.thighEndpoints)for(auto p:*f.thighEndpoints)if(!finite(p))throw std::invalid_argument("Invalid wire thigh endpoint");
+ if(f.collarQueries.size()>20000)throw std::invalid_argument("Too many collar queries");
+ for(auto p:f.collarQueries)if(!finite(p))throw std::invalid_argument("Invalid collar query");
+ const auto& c=f.clinical;
+ if(c.throbMode>3||!std::isfinite(c.time)||c.time<0||c.time>60||!std::isfinite(c.sizeTime)||c.sizeTime<0||c.sizeTime>=3||!std::isfinite(c.twitchTime)||c.twitchTime<0||c.twitchTime>=5.75f||!std::isfinite(c.lateralWobbleDegrees)||std::abs(c.lateralWobbleDegrees)>90)throw std::invalid_argument("Invalid clinical projection");
+ for(float gain:c.lateralGain)if(!std::isfinite(gain)||std::abs(gain)>2)throw std::invalid_argument("Invalid clinical lateral variation");
+ for(float gain:c.angleGain)if(!std::isfinite(gain)||gain<.05f||gain>2)throw std::invalid_argument("Invalid clinical pulse variation");
  if(f.collision){
   if(!f.thighEndpoints)throw std::invalid_argument("Collision calibration requires measured thigh endpoints");
   for(float r:f.collision->thighRadii)if(!std::isfinite(r)||r<=0)throw std::invalid_argument("Invalid wire thigh radius");
@@ -93,6 +101,8 @@ inline Bytes Encode(const Request& q){
  w.Float(q.frame.seconds);w.Float(q.frame.pitchForce);w.Float(q.frame.yawForce);
  w.U32(q.frame.thighEndpoints?1:0);if(q.frame.thighEndpoints)w.Points(*q.frame.thighEndpoints);
  w.U32(q.frame.collision?1:0);if(q.frame.collision){for(float r:q.frame.collision->thighRadii)w.Float(r);w.Points(q.frame.collision->pelvisEndpoints);w.Float(q.frame.collision->pelvisRadius);}
+ w.U32(std::uint32_t(q.frame.collarQueries.size()));w.Points(q.frame.collarQueries);
+ const auto& c=q.frame.clinical;w.U32(c.active?1:0);w.Double(c.time);w.U32(c.throbMode);w.Float(c.sizeTime);w.Float(c.twitchTime);w.Float(c.lateralWobbleDegrees);for(float x:c.angleGain)w.Float(x);for(float x:c.lateralGain)w.Float(x);
  return w.bytes;
 }
 inline Request DecodeRequest(const Bytes& bytes){
@@ -105,6 +115,8 @@ inline Request DecodeRequest(const Bytes& bytes){
  if(thigh){q.frame.thighEndpoints=std::array<Point,4>{};r.Points(*q.frame.thighEndpoints);}
  auto calibrated=r.U32();if(calibrated>1)throw std::invalid_argument("Invalid collision flag");
  if(calibrated){q.frame.collision=CollisionCalibration{};for(float& radius:q.frame.collision->thighRadii)radius=r.Float();r.Points(q.frame.collision->pelvisEndpoints);q.frame.collision->pelvisRadius=r.Float();}
+ auto queries=r.U32();if(queries>20000)throw std::invalid_argument("Too many collar queries");q.frame.collarQueries.resize(queries);r.Points(q.frame.collarQueries);
+ auto active=r.U32();if(active>1)throw std::invalid_argument("Invalid clinical active flag");auto& c=q.frame.clinical;c.active=active;c.time=r.Double();c.throbMode=r.U32();c.sizeTime=r.Float();c.twitchTime=r.Float();c.lateralWobbleDegrees=r.Float();for(float& x:c.angleGain)x=r.Float();for(float& x:c.lateralGain)x=r.Float();
  Validate(q.frame);
  r.End();return q;
 }
@@ -132,6 +144,8 @@ inline Bytes Encode(const Output& o){
  for(const auto& axes:o.lobeAxes)w.Points(axes);w.Point3(o.rootDirection);for(float x:o.bendMultipliers)w.Float(x);
  w.Point3(o.collarMetric.root);w.Point3(o.collarMetric.axis);w.Point3(o.collarMetric.up);
  w.Float(o.collarMetric.radius);w.Float(o.collarMetric.length);w.U32(o.collarMetric.generation);
+ if(o.collarDisplacements.size()>20000)throw std::invalid_argument("Too many collar targets");w.U32(std::uint32_t(o.collarDisplacements.size()));w.Points(o.collarDisplacements);
+ w.Point3(o.nozzlePosition);w.Point3(o.nozzleDirection);
  if(w.bytes.size()>maximumBytes)throw std::invalid_argument("Oversize wire output");return w.bytes;
 }
 inline Output DecodeOutput(const Bytes& bytes){
@@ -142,6 +156,7 @@ inline Output DecodeOutput(const Bytes& bytes){
  o.proximalRadius=r.Float();o.restLength=r.Float();r.Points(o.shaftGuide);r.Points(o.restGuide);r.Points(o.lobeCenters);r.Points(o.lobeAnchors);r.Points(o.lobeRadii);
  for(auto& axes:o.lobeAxes)r.Points(axes);o.rootDirection=r.Point3();for(float& x:o.bendMultipliers)x=r.Float();
  o.collarMetric.root=r.Point3();o.collarMetric.axis=r.Point3();o.collarMetric.up=r.Point3();
- o.collarMetric.radius=r.Float();o.collarMetric.length=r.Float();o.collarMetric.generation=r.U32();r.End();return o;
+ o.collarMetric.radius=r.Float();o.collarMetric.length=r.Float();o.collarMetric.generation=r.U32();
+ auto targets=r.U32();if(targets>20000)throw std::invalid_argument("Too many collar targets");o.collarDisplacements.resize(targets);r.Points(o.collarDisplacements);o.nozzlePosition=r.Point3();o.nozzleDirection=r.Point3();r.End();return o;
 }
 }

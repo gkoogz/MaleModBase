@@ -1,5 +1,14 @@
 # Durable project context
 
+Latest authorization (October 2, material/ramp/clinical phase): match Geralt's
+skin using deterministic source texture correction (no image generation), build
+progressive radial pelvic recruitment across the existing part weld, repair the
+reported rear black patch, and adopt Wolverine's clinical sequence, ambient
+throb, fluid simulation and actual floor collision. Dialogue remains an empty
+future asset slot with cue logic. This supersedes the sequence/fluid deferrals
+below. Wolverine remains unchanged. Private gameplay verification must neither
+take host focus/input nor leave ordinary game audio muted.
+
 Latest authorization (October 2): implement the complete shared solver/surface
 and every existing anatomy/physics control in Witcher, without reducing the
 Wolverine behavior. The user confirms Overall scaling and rejects the physics.

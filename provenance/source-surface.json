@@ -195,7 +195,7 @@
       "sha256": "5f77112c620415a1fa0dc080aa7248558a3140507637e20d625e0bd71693dc61"
     }
   ],
-  "generatedKernelSHA256": "ac08891f78bd8cc980ecd840cc6c16d183025677e9ff39d526142fa6874fa931",
+  "generatedKernelSHA256": "2a0b367bf12ebb8a40321bda590e6d9c074a2e348e0132e26cd167b43e445c99",
   "generatedKernelTracked": false,
   "files": [
     {
@@ -204,15 +204,15 @@
     },
     {
       "path": "include/malemod/surface/runtime.hpp",
-      "sha256": "d59de66e0a152c009402116ec61a93fcca77a488f33caa7a1d4d02bb2f260341"
+      "sha256": "1d982ba52955080bbb463181567458457029b332c471df336d47346c96ae8e3c"
     },
     {
       "path": "src/surface/runtime.cpp",
-      "sha256": "054208aa70ce49d735e5cd243cfa6fc7b88c4f5b05f6f4c23be531db6cdd81af"
+      "sha256": "77323026ecf652afd93d20615fc5f8a341e0e5e63c7fddb5fe1966a677b42d6d"
     },
     {
       "path": "tools/extract_surface_runtime.py",
-      "sha256": "d65a6b0b05212903df3d6725a78e231aa41a641ff5c760f15d769c46fc56a592"
+      "sha256": "dbeee3350e65b8e5fa79ac3ceab66481f55126c2d075412a71ee9d40694e9a42"
     },
     {
       "path": "tools/data/surface-closure.json",
@@ -256,11 +256,11 @@
     },
     {
       "path": "include/malemod/surface/wire.hpp",
-      "sha256": "023aae4ab0f2b95b37783ac466d3f27372635f592b4d61946d100b4814c63048"
+      "sha256": "7759b27fd08b96334a71d2711fadbfbac24c47e89aa0494dfbec3c4708f0b22a"
     },
     {
       "path": "tests/surface_wire_test.cpp",
-      "sha256": "03568ee883e64fe00757e80899bba022556fd3a66d9d4982e66a6eecff891735"
+      "sha256": "b86213b2f870157eb4f7e96939ea454fbad0382d3b0b1865164c80ad1ed9fa2c"
     },
     {
       "path": "tests/surface_collision_test.cpp",
@@ -269,6 +269,10 @@
     {
       "path": "tests/surface_process_test.cpp",
       "sha256": "1a1ee8c4835a0c4c4a420b4ba724a4b33f0bb1778dd8b7b7da8928263d06c7f8"
+    },
+    {
+      "path": "tests/clinical_surface_trace_oracle.cpp",
+      "sha256": "26f113687b3ebb2a5ea7a680757407d247a2ff464246a81e51217c6c53d0e165"
     }
   ],
   "controls": "malemod_base.controls.ORDER",
@@ -1404,8 +1408,8 @@
     "native buffers, skinning palettes, uploads, synchronization and materials",
     "world collision queries; missing thigh endpoints use source reference pose",
     "source packed W/skin/color flags are not an adapter contract",
-    "animation sequences, pulses, fluid and audio deferred",
-    "64-bit source parity remains failed; do not link into Witcher as verified"
+    "64-bit source parity remains failed; do not link into Witcher as verified",
+    "engine scene queries and materials remain adapter-owned; dialogue assets not provided"
   ],
   "cmakeBuild": {
     "generator": "Visual Studio 17 2022",
@@ -2527,8 +2531,8 @@
     "generatedKernelSHA256": "ac08891f78bd8cc980ecd840cc6c16d183025677e9ff39d526142fa6874fa931",
     "observedGameplay": false
   },
-  "adoption": "docs/FULL-RUNTIME-ADOPTION.md",
-  "wireVersion": 3,
+  "adoption": "See docs/RADIAL-CLINICAL-ADOPTION.md; source process clinical/radial parity measured. Wolverine and other installed spokes unchanged pending their own adoption gates.",
+  "wireVersion": 4,
   "processSourceChecks": {
     "architecture": "Win32",
     "arithmetic": "/fp:precise",
@@ -2536,7 +2540,7 @@
       "referenceOnly": true,
       "observedGameplay": false,
       "toleranceSourceUnits": 0.0001,
-      "executableSHA256": "8d893d813dd4abe8e42e4cb13a081008562820f50aef40e71d2b37b800d606d5",
+      "executableSHA256": "ec016154cb2302ea76f319e69195b220dbe8009a6a179c281236bcd082ee5ec4",
       "referenceManifestSHA256": "803bd01e60fb3b9a8632c647dc40bf7ae547868b443a640606b606c88134f122",
       "cases": [
         {
@@ -3100,7 +3104,7 @@
       "referenceOnly": true,
       "observedGameplay": false,
       "toleranceSourceUnits": 0.0001,
-      "executableSHA256": "8d893d813dd4abe8e42e4cb13a081008562820f50aef40e71d2b37b800d606d5",
+      "executableSHA256": "ec016154cb2302ea76f319e69195b220dbe8009a6a179c281236bcd082ee5ec4",
       "referenceManifestSHA256": "e5de64f2e85a3cac8ea76a510790d31670fda1672b9e63b554b3db8b45978de3",
       "cases": [
         {
@@ -3608,11 +3612,22 @@
       "passed": true
     },
     "sessionExecutableSHA256": "95c6bcdf1ecb7d08d88b939e4b36d9239e6b4d83eaefd42f13f3bda242722e26",
-    "librarySHA256": "f9a41f10f2037001134e8659a442a20c9b08ff73d0fb38d7643a2ea8cac9501d",
-    "generatedKernelSHA256": "9a7c165105cb863446a4f13cfbd9edd170d59a1aa4fd0640909f090e1b38e9cc",
+    "librarySHA256": "cfd1427e7d4b3b1c5c43075159530712ee53de6dfef1267f203f38cdee8c572d",
+    "generatedKernelSHA256": "48780e2c3c6041094f1d58ec45371c9d8bd38686fe4dcb1ab4b8b6319123eb44",
     "observedGameplay": false,
     "lifetime": "one Session lifetime per worker process; reset by process replacement",
-    "scheduling": "source 4-worker 16-batch independent geometry; sequential constraints/reductions/collision publication"
+    "scheduling": "source 4-worker 16-batch independent geometry; sequential constraints/reductions/collision publication",
+    "clinicalTrace": {
+      "frames": 270,
+      "vertices": 4732560,
+      "toleranceSourceUnits": 0.0001,
+      "maximumAnatomyError": 7.63032585e-06,
+      "maximumBodyError": 7.62939453e-06,
+      "executableSHA256": "ac2326941f46141e15530a098e8837d7bb9ab16e9b10e6eb1b76aa1369cf3967",
+      "reportSHA256": "49e4cb46151d1578eb0876c101b506dd0d1793b15b523b2a9b1575ec2a356ac3",
+      "passed": true,
+      "observedGameplay": false
+    }
   },
   "collarMetricExport": {
     "source": "UnifiedCollar::Build arguments observed by extraction recipe",
@@ -3662,6 +3677,1093 @@
       }
     }
   ],
-  "wireEncoding": "version-3 byte-identical bulk UV, lineage and widened INDEX16 output, bounded and finite validated",
-  "buildMetadataUpdate": "Added independent presentation test target; numerical surface compile options and sources unchanged."
+  "wireEncoding": "Version 4: unchanged original surface fields plus bounded target collar queries, binary64 clinical clock/projection and final distal nozzle.",
+  "buildMetadataUpdate": "Added independent presentation test target; numerical surface compile options and sources unchanged.",
+  "historicalProcessChecks": [
+    {
+      "architecture": "Win32",
+      "arithmetic": "/fp:precise",
+      "shape": {
+        "referenceOnly": true,
+        "observedGameplay": false,
+        "toleranceSourceUnits": 0.0001,
+        "executableSHA256": "8d893d813dd4abe8e42e4cb13a081008562820f50aef40e71d2b37b800d606d5",
+        "referenceManifestSHA256": "803bd01e60fb3b9a8632c647dc40bf7ae547868b443a640606b606c88134f122",
+        "cases": [
+          {
+            "label": "default",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 3.898928291334869e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              2.384185791015625e-07
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "overall-1",
+            "maxPositionError": 1.1920928955078125e-07,
+            "rmsPositionError": 1.221419299035631e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "overall-25",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 1.8741002083544345e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "overall-75",
+            "maxPositionError": 1.1920928955078125e-07,
+            "rmsPositionError": 1.0066973921141198e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "overall-100",
+            "maxPositionError": 1.1920928955078125e-07,
+            "rmsPositionError": 1.009159755760436e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "length-0",
+            "maxPositionError": 1.4901161193847656e-08,
+            "rmsPositionError": 1.599892301973327e-10,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "length-25",
+            "maxPositionError": 1.1920928955078125e-07,
+            "rmsPositionError": 9.074349605064924e-10,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "length-75",
+            "maxPositionError": 1.1920928955078125e-07,
+            "rmsPositionError": 1.4894654398744933e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "length-100",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 3.0723470434423916e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              1.4901161193847656e-08
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "width-1",
+            "maxPositionError": 7.275957614183426e-12,
+            "rmsPositionError": 5.4957120532985945e-14,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "width-25",
+            "maxPositionError": 5.960464477539063e-08,
+            "rmsPositionError": 6.190969958907999e-10,
+            "bodyMaxPositionError": [
+              0.0,
+              5.960464477539063e-08
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "width-75",
+            "maxPositionError": 7.62939453125e-06,
+            "rmsPositionError": 5.765485511233237e-08,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "width-100",
+            "maxPositionError": 0.0,
+            "rmsPositionError": 0.0,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "glans-0",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 2.8463624790475706e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              2.9802322387695312e-08
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "glans-25",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 3.898928291334869e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              2.384185791015625e-07
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "glans-75",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 3.898928291334869e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              2.384185791015625e-07
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "glans-100",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 3.898928291334869e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              2.384185791015625e-07
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum-1",
+            "maxPositionError": 5.960464477539063e-08,
+            "rmsPositionError": 4.5109224688921756e-10,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum-25",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 6.206890557081124e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              1.1920928955078125e-07
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum-75",
+            "maxPositionError": 5.960464477539063e-08,
+            "rmsPositionError": 4.678115672618333e-10,
+            "bodyMaxPositionError": [
+              0.0,
+              1.4901161193847656e-08
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum-100",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 2.356604911213367e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "hang-1",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 3.2782150327648196e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "hang-25",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 2.0723562865754275e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "hang-75",
+            "maxPositionError": 5.960464477539063e-08,
+            "rmsPositionError": 8.766846137930884e-10,
+            "bodyMaxPositionError": [
+              0.0,
+              1.4901161193847656e-08
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "hang-100",
+            "maxPositionError": 2.9802322387695312e-08,
+            "rmsPositionError": 2.2510436570311043e-10,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "angle-1",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 1.8044072902512198e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "angle-25",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 4.351175419969877e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "angle-75",
+            "maxPositionError": 1.1920928955078125e-07,
+            "rmsPositionError": 9.008570001078908e-10,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "angle-100",
+            "maxPositionError": 0.0,
+            "rmsPositionError": 0.0,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "forward-1",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 2.101235185847372e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "forward-25",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 4.572530354352011e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              2.9802322387695312e-08
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "forward-75",
+            "maxPositionError": 1.1920928955078125e-07,
+            "rmsPositionError": 9.078686691310622e-10,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "forward-100",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 2.2361179574659218e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "vertical-1",
+            "maxPositionError": 5.960464477539063e-08,
+            "rmsPositionError": 7.2058403688402e-10,
+            "bodyMaxPositionError": [
+              0.0,
+              1.4901161193847656e-08
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "vertical-25",
+            "maxPositionError": 3.725290298461914e-09,
+            "rmsPositionError": 3.1655303378563815e-11,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "vertical-75",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 2.4742294879587234e-09,
+            "bodyMaxPositionError": [
+              2.384185791015625e-07,
+              2.384185791015625e-07
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "vertical-100",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 3.6503688960465297e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          }
+        ]
+      },
+      "physics": {
+        "referenceOnly": true,
+        "observedGameplay": false,
+        "toleranceSourceUnits": 0.0001,
+        "executableSHA256": "8d893d813dd4abe8e42e4cb13a081008562820f50aef40e71d2b37b800d606d5",
+        "referenceManifestSHA256": "e5de64f2e85a3cac8ea76a510790d31670fda1672b9e63b554b3db8b45978de3",
+        "cases": [
+          {
+            "label": "default",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 3.898928291334869e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              2.384185791015625e-07
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "shaft_stiffness-1",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 2.763189455023962e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "shaft_stiffness-25",
+            "maxPositionError": 7.62939453125e-06,
+            "rmsPositionError": 8.155839736900816e-08,
+            "bodyMaxPositionError": [
+              0.0,
+              2.9802322387695312e-08
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "shaft_stiffness-75",
+            "maxPositionError": 7.450580596923828e-09,
+            "rmsPositionError": 6.44723649467771e-11,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "shaft_stiffness-100",
+            "maxPositionError": 1.1920928955078125e-07,
+            "rmsPositionError": 1.836991558867851e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "shaft_weight-1",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 2.7159894333550483e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "shaft_weight-25",
+            "maxPositionError": 1.1920928955078125e-07,
+            "rmsPositionError": 9.752634255733028e-10,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "shaft_weight-75",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 1.9243502347165986e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "shaft_weight-100",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 1.8157524372952594e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "shaft_bounce-1",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 2.599261472724379e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "shaft_bounce-25",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 5.3859108284370905e-09,
+            "bodyMaxPositionError": [
+              2.384185791015625e-07,
+              2.384185791015625e-07
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "shaft_bounce-75",
+            "maxPositionError": 1.1920928955078125e-07,
+            "rmsPositionError": 1.049846320988479e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "shaft_bounce-100",
+            "maxPositionError": 1.1920928955078125e-07,
+            "rmsPositionError": 1.4453354069132729e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "shaft_velocity-1",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 3.898928291334869e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              2.384185791015625e-07
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "shaft_velocity-25",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 3.898928291334869e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              2.384185791015625e-07
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "shaft_velocity-75",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 3.898928291334869e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              2.384185791015625e-07
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "shaft_velocity-100",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 3.898928291334869e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              2.384185791015625e-07
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum_stiffness-1",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 3.3354046191647058e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              5.960464477539063e-08
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum_stiffness-25",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 2.6225994709250244e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum_stiffness-75",
+            "maxPositionError": 1.1920928955078125e-07,
+            "rmsPositionError": 9.281316271092521e-10,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum_stiffness-100",
+            "maxPositionError": 7.62939453125e-06,
+            "rmsPositionError": 5.770555588924253e-08,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum_weight-1",
+            "maxPositionError": 1.1920928955078125e-07,
+            "rmsPositionError": 1.093653168027231e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum_weight-25",
+            "maxPositionError": 4.76837158203125e-07,
+            "rmsPositionError": 4.863637492746875e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum_weight-75",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 2.2319834869222177e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum_weight-100",
+            "maxPositionError": 1.1920928955078125e-07,
+            "rmsPositionError": 1.3262246856271531e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum_bounce-1",
+            "maxPositionError": 5.960464477539063e-08,
+            "rmsPositionError": 6.753589354424605e-10,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum_bounce-25",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 2.3104729240941424e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum_bounce-75",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 3.0493554348254293e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              1.4901161193847656e-08
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum_bounce-100",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 2.5070929776660478e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              0.0
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum_velocity-1",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 3.898928291334869e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              2.384185791015625e-07
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum_velocity-25",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 3.898928291334869e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              2.384185791015625e-07
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum_velocity-75",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 3.898928291334869e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              2.384185791015625e-07
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          },
+          {
+            "label": "scrotum_velocity-100",
+            "maxPositionError": 2.384185791015625e-07,
+            "rmsPositionError": 3.898928291334869e-09,
+            "bodyMaxPositionError": [
+              0.0,
+              2.384185791015625e-07
+            ],
+            "lightingMaxComponentError": {
+              "normals": 0.0,
+              "tangents": 0.0
+            },
+            "exactTopology": true,
+            "exactUV": true
+          }
+        ]
+      },
+      "trace": {
+        "frames": 180,
+        "maximumAnatomyError": 7.62962736e-06,
+        "maximumBodyError": 7.62939453e-06,
+        "executableSHA256": "612eced20b7768003a802b627e25c9ac21f90019e78762a3647a01b50fac7c95",
+        "passed": true
+      },
+      "sessionExecutableSHA256": "95c6bcdf1ecb7d08d88b939e4b36d9239e6b4d83eaefd42f13f3bda242722e26",
+      "librarySHA256": "f9a41f10f2037001134e8659a442a20c9b08ff73d0fb38d7643a2ea8cac9501d",
+      "generatedKernelSHA256": "9a7c165105cb863446a4f13cfbd9edd170d59a1aa4fd0640909f090e1b38e9cc",
+      "observedGameplay": false,
+      "lifetime": "one Session lifetime per worker process; reset by process replacement",
+      "scheduling": "source 4-worker 16-batch independent geometry; sequential constraints/reductions/collision publication"
+    }
+  ]
 }
