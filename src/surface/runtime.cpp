@@ -8,6 +8,7 @@
 #include <atomic>
 #include "surface-kernel.inc"
 #include <malemod/surface/collar_field.hpp>
+#include <malemod/surface/garment_support.hpp>
 
 namespace malemod::surface {
 namespace {
@@ -81,6 +82,11 @@ struct Session::Impl {
   kernel::ResetCompliantDynamics();kernel::ResetPelvicAttachmentBody(seed.data());kernel::EvaluateAnatomy(seed.data(),47050);
  }
  void Advance(const Frame& frame){
+  auto validateSupport=[](Point p,float limit){if(!std::isfinite(p.x)||!std::isfinite(p.y)||!std::isfinite(p.z)||double(p.x)*p.x+double(p.y)*p.y+double(p.z)*p.z>double(limit)*limit+1e-5)throw std::invalid_argument("Garment support exceeds source acceleration budget");};
+  validateSupport(frame.garment.shaftAcceleration,maximumShaftSupportAcceleration);for(auto p:frame.garment.lobeAcceleration)validateSupport(p,maximumLobeSupportAcceleration);
+  kernel::surfaceGarmentEnabled=frame.garment.enabled;
+  auto force=frame.garment.shaftAcceleration;kernel::surfaceGarmentShaft={force.x,force.y,force.z};
+  for(unsigned i=0;i<2;i++){force=frame.garment.lobeAcceleration[i];kernel::surfaceGarmentLobes[i]={force.x,force.y,force.z};}
   collarQueries=frame.collarQueries;
   Map(controls);
   const auto& c=frame.clinical;
@@ -153,8 +159,9 @@ struct Session::Impl {
   if(!out.collarMetric.generation)throw std::runtime_error("Source collar metric not built");
   // Exact active source target expressions on the target character samples.
   // The cached metric masks and the moving guide are separate, as in Wolverine.
-  kernel::V3 root{},axis{};kernel::SampleShaftChain(0,root,axis);
-  const auto up=kernel::Unit(kernel::Cross(axis,{0,1,0}));
+  const auto pelvic=kernel::UnifiedCollar::StablePelvicRecruitmentFrame();
+  kernel::V3 root{pelvic.root.x,pelvic.root.y,pelvic.root.z},axis{pelvic.axis.x,pelvic.axis.y,pelvic.axis.z};
+  const kernel::V3 up{pelvic.up.x,pelvic.up.y,pelvic.up.z};
   float length=0;auto previous=root;
   for(unsigned k=1;k<=100;k++){kernel::V3 p,t;kernel::SampleShaftChain(k*.01f,p,t);length+=kernel::Length(p-previous);previous=p;}
   length=std::max(.01f,length);const float radius=kernel::logicalShaftBodyRadius,growth=kernel::Smoother01((radius-2.9f)/4.72f);

@@ -112,7 +112,7 @@ struct Fluid {
    double age=next-clearStart[e];if(age<=0)continue;
    double fraction=FlowIntegral(age/settings.dropDuration);
    size_t firstImpact=impacts.size();clear[e].Step(dt,(float)age,tip,dir,settings,collision,(float)fraction,settings.dropVolume,origin,&impacts,collisionQuery);
-   for(size_t k=firstImpact;k<impacts.size();k++)impacts[k].sourceId=variationSeed^(0xa531u+e);
+   for(size_t k=firstImpact;k<impacts.size();k++){impacts[k].sourceId=variationSeed^(0xa531u+e);impacts[k].phase=volumeFluid::LiquidPhase::clear;impacts[k].emissionTime=float(clearStart[e]);}
    emittedVolume+=settings.dropVolume*(fraction-FlowIntegral((clock-clearStart[e])/settings.dropDuration));clearEmitted[e]=fraction>=1?1:0;
    if(age>settings.dropDuration+settings.dropHold+settings.lifetime)clearScheduled[e]=false;
   }
@@ -135,7 +135,7 @@ struct Fluid {
   for(int channelIndex=0;channelIndex<4;channelIndex++){
    int e=(channelIndex+steps)%4;
    auto& stream=streams[e];size_t firstImpact=impacts.size();stream.Step(dt,(float)next,settings,collision,origin,volumeFluid::collisionCount,&impacts,collisionQuery);
-   for(size_t k=firstImpact;k<impacts.size();k++)impacts[k].sourceId=variationSeed^(0x917fu+e);
+   for(size_t k=firstImpact;k<impacts.size();k++){impacts[k].sourceId=variationSeed^(0x917fu+e);impacts[k].phase=volumeFluid::LiquidPhase::opaque;}
    if(birth&&amount[e]>1e-9)stream.Feed((float)amount[e],tip,dir,inherited+dir*min(settings.speedLimit,speeds[e]),(float)next,dt*stride,settings);
    stream.feeding=feed[e];
   }

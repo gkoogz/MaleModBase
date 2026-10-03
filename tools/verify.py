@@ -80,6 +80,10 @@ def main():
     for item in support['files']:
         if hashlib.sha256((ROOT/item['path']).read_bytes()).hexdigest()!=item['sha256']:
             raise ValueError('Radial/clinical support provenance differs: '+item['path'])
+    garments=json.loads((ROOT/'provenance/garments.json').read_text())
+    for path,expected in garments['fileHashes'].items():
+        if hashlib.sha256((ROOT/path).read_bytes()).hexdigest()!=expected:
+            raise ValueError('Shared garment provenance differs: '+path)
     clinical=json.loads((ROOT/'provenance/clinical.json').read_text())
     for item in clinical['files']:
         if hashlib.sha256((ROOT/item['source']).read_bytes()).hexdigest()!=item['sourceSHA256']:

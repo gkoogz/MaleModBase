@@ -178,4 +178,33 @@ bool PassiveParity(){
  std::cout<<"PASS original passive preliminary-flow simulation and mesh parity.\n";return true;
 }
 
-int main(int argc,char** argv){if(argc!=2){std::cerr<<"Provide original splat_bakes.bin path\n";return 2;}return Parity()&&Isolation()&&Deferred()&&CollisionParity()&&Deposits(argv[1])&&AudioCues()&&PassiveParity()?0:1;}
+bool PhaseAndTerminal(const char* bakes){
+ c::Session session;REQUIRE(session.deposits.splatBakes.LoadFile(bakes));
+ session.deposits.project=[](const auto& contact,V3 p,auto& result){result=contact;result.p={p.x,p.y,0};result.n={0,0,1};return true;};
+ session.fluid.collisionQuery.callback=[](V3 from,V3 to,float,c::volumeFluid::FluidImpact& hit){
+  if(from.z>=0&&to.z<=0&&from.z>to.z){hit.p=from+(to-from)*(from.z/(from.z-to.z));hit.n={0,0,1};return c::volumeFluid::SweepResult::hit;}return c::volumeFluid::SweepResult::miss;
+ };
+ REQUIRE(session.Begin({0,0,30}));session.fluid.surfaceDeposits=true;
+ bool earlyClear=false,earlyOpaque=false;
+ for(unsigned frame=0;frame<1320;frame++){
+  REQUIRE(session.Advance(1.f/60,{{0,0,30},{1,0,0},{}},frame*1000/60));
+  if(frame<7*60){earlyClear|=session.depositedVolume[0]>0;earlyOpaque|=session.depositedVolume[1]>0;}
+ }
+ REQUIRE(earlyClear&&!earlyOpaque);REQUIRE(session.depositedVolume[1]>0&&session.finalPumpDepositedVolume>0&&session.finalPumpDepositedImpacts>0);
+ // Coincident receiver fields retain separate transparent/opaque provenance.
+ c::volumeFluid::FluidImpact clear{};clear.p={0,0,0};clear.n={0,0,1};clear.velocity={1,0,-1};clear.volume=5;clear.phase=c::volumeFluid::LiquidPhase::clear;
+ auto white=clear;white.phase=c::volumeFluid::LiquidPhase::opaque;
+ session.deposits.marks.clear();REQUIRE(session.deposits.Add({clear,white},23000));REQUIRE(session.deposits.marks.size()==2);
+ session.deposits.Update(23001);auto mesh=c::BuildDepositMesh(session.deposits,23001);bool transparent=false,opaque=false;for(auto v:mesh.vertices){transparent|=v.phase==c::volumeFluid::LiquidPhase::clear;opaque|=v.phase==c::volumeFluid::LiquidPhase::opaque;}REQUIRE(transparent&&opaque);
+ // A real queued receiver may complete after timeline20. Keep this source
+ // node alive while the timeline/cues remain ended and emission stays fixed.
+ session.Cancel();REQUIRE(session.Begin({0,0,30}));for(unsigned i=0;i<1201;i++)REQUIRE(session.Advance(1.f/60,{{0,0,30},{1,0,0},{}},i*1000/60));
+ REQUIRE(!session.timeline.active&&session.timeline.time==20);auto emitted=session.fluid.emittedVolume;auto cues=session.audio.active;
+ session.fluid.settings.gravity=0;session.fluid.streams[0].Feed(5,{0,0,1},{0,0,-1},{0,0,-5},float(session.fluid.clock),.01f,session.fluid.settings);session.fluid.surfaceDeposits=true;
+ unsigned attempts=0;session.fluid.collisionQuery.callback=[&](V3,V3 to,float,c::volumeFluid::FluidImpact& hit){if(++attempts<3)return c::volumeFluid::SweepResult::deferred;hit.p=to;hit.n={0,0,1};return c::volumeFluid::SweepResult::hit;};
+ for(unsigned i=0;i<12;i++)REQUIRE(session.Advance(1.f/60,{{0,0,30},{1,0,0},{}},21000+i*16));
+ REQUIRE(attempts>2&&session.finalPumpDepositedVolume>0&&!session.timeline.active&&session.timeline.time==20&&session.audio.active==cues&&session.fluid.emittedVolume==emitted);
+ std::cout<<"PASS clear-only preliminary phase, final-born opaque ground ledger, separate coincident phase fields and post20 deferred receiver drain without emission/cues.\n";return true;
+}
+
+int main(int argc,char** argv){if(argc!=2){std::cerr<<"Provide original splat_bakes.bin path\n";return 2;}return Parity()&&Isolation()&&Deferred()&&CollisionParity()&&Deposits(argv[1])&&AudioCues()&&PassiveParity()&&PhaseAndTerminal(argv[1])?0:1;}

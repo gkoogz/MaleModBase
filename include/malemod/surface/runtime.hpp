@@ -28,6 +28,14 @@ struct Frame {
  // Target character rest samples, already calibrated into source coordinates.
  // The source evaluates its final radial target law here without donor blur.
  std::vector<Point> collarQueries;
+ // Optional gentle garment load in calibrated source-local length/time^2.
+ // The worker caps it at15% of the current source gravity for each body.
+ // Disabled input never enters source integration arithmetic.
+ struct GarmentSupport {
+  bool enabled=false;
+  Point shaftAcceleration{};
+  std::array<Point,2> lobeAcceleration{};
+ } garment;
  struct ClinicalProjection {
   bool active=false;double time=0;
   std::uint32_t throbMode=0;

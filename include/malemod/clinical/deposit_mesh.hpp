@@ -1,7 +1,7 @@
 #pragma once
 #include "fluid_splat_model.h"
 namespace malemod::clinical {
-struct DepositVertex {V3 p,n;float alpha=0;};
+struct DepositVertex {V3 p,n;float alpha=0;volumeFluid::LiquidPhase phase=volumeFluid::LiquidPhase::opaque;};
 struct DepositMesh {std::vector<DepositVertex> vertices;std::vector<unsigned> indices;};
 // Portable scene presentation of the source's baked deposition field. Engine
 // adapters supply projection anchors and lit transparent materials. Unknown
@@ -16,7 +16,7 @@ inline DepositMesh BuildDepositMesh(const volumeFluid::SplatModel& model,std::ui
    if(s.state!=1||!model.Resolve(s.anchor,p,n))return -1;
    const float density=SplatModel::Field(mark,SplatModel::Coordinate(id%splatGrid,mark.span),SplatModel::Coordinate(id/splatGrid,mark.span));
    const float alpha=std::clamp((density-.00015f)/.001f,0.f,1.f)*fade;
-   int index=int(out.vertices.size());out.vertices.push_back({p+n*.027f,n,alpha});mapping[id]=index;return index;
+   int index=int(out.vertices.size());out.vertices.push_back({p+n*.027f,n,alpha,mark.phase});mapping[id]=index;return index;
   };
   for(int iy=mark.y0;iy<mark.y1;iy++)for(int ix=mark.x0;ix<mark.x1;ix++){
    int ids[4]={iy*splatGrid+ix,iy*splatGrid+ix+1,(iy+1)*splatGrid+ix,(iy+1)*splatGrid+ix+1};

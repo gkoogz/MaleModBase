@@ -1,5 +1,6 @@
 #pragma once
 #include "runtime.hpp"
+#include "garment_support.hpp"
 #include <cmath>
 #include <cstring>
 #include <stdexcept>
@@ -8,7 +9,7 @@
 // Versioned numerical messages. Transport, process handles, engine resources
 // and graphics buffers belong to the adapter. Never transmit C++ object layouts.
 namespace malemod::surface::wire {
-constexpr std::uint32_t version=4;
+constexpr std::uint32_t version=5;
 constexpr std::size_t maximumBytes=16*1024*1024;
 constexpr std::uint32_t maximumVertices=60000,maximumIndices=360000;
 using Bytes=std::vector<std::uint8_t>;
@@ -83,6 +84,8 @@ inline void Validate(const Frame& f){
  if(f.thighEndpoints)for(auto p:*f.thighEndpoints)if(!finite(p))throw std::invalid_argument("Invalid wire thigh endpoint");
  if(f.collarQueries.size()>20000)throw std::invalid_argument("Too many collar queries");
  for(auto p:f.collarQueries)if(!finite(p))throw std::invalid_argument("Invalid collar query");
+ auto support=[&](Point p,float limit){if(!finite(p)||double(p.x)*p.x+double(p.y)*p.y+double(p.z)*p.z>double(limit)*limit+1e-5)throw std::invalid_argument("Garment support exceeds source acceleration budget");};
+ support(f.garment.shaftAcceleration,maximumShaftSupportAcceleration);for(auto p:f.garment.lobeAcceleration)support(p,maximumLobeSupportAcceleration);
  const auto& c=f.clinical;
  if(c.throbMode>3||!std::isfinite(c.time)||c.time<0||c.time>60||!std::isfinite(c.sizeTime)||c.sizeTime<0||c.sizeTime>=3||!std::isfinite(c.twitchTime)||c.twitchTime<0||c.twitchTime>=5.75f||!std::isfinite(c.lateralWobbleDegrees)||std::abs(c.lateralWobbleDegrees)>90)throw std::invalid_argument("Invalid clinical projection");
  for(float gain:c.lateralGain)if(!std::isfinite(gain)||std::abs(gain)>2)throw std::invalid_argument("Invalid clinical lateral variation");
@@ -103,6 +106,7 @@ inline Bytes Encode(const Request& q){
  w.U32(q.frame.collision?1:0);if(q.frame.collision){for(float r:q.frame.collision->thighRadii)w.Float(r);w.Points(q.frame.collision->pelvisEndpoints);w.Float(q.frame.collision->pelvisRadius);}
  w.U32(std::uint32_t(q.frame.collarQueries.size()));w.Points(q.frame.collarQueries);
  const auto& c=q.frame.clinical;w.U32(c.active?1:0);w.Double(c.time);w.U32(c.throbMode);w.Float(c.sizeTime);w.Float(c.twitchTime);w.Float(c.lateralWobbleDegrees);for(float x:c.angleGain)w.Float(x);for(float x:c.lateralGain)w.Float(x);
+ w.U32(q.frame.garment.enabled?1:0);w.Point3(q.frame.garment.shaftAcceleration);w.Points(q.frame.garment.lobeAcceleration);
  return w.bytes;
 }
 inline Request DecodeRequest(const Bytes& bytes){
@@ -117,6 +121,7 @@ inline Request DecodeRequest(const Bytes& bytes){
  if(calibrated){q.frame.collision=CollisionCalibration{};for(float& radius:q.frame.collision->thighRadii)radius=r.Float();r.Points(q.frame.collision->pelvisEndpoints);q.frame.collision->pelvisRadius=r.Float();}
  auto queries=r.U32();if(queries>20000)throw std::invalid_argument("Too many collar queries");q.frame.collarQueries.resize(queries);r.Points(q.frame.collarQueries);
  auto active=r.U32();if(active>1)throw std::invalid_argument("Invalid clinical active flag");auto& c=q.frame.clinical;c.active=active;c.time=r.Double();c.throbMode=r.U32();c.sizeTime=r.Float();c.twitchTime=r.Float();c.lateralWobbleDegrees=r.Float();for(float& x:c.angleGain)x=r.Float();for(float& x:c.lateralGain)x=r.Float();
+ auto garment=r.U32();if(garment>1)throw std::invalid_argument("Invalid garment support flag");q.frame.garment.enabled=garment!=0;q.frame.garment.shaftAcceleration=r.Point3();r.Points(q.frame.garment.lobeAcceleration);
  Validate(q.frame);
  r.End();return q;
 }

@@ -72,6 +72,8 @@ prelude='''// Generated full numerical kernel; see tools/extract_surface_runtime
 #include <xmmintrin.h>
 #include <Eigen/SparseCholesky>
 #include <Eigen/Geometry>
+#include <malemod/surface/pelvic_frame.hpp>
+#include <malemod/surface/garment_support.hpp>
 #include <malemod/clinical/teaching_sequence.h>
 #ifndef _MSC_VER
 #define __forceinline inline
@@ -137,6 +139,7 @@ for d in sorted(decl,key=position):
 
  if d['name']=='PDInput':
   storage='static ' if args.process_isolated else 'static thread_local '
+  parts.append(storage+'bool surfaceGarmentEnabled=false;\n'+storage+'V3 surfaceGarmentShaft{},surfaceGarmentLobes[2]{};')
   parts.append(storage+'bool surfaceCollisionEnabled=false;\n'+storage+'float surfaceThighRadii[2]{7.2f,7.2f},surfacePelvisRadius=6.4f,surfaceTargetThighRadii[2]{},surfaceTargetPelvisRadius=0;\n'+storage+'V3 surfacePelvis[2]{{3.f,0.f,70.f},{5.4f,0.f,86.f}},surfaceOldPelvis[2]{},surfaceTargetPelvis[2]{};')
   s=s.replace('float gait,side;', 'float gait,side; V3 surfacePelvis[2];float surfaceThighRadii[2],surfacePelvisRadius;')
  if d['name']=='Build' and d['parent']=='UnifiedCollar':
@@ -148,6 +151,23 @@ for d in sorted(decl,key=position):
   s=s[:at]+'''\n const float observed[11]={root.x,root.y,root.z,axis.x,axis.y,axis.z,up.x,up.y,up.z,radius,length};
  memcpy(surfaceMetricFrame,observed,sizeof(observed));++surfaceMetricGeneration;
 '''+s[at:]
+  old='write[ucSeamVertices[k*3]]=write[ucSeamVertices[k*3+1]]||write[ucSeamVertices[k*3+2]];'
+  if s.count(old)!=1:raise ValueError('Original-edge seam publication source span changed')
+  # The eliminated slave is corrected even when both donors are fixed. Always
+  # publish its aliases, otherwise an earlier body pass can leave a visible gap.
+  s=s.replace(old,'write[ucSeamVertices[k*3]]=true;')
+ if d['name']=='Apply' and d['parent']=='UnifiedCollar':
+  old='Topology();Read(body);V3 root,axis;SampleShaftChain(0,root,axis);V3 up=Unit(Cross(axis,{0,1,0}));'
+  new='Topology();Read(body);const auto pelvic=StablePelvicRecruitmentFrame();V3 root{pelvic.root.x,pelvic.root.y,pelvic.root.z},axis{pelvic.axis.x,pelvic.axis.y,pelvic.axis.z},up{pelvic.up.x,pelvic.up.y,pelvic.up.z};'
+  if s.count(old)!=1:raise ValueError('Observed collar frame source span changed')
+  # Intentional shared algorithm revision: pelvic support no longer rotates
+  # with RestAngle/live swing. The immutable source remains unchanged.
+  s=s.replace(old,new)
+  s='''static ::malemod::collar::RecruitmentFrame StablePelvicRecruitmentFrame(){
+ const auto root=ShaftRoot();const float angle=neutralShape[4]*3.1415926535f/180.f;
+ return ::malemod::collar::StableRecruitmentFrame({root.x,root.y,root.z},{cosf(angle),0.f,-sinf(angle)},{0,1,0});
+}
+'''+s
  if d['name']=='PDReadInput':
   s=s.replace('return x;', 'for(unsigned i=0;i<2;i++){x.surfacePelvis[i]=surfaceCollisionEnabled?surfaceTargetPelvis[i]:(i?V3{5.4f,0.f,86.f}:V3{3.f,0.f,70.f});x.surfaceThighRadii[i]=surfaceCollisionEnabled?surfaceTargetThighRadii[i]:7.2f;}x.surfacePelvisRadius=surfaceCollisionEnabled?surfaceTargetPelvisRadius:6.4f;return x;')
  if d['name']=='PDSetInput':
@@ -156,6 +176,12 @@ for d in sorted(decl,key=position):
  if d['name']=='UpdateCompliantDynamics':
   s=s.replace('memcpy(pdThigh,target.thigh,sizeof(pdThigh));', 'memcpy(pdThigh,target.thigh,sizeof(pdThigh));memcpy(surfacePelvis,target.surfacePelvis,sizeof(surfacePelvis));')
  if d['name']=='StepConstraintSolver':
+  old='V3 acceleration{0.f,side*86.f*response,gait*86.f*response-gravity};float drag=i<pdBody0?shaftDrag:bodyDrag;'
+  new='''V3 acceleration{0.f,side*86.f*response,gait*86.f*response-gravity};
+  if(surfaceGarmentEnabled){auto a=i<pdBody0?surfaceGarmentShaft:surfaceGarmentLobes[i-pdBody0];auto bounded=::malemod::surface::BoundGarmentAcceleration({a.x,a.y,a.z},gravity);acceleration=acceleration+V3{bounded.x,bounded.y,bounded.z};}
+  float drag=i<pdBody0?shaftDrag:bodyDrag;'''
+  if s.count(old)!=1:raise ValueError('Observed source acceleration integration span changed')
+  s=s.replace(old,new)
   # Optional measured collision envelope. Keep the original expressions in the
   # reference branch so its strict floating-point replay is unchanged.
   substitutions={

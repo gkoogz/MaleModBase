@@ -12,7 +12,7 @@
       "source": "legacy/wolverine/src/runtime/fluid_types.h",
       "sourceSHA256": "6c0686aaa7cbf1e55853926f86f6502557d8121c1fb3e93dd0e61412cff9aa2a",
       "path": "include/malemod/clinical/fluid_types.h",
-      "sha256": "84ce1d78422ac95e6ee42e2e09645e52c639b7be6a1244860be0ddb317f294ce"
+      "sha256": "62dfe2c1b688ae5e0ee02e08cb1a17e406705ada800f0544ca2fc38e93d5ff65"
     },
     {
       "source": "legacy/wolverine/src/runtime/clear_strand.h",
@@ -30,19 +30,19 @@
       "source": "legacy/wolverine/src/runtime/viscous_thread.h",
       "sourceSHA256": "5f77112c620415a1fa0dc080aa7248558a3140507637e20d625e0bd71693dc61",
       "path": "include/malemod/clinical/viscous_thread.h",
-      "sha256": "f4d25c5f77a3dde0dc621e8fe754ad923cf959ce91ace2322f92baee6cf916da"
+      "sha256": "8d9c0534a1f70354bfc3005d8e7feaf15cfefed4d9e38243921661a6cc4efc66"
     },
     {
       "source": "legacy/wolverine/src/runtime/teaching_volume.h",
       "sourceSHA256": "1398069503db0e5832b4e93f8e04dd8fb8ef84801beade1fb81caecbb61686a4",
       "path": "include/malemod/clinical/teaching_volume.h",
-      "sha256": "2c913770c30ad780547f551dcef6f0992088c7abb9c51e968f73a4f55dc8fde5"
+      "sha256": "120e6dcf6658b6e3c09688e5bbea8e3016b2f083df2bd4ef8247ad54f506312c"
     },
     {
       "source": "legacy/wolverine/src/runtime/fluid_splat_model.h",
       "sourceSHA256": "5daa477faaf9c1ee613c1134842a071d3671abdba87446e9d130336bbb35c70d",
       "path": "include/malemod/clinical/fluid_splat_model.h",
-      "sha256": "c4df5e8f01bf89f04db0b52d1388a504324934dd87aa0f0d0f641b4a679d7521"
+      "sha256": "c7b9acc739e5287d474d6f775aadf7bc349fe04aafcdcb7ec5801e296754f8c9"
     },
     {
       "source": "legacy/wolverine/src/runtime/teaching_audio.h",
@@ -56,7 +56,8 @@
     "per-instance settings and sequence end",
     "per-instance collision callbacks with deferred result",
     "per-instance deposition state and standard integer timestamps",
-    "standard binary bake loading replaces Windows resources"
+    "standard binary bake loading replaces Windows resources",
+    "presentation phase and emission-time metadata retained through impact and deposition; numerical source unchanged"
   ],
   "bakeAsset": "legacy/wolverine/src/runtime/splat_bakes.bin",
   "bakeSHA256": "b41046ee1083da7f0921706022893a7aed78b74a9ff931776f12e746ab405fb5",

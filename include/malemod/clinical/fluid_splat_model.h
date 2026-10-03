@@ -10,7 +10,7 @@ static constexpr float splatStep=.65f,splatSpan=(splatGrid-1)*splatStep,splatTex
 struct SplatSample {FluidImpact anchor;unsigned char state=0,attempts=0;std::uint32_t retryAt=0;float field=0;};
 struct SplatDeposit {float x=0,y=0,c=1,s=0,scale=1,volume=0;std::uint32_t born=0;unsigned char kind=0;};
 struct StainMark {
- FluidImpactKind kind=FLUID_IMPACT_WORLD;FluidImpact contact,axisAnchor;bool axisValid=false;
+ FluidImpactKind kind=FLUID_IMPACT_WORLD;LiquidPhase phase=LiquidPhase::opaque;FluidImpact contact,axisAnchor;bool axisValid=false;
  float span=splatSpan;
  V3 direction{1,0,0};float volume=0,spread=0;std::uint32_t born=0,touched=0,shaped=0;unsigned serial=0,slot=0,revision=0;bool dirty=true;
  std::vector<SplatDeposit> active;std::vector<int> candidates;
@@ -97,7 +97,7 @@ struct SplatModel {
    V3 n=Unit(hit.n),tangent=hit.velocity-n*Dot(hit.velocity,n);float along=Length(tangent),normal=fabsf(Dot(hit.velocity,n));
    float scale=max(.25f,min(6.4f,.48f*cbrtf(hit.volume/.0138f))),radius=2.5f*scale;
    StainMark* chosen=nullptr;float nearest=1e9f,cx=0,cy=0,co=1,si=0;
-   for(auto& m:marks)if(m.kind==hit.kind&&std::uint32_t(now-m.touched)<12000&&(hit.kind!=FLUID_IMPACT_BODY||m.contact.section==hit.section)){
+   for(auto& m:marks)if(m.kind==hit.kind&&m.phase==hit.phase&&std::uint32_t(now-m.touched)<12000&&(hit.kind!=FLUID_IMPACT_BODY||m.contact.section==hit.section)){
     V3 p,nn,x,y;if(!Frame(m,p,nn,x,y)||Dot(nn,n)<.85f)continue;
     V3 delta=hit.p-p;float u=Dot(delta,x),v=Dot(delta,y),distance=Length(delta);
     if(fabsf(Dot(delta,nn))>1.2f||fabsf(u)+radius>m.span*(.5f-2.f/splatTexture)||fabsf(v)+radius>m.span*(.5f-2.f/splatTexture))continue;
@@ -108,7 +108,7 @@ struct SplatModel {
     bool used[splatMaxMarks]{};for(const auto& mark:marks)used[mark.slot]=true;
     // Small body patches double linear texel/anchor density in both scenes.
     // Large impacts retain the wide patch so the bake is never cropped.
-    StainMark m;if(hit.kind==FLUID_IMPACT_BODY&&radius<splatSpan*.5f*(.5f-2.f/splatTexture))m.span=splatSpan*.5f;m.kind=hit.kind;m.contact=hit;m.born=m.touched=now;m.serial=nextSerial++;
+    StainMark m;if(hit.kind==FLUID_IMPACT_BODY&&radius<splatSpan*.5f*(.5f-2.f/splatTexture))m.span=splatSpan*.5f;m.kind=hit.kind;m.phase=hit.phase;m.contact=hit;m.born=m.touched=now;m.serial=nextSerial++;
     while(used[m.slot])++m.slot;
     m.direction=along>1?Unit(tangent):Unit(Cross(n,fabsf(n.z)<.8f?V3{0,0,1}:V3{0,1,0}));
     m.samples[32*splatGrid+32].anchor=hit;m.samples[32*splatGrid+32].state=1;

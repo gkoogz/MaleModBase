@@ -8,7 +8,9 @@ template<class T> void Drop(T*& p){if(p){p->Release();p=nullptr;}}
 struct Particle {V3 p;float live;V3 v;float age;};
 struct F4 {float x,y,z,w;};
 enum FluidImpactKind : unsigned char { FLUID_IMPACT_WORLD=0,FLUID_IMPACT_BODY=1 };
+enum class LiquidPhase : unsigned char { clear, opaque };
 struct FluidImpact {
+ LiquidPhase phase=LiquidPhase::opaque;float emissionTime=0;
  V3 p,n;
  FluidImpactKind kind=FLUID_IMPACT_WORLD;
  unsigned char section=0;

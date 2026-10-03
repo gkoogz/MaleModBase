@@ -195,24 +195,24 @@
       "sha256": "5f77112c620415a1fa0dc080aa7248558a3140507637e20d625e0bd71693dc61"
     }
   ],
-  "generatedKernelSHA256": "2a0b367bf12ebb8a40321bda590e6d9c074a2e348e0132e26cd167b43e445c99",
+  "generatedKernelSHA256": "e2608caf550e12564233ed4aa7b6f691468308fe29e2be036c2ffc52ba659ae2",
   "generatedKernelTracked": false,
   "files": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "4c1a005ff8ab6e013309be079001e385f8e5184c7979217454d2a894efab3ca2"
+      "sha256": "7d632f338f6ed92ab69a2a3d938c1e22d72b106ac0db57788400bfddf3f36ceb"
     },
     {
       "path": "include/malemod/surface/runtime.hpp",
-      "sha256": "1d982ba52955080bbb463181567458457029b332c471df336d47346c96ae8e3c"
+      "sha256": "9318488259988e894ab0791775b1a5afe89c28be3f9bf66d7492d942be30140c"
     },
     {
       "path": "src/surface/runtime.cpp",
-      "sha256": "77323026ecf652afd93d20615fc5f8a341e0e5e63c7fddb5fe1966a677b42d6d"
+      "sha256": "d902ca2d08544453a7d6ca33b24c5cb14c315f51b0a2314b21747dcd6c9e7b6f"
     },
     {
       "path": "tools/extract_surface_runtime.py",
-      "sha256": "dbeee3350e65b8e5fa79ac3ceab66481f55126c2d075412a71ee9d40694e9a42"
+      "sha256": "d5b7ab51a884ad48941431010129a58ce42ebf46f839674e3db27b13d5d4a62b"
     },
     {
       "path": "tools/data/surface-closure.json",
@@ -256,11 +256,11 @@
     },
     {
       "path": "include/malemod/surface/wire.hpp",
-      "sha256": "7759b27fd08b96334a71d2711fadbfbac24c47e89aa0494dfbec3c4708f0b22a"
+      "sha256": "6e90f818a3b5228c64bd7729afb416f84b8ccc275cbdd4b018252196e640e5bd"
     },
     {
       "path": "tests/surface_wire_test.cpp",
-      "sha256": "b86213b2f870157eb4f7e96939ea454fbad0382d3b0b1865164c80ad1ed9fa2c"
+      "sha256": "5075f4da60f68a5a0fe26af66f11ce57ab4bb3a8d58a04dd3a8ea47acfd4aa69"
     },
     {
       "path": "tests/surface_collision_test.cpp",
@@ -268,11 +268,55 @@
     },
     {
       "path": "tests/surface_process_test.cpp",
-      "sha256": "1a1ee8c4835a0c4c4a420b4ba724a4b33f0bb1778dd8b7b7da8928263d06c7f8"
+      "sha256": "c022b0099a4b217f40877404516b7ef0d429ab8dd0cd9da6f2714b376ad34c22"
     },
     {
       "path": "tests/clinical_surface_trace_oracle.cpp",
       "sha256": "26f113687b3ebb2a5ea7a680757407d247a2ff464246a81e51217c6c53d0e165"
+    },
+    {
+      "path": "include/malemod/surface/pelvic_frame.hpp",
+      "sha256": "d69ed4dd92d55ed09aa3f358c4cdddbedeac4cef2c933abb490500ff91935a45"
+    },
+    {
+      "path": "tests/pelvic_frame_test.cpp",
+      "sha256": "f35a273ef11308bc09ee30067b36964660a83791e7acd8e88cc70dc9d66c6b7b"
+    },
+    {
+      "path": "tools/test_collar_angle_adoption.py",
+      "sha256": "8b34c71b1e953ebe8ceca81c1f1344fa06977acf9cd980aaed77ee333f49a9f2"
+    },
+    {
+      "path": "docs/COLLAR-ANGLE-ADOPTION.md",
+      "sha256": "3d68fbb98993c3a1f998b22c10ee7d5ae4b1aaec3b118223e0b052edd56512a5"
+    },
+    {
+      "path": "modules/pelvic-collar.json",
+      "sha256": "774117626b03c3de3b93c154b0a0dc410d1d64b774c071f248b0da2dff1f74f4"
+    },
+    {
+      "path": "include/malemod/surface/garment_support.hpp",
+      "sha256": "5558ce6dcfbc516d659f686a53b854699b815d219fdd3f1aab24809847c1518c"
+    },
+    {
+      "path": "include/malemod/garments/numerical_support.hpp",
+      "sha256": "ae38ff5611947e4a87641f44014591d322da662a7f2c3a88ab6de17ec55ad082"
+    },
+    {
+      "path": "tests/garment_support_test.cpp",
+      "sha256": "4c3057b3caec850ea941594e75a16ef505ff77b8924f5f0633e6541a6b821c8b"
+    },
+    {
+      "path": "tests/garment_support_runtime_cli.cpp",
+      "sha256": "e1bedf020c54c0c4f567cd52acab90644e85f4c54286b81169a812b7d9085e47"
+    },
+    {
+      "path": "tools/test_garment_worker_support.py",
+      "sha256": "7c2e79e2ec69366400ff8ed028e8177884e4416aca00e389f9e0b52ebe15fe5b"
+    },
+    {
+      "path": "docs/GARMENT-NUMERICAL-SUPPORT.md",
+      "sha256": "80e7cc520d149761f09ff625b21c0829ef066b885943c6083f44ff5b309a59c8"
     }
   ],
   "controls": "malemod_base.controls.ORDER",
@@ -4765,5 +4809,258 @@
       "lifetime": "one Session lifetime per worker process; reset by process replacement",
       "scheduling": "source 4-worker 16-batch independent geometry; sequential constraints/reductions/collision publication"
     }
-  ]
+  ],
+  "behaviorRevision": 2,
+  "historicalParityScope": "Existing oracle parity and process replay records describe pre-revision-2 source behavior; stable pelvic frame is an intentional shared change with separate validation.",
+  "stablePelvicFrameVerification": {
+    "algorithmRevision": 2,
+    "observedGameplay": false,
+    "caseCount": 31,
+    "stepsPerCase": 120,
+    "states": [
+      0,
+      1,
+      2
+    ],
+    "angles": [
+      1,
+      10,
+      50,
+      64,
+      100
+    ],
+    "runtimeSHA256": "9afe957516b271a51a99513a79ac847cdd9b2fc5d65a12c8ffa4177502a17f36",
+    "previousRuntimeSHA256": "ec016154cb2302ea76f319e69195b220dbe8009a6a179c281236bcd082ee5ec4",
+    "frameAxis": [
+      0.866025388,
+      0,
+      -0.5
+    ],
+    "frameUp": [
+      0.5,
+      0,
+      0.866025388
+    ],
+    "maximumOriginalEdgeResidual": 8.793578197037973e-06,
+    "newCollapsedNondegenerateFaces": 0,
+    "minimumAreaRatioToDefault": 0.00838209003056735,
+    "angleSweeps": [
+      {
+        "state": 0,
+        "kind": "requested",
+        "currentBodyMaximum": [
+          5.694523334503174,
+          6.002015590667725
+        ],
+        "previousBodyMaximum": [
+          7.324178218841553,
+          11.350004196166992
+        ],
+        "liveRootAngleDegrees": 159.9999777705553
+      },
+      {
+        "state": 0,
+        "kind": "combined",
+        "currentBodyMaximum": [
+          5.83315372467041,
+          5.9766621589660645
+        ],
+        "previousBodyMaximum": [
+          7.526669979095459,
+          10.485936164855957
+        ],
+        "liveRootAngleDegrees": 159.9999736540098
+      },
+      {
+        "state": 1,
+        "kind": "requested",
+        "currentBodyMaximum": [
+          5.595941066741943,
+          5.595941066741943
+        ],
+        "previousBodyMaximum": [
+          6.420821666717529,
+          7.47507381439209
+        ],
+        "liveRootAngleDegrees": 159.99997731322938
+      },
+      {
+        "state": 1,
+        "kind": "combined",
+        "currentBodyMaximum": [
+          5.737963676452637,
+          5.737963676452637
+        ],
+        "previousBodyMaximum": [
+          6.582378387451172,
+          7.593616962432861
+        ],
+        "liveRootAngleDegrees": 159.99998860466806
+      },
+      {
+        "state": 2,
+        "kind": "requested",
+        "currentBodyMaximum": [
+          6.050222873687744,
+          6.498900413513184
+        ],
+        "previousBodyMaximum": [
+          6.631283283233643,
+          10.072726249694824
+        ],
+        "liveRootAngleDegrees": 159.9999903488867
+      },
+      {
+        "state": 2,
+        "kind": "combined",
+        "currentBodyMaximum": [
+          6.200933933258057,
+          6.527618885040283
+        ],
+        "previousBodyMaximum": [
+          6.722262859344482,
+          10.12593936920166
+        ],
+        "liveRootAngleDegrees": 159.99999062830534
+      }
+    ],
+    "defaultIntentionalDifference": {
+      "label": "default",
+      "controls": [
+        2,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50
+      ],
+      "steps": 120,
+      "stableAxis": [
+        0.866025388,
+        0,
+        -0.5
+      ],
+      "stableUp": [
+        0.5,
+        0,
+        0.866025388
+      ],
+      "liveRootDirection": [
+        0.700477302,
+        0,
+        -0.713674664
+      ],
+      "oldToNewAnatomyMaximum": 0.39728987216949463,
+      "oldToNewBodyMaximum": [
+        0.07887642830610275,
+        1.0268796682357788
+      ]
+    },
+    "adoption": "docs/COLLAR-ANGLE-ADOPTION.md",
+    "processKernelSHA256": "f024f270021753b870f29815bd9f2c6565b6b8a3f639b668765a3c447a699fca"
+  },
+  "runtimeProtocolVersion": 5,
+  "garmentSupportVerification": {
+    "observedGameplay": false,
+    "wireVersion": 5,
+    "accelerationConvention": "calibrated source-local length units/time squared",
+    "supportFractionCap": 0.15,
+    "runtimeSHA256": "d59df5db06e352d7f0207008aabf17d4124fcd45ee1fd5068198e652b0f21a9e",
+    "disabledCases": [
+      {
+        "label": "default",
+        "steps": 120,
+        "allGeometryLightingTopologyUVMechanicsByteIdentical": true
+      },
+      {
+        "label": "requested-s0-a10",
+        "steps": 120,
+        "allGeometryLightingTopologyUVMechanicsByteIdentical": true
+      },
+      {
+        "label": "requested-s2-a64",
+        "steps": 120,
+        "allGeometryLightingTopologyUVMechanicsByteIdentical": true
+      },
+      {
+        "label": "combined-s1-a100",
+        "steps": 120,
+        "allGeometryLightingTopologyUVMechanicsByteIdentical": true
+      }
+    ],
+    "supportCases": [
+      {
+        "state": 0,
+        "disabledTipAndLobeHeights": [
+          72.6764,
+          74.0317,
+          74.6143
+        ],
+        "enabledTipAndLobeHeights": [
+          72.3026,
+          74.0437,
+          74.6029
+        ],
+        "disabledByteIdenticalWithNonzeroIgnoredForces": true,
+        "enabledOutputChanged": true
+      },
+      {
+        "state": 1,
+        "disabledTipAndLobeHeights": [
+          73.1517,
+          73.0632,
+          73.1897
+        ],
+        "enabledTipAndLobeHeights": [
+          73.0027,
+          73.0663,
+          73.1883
+        ],
+        "disabledByteIdenticalWithNonzeroIgnoredForces": true,
+        "enabledOutputChanged": true
+      },
+      {
+        "state": 2,
+        "disabledTipAndLobeHeights": [
+          66.1057,
+          73.0651,
+          72.9822
+        ],
+        "enabledTipAndLobeHeights": [
+          66.1916,
+          73.0668,
+          72.983
+        ],
+        "disabledByteIdenticalWithNonzeroIgnoredForces": true,
+        "enabledOutputChanged": true
+      }
+    ],
+    "adoption": "docs/GARMENT-NUMERICAL-SUPPORT.md"
+  },
+  "currentProcessRuntime": {
+    "recipe": "Win32 MSVC Release /fp:precise, original4-worker16-batch geometry, process-isolated",
+    "serialGeometry": false,
+    "librarySHA256": "afb96824d80df4fa12d90c299f7ff0e1d6dc678b6793adfb2312b7944fd6a1ba",
+    "runtimeExecutableSHA256": "675b45d0edb23fdc5846e982d751791cbaad1381b840083757ae7d8a3beab607",
+    "supportExecutableSHA256": "d59df5db06e352d7f0207008aabf17d4124fcd45ee1fd5068198e652b0f21a9e",
+    "sessionExecutableSHA256": "d64defcc38dfacd352eac4362974d2a885c3ba16f9a2278c2388ddfefbddc058",
+    "generatedKernelSHA256": "64630cb5401f08c6490b41ba25cf24170cb9a893da105d03a9f7659d6dd648e9",
+    "wireVersion": 5,
+    "behaviorRevision": 2,
+    "disabledReferenceGate": "garmentSupportVerification.disabledCases",
+    "observedGameplay": false,
+    "sessionWireFrameGarmentTestsPassed": true
+  }
 }

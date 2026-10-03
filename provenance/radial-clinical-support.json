@@ -20,11 +20,11 @@
     },
     {
       "path": "include/malemod/clinical/deposit_mesh.hpp",
-      "sha256": "23d14882c4e5c837fc08871c112b39cdf720d9dcae18d7039557f06dc0903e38"
+      "sha256": "9c6abb627af59d667555ebb9474fb759858a8030b981d10a56944f6403d262fc"
     },
     {
       "path": "tests/clinical_test.cpp",
-      "sha256": "5db2140b9d1be4befd8b9a9be7ad2c3eba537b93c9b1cd19c0870c0e7be8ae51"
+      "sha256": "e6fc45a3722b49bb16e3b14d7e0f64f95f631be4b5b7facaef21e9e681d105d2"
     }
   ],
   "verification": {

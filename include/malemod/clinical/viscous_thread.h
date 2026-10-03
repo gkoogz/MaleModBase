@@ -92,7 +92,7 @@ struct ViscousThread {
    if(query.callback&&nodes[i].path.Sweep(old,nodes[i].p,radius,exactHit,query)){
     nodes[i].p=exactHit.p+exactHit.n*(radius*.72f+.025f);float inward=Dot(nodes[i].v,exactHit.n);
     float contactVolume=max(0.f,mass[i]-nodes[i].reportedContact);
-    if(impacts&&contactVolume>1e-6f){exactHit.velocity=nodes[i].v;exactHit.volume=contactVolume;impacts->push_back(exactHit);nodes[i].reportedContact+=contactVolume;}
+    if(impacts&&contactVolume>1e-6f){exactHit.emissionTime=nodes[i].born;exactHit.velocity=nodes[i].v;exactHit.volume=contactVolume;impacts->push_back(exactHit);nodes[i].reportedContact+=contactVolume;}
     if(impacts){
      // Each link already assigns half its volume to each endpoint. Draining
      // preserves that mass while separating receiver-owned and airborne flow.

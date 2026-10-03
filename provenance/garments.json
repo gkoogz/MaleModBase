@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "sharedImplementation": "measured-radial-jockstrap-v1",
+  "legacyChanged": false,
+  "characterRecipe": "assets/garments/wolverine-jockstrap-donors.json",
+  "verification": {
+    "syntheticAnimatedCases": 240,
+    "syntheticScaleRange": "1..12x plus dense40x",
+    "actualSourceVertices": 17528,
+    "actualSourceTriangles": 35000,
+    "actualSourceStates": [
+      "UI50/default,32 moving states",
+      "UI100/max,32 moving states",
+      "UI50/default,32 moving states with canonical thigh capsules"
+    ],
+    "triangleCapsuleResidual": "pass including all-vertices-outside-axis-piercing case",
+    "unitTranslationCovariance": "pass",
+    "nativeBuild": "adapter gate",
+    "observedGameplay": "adapter gate"
+  },
+  "fileHashes": {
+    "include/malemod/garments/jockstrap.hpp": "02b509d816af77754312d613204989dbbc0546a7b94e2c5753727daf11f3b3e1",
+    "include/malemod/garments/jockstrap_detail.hpp": "c4caea6a0bb3f050cdf79a41b2b182a4933ae5193972a20b6566f417835c96ee",
+    "assets/garments/wolverine-jockstrap-donors.json": "e239890d0eaf644f18555884340c0560efb59991742c3c9a1b456c2dc97df2e5",
+    "tools/prepare_garment_source.py": "6ab447788dc3e0b66f77f28f5c9961b8b7421e03d65edb3d359903b85824298c",
+    "tools/bake_garment_materials.py": "86dd20a2a6950a600f63f344deeb2b5d77c8dd5bc504619b646b56a10de5d793",
+    "tests/garment_test.cpp": "c28a7154183a36f0ab0777f148d25c52f36d38b0e7670719bc99da56a489f1a9"
+  }
+}

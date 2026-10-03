@@ -56,7 +56,7 @@
     },
     {
       "path": "modules/pelvic-collar.json",
-      "sha256": "6510485439ff6af84026793ba74351911e249bb1d4b4343bc1d8e8de6353d4d6"
+      "sha256": "774117626b03c3de3b93c154b0a0dc410d1d64b774c071f248b0da2dff1f74f4"
     }
   ],
   "scope": "Exact scalar metric extraction and source-derived offline coupled collar evaluator; not installed runtime parity",

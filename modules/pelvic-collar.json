@@ -1,14 +1,16 @@
 {
   "contractVersion": 1,
   "id": "surface.pelvic-collar",
-  "algorithmRevision": 1,
+  "algorithmRevision": 2,
   "owner": "MaleModBase",
   "implementation": {
     "metricKernel": "include/malemod/surface/collar_field.hpp",
     "offlineCoupledEvaluator": "malemod_base/collar.py",
     "fittedGraftDomain": "malemod_base/graft_collar.py",
     "continuousCorrectionBound": "malemod_base/surface_limit.py",
-    "provenance": "provenance/collar.json"
+    "provenance": "provenance/collar.json",
+    "stableRecruitmentFrame": "include/malemod/surface/pelvic_frame.hpp",
+    "sourceWorker": "src/surface/runtime.cpp"
   },
   "referenceBindings": {
     "asset": "assets/wolverine-reference/geometry.npz",
@@ -24,16 +26,30 @@
     "uniquePositions": "Combined body and attachment, after pose and source morphology",
     "seams": "slave vertex, original body-edge endpoints, interpolation; donors must be masters",
     "guide": "Source-derived center/depth and radius samples per vertex; caller supplies actual module guide",
-    "versioning": "Topology ID/revision, source lineage, UV aliases, donors and support-point membership versioned together"
+    "versioning": "Topology ID/revision, source lineage, UV aliases, donors and support-point membership versioned together",
+    "recruitmentFrame": "Measured neutral attachment frame; command/live shaft motion does not rotate the pelvic support frame"
   },
   "outputContract": {
     "positions": "Same combined topology with exact seam interpolation and fixed exterior",
-    "adapterResponsibilities": ["pose sampling", "character landmark calibration", "body opening and fitted seam binding", "normal/tangent regeneration", "UV alias expansion", "native morph or runtime deformation bridge", "uploads and collision"]
+    "adapterResponsibilities": [
+      "pose sampling",
+      "character landmark calibration",
+      "body opening and fitted seam binding",
+      "normal/tangent regeneration",
+      "UV alias expansion",
+      "native morph or runtime deformation bridge",
+      "uploads and collision"
+    ]
   },
   "adoption": {
-    "wolverine": "Existing native solver is authoritative; hub consumer pending full runtime parity",
-    "witcher3": "Bare body source and appearance override available; calibrated collar fit/runtime not implemented",
+    "wolverine": "Canonical adoption of shared frame and eliminated-seam publication; docs/COLLAR-ANGLE-ADOPTION.md",
+    "witcher3": "Pinned Base worker and coupled target bindings adopt revision 2 together; native/gameplay verification remains separate",
     "futureGames": "Implement the input/output contract in a spoke; shared numerical changes return here"
   },
-  "validationLevels": ["source arithmetic", "offline constrained geometry", "native runtime parity", "observed in-game behavior"]
+  "validationLevels": [
+    "source arithmetic",
+    "offline constrained geometry",
+    "native runtime parity",
+    "observed in-game behavior"
+  ]
 }

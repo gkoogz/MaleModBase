@@ -7,6 +7,7 @@ int main(){
  q.frame.thighEndpoints=std::array<Point,4>{{{1,2,3},{4,5,6},{7,8,9},{10,11,12}}};
  q.frame.collision=CollisionCalibration{{4,5},{{{1,2,3},{1,2,9}}},6};
  q.frame.collarQueries={{1,2,3},{4,5,6}};q.frame.clinical.active=true;q.frame.clinical.time=7.123456789123;q.frame.clinical.throbMode=3;q.frame.clinical.lateralGain={-.5f,0,.5f,1};
+ q.frame.garment.enabled=true;q.frame.garment.shaftAcceleration={1,-2,4};q.frame.garment.lobeAcceleration={{{0,1,3},{0,-1,3}}};
  for(unsigned i=1;i<18;i++)q.controls.values[i]=float(i+1);
  auto bytes=wire::Encode(q);auto decoded=wire::DecodeRequest(bytes);
  if(wire::Encode(decoded)!=bytes)return 1;
@@ -26,6 +27,9 @@ int main(){
  scalar.U32(std::uint32_t(o.anatomyIndices.size()));for(auto i:o.anatomyIndices)scalar.U32(i);
  if(!std::equal(scalar.bytes.begin(),scalar.bytes.end(),encoded.begin()))return 12;
  auto expectReject=[](auto fn){try{fn();return false;}catch(const std::invalid_argument&){return true;}};
+ auto supportBad=q;supportBad.frame.garment.shaftAcceleration={0,0,17};if(!expectReject([&]{wire::Encode(supportBad);}))return 15;
+ supportBad=q;supportBad.frame.garment.lobeAcceleration[0]={11,0,0};if(!expectReject([&]{wire::Encode(supportBad);}))return 16;
+ auto invalidSupportFlag=bytes;invalidSupportFlag[invalidSupportFlag.size()-40]=2;if(!expectReject([&]{wire::DecodeRequest(invalidSupportFlag);}))return 17;
  auto truncated=encoded;truncated.pop_back();if(!expectReject([&]{wire::DecodeOutput(truncated);}))return 3;
  auto trailing=bytes;trailing.push_back(0);if(!expectReject([&]{wire::DecodeRequest(trailing);}))return 4;
  auto bad=bytes;bad[0]=wire::version+1;if(!expectReject([&]{wire::DecodeRequest(bad);}))return 5;

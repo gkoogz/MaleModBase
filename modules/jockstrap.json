@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "white-jockstrap",
+  "status": "shared-geometry-and-support-implemented-native-adoption-in-progress",
+  "defaultStyle": "Naked",
+  "styles": ["Naked", "WhiteJockstrap"],
+  "implementation": "include/malemod/garments/jockstrap.hpp",
+  "numericalSupport": "include/malemod/garments/numerical_support.hpp",
+  "bodyFrame": "adapter-measured-right-handed-semantic-frame",
+  "geometry": "thick-waistband-stripes-live-radial-cloth-small-hem-two-under-glute-straps",
+  "lineage": "four-normalized-body-or-anatomy-source-donors-per-vertex",
+  "materialSlots": ["WhiteRibbed", "WhiteElastic", "RedStripe", "BlueStripe"],
+  "coverage": "sampled-conservative-radial-envelope-not-universal-concavity-proof",
+  "contacts": "bounded-capsule-vertex-and-triangle-projection-with-explicit-residual",
+  "solverFeedback": "bounded-measured-gravity-support-acceleration",
+  "tests": ["tests/garment_test.cpp", "tests/garment_support_test.cpp"],
+  "documentation": "docs/GARMENTS.md"
+}

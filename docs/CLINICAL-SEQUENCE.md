@@ -79,3 +79,38 @@ shader code, audio devices and game UI remain engine responsibilities. The CPU
 sequence is migrated; the installed Wolverine build and Witcher integration
 have not been changed or tested against this library.
 
+
+## Phase presentation and terminal receiver drain (2026-10-03)
+
+`FluidImpact::phase` records `LiquidPhase::clear` for both preliminary events
+and passive flow, and `opaque` for the four main emissions. `emissionTime`
+records a main node's birth time, rather than the later receiver callback time.
+The numerical emission, node, pressure, timing and mesh expressions are unchanged.
+`StainMark` and `DepositVertex` retain this phase; coincident clear and opaque
+footprints remain separate fields. Adapters must use this phase when choosing
+material opacity. A white vertex color alone does not establish transparency.
+
+`Session::DepositImpacts(now)` adds valid impacts and records cumulative phase
+volumes/counts. `finalPumpDepositedVolume` and `finalPumpDepositedImpacts` count
+only opaque material born at or after the final event's 11.5-second start.
+Earlier material landing later cannot satisfy this gate. The passive adapter
+path must call this method too. Timeline completion ends deformation and cues;
+it does not clear particles whose receiver callbacks have not completed.
+`Session::Advance` drains existing live liquid after the timeline ends, without
+new emissions or cues. Explicit cancellation or a character change still clears
+liquid, fields and these ledgers.
+
+Wolverine and every spoke adoption: retain current settings and callbacks,
+replace direct session `deposits.Add` calls with `DepositImpacts`, advance while
+`timeline.active || fluid.Live()`, and remove forced `fluid.Clear` at timeline
+completion. Begin passive flow only after an earlier main flow has drained.
+Wolverine's native renderer must retain its main/preliminary materials and use
+`DepositVertex::phase` for phase-specific receiver presentation. Validate the
+existing source replay and actual final-pump ground contact separately before
+installing this revision. Immutable legacy source remains unchanged.
+
+Offline gates compare all existing source replay fields at 15/30/60/120 FPS and
+an 800-ms hitch, verify clear-only preliminary deposition, final-born opaque
+receiver volume, separate coincident phase fields, and a deferred receiver
+completed after the 20-second timeline without further emission or cues.
+These gates do not certify game terrain or native shader opacity.

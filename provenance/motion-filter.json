@@ -52,12 +52,12 @@
     },
     {
       "path": "CMakeLists.txt",
-      "sha256": "4c1a005ff8ab6e013309be079001e385f8e5184c7979217454d2a894efab3ca2"
+      "sha256": "7d632f338f6ed92ab69a2a3d938c1e22d72b106ac0db57788400bfddf3f36ceb"
     },
     {
       "path": "docs/FRAME-CALIBRATION.md",
       "sha256": "61c9cc28116756a16d1e714a17eed51b24d1a05e8af12de3c93207118ab85067"
     }
   ],
-  "buildMetadataUpdate": "Added independent presentation test target; numerical surface compile options and sources unchanged."
+  "buildMetadataUpdate": "Added garment, pelvic frame and garment support test targets; source motion arithmetic and calibration unchanged."
 }

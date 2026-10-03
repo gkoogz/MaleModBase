@@ -42,6 +42,7 @@ struct AudioCues {
         text=replace(text,'bool active=false; double time=0;','bool active=false; double time=0; float endTime=20.f;')
         text=text.replace('sequenceEnd','endTime')
     if name=='fluid_types.h':
+        text=replace(text,'struct FluidImpact {','enum class LiquidPhase : unsigned char { clear, opaque };\nstruct FluidImpact {\n LiquidPhase phase=LiquidPhase::opaque;float emissionTime=0;')
         start=text.index('typedef bool (*CollisionSweep)')
         end=text.index('struct CollisionPath',start)
         text=text[:start]+'''enum class SweepResult { miss, hit, deferred };
@@ -59,6 +60,7 @@ struct CollisionQuery {
         text=text.replace('volumeFluid::collisionSweep','query.callback')
         if name=='clear_strand.h':text=replace(text,'paths[i].Sweep(old[i],p[i],.08f,hit)','paths[i].Sweep(old[i],p[i],.08f,hit,query)')
         else:text=replace(text,'nodes[i].path.Sweep(old,nodes[i].p,radius,exactHit)','nodes[i].path.Sweep(old,nodes[i].p,radius,exactHit,query)')
+        if name=='viscous_thread.h':text=replace(text,'exactHit.velocity=nodes[i].v;','exactHit.emissionTime=nodes[i].born;exactHit.velocity=nodes[i].v;')
         # Collider count can no longer have a default before explicit query args.
         text=text.replace('int colliderCount=8,','int colliderCount,')
     if name=='teaching_volume.h':
@@ -68,7 +70,12 @@ struct CollisionQuery {
         text=replace(text,'origin,&impacts);','origin,&impacts,collisionQuery);')
         text=replace(text,'volumeFluid::collisionCount,&impacts);','volumeFluid::collisionCount,&impacts,collisionQuery);')
         text=text.replace('sequenceEnd=','endTime=')
+        text=replace(text,'impacts[k].sourceId=variationSeed^(0xa531u+e);','{impacts[k].sourceId=variationSeed^(0xa531u+e);impacts[k].phase=volumeFluid::LiquidPhase::clear;impacts[k].emissionTime=float(clearStart[e]);}')
+        text=replace(text,'impacts[k].sourceId=variationSeed^(0x917fu+e);','{impacts[k].sourceId=variationSeed^(0x917fu+e);impacts[k].phase=volumeFluid::LiquidPhase::opaque;}')
     if name=='fluid_splat_model.h':
+        text=replace(text,'FluidImpactKind kind=FLUID_IMPACT_WORLD;FluidImpact contact,axisAnchor;','FluidImpactKind kind=FLUID_IMPACT_WORLD;LiquidPhase phase=LiquidPhase::opaque;FluidImpact contact,axisAnchor;')
+        text=replace(text,'if(m.kind==hit.kind&&','if(m.kind==hit.kind&&m.phase==hit.phase&&')
+        text=replace(text,'m.kind=hit.kind;m.contact=hit;','m.kind=hit.kind;m.phase=hit.phase;m.contact=hit;')
         text=replace(text,'#include "fluid_splat_bakes.h"','#include "splat_bakes.hpp"\n#include "fluid_types.h"')
         text=replace(text,'struct SplatModel {','struct SplatModel {\n SplatBakes splatBakes;')
         text=replace(text,'static void Deposit(', 'void Deposit(')
@@ -94,7 +101,7 @@ def main():
         records.append({'source':'legacy/wolverine/src/runtime/'+name,'sourceSHA256':hashlib.sha256((SOURCE/name).read_bytes()).hexdigest(),
                         'path':path.relative_to(ROOT).as_posix(),'sha256':hashlib.sha256(content.encode()).hexdigest()})
     report={'contractVersion':1,'sourceCommit':json.loads((ROOT/'provenance/wolverine.json').read_text())['commit'],'files':records,
-            'changes':['engine-neutral namespace and includes','per-instance settings and sequence end','per-instance collision callbacks with deferred result','per-instance deposition state and standard integer timestamps','standard binary bake loading replaces Windows resources'],
+            'changes':['engine-neutral namespace and includes','per-instance settings and sequence end','per-instance collision callbacks with deferred result','per-instance deposition state and standard integer timestamps','standard binary bake loading replaces Windows resources','presentation phase and emission-time metadata retained through impact and deposition; numerical source unchanged'],
             'bakeAsset':'legacy/wolverine/src/runtime/splat_bakes.bin','bakeSHA256':hashlib.sha256((SOURCE/'splat_bakes.bin').read_bytes()).hexdigest(),
             'scope':'Existing clinical simulation, without new physiological behavior or engine rendering.'}
     report_path=ROOT/'provenance/clinical.json'
