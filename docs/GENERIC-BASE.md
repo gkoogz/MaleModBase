@@ -11,8 +11,11 @@ writer converts to glTF's +Y up coordinate system, including inverse bind
 matrices. Do not apply the authoring axis transform twice.
 
 The procedural body supports height, shoulders, chest, glutes and hips. The
-`limb_length` prototype currently changes arm reach only. Facial controls and
-garments are reserved, not implemented. Preferences live in
+`limb_length` prototype currently changes arm reach only. Facial controls remain
+reserved. The shared optional jockstrap API is implemented separately under
+`include/malemod/garments`, with measured body/anatomy donors, contact fitting,
+material slots and bounded numerical support; see GARMENTS.md. The generic GLB
+export does not mount or simulate that garment. Preferences live in
 `profiles/default-preferences.json`; the anatomy module describes its own
 dimensions separately from the proxy. `modules/wolverine-anatomy.json` points
 to the preserved anatomy geometry and records unresolved source calibration.

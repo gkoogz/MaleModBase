@@ -38,10 +38,12 @@ and lighting are adapter work.
 Body capsules form one union, with escape along the measured garment/body
 outward direction. This prevents nearest-surface projections from oscillating
 between overlapping thigh and pelvis volumes. They are validated and resolved
-against vertices **and complete
-triangles**; a capsule intersecting a large triangle is detected even when all
-three vertices lie outside it. Up to 16 bounded projection passes (early exit when contacts settle) are followed
-by seam reconciliation and explicit residual checks. Pouch points are returned
+against vertices **and complete triangles**; a capsule intersecting a large
+triangle is detected even when all three vertices lie outside it. Intact band,
+hem and strap cross sections are fitted with bounded early-exit passes and
+equal-arclength material resampling. Both strap ends meet actual fabric surfaces,
+and the panel joins the current band. See GARMENT-CONTACT-REPAIR.md for the
+current algorithm and material integrity gates. Pouch points are returned
 to their anatomical radial envelope after body projection. Impossible or
 unresolved contacts set `contactBudgetSatisfied=false`; they are not silently
 accepted, hidden by deleting geometry or labeled successful.
@@ -73,7 +75,7 @@ other evaluated shapes so donor identities remain stable. Canonical Wolverine
 `src/runtime/jockstrap_adapter.h` consumes that recipe and Base via its pinned
 include path; it does not copy the geometry implementation. Its draw adapter
 blends all actual body/anatomy donor skin influences using current-frame palettes
-and restores the native D3D9 state. Witcher provides its own character contours,
+and restores the native D 3 D 9 state. Witcher provides its own character contours,
 calibration, native carrier and mesh/material renderer. Every future spoke can
 use the same Session and numerical-support contract.
 
@@ -86,14 +88,12 @@ contracts and capsule/whole-triangle collision. Use `--fixture FILE [OBJ]` for
 actual evaluated source states; the test animates 32 measured mesh states and
 rejects a uniform-ellipsoid replacement. The observed UI50 default and UI100 max
 fixtures have 17,528 final anatomy vertices and 35,000 triangles. Current CPU
-measurements: synthetic mean about 2ms, UI50/UI100 without contacts about 8ms on this
-host, before native pose/upload/draw cost. The actual UI50 surface with the
-canonical two thigh capsules also passes all 32 moving states and complete
-triangle residual checks (mean 23.3ms, worst 31.8ms); this heavier contact case
-needs adapter scheduling/performance verification. The adapter actual Geralt fit gate also passes all 9 combinations of
-Erect/Semi/Full Floppy and extreme/neutral angle, using actual native render
-bindings and measured thigh/pelvis capsules: 3,444 vertices, 6,516 triangles,
-maximum first update 57.65ms on this host. This is why both adapters generate
+measurements after material correction: synthetic mean 8.78 ms, UI50/UI100
+without contacts means 27.93/29.16 ms; source canonical thigh contacts mean 57.67 ms.
+The actual Geralt fit gate passes nine controls plus 32 coherent articulated
+body-donor/capsule poses with 4,068 vertices and 7,764 triangles, including contact,
+material strain, cross-section and both physical sewing-surface gates. Latest
+worst update 77.13 ms under concurrent load. This is why both adapters generate
 cloth on a CPU worker and keep GPU pose/draw on the render thread.
 These are offline measurements, not
 in-game frame rates. Native screenshots, collision walkthroughs, actual draw

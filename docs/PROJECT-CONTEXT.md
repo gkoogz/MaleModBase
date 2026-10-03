@@ -1,5 +1,25 @@
 # Durable project context
 
+Latest authorization (October 3): publish the approved Witcher snapshot as the
+next beta, then repair extreme rest-angle pelvic integrity in Base and both
+Witcher and canonical Wolverine. Preserve the shaft motion while keeping the
+body ramp in its stable recruitment frame. Match Wolverine's control names,
+correct clear preliminary/ambient versus white final emissions and final-pump
+ground deposition. Audio remains deferred.
+
+The user also authorizes a shared optional garment prototype: Naked default
+and a white jockstrap with a thick scalable waistband, thin red/blue stripes,
+stretchy ribbed pouch, hem and two rear straps under the glutes. The original
+anatomy remains inside, scales with the garment and receives gentle support.
+Coverage, motion, pelvic boundary integrity and native visual verification
+must be measured separately. Shared garment geometry, contacts, numerical
+support and preference contracts belong in Base; character donors, graphics,
+input and cooking belong in pinned adapters. This explicitly authorizes the
+canonical Wolverine source and installed runtime adoption for these repairs.
+Keep private gameplay verification isolated from host focus, input and audio.
+
+The following entries are scope history; newer authorization above prevails.
+
 Latest authorization (October 2, material/ramp/clinical phase): match Geralt's
 skin using deterministic source texture correction (no image generation), build
 progressive radial pelvic recruitment across the existing part weld, repair the
