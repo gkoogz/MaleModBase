@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "sharedImplementation": "measured-radial-jockstrap-v3-rigid-material-union",
+  "sharedImplementation": "measured-radial-jockstrap-v4-moving-sewn-material-frame",
   "legacyChanged": false,
   "characterRecipe": "assets/garments/wolverine-jockstrap-donors.json",
   "verification": {
@@ -17,8 +17,102 @@
     "unitTranslationCovariance": "pass",
     "nativeBuild": "adapter gate",
     "observedGameplay": "adapter gate",
-    "canonicalAdapter": "Pending clean v3 Base pin adoption; historical x86 production proof predates current material correction.",
+    "canonicalAdapter": "Pending clean v4 pin adoption; previous v3 offline shape/contact gates pass but live motion exposed a sewn-end orientation failure.",
     "actualGeraltFit": {
+      "states": 41,
+      "vertices": 4068,
+      "triangles": 7764,
+      "maximumUpdateMs": 62.0403,
+      "minimumSignedCapsuleDistance": 0.00243246155873081,
+      "minimumClearanceSurplus": 0.00013142535024528992,
+      "bandStretch": 1.54297242401138,
+      "ribbonSectionError": 1.94289029309402e-16,
+      "spacingRatio": 1.5093664946643,
+      "materialUvStrain": 1.0000000000001,
+      "maxRibbonEdge": 0.0555862278317242,
+      "sewnGap": 0.023828865384336,
+      "bandSewnGap": 0.0258102482997866,
+      "hemSurfaceGap": 1.18571871006689e-16,
+      "bandSurfaceGap": 5.7219584981528e-17,
+      "combinations": "9 controls plus32 articulated body donor and calibrated capsule poses",
+      "bodyRuntimeBaseCommit": "2062b2d795f5544ea181f126cab32537b8ce7c00",
+      "receiptPath": "TheWitcher3MaleMod/build/garment-shape-contact-sewn-end-26056/shape-cases.jsonl",
+      "receiptSHA256": "88990085885c48b9af4c81a047706a8d653159ebe9675d318c6dd19524160af5",
+      "status": "Offline actual native-binding diagnostic with current dirty shared implementation; not gameplay or clean final adapter adoption"
+    },
+    "sourceCpuMilliseconds": {
+      "UI50CanonicalCapsulesMean": 58.1765,
+      "UI50CanonicalCapsulesWorst": 65.3295,
+      "UI50NoContactsMean": 27.9176,
+      "UI100NoContactsMean": 29.6176,
+      "syntheticMean": 8.78021,
+      "timingScope": "Serialized source runs. Concurrent compile/test produced63.7735ms contact mean exceeding60ms guard; identical serialized run passed. Geometry tests exclude validation/OBJ export timing."
+    },
+    "sharedCTest": {
+      "passed": 15,
+      "failed": 0
+    },
+    "shapeContracts": [
+      "actual complete-triangle signed capsule clearance",
+      "rigid strap cross-section width/thickness",
+      "band material stretch below1.8",
+      "strap spacing ratio below3 generic and2 actualGeralt",
+      "actual cloth surface stitches at both ends within1e-6 measured circumference",
+      "fixed topology and donor lineage",
+      "level measured-frame waist stripes",
+      "material UV density follows actual fitted arclength"
+    ],
+    "movingSewnEndVerification": {
+      "inputSHA256": "6054b01ecf2b9598c71fd974591dd52294f0cb35f67c861fcd956ee0d9996486",
+      "replayReceiptSHA256": "9a06ff3f713453606b482060d0dc5862812890603db8e596849bb4bb23875751",
+      "capturedRawInputObservedInGame": true,
+      "correctedGameplayObserved": false,
+      "priorTranslationOnlySewingFailed": true,
+      "priorFullTriangleContactClearancePassed": true,
+      "cause": "Fixed end cross-section could not physically meet moving hem without consuming body clearance",
+      "nearestSewingGapBeforeCorrectionMeters": 0.005027126966708683,
+      "minimumSignedDistanceAfterCorrectionMeters": 0.0038292024581405154,
+      "requiredClearanceMeters": 0.0022975214609674047,
+      "contactPassed": true,
+      "clearanceUnchanged": true,
+      "widthThicknessPreserved": true,
+      "maximumRibbonEdgeMeters": 0.046342599959,
+      "spacingRatio": 1.413837510784,
+      "maximumTranslationCovarianceErrorMeters": 1.7311037701174258e-11,
+      "unit100CovarianceErrorCallerUnits": 1.6174976622892776e-10,
+      "coordinateVariants": [
+        "local pelvic origin",
+        "plus1000 caller units",
+        "minus1000 caller units",
+        "100-fold caller units"
+      ],
+      "dataPolicy": "Captured input/OBJ/receipts remain ignored private artifacts; no captured data is committed",
+      "adapterReplayTool": "TheWitcher3MaleMod/native/garment_failure_replay_test.cpp"
+    }
+  },
+  "fileHashes": {
+    "include/malemod/garments/jockstrap.hpp": "02b509d816af77754312d613204989dbbc0546a7b94e2c5753727daf11f3b3e1",
+    "include/malemod/garments/jockstrap_detail.hpp": "e5d6a6e1631735897891582a46179e9aa9af092f74472d53fd9bd997d48970e7",
+    "assets/garments/wolverine-jockstrap-donors.json": "e239890d0eaf644f18555884340c0560efb59991742c3c9a1b456c2dc97df2e5",
+    "tools/prepare_garment_source.py": "6ab447788dc3e0b66f77f28f5c9961b8b7421e03d65edb3d359903b85824298c",
+    "tools/bake_garment_materials.py": "86dd20a2a6950a600f63f344deeb2b5d77c8dd5bc504619b646b56a10de5d793",
+    "tests/garment_test.cpp": "1e2bae6470f9340198ac2faa74ff77ebb6c4a6b6947e0a2f2f8ac072411d8134",
+    "tests/garment_shape_checks.hpp": "a25c94f32cf97a59464063d36f8a509b1cb2ab84490a36e54ae40f583df4555e",
+    "docs/GARMENTS.md": "5006e8a2012bcf7a07ede19465f9e9c185e7dd7e3a239a1f9cc5315172e64827",
+    "docs/GARMENT-CONTACT-REPAIR.md": "d44e864d34869406d4d2ac8b42ed9eeb12397fdda53c1f8716449e2479d5dc6d"
+  },
+  "historicalVerification": {
+    "v2ActualGeraltFit": {
+      "states": 9,
+      "combinations": "3 physical states x angle1/50/100 with actual native body/thigh/pelvis binding",
+      "vertices": 3444,
+      "triangles": 6516,
+      "maximumFirstUpdateMs": 57.65,
+      "residual": "all whole triangles and vertices pass",
+      "status": "offline-native-binding fit, not gameplay"
+    },
+    "limitation": "Whole-triangle contact clearance did not prove material integrity. Later CPU and private images exposed stretched straps; superseded by the v3 shape/stitch gates.",
+    "v3ActualGeraltFit": {
       "states": 41,
       "vertices": 4068,
       "triangles": 7764,
@@ -39,51 +133,6 @@
       "receiptPath": "TheWitcher3MaleMod/build/garment-shape-contact-final12/shape-cases.jsonl",
       "receiptSHA256": "8c54de59397b94f3447c0c6f5854e78ed32ffd9d8767b497239685ed91987124",
       "status": "Offline actual native-binding diagnostic with current dirty shared implementation; not gameplay or clean final adapter adoption"
-    },
-    "sourceCpuMilliseconds": {
-      "UI50CanonicalCapsulesMean": 57.6746,
-      "UI50CanonicalCapsulesWorst": 72.1796,
-      "UI50NoContactsMean": 27.9311,
-      "UI100NoContactsMean": 29.1576,
-      "syntheticMean": 8.78021,
-      "timingScope": "Serialized source runs. Concurrent compile/test produced63.7735ms contact mean exceeding60ms guard; identical serialized run passed. Geometry tests exclude validation/OBJ export timing."
-    },
-    "sharedCTest": {
-      "passed": 15,
-      "failed": 0
-    },
-    "shapeContracts": [
-      "actual complete-triangle signed capsule clearance",
-      "rigid strap cross-section width/thickness",
-      "band material stretch below1.8",
-      "strap spacing ratio below3 generic and2 actualGeralt",
-      "actual cloth surface stitches at both ends within1e-6 measured circumference",
-      "fixed topology and donor lineage",
-      "level measured-frame waist stripes",
-      "material UV density follows actual fitted arclength"
-    ]
-  },
-  "fileHashes": {
-    "include/malemod/garments/jockstrap.hpp": "02b509d816af77754312d613204989dbbc0546a7b94e2c5753727daf11f3b3e1",
-    "include/malemod/garments/jockstrap_detail.hpp": "ce517c69fbfb8278719633efe1d53d1a5dccb378002f5b98c8de2f82cb9f801b",
-    "assets/garments/wolverine-jockstrap-donors.json": "e239890d0eaf644f18555884340c0560efb59991742c3c9a1b456c2dc97df2e5",
-    "tools/prepare_garment_source.py": "6ab447788dc3e0b66f77f28f5c9961b8b7421e03d65edb3d359903b85824298c",
-    "tools/bake_garment_materials.py": "86dd20a2a6950a600f63f344deeb2b5d77c8dd5bc504619b646b56a10de5d793",
-    "tests/garment_test.cpp": "1e2bae6470f9340198ac2faa74ff77ebb6c4a6b6947e0a2f2f8ac072411d8134",
-    "tests/garment_shape_checks.hpp": "a25c94f32cf97a59464063d36f8a509b1cb2ab84490a36e54ae40f583df4555e",
-    "docs/GARMENTS.md": "5006e8a2012bcf7a07ede19465f9e9c185e7dd7e3a239a1f9cc5315172e64827",
-    "docs/GARMENT-CONTACT-REPAIR.md": "d5916d7c1402f3ab7d45e138492e31d23b82071a195e2f0d91869e724e4f2801"
-  },
-  "historicalVerification": {
-    "v2ActualGeraltFit": {
-      "states": 9,
-      "combinations": "3 physical states x angle1/50/100 with actual native body/thigh/pelvis binding",
-      "vertices": 3444,
-      "triangles": 6516,
-      "maximumFirstUpdateMs": 57.65,
-      "residual": "all whole triangles and vertices pass",
-      "status": "offline-native-binding fit, not gameplay"
-    },
-    "limitation": "Whole-triangle contact clearance did not prove material integrity. Later CPU and private images exposed stretched straps; superseded by the v3 shape/stitch gates."
+    }
   }
 }

@@ -220,6 +220,52 @@ inline const Output& Session::Update(Style style,const Input& input){
       auto feasible=[&](Point delta){for(auto k:adjacent){const auto& face=m.triangles[k];for(auto volume:input.bodyContacts){Point p,q;if(TriangleCapsule(proposed(face.vertices[0],delta),proposed(face.vertices[1],delta),proposed(face.vertices[2],delta),volume,p,q,gap*.3)<gap*.3-1e-9*circumference)return false;}}return true;};
       unsigned targetFirst=endIndex?28*waist+segments+(rings-1)*segments*2:0,targetEnd=endIndex?targetFirst+segments*8:28*waist;Point best{};double distance=circumference*.04;
       for(unsigned k=targetFirst;k<targetEnd;k++){const auto& face=m.triangles[k];std::array<Point,3> target{m.vertices[face.vertices[0]].position,m.vertices[face.vertices[1]].position,m.vertices[face.vertices[2]].position};for(auto corners:{std::array<unsigned,3>{0,1,2},std::array<unsigned,3>{0,2,3}}){std::array<Point,3> section{m.vertices[ids[corners[0]]].position,m.vertices[ids[corners[1]]].position,m.vertices[ids[corners[2]]].position};Point a,b;double gapToCloth=ClosestTriangles(section,target,a,b);if(gapToCloth>=distance-circumference*1e-10)continue;auto delta=Sub(b,a);if(feasible(delta)){distance=gapToCloth;best=delta;}}}
+      // A moving hem can require the sewn ribbon end to turn. Translation of
+      // a fixed material frame may place its far corner inside the body even
+      // though the nearest stitch is only millimetres away. Fit one intact end
+      // cross section to the actual hem tangent and body radial frame, retaining
+      // axis signs and choosing the least-displacing feasible configuration.
+      // This is conditional material fitting, never a relaxed collision margin.
+      if(distance>=circumference*.04&&endIndex){
+        std::array<Point,4> original,chosen{};Point endpointCenter{};
+        for(unsigned j=0;j<4;j++){original[j]=m.vertices[ids[j]].position;endpointCenter=Add(endpointCenter,original[j]);}
+        endpointCenter=Mul(endpointCenter,.25);
+        double materialWidth=parameters_.strapWidth*circumference,cost=4*materialWidth*materialWidth;
+        bool found=false;
+        auto hemCenter=[&](unsigned section){Point p{};for(unsigned j=0;j<4;j++)p=Add(p,m.vertices[pouchEnd+(section%segments)*4+j].position);return Mul(p,.25);};
+        for(unsigned k=targetFirst;k<targetEnd;k++){
+          const auto& face=m.triangles[k];Point targetCenter{};
+          for(auto id:face.vertices)targetCenter=Add(targetCenter,m.vertices[id].position);
+          targetCenter=Mul(targetCenter,1./3);
+          if(Length(Sub(targetCenter,endpointCenter))>2*materialWidth)continue;
+          unsigned section=(face.vertices[0]-pouchEnd)/4;
+          auto widthDirection=Sub(hemCenter(section+1),hemCenter(section+segments-1));
+          if(Length(widthDirection)<circumference*1e-10)continue;
+          widthDirection=Unit(widthDirection);
+          if(Dot(widthDirection,Sub(original[1],original[0]))<0)widthDirection=Mul(widthDirection,-1);
+          std::vector<Point> normals;
+          for(auto volume:input.bodyContacts){auto n=Sub(targetCenter,nearestAxis(targetCenter,volume));if(Length(n)>1e-12)normals.push_back(Unit(n));}
+          normals.push_back(frame.forward);
+          for(auto normal:normals){
+            normal=Sub(normal,Mul(widthDirection,Dot(normal,widthDirection)));
+            if(Length(normal)<1e-12)continue;
+            normal=Unit(normal);
+            if(Dot(normal,Sub(original[0],original[3]))<0)normal=Mul(normal,-1);
+            for(unsigned j=0;j<4;j++){double w=(j==0||j==3?-1:1)*materialWidth*.5,h=(j<2?1:-1)*thick*.25;m.vertices[ids[j]].position=Add(endpointCenter,Add(Mul(widthDirection,w),Mul(normal,h)));}
+            std::array<Point,3> target{m.vertices[face.vertices[0]].position,m.vertices[face.vertices[1]].position,m.vertices[face.vertices[2]].position};
+            for(auto corners:{std::array<unsigned,3>{0,1,2},std::array<unsigned,3>{0,2,3}}){
+              std::array<Point,3> ribbon{m.vertices[ids[corners[0]]].position,m.vertices[ids[corners[1]]].position,m.vertices[ids[corners[2]]].position};Point a,b;
+              double d=ClosestTriangles(ribbon,target,a,b);auto delta=Sub(b,a);
+              if(d>=circumference*.04||!feasible(delta))continue;
+              double score=0;for(unsigned j=0;j<4;j++){auto change=Sub(Add(m.vertices[ids[j]].position,delta),original[j]);score+=Dot(change,change);}
+              if(score>=cost-circumference*circumference*1e-12)continue;
+              found=true;cost=score;for(unsigned j=0;j<4;j++)chosen[j]=Add(m.vertices[ids[j]].position,delta);
+            }
+          }
+        }
+        for(unsigned j=0;j<4;j++)m.vertices[ids[j]].position=found?chosen[j]:original[j];
+        if(found){distance=0;best={};}
+      }
       if(distance<circumference*.04){for(auto id:ids)m.vertices[id].position=Add(m.vertices[id].position,best);}else output_.contactBudgetSatisfied=false;
     }
     // Keep knit texel density tied to actual published material length.
