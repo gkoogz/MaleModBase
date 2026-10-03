@@ -11,7 +11,7 @@ inline Lineage Blend(Lineage a,Lineage b,double t){
 }
 inline void ValidateSamples(const std::vector<Sample>& samples,std::size_t lo,std::size_t hi){if(samples.size()<lo||samples.size()>hi)throw std::invalid_argument("Garment sample count outside bounded contract");for(const auto& s:samples){if(!Finite(s.position)||!Finite(s.normal))throw std::invalid_argument("Nonfinite garment surface sample");double sum=0;for(const auto& d:s.lineage.donors){if(!std::isfinite(d.weight)||d.weight<0)throw std::invalid_argument("Invalid garment donor");sum+=d.weight;}if(std::abs(sum-1)>1e-5)throw std::invalid_argument("Garment donor weights must sum to one");}}
 inline Sample RingSample(const std::vector<Sample>& ring,double t){double at=t*ring.size();auto i=std::size_t(std::floor(at))%ring.size();double u=at-std::floor(at);const auto& a=ring[i];const auto& b=ring[(i+1)%ring.size()];return {Add(Mul(a.position,1-u),Mul(b.position,u)),Add(Mul(a.normal,1-u),Mul(b.normal,u)),Blend(a.lineage,b.lineage,u)};}
-inline std::uint32_t VertexAt(Mesh& m,Point p,double u,double v,Lineage l){m.vertices.push_back({p,{},{},{u,v},l});return std::uint32_t(m.vertices.size()-1);}
+inline std::uint32_t VertexAt(Mesh& m,Point p,double u,double v,Lineage l,Point contactNormal={}){m.vertices.push_back({p,contactNormal,{},{u,v},l});return std::uint32_t(m.vertices.size()-1);}
 inline void Tri(Mesh& m,unsigned a,unsigned b,unsigned c,MaterialSlot mat,Point desired){if(Dot(Cross(Sub(m.vertices[b].position,m.vertices[a].position),Sub(m.vertices[c].position,m.vertices[a].position)),desired)<0)std::swap(b,c);m.triangles.push_back({{a,b,c},mat});}
 inline void Quad(Mesh& m,unsigned a,unsigned b,unsigned c,unsigned d,MaterialSlot mat,Point desired){Tri(m,a,b,c,mat,desired);Tri(m,a,c,d,mat,desired);}
 inline void Shading(Mesh& m){
@@ -39,7 +39,7 @@ inline double TriangleCapsule(Point a,Point b,Point c,const Capsule& volume,Poin
 inline void Tube(Mesh& m,const std::vector<Sample>& path,double width,double thick,bool closed,const Frame& frame,MaterialSlot material){
     const unsigned count=unsigned(path.size()),base=unsigned(m.vertices.size());double length=0;
     for(unsigned i=0;i<count+(closed?1:0);i++){const unsigned k=i%count;if(i)length+=Length(Sub(path[k].position,path[(i-1)%count].position));auto tangent=Unit(Sub(path[(std::min)(count-1,k+1)].position,path[k?k-1:0].position));if(closed)tangent=Unit(Sub(path[(k+1)%count].position,path[(k+count-1)%count].position));auto normal=Sub(path[k].normal,Mul(tangent,Dot(path[k].normal,tangent)));if(Length(normal)<1e-8)normal=Cross(tangent,std::abs(Dot(tangent,frame.up))<.9?frame.up:frame.forward);normal=Unit(normal);auto side=Unit(Cross(tangent,normal));
-        for(unsigned j=0;j<4;j++){double w=j==0||j==3?-width*.5:width*.5,h=j<2?thick*.5:-thick*.5;VertexAt(m,Add(path[k].position,Add(Mul(side,w),Mul(normal,h))),length/width,double(j),path[k].lineage);}
+        for(unsigned j=0;j<4;j++){double w=j==0||j==3?-width*.5:width*.5,h=j<2?thick*.5:-thick*.5;VertexAt(m,Add(path[k].position,Add(Mul(side,w),Mul(normal,h))),length/width,double(j),path[k].lineage,normal);}
     }
     unsigned segments=closed?count:count-1;
     for(unsigned i=0;i<segments;i++)for(unsigned j=0;j<4;j++){unsigned a=base+i*4+j,b=base+i*4+(j+1)%4,c=b+4,d=a+4;Point center=Mul(Add(path[i%count].position,path[(i+1)%count].position),.5);Quad(m,a,b,c,d,material,Sub(m.vertices[a].position,center));}
@@ -136,12 +136,20 @@ inline const Output& Session::Update(Style style,const Input& input){
       for(unsigned row=0;row<rings;row++){unsigned a=pouchBegin+1+row*(segments+1);weld(a,a+segments);}
       for(unsigned row=0;row<2;row++){unsigned a=join+row*(segments+1);weld(a,a+segments);}
     };
-    for(unsigned iteration=0;!input.bodyContacts.empty()&&iteration<32;iteration++){auto before=output_.projectedContacts;for(unsigned i=0;i<m.vertices.size();i++){
-        auto& v=m.vertices[i];for(const auto& c:input.bodyContacts)if(Project(v.position,c,gap*.3,frame.forward))output_.projectedContacts++;
-        if(i>=pouchBegin&&i<pouchEnd){auto p=Sub(frame.Local(v.position),center);auto c=coordinates(Add(p,center));double r=Length(p),minimum=fitted(Add(p,center))*tessellation+gap/(std::max)(r,gap);if(c[2]<minimum&&c[2]>1e-12)v.position=frame.World(Add(center,Mul(p,minimum/c[2])));}
-    }
-        for(const auto& triangle:m.triangles)for(const auto& contact:input.bodyContacts){auto& a=m.vertices[triangle.vertices[0]].position;auto& b=m.vertices[triangle.vertices[1]].position;auto& c=m.vertices[triangle.vertices[2]].position;Point cloth,axis;double separation=TriangleCapsule(a,b,c,contact,cloth,axis,gap*.3);if(separation>=gap*.3)continue;auto direction=Sub(cloth,axis);if(Length(direction)<1e-12){direction=Cross(Sub(b,a),Sub(c,a));if(Length(direction)<1e-12)direction=frame.forward;auto center=Mul(Add(Add(a,b),c),1./3);if(Dot(direction,Sub(center,Mul(Add(contact.a,contact.b),.5)))<0)direction=Mul(direction,-1);}auto displacement=Mul(Unit(direction),gap*.3-separation+gap*.01);a=Add(a,displacement);b=Add(b,displacement);c=Add(c,displacement);output_.projectedContacts++;}
-        reconcileContactSeams();if(output_.projectedContacts==before)break;
+    // Contact capsules describe one union. Projecting against them separately
+    // can oscillate between overlapping thigh/pelvis volumes. Move along the
+    // measured garment/body outward direction to the union's outer boundary.
+    auto escapePoint=[&](Point& point,Point preferred){bool touching=false;for(auto c:input.bodyContacts)touching|=CapsuleDistance(point,c)<gap*.3;if(!touching)return;preferred=Length(preferred)>1e-12?Unit(preferred):frame.forward;double high=gap;
+      auto clear=[&](double distance){auto p=Add(point,Mul(preferred,distance));for(auto c:input.bodyContacts)if(CapsuleDistance(p,c)<gap*.31)return false;return true;};
+      for(unsigned k=0;k<24&&!clear(high);k++)high*=2;if(!clear(high))return;double low=0;for(unsigned k=0;k<24;k++){double mid=(low+high)*.5;if(clear(mid))high=mid;else low=mid;}point=Add(point,Mul(preferred,high));output_.projectedContacts++;
+    };
+    auto escapeTriangle=[&](const Triangle& triangle){auto& a=m.vertices[triangle.vertices[0]].position;auto& b=m.vertices[triangle.vertices[1]].position;auto& c=m.vertices[triangle.vertices[2]].position;Point preferred{};for(auto i:triangle.vertices)preferred=Add(preferred,m.vertices[i].normal);preferred=Length(preferred)>1e-12?Unit(preferred):frame.forward;
+      auto clear=[&](double distance){auto delta=Mul(preferred,distance);for(auto contact:input.bodyContacts){Point cloth,axis;if(TriangleCapsule(Add(a,delta),Add(b,delta),Add(c,delta),contact,cloth,axis,gap*.31)<gap*.31)return false;}return true;};if(clear(0))return;double high=gap;for(unsigned k=0;k<24&&!clear(high);k++)high*=2;if(!clear(high))return;double low=0;for(unsigned k=0;k<24;k++){double mid=(low+high)*.5;if(clear(mid))high=mid;else low=mid;}auto delta=Mul(preferred,high);a=Add(a,delta);b=Add(b,delta);c=Add(c,delta);output_.projectedContacts++;
+    };
+    for(unsigned iteration=0;!input.bodyContacts.empty()&&iteration<16;iteration++){auto before=output_.projectedContacts;
+      for(unsigned i=0;i<m.vertices.size();i++){auto& v=m.vertices[i];escapePoint(v.position,v.normal);if(i>=pouchBegin&&i<pouchEnd){auto p=Sub(frame.Local(v.position),center);auto c=coordinates(Add(p,center));double r=Length(p),minimum=fitted(Add(p,center))*tessellation+gap/(std::max)(r,gap);if(c[2]<minimum&&c[2]>1e-12)v.position=frame.World(Add(center,Mul(p,minimum/c[2])));}}
+      for(const auto& triangle:m.triangles)escapeTriangle(triangle);
+      reconcileContactSeams();if(output_.projectedContacts==before)break;
     }
     if(!input.bodyContacts.empty())reconcileContactSeams();
     // Explicit residual check exposes an unsatisfied contact budget rather than

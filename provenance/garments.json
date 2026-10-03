@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "sharedImplementation": "measured-radial-jockstrap-v1",
+  "sharedImplementation": "measured-radial-jockstrap-v2-capsule-union",
   "legacyChanged": false,
   "characterRecipe": "assets/garments/wolverine-jockstrap-donors.json",
   "verification": {
@@ -16,11 +16,21 @@
     "triangleCapsuleResidual": "pass including all-vertices-outside-axis-piercing case",
     "unitTranslationCovariance": "pass",
     "nativeBuild": "adapter gate",
-    "observedGameplay": "adapter gate"
+    "observedGameplay": "adapter gate",
+    "actualGeraltFit": {
+      "states": 9,
+      "combinations": "3 physical states x angle1/50/100 with actual native body/thigh/pelvis binding",
+      "vertices": 3444,
+      "triangles": 6516,
+      "maximumFirstUpdateMs": 57.65,
+      "residual": "all whole triangles and vertices pass",
+      "status": "offline-native-binding fit, not gameplay"
+    },
+    "canonicalAdapter": "x86 production compiled against795f9dd prior union correction; SDK-free immutable worker lifecycle and production VS/PS compilation pass"
   },
   "fileHashes": {
     "include/malemod/garments/jockstrap.hpp": "02b509d816af77754312d613204989dbbc0546a7b94e2c5753727daf11f3b3e1",
-    "include/malemod/garments/jockstrap_detail.hpp": "c4caea6a0bb3f050cdf79a41b2b182a4933ae5193972a20b6566f417835c96ee",
+    "include/malemod/garments/jockstrap_detail.hpp": "2f7d74a4362f885628a42e439c752913ef397f80ba3fc46398d9d91b0de5aaf8",
     "assets/garments/wolverine-jockstrap-donors.json": "e239890d0eaf644f18555884340c0560efb59991742c3c9a1b456c2dc97df2e5",
     "tools/prepare_garment_source.py": "6ab447788dc3e0b66f77f28f5c9961b8b7421e03d65edb3d359903b85824298c",
     "tools/bake_garment_materials.py": "86dd20a2a6950a600f63f344deeb2b5d77c8dd5bc504619b646b56a10de5d793",

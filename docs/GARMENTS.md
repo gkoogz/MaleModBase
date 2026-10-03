@@ -35,9 +35,12 @@ and lighting are adapter work.
 
 ## Contacts and numerical support
 
-Body capsules are validated and resolved against vertices **and complete
+Body capsules form one union, with escape along the measured garment/body
+outward direction. This prevents nearest-surface projections from oscillating
+between overlapping thigh and pelvis volumes. They are validated and resolved
+against vertices **and complete
 triangles**; a capsule intersecting a large triangle is detected even when all
-three vertices lie outside it. Up to 32 bounded projection passes (early exit when contacts settle) are followed
+three vertices lie outside it. Up to 16 bounded projection passes (early exit when contacts settle) are followed
 by seam reconciliation and explicit residual checks. Pouch points are returned
 to their anatomical radial envelope after body projection. Impossible or
 unresolved contacts set `contactBudgetSatisfied=false`; they are not silently
@@ -86,7 +89,12 @@ fixtures have 17,528 final anatomy vertices and 35,000 triangles. Current CPU
 measurements: synthetic mean about 2ms, UI50/UI100 without contacts about 8ms on this
 host, before native pose/upload/draw cost. The actual UI50 surface with the
 canonical two thigh capsules also passes all 32 moving states and complete
-triangle residual checks (mean 23.4ms, worst 37.3ms); this heavier contact case
-needs adapter scheduling/performance verification. These are offline measurements, not
+triangle residual checks (mean 23.3ms, worst 31.8ms); this heavier contact case
+needs adapter scheduling/performance verification. The adapter actual Geralt fit gate also passes all 9 combinations of
+Erect/Semi/Full Floppy and extreme/neutral angle, using actual native render
+bindings and measured thigh/pelvis capsules: 3,444 vertices, 6,516 triangles,
+maximum first update 57.65ms on this host. This is why both adapters generate
+cloth on a CPU worker and keep GPU pose/draw on the render thread.
+These are offline measurements, not
 in-game frame rates. Native screenshots, collision walkthroughs, actual draw
 cost and garment appearance remain separate adapter verification gates.
