@@ -5052,15 +5052,114 @@
   "currentProcessRuntime": {
     "recipe": "Win32 MSVC Release /fp:precise, original4-worker16-batch geometry, process-isolated",
     "serialGeometry": false,
-    "librarySHA256": "afb96824d80df4fa12d90c299f7ff0e1d6dc678b6793adfb2312b7944fd6a1ba",
-    "runtimeExecutableSHA256": "675b45d0edb23fdc5846e982d751791cbaad1381b840083757ae7d8a3beab607",
-    "supportExecutableSHA256": "d59df5db06e352d7f0207008aabf17d4124fcd45ee1fd5068198e652b0f21a9e",
-    "sessionExecutableSHA256": "d64defcc38dfacd352eac4362974d2a885c3ba16f9a2278c2388ddfefbddc058",
+    "librarySHA256": "226ad497dbb50dc3020f691714d2c422a5db7fd66a989ced2daea07bce013da9",
+    "runtimeExecutableSHA256": "9db41ad223048b865a2de7a09b14083ba32c722f2be3882643a173ac5f04e2f5",
+    "supportExecutableSHA256": "616053181550edd198f7c63a28c17704e4749428628a536e7d37c87e630d4231",
+    "sessionExecutableSHA256": "611813ebba45daaceb62a6623947346d662628add75d47d1810d3d4f9c92efeb",
     "generatedKernelSHA256": "64630cb5401f08c6490b41ba25cf24170cb9a893da105d03a9f7659d6dd648e9",
     "wireVersion": 5,
     "behaviorRevision": 2,
     "disabledReferenceGate": "garmentSupportVerification.disabledCases",
     "observedGameplay": false,
-    "sessionWireFrameGarmentTestsPassed": true
-  }
+    "sessionWireFrameGarmentTestsPassed": true,
+    "rebuildReplay": {
+      "baseFeatureCommit": "ac8b2b71d8d39e0f5d35374f6d3ef3cd3c6149b9",
+      "reportPath": "build/collar-angle-agent/support-contact-repair-ac8b2b7/report.json",
+      "reportSHA256": "f34bd1e179823791afd34e7535e2468446ebd707379629972e6aa10ab713d5ee",
+      "command": "python tools/test_garment_worker_support.py --runtime build/surface-process-verified-cmake/Release/garment_support_runtime_cli.exe --surface-runtime build/surface-process-verified-cmake/Release/surface_runtime_cli.exe --collar-fixtures build/collar-angle-agent/cases --output build/collar-angle-agent/support-contact-repair-ac8b2b7",
+      "disabledFullOutputReplayCases": [
+        {
+          "label": "default",
+          "steps": 120,
+          "allGeometryLightingTopologyUVMechanicsByteIdentical": true
+        },
+        {
+          "label": "requested-s0-a10",
+          "steps": 120,
+          "allGeometryLightingTopologyUVMechanicsByteIdentical": true
+        },
+        {
+          "label": "requested-s2-a64",
+          "steps": 120,
+          "allGeometryLightingTopologyUVMechanicsByteIdentical": true
+        },
+        {
+          "label": "combined-s1-a100",
+          "steps": 120,
+          "allGeometryLightingTopologyUVMechanicsByteIdentical": true
+        }
+      ],
+      "supportStates": [
+        {
+          "state": 0,
+          "disabledTipAndLobeHeights": [
+            72.6764,
+            74.0317,
+            74.6143
+          ],
+          "enabledTipAndLobeHeights": [
+            72.3026,
+            74.0437,
+            74.6029
+          ],
+          "disabledByteIdenticalWithNonzeroIgnoredForces": true,
+          "enabledOutputChanged": true
+        },
+        {
+          "state": 1,
+          "disabledTipAndLobeHeights": [
+            73.1517,
+            73.0632,
+            73.1897
+          ],
+          "enabledTipAndLobeHeights": [
+            73.0027,
+            73.0663,
+            73.1883
+          ],
+          "disabledByteIdenticalWithNonzeroIgnoredForces": true,
+          "enabledOutputChanged": true
+        },
+        {
+          "state": 2,
+          "disabledTipAndLobeHeights": [
+            66.1057,
+            73.0651,
+            72.9822
+          ],
+          "enabledTipAndLobeHeights": [
+            66.1916,
+            73.0668,
+            72.983
+          ],
+          "disabledByteIdenticalWithNonzeroIgnoredForces": true,
+          "enabledOutputChanged": true
+        }
+      ],
+      "sharedCTestPassed": 15,
+      "generatedKernelByteIdenticalToPrior": true,
+      "serialGeometry": false,
+      "processIsolated": true,
+      "rebuildReason": "Current Base test rebuild regenerated Win32 object/archive/executable bytes; exact deployed hashes are refreshed only after actual linked replay verification."
+    }
+  },
+  "historicalProcessRuntimeReceipts": [
+    {
+      "supersededAtBaseCommit": "ac8b2b71d8d39e0f5d35374f6d3ef3cd3c6149b9",
+      "receipt": {
+        "recipe": "Win32 MSVC Release /fp:precise, original4-worker16-batch geometry, process-isolated",
+        "serialGeometry": false,
+        "librarySHA256": "afb96824d80df4fa12d90c299f7ff0e1d6dc678b6793adfb2312b7944fd6a1ba",
+        "runtimeExecutableSHA256": "675b45d0edb23fdc5846e982d751791cbaad1381b840083757ae7d8a3beab607",
+        "supportExecutableSHA256": "d59df5db06e352d7f0207008aabf17d4124fcd45ee1fd5068198e652b0f21a9e",
+        "sessionExecutableSHA256": "d64defcc38dfacd352eac4362974d2a885c3ba16f9a2278c2388ddfefbddc058",
+        "generatedKernelSHA256": "64630cb5401f08c6490b41ba25cf24170cb9a893da105d03a9f7659d6dd648e9",
+        "wireVersion": 5,
+        "behaviorRevision": 2,
+        "disabledReferenceGate": "garmentSupportVerification.disabledCases",
+        "observedGameplay": false,
+        "sessionWireFrameGarmentTestsPassed": true
+      }
+    }
+  ]
 }
