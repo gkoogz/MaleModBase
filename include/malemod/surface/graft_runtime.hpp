@@ -18,6 +18,10 @@ struct GraftDomain {
  std::vector<std::array<std::uint32_t,3>> triangles;
  std::vector<EdgeConstraint> seams;
  std::vector<std::uint32_t> protectedVertices;
+ // Movable shared part-boundary masters. Their displacement is supplied by
+ // the one versioned boundary state, identically for every resource and LOD.
+ // These are Dirichlet rows, distinct from protected zero-displacement rows.
+ std::vector<std::uint32_t> prescribedVertices;
 };
 // The same support law used by the target collar matrix. Adapters can suppress
 // distant body-field inputs without maintaining another copy of that law.

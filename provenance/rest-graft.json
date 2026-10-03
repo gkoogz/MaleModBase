@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "malemod_base/graft.py",
-      "sha256": "45ff81ff2282e59581110171af76cd26ed6d31956d3a6f25d13af6a9a25bdc79"
+      "sha256": "ac429c46326725d8befc8b1871084ff8f04dcb3724438a5b7c0ab894289092b0"
     },
     {
       "path": "modules/rest-graft.json",

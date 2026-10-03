@@ -1,5 +1,17 @@
 # Resume here: cross-repository handoff
 
+October 2 multi-part waist/presentation support: `part_boundary.py` refines
+explicit measured loops across separate parts and LODs, retains sparse attribute
+lineage and original-edge donors, and publishes one canonical positional/skin
+boundary. `GraftDomain::prescribedVertices` supplies movable Dirichlet masters
+for a joint interior collar solve. Independent Python/C++ verification passes;
+22 existing Geralt collar cases and 110 updated-frame replays still pass.
+`presentation.hpp` preserves rigid material distances between complete physics
+outputs; it does not change numerical physics or raise its solve throughput.
+The atlas recipe preserves original UV islands and full source texture tiles.
+All changes are shared; native character resources/cooking/rendering are adapter
+work. No Wolverine modifications or game success are claimed here.
+
 October 2 target lighting addition: portable `surface/lighting.hpp` builds final
 target normals and UV tangents while preserving normal aliases and mirrored UV
 handedness. Its independent SDK-free test and import provenance pass. Read the

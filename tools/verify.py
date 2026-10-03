@@ -18,6 +18,10 @@ from extract_root_profile import outputs as root_profile_outputs
 ROOT = Path(__file__).resolve().parents[1]
 
 def main():
+    boundary=json.loads((ROOT/'provenance/part-boundary-presentation.json').read_text())
+    for item in boundary['files']:
+        if hashlib.sha256((ROOT/item['path']).read_bytes()).hexdigest()!=item['sha256']:
+            raise ValueError('Part boundary/presentation provenance differs: '+item['path'])
     subprocess.run([sys.executable,str(ROOT/'tools/extract_motion_filter.py')],check=True)
     motion=json.loads((ROOT/'provenance/motion-filter.json').read_text())
     for item in motion['files']:

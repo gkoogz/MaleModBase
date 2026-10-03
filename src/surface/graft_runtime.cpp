@@ -34,7 +34,7 @@ double GraftRecruitmentWeight(PrecisePoint point,const GraftFrame& frame){
 struct GraftPlan::Impl {
  double scale;
  std::size_t count;
- std::vector<std::uint32_t> masters,free,fixed,protectedVertices;
+ std::vector<std::uint32_t> masters,free,fixed,protectedVertices,prescribedVertices;
  std::vector<Vector> points;
  Eigen::VectorXd area;
  Sparse projection,boundary,attraction,baseMetric;
@@ -53,6 +53,8 @@ struct GraftPlan::Impl {
   for(auto e:domain.seams)if(slaves[e.a]||slaves[e.b])throw std::invalid_argument("Seam donors must be independent masters");
   for(auto id:domain.protectedVertices){if(id>=count||slaves[id])throw std::invalid_argument("Protected boundary must be an independent master");locked[id]=true;}
   protectedVertices=domain.protectedVertices;
+  for(auto id:domain.prescribedVertices){if(id>=count||slaves[id]||locked[id])throw std::invalid_argument("Prescribed boundary must be an independent unprotected master");locked[id]=true;}
+  prescribedVertices=domain.prescribedVertices;
   std::vector<unsigned> masterOf(count,0);
   for(unsigned i=0;i<count;i++)if(!slaves[i]){masterOf[i]=unsigned(masters.size());masters.push_back(i);}
   std::vector<Entry> entries;entries.reserve(masters.size()+domain.seams.size()*2);
@@ -99,6 +101,7 @@ struct GraftPlan::Impl {
   Sparse screenMatrix(count,count);screenMatrix.setFromTriplets(screenEntries.begin(),screenEntries.end());
   Sparse metric=baseMetric+projection.transpose()*screenMatrix*projection;
   std::vector<bool> locked(count,false);for(auto id:protectedVertices)locked[id]=true;
+  for(auto id:prescribedVertices)locked[id]=true;
   free.clear();fixed.clear();
   std::vector<int> freeOf(masters.size(),-1),fixedOf(masters.size(),-1);
   for(unsigned i=0;i<masters.size();i++){

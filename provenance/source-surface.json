@@ -200,7 +200,7 @@
   "files": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "e9a57a8875ba959d44e910c5a82c7824a8ee163dfeadc74038c33f5fc5bdbba4"
+      "sha256": "4c1a005ff8ab6e013309be079001e385f8e5184c7979217454d2a894efab3ca2"
     },
     {
       "path": "include/malemod/surface/runtime.hpp",
@@ -3662,5 +3662,6 @@
       }
     }
   ],
-  "wireEncoding": "version-3 byte-identical bulk UV, lineage and widened INDEX16 output, bounded and finite validated"
+  "wireEncoding": "version-3 byte-identical bulk UV, lineage and widened INDEX16 output, bounded and finite validated",
+  "buildMetadataUpdate": "Added independent presentation test target; numerical surface compile options and sources unchanged."
 }

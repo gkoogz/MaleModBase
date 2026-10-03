@@ -83,10 +83,12 @@ def sample_loop(loop, theta, samples):
     return loop[a],loop[b],t
 
 
-def refine_boundary(points, faces, ids, representatives, loop, theta, samples):
+def refine_boundary(points, faces, ids, representatives, loop, theta, samples, edge_samples=None):
     """Split boundary edges; return a sparse map from every output to its input."""
     n=len(points); lineage=[{i:1.} for i in range(n)]
-    a,b,t=sample_loop(loop,theta,samples)
+    a,b,t=sample_loop(loop,theta,samples) if edge_samples is None else edge_samples
+    if any(np.asarray(x).shape!=np.asarray(samples).shape for x in (a,b,t)) or not np.isfinite(t).all() or np.any((t<0)|(t>1)):
+        raise ValueError('Invalid explicit original-edge samples')
     records={}; seam=[]; donors=[]
     # Each geometric edge can have only one surviving boundary triangle. Keep
     # that triangle's actual render indices so UV/skin seams retain their side.

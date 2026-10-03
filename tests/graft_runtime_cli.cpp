@@ -12,12 +12,13 @@ template<class T>void ReadList(std::ifstream& f,std::vector<T>& list){for(auto& 
 int main(int argc,char** argv){
  if(argc!=3)return 2;
  try{
-  std::ifstream f(argv[1],std::ios::binary);char magic[8];if(!f.read(magic,8)||std::memcmp(magic,"GRAFT001",8))throw std::runtime_error("Invalid graft fixture header");
+  std::ifstream f(argv[1],std::ios::binary);char magic[8];if(!f.read(magic,8)||(std::memcmp(magic,"GRAFT001",8)&&std::memcmp(magic,"GRAFT002",8)))throw std::runtime_error("Invalid graft fixture header");
   std::uint32_t n,faces,seams,locked;Read(f,n);Read(f,faces);Read(f,seams);Read(f,locked);
   if(!n||n>1000000||faces>2000000||seams>n||locked>n)throw std::runtime_error("Oversize graft fixture");
   GraftDomain d;d.points.resize(n);d.triangles.resize(faces);d.seams.resize(seams);d.protectedVertices.resize(locked);
   ReadList(f,d.points);ReadList(f,d.triangles);
   for(auto& e:d.seams){Read(f,e.slave);Read(f,e.a);Read(f,e.b);Read(f,e.weight);}ReadList(f,d.protectedVertices);
+  if(!std::memcmp(magic,"GRAFT002",8)){std::uint32_t prescribed;Read(f,prescribed);if(prescribed>n)throw std::runtime_error("Oversize prescribed boundary");d.prescribedVertices.resize(prescribed);ReadList(f,d.prescribedVertices);}
   GraftFrame frame;Read(f,frame.root);Read(f,frame.axis);Read(f,frame.up);Read(f,frame.radius);Read(f,frame.length);Read(f,frame.sourceLengthScale);
   std::vector<PrecisePoint> delta(n);ReadList(f,delta);if(f.peek()!=std::ifstream::traits_type::eof())throw std::runtime_error("Trailing graft fixture");
   auto start=std::chrono::steady_clock::now();GraftPlan plan(d,frame);auto prepared=std::chrono::steady_clock::now();

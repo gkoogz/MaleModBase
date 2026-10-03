@@ -1,0 +1,75 @@
+{
+  "kind": "new shared authoring and presentation support; numerical physics unchanged",
+  "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
+  "files": [
+    {
+      "path": "malemod_base/part_boundary.py",
+      "sha256": "bd561de4fd71be6334839a6f28f34c2ae968f91af76df964fb0f55c9b0ab6b8e"
+    },
+    {
+      "path": "malemod_base/material_atlas.py",
+      "sha256": "983ed9dfdbbb13265f328ad5b3bf80f56bc4f34fbaf00e9cece555f5bda3a758"
+    },
+    {
+      "path": "malemod_base/presentation_binding.py",
+      "sha256": "9c92a5ca0a6c9c3b1382cac2ae82f2b76c05c4f30ac4de4cd78e11f8e7ee3a7f"
+    },
+    {
+      "path": "include/malemod/surface/presentation.hpp",
+      "sha256": "15334debe0bfe92aefe964998ea5aea1fbc54167c2d10f234946484b3dbef7ea"
+    },
+    {
+      "path": "tests/test_part_boundary.py",
+      "sha256": "92f952377f8f8dc384bcfe5356049a1cff20bd4ae2e39b42fb7d533ef0ba8bdb"
+    },
+    {
+      "path": "tests/test_presentation_material.py",
+      "sha256": "c7e064852b256df295e1038c7f0015a96b3bc06f892c68914359d3ec888bd9cd"
+    },
+    {
+      "path": "tests/presentation_test.cpp",
+      "sha256": "48c8095fdfcbd5902164f6888acab8ba54236e44c6af0a603c244c9e694f79c4"
+    },
+    {
+      "path": "tools/verify_part_boundary_runtime.py",
+      "sha256": "7045935da3003d7d62a4fdee3e3a4df920389c4a7d1c08357c95a3ae21760f03"
+    }
+  ],
+  "offlineOnly": true,
+  "observedGameplay": false,
+  "tests": {
+    "pythonBoundaryCases": 3,
+    "pythonMaterialPresentationCases": 2,
+    "rigidRotationPhases": 101,
+    "prescribedBoundary": {
+      "offlineOnly": true,
+      "observedGameplay": false,
+      "cases": [
+        {
+          "phase": 0,
+          "maximumError": 0.0,
+          "prescribedExact": true,
+          "protectedExact": true
+        },
+        {
+          "phase": 0.25,
+          "maximumError": 5.551115123125783e-17,
+          "prescribedExact": true,
+          "protectedExact": true
+        },
+        {
+          "phase": 1,
+          "maximumError": 2.220446049250313e-16,
+          "prescribedExact": true,
+          "protectedExact": true
+        }
+      ],
+      "executableSHA256": "40b787d92cba85778dc972cd36e4cb6272bf1de10728cc3393a3b77dd25148c0"
+    }
+  },
+  "adoption": "docs/REST-GRAFT.md",
+  "omissions": [
+    "game resource cooking and rendering belong in adapters",
+    "presentation does not raise numerical simulation throughput"
+  ]
+}

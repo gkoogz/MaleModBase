@@ -68,3 +68,31 @@ Current limits: star-shaped boundary correspondence, no global intersection
 proof, no new dynamics, and no automatic LOD simplification. The Witcher first
 attachment retains the reference module topology in both native LODs; detailed
 material transfer and secondary motion remain separate follow-up work.
+# Separate body parts and presentation
+
+`malemod_base.part_boundary.weld_parts` accepts measured topology loops and an
+explicit projection/support envelope. It refines every side at common angular
+knots using actual edge/ray intersections. Exporter-near knots may be clustered
+only within an adapter-recorded tolerance; two original vertices on one loop
+cannot merge. UV/color fields retain independent aliases. Positional skin fields
+are assigned from one reference side by observed joint-name correspondence in
+the adapter. Other part boundaries remain protected.
+
+A combined `GraftDomain` includes both native resources. Canonical waist masters
+are `prescribedVertices`, supplied once from shared source-body field donors.
+They remain movable Dirichlet constraints while protected outer boundaries are
+zero. Both halves and LODs must publish their shared boundary together.
+
+`PresentationPlan` interpolates completed outputs in material frames using
+proper quaternion rotations. Distal caps and each lobe bind to one frame; seam
+influences fade to zero. This affects display only. Solver steps, contacts and
+source shapes remain intact; pause/control/character transitions must snap to
+coherent completed outputs in the adapter.
+
+Adoption: Witcher authors separate lower/upper resources and adopts the pinned
+shared solver. Wolverine can adopt these utilities when its adapter moves to a
+verified Base revision, with its existing single-domain collar as reference;
+its installed runtime remains authoritative and unchanged. Any new spoke must
+export its actual loops/joints and verify native round-trip/gameplay separately.
+Material layout uses `material_atlas` with explicit observed sampler repetition,
+never engine assumptions or relabeling specular data as ambient occlusion.
