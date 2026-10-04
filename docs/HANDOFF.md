@@ -2,6 +2,18 @@
 
 ## Active October 4 garment work
 
+Bounded attempt final result: no new garment candidate is accepted or installed.
+The soft7 native material passed its offline cook and exact buffer identities,
+but the private game produced zero garment publications and an unclothed image.
+The Witcher adapter restored its exact original 35-file `99ff741` installation
+and receipt; private child/audio/temporary script cleanup is verified. Both new
+cloth physics and native material rendering remain blockers. Walking38 rest
+geometry remains source-only. See the adapter HANDOFF and ignored
+`build/full-runtime/bounded-playable-result-20261004.json` for the separate
+runtime, failed visual and rollback evidence. Wolverine remains unchanged in
+this bounded attempt. Do not call the restored playable baseline a finished
+garment upgrade or release.
+
 Bounded playable integration resumed October 4. The retained38 source checkpoint
 is now committed locally on `codex/playable-garment-20261004` at377c59d; an
 acyclic wire6 adoption metadata follow-up is88c7a2a. These are development
