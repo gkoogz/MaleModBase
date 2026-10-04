@@ -2,6 +2,22 @@
 
 ## Active October 4 garment work
 
+Bounded playable integration resumed October 4. The retained38 source checkpoint
+is now committed locally on `codex/playable-garment-20261004` at377c59d; an
+acyclic wire6 adoption metadata follow-up is88c7a2a. These are development
+checkpoints, not a new installed cloth release. Native wire6 builds/proofs are
+being recorded against an independent clean E: checkout; do not call the
+original ignored DIRTY source receipt a clean deployment proof.
+
+The bounded conservative-pressure prototype was rejected after its first
+Geralt50 motion frame:1.7731 times material stretch, failing contact and sewing,
+234.2ms for that frame. The worst conflict is the broad top seam against the
+snug native-bound waistband. It needs a measured compound collar pressure
+region, not a stronger spring or an unchecked collision exclusion. All prototype
+code/evidence remains ignored and production unchanged. Integration is testing
+an explicitly limited material-only patch on the verified99ff741 gameplay
+baseline; the walking38 pouch, load-bearing cloth and cadence remain unfinished.
+
 Latest user steering requires a small lateral opening, particularly at the
 lower sides. Frozen candidate38 is the latest passing retained neutral rest
 checkpoint: eight actual Geralt/Wolverine cases at Overall25/50/75/100,

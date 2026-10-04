@@ -1,5 +1,11 @@
 # Durable project context
 
+Latest user target (October 4): bring the mod into a playable state in a
+reasonable amount of time, after the prolonged garment development session.
+The requested persistent cloth and walking pouch remain the intended design;
+this does not establish acceptance of reduced physics or a static substitute.
+Keep any bounded preview's installed scope and remaining limitations explicit.
+
 Latest side-opening refinement: retain a small lateral opening, but close the
 pouch edges substantially more than the earlier broad exposed side gaps. The
 two smooth continuous elastic hems should contain the sides closely while
