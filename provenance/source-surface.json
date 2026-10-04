@@ -5079,7 +5079,15 @@
     "sourceConsumptionProofSHA256": "0704593ea7e8eaa21d46f4e10946fd34daf011aec972e7f77f752e14356f6c68",
     "disabledReferenceGate": "currentSourceExtractionVerification.sourceConsumptionRecheck",
     "observedGameplay": false,
-    "installed": false
+    "installed": false,
+    "cleanAdoptionContract": {
+      "proofLocation": "build/physical-reaction-source-proof-<exact-pin-first7>/proof.json",
+      "proofIsExternalToGit": true,
+      "hashDirection": "External source proof hashes the fixed full provenance and implementation; native worker/profile manifests bind that proof. Provenance does not embed the hash of its own clean proof.",
+      "requiresExactCleanSourceCommit": true,
+      "historicalDirtyProofCannotAuthorizeDeployment": true,
+      "clothPhysicsOrNativeAcceptanceImplied": false
+    }
   },
   "historicalProcessRuntimeReceipts": [
     {
