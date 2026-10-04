@@ -1,5 +1,57 @@
 # Complete evaluated source surface
 
+## Current wire6 development extraction (October 4)
+
+The source extraction now accepts cumulative physical garment reactions through
+wire version6. This is an intentional numerical and protocol change: twelve
+rod-node impulse totals, two suspended-volume impulse totals and two angular
+impulse totals have publication epoch/serial identities. The source cursor
+consumes each cumulative increment once, preserves queued increments through
+zero-source-substep requests and coalesces pending publications. It is distinct
+from the historical bounded acceleration support interface.
+
+Current verification uses the process-isolated Win32 `/fp:precise` recipe and
+the exact existing `build/physical-reaction-process/Release/malemod_surface.lib`.
+The schema2 `build/physical-reaction-source-proof-dirty-current2/proof.json`
+binds that library, its linked CLI, the immutable prior wire5 CLI and the relevant
+runtime, extraction, wire and reaction source hashes. Its 21 recorded outputs
+were rechecked by hash and numerical bytes: in all three source states, disabled
+nonzero inputs preserve output, physical impulses change the source, retries
+do not replay the impulse, and zero-substep/coalesced submissions preserve it.
+Disabled wire6 numerical payloads match the prior wire5 output after the version
+word. No outputs or old receipts were relabeled.
+
+The current process kernel regenerates byte-for-byte from the checked immutable
+declaration spans. Fresh SDK `surface_wire` and physical-reaction tests also pass.
+The default TLS kernel is separately regenerated and fingerprinted for extraction
+reproducibility; the historical TLS numerical parity results below do not certify
+this changed TLS runtime. The old v2/wire5 provenance and process receipts are
+preserved under historical records. Source implementation hashes were refreshed
+only after this audit, rather than described as metadata-only changes.
+
+This remains a **DIRTY, offline development checkpoint**. A successful source
+extraction hash check proves reproducibility, not cloth cadence, complete moving
+garment quality, clean adapter adoption, native installation or gameplay. Current
+garment dynamics and complete sewn-surface construction still have rejected or
+unresolved gates; see [GARMENTS.md](GARMENTS.md). The prior installed-file and
+port statements later in this document describe their historical checkpoints.
+
+Recheck the current process kernel without changing runtime source:
+
+```powershell
+python tools/extract_surface_runtime.py --process-isolated --check --output build/physical-reaction-process/surface-generated/surface-kernel.inc
+python tools/extract_surface_runtime.py --verify-provenance
+```
+
+To independently replay the source-consumption cases into a new ignored folder:
+
+```powershell
+python tools/verify_garment_source_reactions.py --executable build/physical-reaction-process/Release/garment_support_runtime_cli.exe --library build/physical-reaction-process/Release/malemod_surface.lib --legacy-executable build/surface-process-verified-cmake/Release/garment_support_runtime_cli.exe --output build/new-wire6-source-proof
+```
+
+That command executes source numerical helpers only; it does not launch or alter
+a game. Keep its source hashes, linked binary hashes and original source records.
+
 For the full Witcher phase, explicit collision calibration, process-transport
 contract and C++ target collar adoption, read FULL-RUNTIME-ADOPTION.md. Optional
 measured contacts preserve the uncalibrated reference branch. Process-parallel

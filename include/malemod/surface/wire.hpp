@@ -9,7 +9,7 @@
 // Versioned numerical messages. Transport, process handles, engine resources
 // and graphics buffers belong to the adapter. Never transmit C++ object layouts.
 namespace malemod::surface::wire {
-constexpr std::uint32_t version=5;
+constexpr std::uint32_t version=6;
 constexpr std::size_t maximumBytes=16*1024*1024;
 constexpr std::uint32_t maximumVertices=60000,maximumIndices=360000;
 using Bytes=std::vector<std::uint8_t>;
@@ -86,6 +86,9 @@ inline void Validate(const Frame& f){
  for(auto p:f.collarQueries)if(!finite(p))throw std::invalid_argument("Invalid collar query");
  auto support=[&](Point p,float limit){if(!finite(p)||double(p.x)*p.x+double(p.y)*p.y+double(p.z)*p.z>double(limit)*limit+1e-5)throw std::invalid_argument("Garment support exceeds source acceleration budget");};
  support(f.garment.shaftAcceleration,maximumShaftSupportAcceleration);for(auto p:f.garment.lobeAcceleration)support(p,maximumLobeSupportAcceleration);
+ auto impulse=[](ImpulsePoint p){for(double x:{p.x,p.y,p.z})if(!std::isfinite(x)||std::abs(x)>1e12)throw std::invalid_argument("Invalid cumulative contact impulse");};
+ for(auto p:f.garment.rodImpulseTotals)impulse(p);for(auto p:f.garment.lobeImpulseTotals)impulse(p);for(auto p:f.garment.lobeAngularImpulseTotals)impulse(p);
+ if(f.garment.enabled&&f.garment.contactReaction&&(!f.garment.contactEpoch||!f.garment.contactSerial))throw std::invalid_argument("Physical reaction publication identity absent");
  const auto& c=f.clinical;
  if(c.throbMode>3||!std::isfinite(c.time)||c.time<0||c.time>60||!std::isfinite(c.sizeTime)||c.sizeTime<0||c.sizeTime>=3||!std::isfinite(c.twitchTime)||c.twitchTime<0||c.twitchTime>=5.75f||!std::isfinite(c.lateralWobbleDegrees)||std::abs(c.lateralWobbleDegrees)>90)throw std::invalid_argument("Invalid clinical projection");
  for(float gain:c.lateralGain)if(!std::isfinite(gain)||std::abs(gain)>2)throw std::invalid_argument("Invalid clinical lateral variation");
@@ -107,6 +110,8 @@ inline Bytes Encode(const Request& q){
  w.U32(std::uint32_t(q.frame.collarQueries.size()));w.Points(q.frame.collarQueries);
  const auto& c=q.frame.clinical;w.U32(c.active?1:0);w.Double(c.time);w.U32(c.throbMode);w.Float(c.sizeTime);w.Float(c.twitchTime);w.Float(c.lateralWobbleDegrees);for(float x:c.angleGain)w.Float(x);for(float x:c.lateralGain)w.Float(x);
  w.U32(q.frame.garment.enabled?1:0);w.Point3(q.frame.garment.shaftAcceleration);w.Points(q.frame.garment.lobeAcceleration);
+ const auto& g=q.frame.garment;w.U32(g.contactReaction?1:0);w.U32(std::uint32_t(g.contactEpoch));w.U32(std::uint32_t(g.contactEpoch>>32));w.U32(std::uint32_t(g.contactSerial));w.U32(std::uint32_t(g.contactSerial>>32));
+ auto impulse=[&](const auto& values){for(auto p:values){w.Double(p.x);w.Double(p.y);w.Double(p.z);}};impulse(g.rodImpulseTotals);impulse(g.lobeImpulseTotals);impulse(g.lobeAngularImpulseTotals);
  return w.bytes;
 }
 inline Request DecodeRequest(const Bytes& bytes){
@@ -122,6 +127,8 @@ inline Request DecodeRequest(const Bytes& bytes){
  auto queries=r.U32();if(queries>20000)throw std::invalid_argument("Too many collar queries");q.frame.collarQueries.resize(queries);r.Points(q.frame.collarQueries);
  auto active=r.U32();if(active>1)throw std::invalid_argument("Invalid clinical active flag");auto& c=q.frame.clinical;c.active=active;c.time=r.Double();c.throbMode=r.U32();c.sizeTime=r.Float();c.twitchTime=r.Float();c.lateralWobbleDegrees=r.Float();for(float& x:c.angleGain)x=r.Float();for(float& x:c.lateralGain)x=r.Float();
  auto garment=r.U32();if(garment>1)throw std::invalid_argument("Invalid garment support flag");q.frame.garment.enabled=garment!=0;q.frame.garment.shaftAcceleration=r.Point3();r.Points(q.frame.garment.lobeAcceleration);
+ auto reaction=r.U32();if(reaction>1)throw std::invalid_argument("Invalid garment reaction flag");auto& g=q.frame.garment;g.contactReaction=reaction!=0;g.contactEpoch=r.U32();g.contactEpoch|=std::uint64_t(r.U32())<<32;g.contactSerial=r.U32();g.contactSerial|=std::uint64_t(r.U32())<<32;
+ auto impulse=[&](auto& values){for(auto& p:values){p.x=r.Double();p.y=r.Double();p.z=r.Double();}};impulse(g.rodImpulseTotals);impulse(g.lobeImpulseTotals);impulse(g.lobeAngularImpulseTotals);
  Validate(q.frame);
  r.End();return q;
 }

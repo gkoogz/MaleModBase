@@ -195,24 +195,24 @@
       "sha256": "5f77112c620415a1fa0dc080aa7248558a3140507637e20d625e0bd71693dc61"
     }
   ],
-  "generatedKernelSHA256": "e2608caf550e12564233ed4aa7b6f691468308fe29e2be036c2ffc52ba659ae2",
+  "generatedKernelSHA256": "20ed495f41ed4d856407f73e4416ef096dc1b5ad8374d8fda7ba138737402201",
   "generatedKernelTracked": false,
   "files": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "7d632f338f6ed92ab69a2a3d938c1e22d72b106ac0db57788400bfddf3f36ceb"
+      "sha256": "2b8e86b265162d59d7acd2f38c8fbdbfb16ffa19db4dc55b3c727dba47ea870a"
     },
     {
       "path": "include/malemod/surface/runtime.hpp",
-      "sha256": "9318488259988e894ab0791775b1a5afe89c28be3f9bf66d7492d942be30140c"
+      "sha256": "535d63880f51794712abf1b95230f45d2376daca2bbd06417892c3d294a22db1"
     },
     {
       "path": "src/surface/runtime.cpp",
-      "sha256": "d902ca2d08544453a7d6ca33b24c5cb14c315f51b0a2314b21747dcd6c9e7b6f"
+      "sha256": "9b5306a31169075d07701704bbf92d32d868989f6771a1a3b6f95c3513c0f209"
     },
     {
       "path": "tools/extract_surface_runtime.py",
-      "sha256": "d5b7ab51a884ad48941431010129a58ce42ebf46f839674e3db27b13d5d4a62b"
+      "sha256": "6cf20f8bacec186adf7991a43f734c8427a0371cb26805af54a42332539de95f"
     },
     {
       "path": "tools/data/surface-closure.json",
@@ -256,11 +256,11 @@
     },
     {
       "path": "include/malemod/surface/wire.hpp",
-      "sha256": "6e90f818a3b5228c64bd7729afb416f84b8ccc275cbdd4b018252196e640e5bd"
+      "sha256": "21646c80db4fbe9ad8fe76deb42adcea1e2cf84eb63d1833b322690135f5876f"
     },
     {
       "path": "tests/surface_wire_test.cpp",
-      "sha256": "5075f4da60f68a5a0fe26af66f11ce57ab4bb3a8d58a04dd3a8ea47acfd4aa69"
+      "sha256": "73de9fa20b2f4c4289a4a82757c390561d0555e177dfd96ba960385f59c6eee0"
     },
     {
       "path": "tests/surface_collision_test.cpp",
@@ -308,7 +308,7 @@
     },
     {
       "path": "tests/garment_support_runtime_cli.cpp",
-      "sha256": "e1bedf020c54c0c4f567cd52acab90644e85f4c54286b81169a812b7d9085e47"
+      "sha256": "a59721836c045ff452cd7c3c9864bf940dafcf5c240bf633e5a9c944caa245e0"
     },
     {
       "path": "tools/test_garment_worker_support.py",
@@ -317,6 +317,22 @@
     {
       "path": "docs/GARMENT-NUMERICAL-SUPPORT.md",
       "sha256": "80e7cc520d149761f09ff625b21c0829ef066b885943c6083f44ff5b309a59c8"
+    },
+    {
+      "path": "include/malemod/surface/garment_impulse.hpp",
+      "sha256": "f290b2fbeb83469c797a044a2045ae5d4fbfeea353342377d44da6281fa360a6"
+    },
+    {
+      "path": "include/malemod/garments/reaction_support.hpp",
+      "sha256": "ea4491fc85b7216b1a0766fac3ba5c232edf964973359205e01b5d3a5648aa3f"
+    },
+    {
+      "path": "tools/verify_garment_source_reactions.py",
+      "sha256": "bbad2e2b8cfa8f6c75c984bd26260d69c17f3af3a32649835bef815f3d1d7f77"
+    },
+    {
+      "path": "docs/SOURCE-SURFACE.md",
+      "sha256": "dee1e23a2601d620bd2939a18e070c4c2926703da17a828f59573f73a48dbb07"
     }
   ],
   "controls": "malemod_base.controls.ORDER",
@@ -2576,7 +2592,7 @@
     "observedGameplay": false
   },
   "adoption": "See docs/RADIAL-CLINICAL-ADOPTION.md; source process clinical/radial parity measured. Wolverine and other installed spokes unchanged pending their own adoption gates.",
-  "wireVersion": 4,
+  "wireVersion": 6,
   "processSourceChecks": {
     "architecture": "Win32",
     "arithmetic": "/fp:precise",
@@ -3721,8 +3737,8 @@
       }
     }
   ],
-  "wireEncoding": "Version 4: unchanged original surface fields plus bounded target collar queries, binary64 clinical clock/projection and final distal nozzle.",
-  "buildMetadataUpdate": "Added independent presentation test target; numerical surface compile options and sources unchanged.",
+  "wireEncoding": "Current version6: source surface/mechanical output plus cumulative physical garment rod/lobe impulse and angular impulse totals, epoch/serial identity. Intentional DIRTY protocol/numerical change; historical wire4/wire5 receipts preserved separately.",
+  "buildMetadataUpdate": "Added garment band midsurface, inactive sewn-contact, analytic rendered contact, geometry/export/coverage and lifecycle SDK test targets. Only CMake metadata refreshed here; other source/runtime/wire hashes remain independently verified or reported stale.",
   "historicalProcessChecks": [
     {
       "architecture": "Win32",
@@ -4811,7 +4827,7 @@
     }
   ],
   "behaviorRevision": 2,
-  "historicalParityScope": "Existing oracle parity and process replay records describe pre-revision-2 source behavior; stable pelvic frame is an intentional shared change with separate validation.",
+  "historicalParityScope": "Existing oracle parity and process replay records describe pre-revision-2 source behavior; stable pelvic frame is an intentional shared change with separate validation. Historical oracle/TLS/wire5 replay records remain historical; current wire6 process source-consumption proofs are separately bound below.",
   "stablePelvicFrameVerification": {
     "algorithmRevision": 2,
     "observedGameplay": false,
@@ -4971,7 +4987,7 @@
     "adoption": "docs/COLLAR-ANGLE-ADOPTION.md",
     "processKernelSHA256": "f024f270021753b870f29815bd9f2c6565b6b8a3f639b668765a3c447a699fca"
   },
-  "runtimeProtocolVersion": 5,
+  "runtimeProtocolVersion": 6,
   "garmentSupportVerification": {
     "observedGameplay": false,
     "wireVersion": 5,
@@ -5052,96 +5068,18 @@
   "currentProcessRuntime": {
     "recipe": "Win32 MSVC Release /fp:precise, original4-worker16-batch geometry, process-isolated",
     "serialGeometry": false,
-    "librarySHA256": "226ad497dbb50dc3020f691714d2c422a5db7fd66a989ced2daea07bce013da9",
-    "runtimeExecutableSHA256": "9db41ad223048b865a2de7a09b14083ba32c722f2be3882643a173ac5f04e2f5",
-    "supportExecutableSHA256": "616053181550edd198f7c63a28c17704e4749428628a536e7d37c87e630d4231",
-    "sessionExecutableSHA256": "611813ebba45daaceb62a6623947346d662628add75d47d1810d3d4f9c92efeb",
-    "generatedKernelSHA256": "64630cb5401f08c6490b41ba25cf24170cb9a893da105d03a9f7659d6dd648e9",
-    "wireVersion": 5,
+    "librarySHA256": "89fb86d83dfcaeadaba491d3c65d44317bba7f95ea3fdfd76b9a8535a2da4345",
+    "supportExecutableSHA256": "f0fa413827b6f3e3c47030f8133e9b06b1b817517bc3a17b6b67d5303edffb42",
+    "generatedKernelSHA256": "2d6d79010a77918e71cd06a4abf8c04c5da745059bf391b6a2c1fc53055637a2",
+    "wireVersion": 6,
     "behaviorRevision": 2,
-    "disabledReferenceGate": "garmentSupportVerification.disabledCases",
+    "workingTreeClean": false,
+    "status": "DIRTY offline process source-consumption proof; no cloth/native/clean-pin acceptance",
+    "sourceConsumptionProofPath": "build/physical-reaction-source-proof-dirty-current2/proof.json",
+    "sourceConsumptionProofSHA256": "0704593ea7e8eaa21d46f4e10946fd34daf011aec972e7f77f752e14356f6c68",
+    "disabledReferenceGate": "currentSourceExtractionVerification.sourceConsumptionRecheck",
     "observedGameplay": false,
-    "sessionWireFrameGarmentTestsPassed": true,
-    "rebuildReplay": {
-      "baseFeatureCommit": "ac8b2b71d8d39e0f5d35374f6d3ef3cd3c6149b9",
-      "reportPath": "build/collar-angle-agent/support-contact-repair-ac8b2b7/report.json",
-      "reportSHA256": "f34bd1e179823791afd34e7535e2468446ebd707379629972e6aa10ab713d5ee",
-      "command": "python tools/test_garment_worker_support.py --runtime build/surface-process-verified-cmake/Release/garment_support_runtime_cli.exe --surface-runtime build/surface-process-verified-cmake/Release/surface_runtime_cli.exe --collar-fixtures build/collar-angle-agent/cases --output build/collar-angle-agent/support-contact-repair-ac8b2b7",
-      "disabledFullOutputReplayCases": [
-        {
-          "label": "default",
-          "steps": 120,
-          "allGeometryLightingTopologyUVMechanicsByteIdentical": true
-        },
-        {
-          "label": "requested-s0-a10",
-          "steps": 120,
-          "allGeometryLightingTopologyUVMechanicsByteIdentical": true
-        },
-        {
-          "label": "requested-s2-a64",
-          "steps": 120,
-          "allGeometryLightingTopologyUVMechanicsByteIdentical": true
-        },
-        {
-          "label": "combined-s1-a100",
-          "steps": 120,
-          "allGeometryLightingTopologyUVMechanicsByteIdentical": true
-        }
-      ],
-      "supportStates": [
-        {
-          "state": 0,
-          "disabledTipAndLobeHeights": [
-            72.6764,
-            74.0317,
-            74.6143
-          ],
-          "enabledTipAndLobeHeights": [
-            72.3026,
-            74.0437,
-            74.6029
-          ],
-          "disabledByteIdenticalWithNonzeroIgnoredForces": true,
-          "enabledOutputChanged": true
-        },
-        {
-          "state": 1,
-          "disabledTipAndLobeHeights": [
-            73.1517,
-            73.0632,
-            73.1897
-          ],
-          "enabledTipAndLobeHeights": [
-            73.0027,
-            73.0663,
-            73.1883
-          ],
-          "disabledByteIdenticalWithNonzeroIgnoredForces": true,
-          "enabledOutputChanged": true
-        },
-        {
-          "state": 2,
-          "disabledTipAndLobeHeights": [
-            66.1057,
-            73.0651,
-            72.9822
-          ],
-          "enabledTipAndLobeHeights": [
-            66.1916,
-            73.0668,
-            72.983
-          ],
-          "disabledByteIdenticalWithNonzeroIgnoredForces": true,
-          "enabledOutputChanged": true
-        }
-      ],
-      "sharedCTestPassed": 15,
-      "generatedKernelByteIdenticalToPrior": true,
-      "serialGeometry": false,
-      "processIsolated": true,
-      "rebuildReason": "Current Base test rebuild regenerated Win32 object/archive/executable bytes; exact deployed hashes are refreshed only after actual linked replay verification."
-    }
+    "installed": false
   },
   "historicalProcessRuntimeReceipts": [
     {
@@ -5161,5 +5099,310 @@
         "sessionWireFrameGarmentTestsPassed": true
       }
     }
-  ]
+  ],
+  "buildMetadataHistory": [
+    {
+      "previousCMakeSHA256": "7d632f338f6ed92ab69a2a3d938c1e22d72b106ac0db57788400bfddf3f36ceb",
+      "meaning": "Preserved prior build metadata hash; garment SDK-only test target registrations changed, no acceptance inferred for runtime source changes"
+    }
+  ],
+  "historicalSourceV2Wire5Checkpoint": {
+    "contractVersion": 2,
+    "generatedKernelSHA256": "e2608caf550e12564233ed4aa7b6f691468308fe29e2be036c2ffc52ba659ae2",
+    "files": [
+      {
+        "path": "CMakeLists.txt",
+        "sha256": "2b8e86b265162d59d7acd2f38c8fbdbfb16ffa19db4dc55b3c727dba47ea870a"
+      },
+      {
+        "path": "include/malemod/surface/runtime.hpp",
+        "sha256": "9318488259988e894ab0791775b1a5afe89c28be3f9bf66d7492d942be30140c"
+      },
+      {
+        "path": "src/surface/runtime.cpp",
+        "sha256": "d902ca2d08544453a7d6ca33b24c5cb14c315f51b0a2314b21747dcd6c9e7b6f"
+      },
+      {
+        "path": "tools/extract_surface_runtime.py",
+        "sha256": "d5b7ab51a884ad48941431010129a58ce42ebf46f839674e3db27b13d5d4a62b"
+      },
+      {
+        "path": "tools/data/surface-closure.json",
+        "sha256": "68aa64c839f13bc55f6fba21df13e06168854b837cf85b1734b9c5f99617ba73"
+      },
+      {
+        "path": "tools/audit_surface_oracle.py",
+        "sha256": "12bf90c4c1bca72b09792f4a3a234f876e55499f8d6891e1a8a7b8e733ab7d85"
+      },
+      {
+        "path": "tools/capture_surface_controls.py",
+        "sha256": "1ba989b63e47c4e08b5be5bd10753df4f6b0d46d0ab2314257006f308fa91ba2"
+      },
+      {
+        "path": "tools/export_evaluated_surface.py",
+        "sha256": "f7734b86e3545bfc43e63c8396d9e6ddea33ccbeead32fe2e183040108b62cd3"
+      },
+      {
+        "path": "tools/verify_surface_runtime.py",
+        "sha256": "bdbb25ad4e52c71ee930d1949310c68bb592c922524d17fdf87b0ba3683c2581"
+      },
+      {
+        "path": "tests/surface_runtime_cli.cpp",
+        "sha256": "286adf9b5bbf8e40eed6607e1390803e1149ab3fa15a0ea4756b23311cbe45ef"
+      },
+      {
+        "path": "tests/surface_session_test.cpp",
+        "sha256": "362839d6c55b186c47e708013d821fdbccf3befbcff8a3741836942a55c5e53b"
+      },
+      {
+        "path": "tests/surface_trace_oracle.cpp",
+        "sha256": "b6938bb7552503e808310e50cca1e16dc274411eca1f9d33157a687d6a3e94ad"
+      },
+      {
+        "path": "tests/wolverine_surface_oracle.cpp",
+        "sha256": "a6e459e12a1d70753869e9760ed519586dd22c68feca209977196f12acd9a362"
+      },
+      {
+        "path": "tools/export_default_baseline.py",
+        "sha256": "f031e4e2f367fcfd430a79e163fa7ed71fa9e468058b7ffa18105d5a9ee726f7"
+      },
+      {
+        "path": "include/malemod/surface/wire.hpp",
+        "sha256": "6e90f818a3b5228c64bd7729afb416f84b8ccc275cbdd4b018252196e640e5bd"
+      },
+      {
+        "path": "tests/surface_wire_test.cpp",
+        "sha256": "5075f4da60f68a5a0fe26af66f11ce57ab4bb3a8d58a04dd3a8ea47acfd4aa69"
+      },
+      {
+        "path": "tests/surface_collision_test.cpp",
+        "sha256": "63502c6424091bcce1e775d7b254d364df5b8eebd73a5c76f662f9f5ace800ba"
+      },
+      {
+        "path": "tests/surface_process_test.cpp",
+        "sha256": "c022b0099a4b217f40877404516b7ef0d429ab8dd0cd9da6f2714b376ad34c22"
+      },
+      {
+        "path": "tests/clinical_surface_trace_oracle.cpp",
+        "sha256": "26f113687b3ebb2a5ea7a680757407d247a2ff464246a81e51217c6c53d0e165"
+      },
+      {
+        "path": "include/malemod/surface/pelvic_frame.hpp",
+        "sha256": "d69ed4dd92d55ed09aa3f358c4cdddbedeac4cef2c933abb490500ff91935a45"
+      },
+      {
+        "path": "tests/pelvic_frame_test.cpp",
+        "sha256": "f35a273ef11308bc09ee30067b36964660a83791e7acd8e88cc70dc9d66c6b7b"
+      },
+      {
+        "path": "tools/test_collar_angle_adoption.py",
+        "sha256": "8b34c71b1e953ebe8ceca81c1f1344fa06977acf9cd980aaed77ee333f49a9f2"
+      },
+      {
+        "path": "docs/COLLAR-ANGLE-ADOPTION.md",
+        "sha256": "3d68fbb98993c3a1f998b22c10ee7d5ae4b1aaec3b118223e0b052edd56512a5"
+      },
+      {
+        "path": "modules/pelvic-collar.json",
+        "sha256": "774117626b03c3de3b93c154b0a0dc410d1d64b774c071f248b0da2dff1f74f4"
+      },
+      {
+        "path": "include/malemod/surface/garment_support.hpp",
+        "sha256": "5558ce6dcfbc516d659f686a53b854699b815d219fdd3f1aab24809847c1518c"
+      },
+      {
+        "path": "include/malemod/garments/numerical_support.hpp",
+        "sha256": "ae38ff5611947e4a87641f44014591d322da662a7f2c3a88ab6de17ec55ad082"
+      },
+      {
+        "path": "tests/garment_support_test.cpp",
+        "sha256": "4c3057b3caec850ea941594e75a16ef505ff77b8924f5f0633e6541a6b821c8b"
+      },
+      {
+        "path": "tests/garment_support_runtime_cli.cpp",
+        "sha256": "e1bedf020c54c0c4f567cd52acab90644e85f4c54286b81169a812b7d9085e47"
+      },
+      {
+        "path": "tools/test_garment_worker_support.py",
+        "sha256": "7c2e79e2ec69366400ff8ed028e8177884e4416aca00e389f9e0b52ebe15fe5b"
+      },
+      {
+        "path": "docs/GARMENT-NUMERICAL-SUPPORT.md",
+        "sha256": "80e7cc520d149761f09ff625b21c0829ef066b885943c6083f44ff5b309a59c8"
+      }
+    ],
+    "wireVersion": 4,
+    "runtimeProtocolVersion": 5,
+    "wireEncoding": "Version 4: unchanged original surface fields plus bounded target collar queries, binary64 clinical clock/projection and final distal nozzle.",
+    "currentProcessRuntime": {
+      "recipe": "Win32 MSVC Release /fp:precise, original4-worker16-batch geometry, process-isolated",
+      "serialGeometry": false,
+      "librarySHA256": "226ad497dbb50dc3020f691714d2c422a5db7fd66a989ced2daea07bce013da9",
+      "runtimeExecutableSHA256": "9db41ad223048b865a2de7a09b14083ba32c722f2be3882643a173ac5f04e2f5",
+      "supportExecutableSHA256": "616053181550edd198f7c63a28c17704e4749428628a536e7d37c87e630d4231",
+      "sessionExecutableSHA256": "611813ebba45daaceb62a6623947346d662628add75d47d1810d3d4f9c92efeb",
+      "generatedKernelSHA256": "64630cb5401f08c6490b41ba25cf24170cb9a893da105d03a9f7659d6dd648e9",
+      "wireVersion": 5,
+      "behaviorRevision": 2,
+      "disabledReferenceGate": "garmentSupportVerification.disabledCases",
+      "observedGameplay": false,
+      "sessionWireFrameGarmentTestsPassed": true,
+      "rebuildReplay": {
+        "baseFeatureCommit": "ac8b2b71d8d39e0f5d35374f6d3ef3cd3c6149b9",
+        "reportPath": "build/collar-angle-agent/support-contact-repair-ac8b2b7/report.json",
+        "reportSHA256": "f34bd1e179823791afd34e7535e2468446ebd707379629972e6aa10ab713d5ee",
+        "command": "python tools/test_garment_worker_support.py --runtime build/surface-process-verified-cmake/Release/garment_support_runtime_cli.exe --surface-runtime build/surface-process-verified-cmake/Release/surface_runtime_cli.exe --collar-fixtures build/collar-angle-agent/cases --output build/collar-angle-agent/support-contact-repair-ac8b2b7",
+        "disabledFullOutputReplayCases": [
+          {
+            "label": "default",
+            "steps": 120,
+            "allGeometryLightingTopologyUVMechanicsByteIdentical": true
+          },
+          {
+            "label": "requested-s0-a10",
+            "steps": 120,
+            "allGeometryLightingTopologyUVMechanicsByteIdentical": true
+          },
+          {
+            "label": "requested-s2-a64",
+            "steps": 120,
+            "allGeometryLightingTopologyUVMechanicsByteIdentical": true
+          },
+          {
+            "label": "combined-s1-a100",
+            "steps": 120,
+            "allGeometryLightingTopologyUVMechanicsByteIdentical": true
+          }
+        ],
+        "supportStates": [
+          {
+            "state": 0,
+            "disabledTipAndLobeHeights": [
+              72.6764,
+              74.0317,
+              74.6143
+            ],
+            "enabledTipAndLobeHeights": [
+              72.3026,
+              74.0437,
+              74.6029
+            ],
+            "disabledByteIdenticalWithNonzeroIgnoredForces": true,
+            "enabledOutputChanged": true
+          },
+          {
+            "state": 1,
+            "disabledTipAndLobeHeights": [
+              73.1517,
+              73.0632,
+              73.1897
+            ],
+            "enabledTipAndLobeHeights": [
+              73.0027,
+              73.0663,
+              73.1883
+            ],
+            "disabledByteIdenticalWithNonzeroIgnoredForces": true,
+            "enabledOutputChanged": true
+          },
+          {
+            "state": 2,
+            "disabledTipAndLobeHeights": [
+              66.1057,
+              73.0651,
+              72.9822
+            ],
+            "enabledTipAndLobeHeights": [
+              66.1916,
+              73.0668,
+              72.983
+            ],
+            "disabledByteIdenticalWithNonzeroIgnoredForces": true,
+            "enabledOutputChanged": true
+          }
+        ],
+        "sharedCTestPassed": 15,
+        "generatedKernelByteIdenticalToPrior": true,
+        "serialGeometry": false,
+        "processIsolated": true,
+        "rebuildReason": "Current Base test rebuild regenerated Win32 object/archive/executable bytes; exact deployed hashes are refreshed only after actual linked replay verification."
+      }
+    },
+    "meaning": "Historical v2 / wire5 source and numerical verification checkpoint; retained exactly and not generalized to current wire6"
+  },
+  "currentSourceExtractionVerification": {
+    "status": "DIRTY offline development; hash extraction reproducibility and process-isolatedWin32 source consumption only",
+    "compiledNumericalRecipe": "Process-isolatedWin32 /fp:precise ONLY; current TLS kernel is fingerprinted derivation, not a linked/numerically verified runtime",
+    "intentionalChanges": "Cumulative physical rod/lobe impulse and angular impulse consumption, publication cursor/pending coalescing and wire6 protocol; not metadata-only source changes",
+    "changedImplementationFiles": [
+      {
+        "path": "include/malemod/surface/runtime.hpp",
+        "previousSHA256": "9318488259988e894ab0791775b1a5afe89c28be3f9bf66d7492d942be30140c",
+        "currentSHA256": "535d63880f51794712abf1b95230f45d2376daca2bbd06417892c3d294a22db1"
+      },
+      {
+        "path": "src/surface/runtime.cpp",
+        "previousSHA256": "d902ca2d08544453a7d6ca33b24c5cb14c315f51b0a2314b21747dcd6c9e7b6f",
+        "currentSHA256": "9b5306a31169075d07701704bbf92d32d868989f6771a1a3b6f95c3513c0f209"
+      },
+      {
+        "path": "tools/extract_surface_runtime.py",
+        "previousSHA256": "d5b7ab51a884ad48941431010129a58ce42ebf46f839674e3db27b13d5d4a62b",
+        "currentSHA256": "6cf20f8bacec186adf7991a43f734c8427a0371cb26805af54a42332539de95f"
+      },
+      {
+        "path": "include/malemod/surface/wire.hpp",
+        "previousSHA256": "6e90f818a3b5228c64bd7729afb416f84b8ccc275cbdd4b018252196e640e5bd",
+        "currentSHA256": "21646c80db4fbe9ad8fe76deb42adcea1e2cf84eb63d1833b322690135f5876f"
+      },
+      {
+        "path": "tests/surface_wire_test.cpp",
+        "previousSHA256": "5075f4da60f68a5a0fe26af66f11ce57ab4bb3a8d58a04dd3a8ea47acfd4aa69",
+        "currentSHA256": "73de9fa20b2f4c4289a4a82757c390561d0555e177dfd96ba960385f59c6eee0"
+      },
+      {
+        "path": "tests/garment_support_runtime_cli.cpp",
+        "previousSHA256": "e1bedf020c54c0c4f567cd52acab90644e85f4c54286b81169a812b7d9085e47",
+        "currentSHA256": "a59721836c045ff452cd7c3c9864bf940dafcf5c240bf633e5a9c944caa245e0"
+      }
+    ],
+    "current2Revalidation": {
+      "path": "build\\source-provenance-audit\\current2-revalidation.json",
+      "sha256": "784a6ea388db1bf7b4806ff3b4daadc08ebc8ca68aabc4b8a0e09286f7999909"
+    },
+    "sourceConsumptionRecheck": [
+      {
+        "state": 0,
+        "disabledExactParity": true,
+        "cdfRetryExactParity": true,
+        "physicalImpulseChangesSource": true,
+        "pendingNoSubstepExactParity": true,
+        "pendingCoalescingExactParity": true
+      },
+      {
+        "state": 1,
+        "disabledExactParity": true,
+        "cdfRetryExactParity": true,
+        "physicalImpulseChangesSource": true,
+        "pendingNoSubstepExactParity": true,
+        "pendingCoalescingExactParity": true
+      },
+      {
+        "state": 2,
+        "disabledExactParity": true,
+        "cdfRetryExactParity": true,
+        "physicalImpulseChangesSource": true,
+        "pendingNoSubstepExactParity": true,
+        "pendingCoalescingExactParity": true
+      }
+    ],
+    "processKernelRegenerationByteExact": true,
+    "tlsKernelDerivationOnly": true,
+    "workingTreeClean": false,
+    "cleanPinAccepted": false,
+    "garmentPhysicsAccepted": false,
+    "nativeAdoptionAccepted": false,
+    "installed": false,
+    "observedGameplay": false
+  }
 }

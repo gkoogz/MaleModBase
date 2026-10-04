@@ -7,6 +7,7 @@
 
 namespace malemod::surface {
 struct Point {float x,y,z;};
+struct ImpulsePoint {double x=0,y=0,z=0;};
 // Same public order as malemod_base.controls.ORDER, including state at index 0.
 struct Controls {
  std::array<float,18> values={2,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50};
@@ -28,13 +29,20 @@ struct Frame {
  // Target character rest samples, already calibrated into source coordinates.
  // The source evaluates its final radial target law here without donor blur.
  std::vector<Point> collarQueries;
- // Optional gentle garment load in calibrated source-local length/time^2.
- // The worker caps it at15% of the current source gravity for each body.
- // Disabled input never enters source integration arithmetic.
+ // Legacy gentle acceleration support remains capped at15% source gravity.
+ // Physical fabric uses cumulative contact impulses below, independently of
+ // gravity and source/cloth update cadence. Disabled input preserves arithmetic.
  struct GarmentSupport {
   bool enabled=false;
   Point shaftAcceleration{};
   std::array<Point,2> lobeAcceleration{};
+  // Contact-derived cumulative generalized impulses. Pinned rod0/1 receive no motion;
+  // their reaction is reported externally. Legacy gravity compensation remains
+  // a separate compatibility input and is not used by physical fabric.
+  bool contactReaction=false;
+  std::uint64_t contactEpoch=0,contactSerial=0;
+  std::array<ImpulsePoint,12> rodImpulseTotals{};
+  std::array<ImpulsePoint,2> lobeImpulseTotals{},lobeAngularImpulseTotals{};
  } garment;
  struct ClinicalProjection {
   bool active=false;double time=0;

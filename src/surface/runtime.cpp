@@ -85,8 +85,20 @@ struct Session::Impl {
   auto validateSupport=[](Point p,float limit){if(!std::isfinite(p.x)||!std::isfinite(p.y)||!std::isfinite(p.z)||double(p.x)*p.x+double(p.y)*p.y+double(p.z)*p.z>double(limit)*limit+1e-5)throw std::invalid_argument("Garment support exceeds source acceleration budget");};
   validateSupport(frame.garment.shaftAcceleration,maximumShaftSupportAcceleration);for(auto p:frame.garment.lobeAcceleration)validateSupport(p,maximumLobeSupportAcceleration);
   kernel::surfaceGarmentEnabled=frame.garment.enabled;
+  kernel::surfaceGarmentContactReaction=frame.garment.contactReaction;
   auto force=frame.garment.shaftAcceleration;kernel::surfaceGarmentShaft={force.x,force.y,force.z};
   for(unsigned i=0;i<2;i++){force=frame.garment.lobeAcceleration[i];kernel::surfaceGarmentLobes[i]={force.x,force.y,force.z};}
+  // Commit cursor and pending impulses only after every component validates.
+  // A rejected source submission must remain retryable without losing momentum.
+  auto nextCursor=kernel::surfaceGarmentCursor;auto delta=nextCursor.Consume(frame.garment);
+  std::array<kernel::V3,12> nextRod;std::array<kernel::V3,2> nextLobes,nextAngular;
+  std::copy_n(kernel::surfaceGarmentPendingRod,12,nextRod.begin());std::copy_n(kernel::surfaceGarmentPendingLobes,2,nextLobes.begin());std::copy_n(kernel::surfaceGarmentPendingAngular,2,nextAngular.begin());
+  bool nextReady=kernel::surfaceGarmentPendingReady;
+  if(delta.reset){nextRod={};nextLobes={};nextAngular={};nextReady=false;}
+  auto append=[&](auto& pending,ImpulsePoint p){for(double x:{p.x,p.y,p.z})if(!std::isfinite(x)||std::abs(x)>1e6)throw std::invalid_argument("Unstable pending garment impulse");if(p.x||p.y||p.z){auto next=pending+kernel::V3{float(p.x),float(p.y),float(p.z)};for(float x:{next.x,next.y,next.z})if(!std::isfinite(x)||std::abs(x)>1e6)throw std::invalid_argument("Unstable accumulated garment impulse");pending=next;nextReady=true;}};
+  for(unsigned i=2;i<12;i++)append(nextRod[i],delta.rod[i]);
+  for(unsigned i=0;i<2;i++){append(nextLobes[i],delta.lobes[i]);append(nextAngular[i],delta.angular[i]);}
+  kernel::surfaceGarmentCursor=nextCursor;std::copy(nextRod.begin(),nextRod.end(),kernel::surfaceGarmentPendingRod);std::copy(nextLobes.begin(),nextLobes.end(),kernel::surfaceGarmentPendingLobes);std::copy(nextAngular.begin(),nextAngular.end(),kernel::surfaceGarmentPendingAngular);kernel::surfaceGarmentPendingReady=nextReady;
   collarQueries=frame.collarQueries;
   Map(controls);
   const auto& c=frame.clinical;

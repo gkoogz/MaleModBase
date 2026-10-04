@@ -74,6 +74,7 @@ prelude='''// Generated full numerical kernel; see tools/extract_surface_runtime
 #include <Eigen/Geometry>
 #include <malemod/surface/pelvic_frame.hpp>
 #include <malemod/surface/garment_support.hpp>
+#include <malemod/surface/garment_impulse.hpp>
 #include <malemod/clinical/teaching_sequence.h>
 #ifndef _MSC_VER
 #define __forceinline inline
@@ -139,7 +140,7 @@ for d in sorted(decl,key=position):
 
  if d['name']=='PDInput':
   storage='static ' if args.process_isolated else 'static thread_local '
-  parts.append(storage+'bool surfaceGarmentEnabled=false;\n'+storage+'V3 surfaceGarmentShaft{},surfaceGarmentLobes[2]{};')
+  parts.append(storage+'bool surfaceGarmentEnabled=false,surfaceGarmentContactReaction=false,surfaceGarmentPendingReady=false;\n'+storage+'V3 surfaceGarmentShaft{},surfaceGarmentLobes[2]{},surfaceGarmentPendingRod[12]{},surfaceGarmentPendingLobes[2]{},surfaceGarmentPendingAngular[2]{};\n'+storage+'::malemod::surface::GarmentImpulseCursor surfaceGarmentCursor;')
   parts.append(storage+'bool surfaceCollisionEnabled=false;\n'+storage+'float surfaceThighRadii[2]{7.2f,7.2f},surfacePelvisRadius=6.4f,surfaceTargetThighRadii[2]{},surfaceTargetPelvisRadius=0;\n'+storage+'V3 surfacePelvis[2]{{3.f,0.f,70.f},{5.4f,0.f,86.f}},surfaceOldPelvis[2]{},surfaceTargetPelvis[2]{};')
   s=s.replace('float gait,side;', 'float gait,side; V3 surfacePelvis[2];float surfaceThighRadii[2],surfacePelvisRadius;')
  if d['name']=='Build' and d['parent']=='UnifiedCollar':
@@ -178,10 +179,19 @@ for d in sorted(decl,key=position):
  if d['name']=='StepConstraintSolver':
   old='V3 acceleration{0.f,side*86.f*response,gait*86.f*response-gravity};float drag=i<pdBody0?shaftDrag:bodyDrag;'
   new='''V3 acceleration{0.f,side*86.f*response,gait*86.f*response-gravity};
-  if(surfaceGarmentEnabled){auto a=i<pdBody0?surfaceGarmentShaft:surfaceGarmentLobes[i-pdBody0];auto bounded=::malemod::surface::BoundGarmentAcceleration({a.x,a.y,a.z},gravity);acceleration=acceleration+V3{bounded.x,bounded.y,bounded.z};}
+  if(surfaceGarmentEnabled&&!surfaceGarmentContactReaction){auto a=i<pdBody0?surfaceGarmentShaft:surfaceGarmentLobes[i-pdBody0];auto bounded=::malemod::surface::BoundGarmentAcceleration({a.x,a.y,a.z},gravity);acceleration=acceleration+V3{bounded.x,bounded.y,bounded.z};}
   float drag=i<pdBody0?shaftDrag:bodyDrag;'''
   if s.count(old)!=1:raise ValueError('Observed source acceleration integration span changed')
   s=s.replace(old,new)
+  at='PDRecoverPouchVentral();'
+  pending='''if(surfaceGarmentPendingReady){
+  for(int i=2;i<shaftNodeCount;i++)pdVelocity[i]=pdVelocity[i]+surfaceGarmentPendingRod[i]*pdInvMass[i];
+  for(int i=0;i<2;i++){pdVelocity[pdBody0+i]=pdVelocity[pdBody0+i]+surfaceGarmentPendingLobes[i]*pdInvMass[pdBody0+i];cpOmega[i]=cpOmega[i]+surfaceGarmentPendingAngular[i]*pdInvInertia[i];}
+  for(auto& p:surfaceGarmentPendingRod)p={};for(auto& p:surfaceGarmentPendingLobes)p={};for(auto& p:surfaceGarmentPendingAngular)p={};surfaceGarmentPendingReady=false;
+ }
+ '''
+  if s.count(at)!=1:raise ValueError('Observed source generalized integration span changed')
+  s=s.replace(at,pending+at)
   # Optional measured collision envelope. Keep the original expressions in the
   # reference branch so its strict floating-point replay is unchanged.
   substitutions={

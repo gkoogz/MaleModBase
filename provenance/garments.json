@@ -1,105 +1,197 @@
 {
   "schema": 1,
-  "sharedImplementation": "measured-radial-jockstrap-v4-moving-sewn-material-frame",
+  "sharedImplementation": "measured-walking-jockstrap-v6-DIRTY-development",
   "legacyChanged": false,
   "characterRecipe": "assets/garments/wolverine-jockstrap-donors.json",
   "verification": {
-    "syntheticAnimatedCases": 240,
-    "syntheticScaleRange": "1..12x plus dense40x",
-    "actualSourceVertices": 17528,
-    "actualSourceTriangles": 35000,
-    "actualSourceStates": [
-      "UI50/default,32 moving states",
-      "UI100/max,32 moving states",
-      "UI50/default,32 moving states with canonical thigh capsules"
+    "status": "Unaccepted development checkpoint; no clean adapter adoption, install or observed gameplay",
+    "workingTreeClean": false,
+    "geometryBindingRevision": 2,
+    "reactionWire": 6,
+    "opticalOpacity": 0.95,
+    "SDKPasses": [
+      "garment_band_material",
+      "garment_sewn_contact (inactive operator)",
+      "garment_rendered_contact_gradient",
+      "garment_physical_reaction",
+      "garment_lifecycle",
+      "cloth_sewing"
     ],
-    "triangleCapsuleResidual": "pass including all-vertices-outside-axis-piercing case",
-    "unitTranslationCovariance": "pass",
-    "nativeBuild": "adapter gate",
-    "observedGameplay": "adapter gate",
-    "canonicalAdapter": "Pending clean v4 pin adoption; previous v3 offline shape/contact gates pass but live motion exposed a sewn-end orientation failure.",
-    "actualGeraltFit": {
-      "states": 41,
-      "vertices": 4068,
-      "triangles": 7764,
-      "maximumUpdateMs": 62.0403,
-      "minimumSignedCapsuleDistance": 0.00243246155873081,
-      "minimumClearanceSurplus": 0.00013142535024528992,
-      "bandStretch": 1.54297242401138,
-      "ribbonSectionError": 1.94289029309402e-16,
-      "spacingRatio": 1.5093664946643,
-      "materialUvStrain": 1.0000000000001,
-      "maxRibbonEdge": 0.0555862278317242,
-      "sewnGap": 0.023828865384336,
-      "bandSewnGap": 0.0258102482997866,
-      "hemSurfaceGap": 1.18571871006689e-16,
-      "bandSurfaceGap": 5.7219584981528e-17,
-      "combinations": "9 controls plus32 articulated body donor and calibrated capsule poses",
-      "bodyRuntimeBaseCommit": "2062b2d795f5544ea181f126cab32537b8ce7c00",
-      "receiptPath": "TheWitcher3MaleMod/build/garment-shape-contact-sewn-end-26056/shape-cases.jsonl",
-      "receiptSHA256": "88990085885c48b9af4c81a047706a8d653159ebe9675d318c6dd19524160af5",
-      "status": "Offline actual native-binding diagnostic with current dirty shared implementation; not gameplay or clean final adapter adoption"
-    },
-    "sourceCpuMilliseconds": {
-      "UI50CanonicalCapsulesMean": 58.1765,
-      "UI50CanonicalCapsulesWorst": 65.3295,
-      "UI50NoContactsMean": 27.9176,
-      "UI100NoContactsMean": 29.6176,
-      "syntheticMean": 8.78021,
-      "timingScope": "Serialized source runs. Concurrent compile/test produced63.7735ms contact mean exceeding60ms guard; identical serialized run passed. Geometry tests exclude validation/OBJ export timing."
-    },
-    "sharedCTest": {
-      "passed": 15,
-      "failed": 0
-    },
-    "shapeContracts": [
-      "actual complete-triangle signed capsule clearance",
-      "rigid strap cross-section width/thickness",
-      "band material stretch below1.8",
-      "strap spacing ratio below3 generic and2 actualGeralt",
-      "actual cloth surface stitches at both ends within1e-6 measured circumference",
-      "fixed topology and donor lineage",
-      "level measured-frame waist stripes",
-      "material UV density follows actual fitted arclength"
+    "SDKArchitectures": [
+      "MSVC x64",
+      "new band_material and inactive sewn_contact helpers additionally MSVC x86 /fp:precise"
     ],
-    "movingSewnEndVerification": {
-      "inputSHA256": "6054b01ecf2b9598c71fd974591dd52294f0cb35f67c861fcd956ee0d9996486",
-      "replayReceiptSHA256": "9a06ff3f713453606b482060d0dc5862812890603db8e596849bb4bb23875751",
-      "capturedRawInputObservedInGame": true,
-      "correctedGameplayObserved": false,
-      "priorTranslationOnlySewingFailed": true,
-      "priorFullTriangleContactClearancePassed": true,
-      "cause": "Fixed end cross-section could not physically meet moving hem without consuming body clearance",
-      "nearestSewingGapBeforeCorrectionMeters": 0.005027126966708683,
-      "minimumSignedDistanceAfterCorrectionMeters": 0.0038292024581405154,
-      "requiredClearanceMeters": 0.0022975214609674047,
-      "contactPassed": true,
-      "clearanceUnchanged": true,
-      "widthThicknessPreserved": true,
-      "maximumRibbonEdgeMeters": 0.046342599959,
-      "spacingRatio": 1.413837510784,
-      "maximumTranslationCovarianceErrorMeters": 1.7311037701174258e-11,
-      "unit100CovarianceErrorCallerUnits": 1.6174976622892776e-10,
-      "coordinateVariants": [
-        "local pelvic origin",
-        "plus1000 caller units",
-        "minus1000 caller units",
-        "100-fold caller units"
-      ],
-      "dataPolicy": "Captured input/OBJ/receipts remain ignored private artifacts; no captured data is committed",
-      "adapterReplayTool": "TheWitcher3MaleMod/native/garment_failure_replay_test.cpp"
+    "existingSyntheticClothGate": "REJECTED: synthetic anatomy fixture has multiple or unmatched open loops; not a native source acceptance result",
+    "requiredCurrentGates": [
+      "Complete actual72-case rest geometry/coverage/turn/seam matrix",
+      "Current-source sustained feedback and gravity with full geometry, strain, rendered-seam and reaction checks",
+      "Required worker cadence",
+      "Clean pinned native builds and independent isolated gameplay"
+    ],
+    "checkpointDetails": {
+      "privateReceiptName": "candidate38-actual-growth-activation.json",
+      "privateReceiptSHA256": "2866429c3b7fef99d5c2533c387334d5b9ccf6a3f7adef45399c87101f79a24d",
+      "meaning": "Ignored checkpoint receipt retained separately; no captured geometry/settings/audio included here",
+      "candidate": 38,
+      "sourceRestOnly": true,
+      "expectedCases": 8,
+      "actualCases": 8,
+      "matrix": {
+        "families": [
+          "geralt",
+          "wolverine"
+        ],
+        "overall": [
+          25,
+          50,
+          75,
+          100
+        ],
+        "state": [
+          2
+        ],
+        "angle": [
+          50
+        ]
+      },
+      "allEightNeutralRestCasesPassed": true,
+      "receiptPath": "C:\\Users\\Administrator\\Documents\\ChatGPT\\TheWitcher3MaleMod\\build\\previews\\current\\candidate38-actual-growth-activation.json",
+      "receiptArtifactsHashRechecked": true,
+      "compiledHeaderHashesMatchCurrentSource": true,
+      "compiledHeaderCount": 54,
+      "cleanPinVerified": false,
+      "full72CasesAccepted": false,
+      "fullMeshSewnConstructionCertified": false,
+      "dynamicClothAccepted": false,
+      "nativeAdoptionAccepted": false,
+      "installed": false,
+      "observedGameplay": false,
+      "scope": "Only eight neutral source REST cases; individual-component and sheet gates. Complete sewn construction, all72 controls, moving cloth, cadence and native/gameplay remain unmet.",
+      "runnerNote": "Original runner returned1 after all8 complete source sampler exitCode0 receipts; aggregation reconstructed without rerunning fits"
+    },
+    "privatePriorChartNumerics": {
+      "sourceStates": "Only canonical default50 feedback48 frames plus captured Geralt default50 gravity60 steps",
+      "externalPhysicalMaterialAndRenderedSeams": "PASS on that frozen prototype",
+      "selfConsistency": "REJECTED:246 proper sheet crossings already in dt0 fit",
+      "cadence": "REJECTED:cached projector median500.714ms/sourceframe",
+      "productionSewnContactEnabled": false,
+      "meaning": "Private exploratory rejected geometry; cannot certify current implementation or gameplay"
+    },
+    "preservedAnatomy": "Complete source body/anatomy retained; no clothing visibility replacement",
+    "legacyChanged": false,
+    "privateFrozen19Numerics": {
+      "receiptSHA256": "e01a8a1cd5e7361a77b91b64c63aac6fd42dfad6b0935f463869708b3d5ae02a",
+      "meaning": "Private frozen19 diagnostic only; does not certify current static revisions or production physics",
+      "states": {
+        "sourceFeedback": 48,
+        "gravity": 60
+      },
+      "dt0ProperCrossings": {
+        "static-rest-audit.json": 0,
+        "dt0-rest-audit.json": 0
+      },
+      "sourceMaximumProperCrossings": 166,
+      "gravityMaximumProperCrossings": 180,
+      "sourceMedianMilliseconds": 480.80285,
+      "gravityMedianMilliseconds": 70.1722,
+      "externalContactAndMaterialBudgets": true,
+      "selfConsistencyPassed": false,
+      "cadencePassed": false,
+      "productionSewnContactEnabled": false,
+      "productionSelfContactEnabled": false
+    },
+    "privateSelfContactSmoke": {
+      "receiptSHA256": "0f9e14cdf53024f23f5669d7c796529911e5cb83fe5b9630830abb0da6e8ffa7",
+      "scope": "Private frozen19, one failed canonical default50 source frame; no production activation",
+      "completedFrames": 1,
+      "contactsSatisfied": false,
+      "materialSatisfied": true,
+      "fineStretchRatio": 1.064789198791556,
+      "sheetCrossings": 0,
+      "sheetCoplanarOverlaps": 0,
+      "degenerateFaces": 0,
+      "stepMilliseconds": 46295.6051,
+      "accepted": false,
+      "cadencePassed": false,
+      "productionActivated": false,
+      "replayExpansionStopped": true
     }
   },
   "fileHashes": {
-    "include/malemod/garments/jockstrap.hpp": "02b509d816af77754312d613204989dbbc0546a7b94e2c5753727daf11f3b3e1",
-    "include/malemod/garments/jockstrap_detail.hpp": "e5d6a6e1631735897891582a46179e9aa9af092f74472d53fd9bd997d48970e7",
-    "assets/garments/wolverine-jockstrap-donors.json": "e239890d0eaf644f18555884340c0560efb59991742c3c9a1b456c2dc97df2e5",
-    "tools/prepare_garment_source.py": "6ab447788dc3e0b66f77f28f5c9961b8b7421e03d65edb3d359903b85824298c",
-    "tools/bake_garment_materials.py": "86dd20a2a6950a600f63f344deeb2b5d77c8dd5bc504619b646b56a10de5d793",
-    "tests/garment_test.cpp": "1e2bae6470f9340198ac2faa74ff77ebb6c4a6b6947e0a2f2f8ac072411d8134",
-    "tests/garment_shape_checks.hpp": "a25c94f32cf97a59464063d36f8a509b1cb2ab84490a36e54ae40f583df4555e",
-    "docs/GARMENTS.md": "5006e8a2012bcf7a07ede19465f9e9c185e7dd7e3a239a1f9cc5315172e64827",
-    "docs/GARMENT-CONTACT-REPAIR.md": "d44e864d34869406d4d2ac8b42ed9eeb12397fdda53c1f8716449e2479d5dc6d"
+    "assets/garments/wolverine-jockstrap-donors.json": "cff5232988888e03c7eb87883a0eb63fa9151e3eecbbbe5a26162e364384b8d0",
+    "CMakeLists.txt": "2b8e86b265162d59d7acd2f38c8fbdbfb16ffa19db4dc55b3c727dba47ea870a",
+    "docs/GARMENT-CONTACT-REPAIR.md": "d44e864d34869406d4d2ac8b42ed9eeb12397fdda53c1f8716449e2479d5dc6d",
+    "docs/GARMENT-GEOMETRY-AUDIT.md": "f99a4f473b3b9bdc3b3ab6c4821897a84930d74ab12b17378f9091c3a782b2e0",
+    "docs/GARMENT-NUMERICAL-SUPPORT.md": "80e7cc520d149761f09ff625b21c0829ef066b885943c6083f44ff5b309a59c8",
+    "docs/GARMENT-QUERY-PERFORMANCE.md": "16c78458963f7a465a1c0d33d28cbf8d1f2f504854ff8af91375c344d0fe5ce3",
+    "docs/GARMENT-REACTIONS.md": "12fb1b7a8374bc419ac26b30f40527283c14ad9f144501d4cfa77580fca7bd08",
+    "docs/GARMENTS.md": "595e3968dc9bdc559723aa67e2d9a924bccede2795455484e7a3b555001bb346",
+    "docs/WAISTBAND-CONTOURS.md": "a51e11379e3d6b896cc7328772a2b1f5d8545168b96a6ef2133d78979c9c0aae",
+    "include/malemod/garments/band_material.hpp": "fae1214ae54029f731b79f2f56c51b717594df885b9fa9b817f2b58324c7a177",
+    "include/malemod/garments/band_rest.hpp": "67126bb711edbf985c2b1c1a910c394d93ec29931f6fccf27b8588357fa1da93",
+    "include/malemod/garments/body_surface.hpp": "f3e28a801f62374077edf54f28af2267587b787a9ffa2695e7adf17c1539ebc3",
+    "include/malemod/garments/cloth_detail.hpp": "1b0578de94fd512a581956ffaee71c8228f211526760cb753e7eb4c5f8be719d",
+    "include/malemod/garments/cloth_reaction.hpp": "3b7d38d47df5ac80bf576c9b8e61ef9faf82417e58809e6bf93cdb8cd2263050",
+    "include/malemod/garments/cloth_stretch.hpp": "40fca9a3d45e782360afe4d3cff1c53dbdfe1a41151a56037dddaac7a1fc5e56",
+    "include/malemod/garments/contact_velocity.hpp": "0b405f733b9ebce5f5f81dccd32ce6136f3a28c58de16416a55806826ebb2a07",
+    "include/malemod/garments/drape_chart.hpp": "1b8b9b239fe6aeda5bbf967a529453c935ff147f7b0a45864334ead6c4efc981",
+    "include/malemod/garments/drape_hull.hpp": "19e4bbf96bc24b0b06b939da3c541c00bc59b81dccb0b5e3f3d19bc9618a4215",
+    "include/malemod/garments/drape_section.hpp": "88101664efca1435b0682dfbf7a1b8821801339ad4a1968e91b61f46611eacae",
+    "include/malemod/garments/drape_sheet.hpp": "8da46939c04749ba207fdfa3eef74c1c21c92e54349f22071a01cbb1ecba9c1d",
+    "include/malemod/garments/geometry_export.hpp": "8b214acffbed298b389254f67b3834e12dc6a6274d4131b0c377b2b31e6d229b",
+    "include/malemod/garments/jockstrap.hpp": "d8b91163dbc8dd7a08f254dc188dfaa9c081abbedc88b84dd917c1c2a721790b",
+    "include/malemod/garments/jockstrap_detail.hpp": "b7d73cc14351847c4ea9f4a707e880ad7bbcadd31b70f3ea10635e8c226ece39",
+    "include/malemod/garments/material_grid.hpp": "9e51498d03e853cd708d1a6357eafba1fa60d49f7b42657d53eb651888785f57",
+    "include/malemod/garments/natural_band.hpp": "101a595bb200997ee31bb41ddef568c46b6d46991a1d0fa5478a2a751b94d611",
+    "include/malemod/garments/numerical_support.hpp": "ae38ff5611947e4a87641f44014591d322da662a7f2c3a88ab6de17ec55ad082",
+    "include/malemod/garments/proximity_cache.hpp": "38c7b55b33530088620d3b4b3102e0639c6806cd01b83300d25604a9e765da60",
+    "include/malemod/garments/reaction_support.hpp": "ea4491fc85b7216b1a0766fac3ba5c232edf964973359205e01b5d3a5648aa3f",
+    "include/malemod/garments/render_contact.hpp": "32e55250faa8b370e1e825ebc0576e4484646df5c3685d2bce86c68a2ced7fd3",
+    "include/malemod/garments/root_closure.hpp": "ce6a85d74f68cc34a94c9b6294323ecd3459a35440309b217ad4ebb42922faaf",
+    "include/malemod/garments/sewn_contact.hpp": "6919f6445f08f6022223a032dbfe06c78e11984d89e86d8859a885492d7a22eb",
+    "include/malemod/garments/sheet_fit.hpp": "39d07ab5d5392d11859cf310dff9011d8ba6bf3873a2acf7ea7d64b5ecb87b7a",
+    "include/malemod/garments/strap_route.hpp": "bc67d7d807897c392883c9b4cb2b4a55b71a4c345b5cbc42ff911c837d69e5e6",
+    "include/malemod/garments/surface_classification.hpp": "c1109f96d19b75b049f17d9c3a2130a9cf6cca9e4d4c47d13d40b897821a6c83",
+    "include/malemod/garments/waist_contours.hpp": "e741c81dc6082ac9e817a05daba9e7b877a793fb218b878fdc17b3db99566eaa",
+    "include/malemod/garments/waist_graft.hpp": "1dd8880d3ab85ad88d9dc7da07e3c45efc6190ef59bc9721ed4661dcd77df314",
+    "malemod_base/garment_coverage.py": "abaed32603d7e3a5c98c22ab655f9d39ceb695f7eaf26a249116e9bf29af050d",
+    "malemod_base/garment_geometry_audit.py": "135d9a4d84da13e99aea2def2b3a64b620f470d43419c9f35c81a4bc9b9f4bf8",
+    "malemod_base/garment_reactions.py": "6330f201697b75dbd9fed75b1aabc0a9784d4fb66762029a21a89626825618e0",
+    "malemod_base/garment_regions.py": "5271c9ea84e376bde12743b792ac3938d2474c434368b508d0c97db8a500f0fc",
+    "malemod_base/garment_routes.py": "9976724faf93e28d668f92020f403d6584d6e701c9aafcbf255fc18909069be1",
+    "tests/band_material_test.cpp": "62b7661dac4fded7e8e1738d5dfc1b26bcb66cbcd4f3d0b5cbfb71ea16356e8c",
+    "tests/cloth_sewing_test.cpp": "203941608790636ec269a1790ed8c75c069da598eaa9f44649f45d2f61ed510f",
+    "tests/drape_chart_test.cpp": "4f13b43a152a87670c0bee6217218881a5bdc7818d19e242c45c2b3b8b1d4e6f",
+    "tests/drape_hull_test.cpp": "352002242b8f640042d70c5c031ea4b53a4fcbf277d11f4e30f7dba455e4145f",
+    "tests/drape_sheet_test.cpp": "42f5d4a69f35376164c1c752617d081d41d5d92951e6e6b0a80a7879cf20e462",
+    "tests/garment_cloth_test.cpp": "b4608a88f606dfb88a77b1f14cdce36d78b5ddfa16cd0e868e65352e5cd6636d",
+    "tests/garment_hem_checks.hpp": "715e22776bb5c28f25a56b7a52cf4e032385bcf2400f3aa2517eb45710a32723",
+    "tests/garment_hem_test.cpp": "0929859db58d421d7ecd0e7088f36fab6741f1dbc2444b98f02226e5b472b8a8",
+    "tests/garment_lifecycle_test.cpp": "0d9725b056d72b5306c4d7f8bf50bf4d8eecfa222ec024e2bc6172cc0dc39d76",
+    "tests/garment_reaction_test.cpp": "36309ee701dde35eafbaa140aba61cd2e70693f866721e6903b2868588affcea",
+    "tests/garment_shape_checks.hpp": "e31387b30d1df68c74defd847ff1b7be5e414d7610f137720a9de70b5aa89e24",
+    "tests/garment_support_runtime_cli.cpp": "a59721836c045ff452cd7c3c9864bf940dafcf5c240bf633e5a9c944caa245e0",
+    "tests/garment_support_test.cpp": "4c3057b3caec850ea941594e75a16ef505ff77b8924f5f0633e6541a6b821c8b",
+    "tests/garment_test.cpp": "d34e288bd933be66c1ee4e71a7c53874f1b3e6130ae2690cd4e0dbb1e18812f2",
+    "tests/geometry_export_test.cpp": "aadb869174d6e680a633eb6ab9f4257ff1ca9eb614e69169022f79ef43b51366",
+    "tests/natural_band_test.cpp": "9705c26b14ca7ce1c0a6303a6339055185f7d2ad2baba64a46f84ed77ec0935f",
+    "tests/render_contact_test.cpp": "fe664bf25c2b018f5c301e6578ec51a729d813b135d8f31782ad7f526fd1232d",
+    "tests/sewn_contact_test.cpp": "e6ed786acc30263cef4fc1ac9ba7d8f28e03233c25b4e5252d2f75eda516dab6",
+    "tests/strap_route_test.cpp": "80241ce41cf2da2d541cdf42a6fb0c207d32a5d95dbb09f7d6f34f61677f58ed",
+    "tests/test_garment_coverage.py": "e5b56a2ee17e767393e944197d3008b8444332a623eb8294e4a3968d2357974a",
+    "tests/test_garment_geometry_audit.py": "a831b1659bb0e507f4ef3f8dc181a3800010705e956bfc45c81a49584a090cf9",
+    "tests/test_garment_reactions.py": "283e0d23384f3d2017b66794c1575a781798e0a05b95fc2f7c0bbd55630fedeb",
+    "tests/test_garment_regions.py": "68d1eb7c8641ac432b9d7e823ffecda3f47dcea0505d0193386b44bf1bf109db",
+    "tests/test_garment_routes.py": "5256b48b59b9b555891d13c319f161bcfdf4700f07bc9094eb68b90fe8575c36",
+    "tests/waist_contours_test.cpp": "73874700be7caf9f6e4d5e591bd9182401d4a234784d918235812388c85262bd",
+    "tests/waist_graft_test.cpp": "d6e397a3045f20023768307de749ad9c15b62e980e59bec53ae4ab9c0d40593d",
+    "tools/audit_garment_matrix.py": "0cabfeb8f8745247fe26d6b9db472eebea4c831c54e1f20c248bddf12f4ccdfc",
+    "tools/audit_surface_intersections.cpp": "5da8bbd9be7bac336770d2925d69ce808ccaf956b65080edae71cba4fc70a9fd",
+    "tools/bake_garment_materials.py": "9bda19a3897d9139ccfb20a7b50851714a41ec25feb6f19026700529a055ecf4",
+    "tools/garment_source_routes.py": "b9712e67bd1a629c6bb64bf54b2b0033b6a9d15110176d20ac52255778ac647b",
+    "tools/prepare_garment_source.py": "049e413a706f056f4827478ac9151a8d5783d7ba9853dde26f71d6e5701e959e",
+    "tools/test_garment_worker_support.py": "7c2e79e2ec69366400ff8ed028e8177884e4416aca00e389f9e0b52ebe15fe5b",
+    "tools/verify_garment_source_reactions.py": "bbad2e2b8cfa8f6c75c984bd26260d69c17f3af3a32649835bef815f3d1d7f77"
   },
   "historicalVerification": {
     "v2ActualGeraltFit": {
@@ -133,6 +225,188 @@
       "receiptPath": "TheWitcher3MaleMod/build/garment-shape-contact-final12/shape-cases.jsonl",
       "receiptSHA256": "8c54de59397b94f3447c0c6f5854e78ed32ffd9d8767b497239685ed91987124",
       "status": "Offline actual native-binding diagnostic with current dirty shared implementation; not gameplay or clean final adapter adoption"
+    },
+    "v4Checkpoint": {
+      "sharedImplementation": "measured-radial-jockstrap-v4-moving-sewn-material-frame",
+      "verification": {
+        "syntheticAnimatedCases": 240,
+        "syntheticScaleRange": "1..12x plus dense40x",
+        "actualSourceVertices": 17528,
+        "actualSourceTriangles": 35000,
+        "actualSourceStates": [
+          "UI50/default,32 moving states",
+          "UI100/max,32 moving states",
+          "UI50/default,32 moving states with canonical thigh capsules"
+        ],
+        "triangleCapsuleResidual": "pass including all-vertices-outside-axis-piercing case",
+        "unitTranslationCovariance": "pass",
+        "nativeBuild": "adapter gate",
+        "observedGameplay": "adapter gate",
+        "canonicalAdapter": "Pending clean v4 pin adoption; previous v3 offline shape/contact gates pass but live motion exposed a sewn-end orientation failure.",
+        "actualGeraltFit": {
+          "states": 41,
+          "vertices": 4068,
+          "triangles": 7764,
+          "maximumUpdateMs": 62.0403,
+          "minimumSignedCapsuleDistance": 0.00243246155873081,
+          "minimumClearanceSurplus": 0.00013142535024528992,
+          "bandStretch": 1.54297242401138,
+          "ribbonSectionError": 1.94289029309402e-16,
+          "spacingRatio": 1.5093664946643,
+          "materialUvStrain": 1.0000000000001,
+          "maxRibbonEdge": 0.0555862278317242,
+          "sewnGap": 0.023828865384336,
+          "bandSewnGap": 0.0258102482997866,
+          "hemSurfaceGap": 1.18571871006689e-16,
+          "bandSurfaceGap": 5.7219584981528e-17,
+          "combinations": "9 controls plus32 articulated body donor and calibrated capsule poses",
+          "bodyRuntimeBaseCommit": "2062b2d795f5544ea181f126cab32537b8ce7c00",
+          "receiptPath": "TheWitcher3MaleMod/build/garment-shape-contact-sewn-end-26056/shape-cases.jsonl",
+          "receiptSHA256": "88990085885c48b9af4c81a047706a8d653159ebe9675d318c6dd19524160af5",
+          "status": "Offline actual native-binding diagnostic with current dirty shared implementation; not gameplay or clean final adapter adoption"
+        },
+        "sourceCpuMilliseconds": {
+          "UI50CanonicalCapsulesMean": 58.1765,
+          "UI50CanonicalCapsulesWorst": 65.3295,
+          "UI50NoContactsMean": 27.9176,
+          "UI100NoContactsMean": 29.6176,
+          "syntheticMean": 8.78021,
+          "timingScope": "Serialized source runs. Concurrent compile/test produced63.7735ms contact mean exceeding60ms guard; identical serialized run passed. Geometry tests exclude validation/OBJ export timing."
+        },
+        "sharedCTest": {
+          "passed": 15,
+          "failed": 0
+        },
+        "shapeContracts": [
+          "actual complete-triangle signed capsule clearance",
+          "rigid strap cross-section width/thickness",
+          "band material stretch below1.8",
+          "strap spacing ratio below3 generic and2 actualGeralt",
+          "actual cloth surface stitches at both ends within1e-6 measured circumference",
+          "fixed topology and donor lineage",
+          "level measured-frame waist stripes",
+          "material UV density follows actual fitted arclength"
+        ],
+        "movingSewnEndVerification": {
+          "inputSHA256": "6054b01ecf2b9598c71fd974591dd52294f0cb35f67c861fcd956ee0d9996486",
+          "replayReceiptSHA256": "9a06ff3f713453606b482060d0dc5862812890603db8e596849bb4bb23875751",
+          "capturedRawInputObservedInGame": true,
+          "correctedGameplayObserved": false,
+          "priorTranslationOnlySewingFailed": true,
+          "priorFullTriangleContactClearancePassed": true,
+          "cause": "Fixed end cross-section could not physically meet moving hem without consuming body clearance",
+          "nearestSewingGapBeforeCorrectionMeters": 0.005027126966708683,
+          "minimumSignedDistanceAfterCorrectionMeters": 0.0038292024581405154,
+          "requiredClearanceMeters": 0.0022975214609674047,
+          "contactPassed": true,
+          "clearanceUnchanged": true,
+          "widthThicknessPreserved": true,
+          "maximumRibbonEdgeMeters": 0.046342599959,
+          "spacingRatio": 1.413837510784,
+          "maximumTranslationCovarianceErrorMeters": 1.7311037701174258e-11,
+          "unit100CovarianceErrorCallerUnits": 1.6174976622892776e-10,
+          "coordinateVariants": [
+            "local pelvic origin",
+            "plus1000 caller units",
+            "minus1000 caller units",
+            "100-fold caller units"
+          ],
+          "dataPolicy": "Captured input/OBJ/receipts remain ignored private artifacts; no captured data is committed",
+          "adapterReplayTool": "TheWitcher3MaleMod/native/garment_failure_replay_test.cpp"
+        },
+        "measuredLateralHipRecipe": {
+          "status": "Measured source export only; persistent fit/contact/performance and observed gameplay remain pending",
+          "sideAxes": [
+            "negative Y",
+            "positive Y"
+          ],
+          "nativeSourceSHA256": "c4075718353b229faafa3c2a6b558d3a07c74785336b0b0f703f20bbfa818f25",
+          "routeSamples": [
+            21,
+            20
+          ],
+          "startCoordinates": [
+            [
+              0,
+              -13.688652,
+              94.75
+            ],
+            [
+              0,
+              13.688382,
+              94.75
+            ]
+          ],
+          "guideWaypoints": [
+            "lateral hip midpoint",
+            "posterior hip",
+            "under glute fold",
+            "medial return",
+            "inner thigh/pouch"
+          ],
+          "nativeDrawIndicesChanged": false,
+          "priorBug": "Negative-Y target was multiplied by side while candidates required Y*side>0; this targeted the opposite side and selected centerline donors",
+          "stableDonorRecipeAcrossStates": true,
+          "routeRecipeVersion": 2
+        },
+        "authoredAnatomyGuideRegions": {
+          "semanticVersion": 1,
+          "sourceVertices": 17528,
+          "sourceTriangles": 35000,
+          "counts": {
+            "shaft": 5448,
+            "glans": 2993,
+            "leftLobe": 3851,
+            "rightLobe": 3771
+          },
+          "lineage": "Authored R14 crown/rings and original mechanical scrotal fields through exact R14/rs/nr signed lineage",
+          "pythonGate": "tests/test_garment_regions.py passed",
+          "nativeDrawIndicesChanged": false,
+          "newSheetWalkVerified": false,
+          "observedGameplay": false
+        },
+        "measuredRootBoundary": {
+          "version": 1,
+          "vertices": 54,
+          "previousCoarseGuides": 13,
+          "existingNativeIDsOnly": true,
+          "physicalTrianglesChanged": false,
+          "pythonGate": "tests/test_garment_regions.py passed",
+          "nativeAllStateClosureVerified": true,
+          "newSheetWalkVerified": false,
+          "observedGameplay": false,
+          "offlineCanonicalCases": 16,
+          "bodySurfaceVertices": 20783,
+          "bodySurfaceTriangles": 38666,
+          "anatomyClassificationCapFaces": 52,
+          "bodyClassificationCapFaces": 64,
+          "separateSurfacesUnmatchedEdges": 0,
+          "coupledBodyRootClosureVerified": false,
+          "receiptSHA256": "645e2d97ef8dc2a8938c28a681020e4039c044dc1bf7c90352b5345c12e455f1",
+          "sourceEvaluatorSHA256": "9db41ad223048b865a2de7a09b14083ba32c722f2be3882643a173ac5f04e2f5",
+          "sheetWalkStatus": "Combined bodyroot closure exposed coarse20/refined54 T junction; shared classifier repair pending"
+        }
+      },
+      "fileHashes": {
+        "include/malemod/garments/jockstrap.hpp": "02b509d816af77754312d613204989dbbc0546a7b94e2c5753727daf11f3b3e1",
+        "include/malemod/garments/jockstrap_detail.hpp": "e5d6a6e1631735897891582a46179e9aa9af092f74472d53fd9bd997d48970e7",
+        "assets/garments/wolverine-jockstrap-donors.json": "cff5232988888e03c7eb87883a0eb63fa9151e3eecbbbe5a26162e364384b8d0",
+        "tools/prepare_garment_source.py": "2a6828795f4a9656acc39ce0422bfcc36274e03a1a260677b56742800fc3a59f",
+        "tools/bake_garment_materials.py": "86dd20a2a6950a600f63f344deeb2b5d77c8dd5bc504619b646b56a10de5d793",
+        "tests/garment_test.cpp": "1e2bae6470f9340198ac2faa74ff77ebb6c4a6b6947e0a2f2f8ac072411d8134",
+        "tests/garment_shape_checks.hpp": "a25c94f32cf97a59464063d36f8a509b1cb2ab84490a36e54ae40f583df4555e",
+        "docs/GARMENTS.md": "fff6c14739152d39d565b0deb07ac498f685e28d8a1186eac05edff8b353cbb3",
+        "docs/GARMENT-CONTACT-REPAIR.md": "d44e864d34869406d4d2ac8b42ed9eeb12397fdda53c1f8716449e2479d5dc6d",
+        "tools/garment_source_routes.py": "6001a9a06f45e65006fd1558509322cb4a28436df993f663d426ffc2cac0c6ae",
+        "malemod_base/garment_regions.py": "5271c9ea84e376bde12743b792ac3938d2474c434368b508d0c97db8a500f0fc",
+        "tests/test_garment_regions.py": "68d1eb7c8641ac432b9d7e823ffecda3f47dcea0505d0193386b44bf1bf109db"
+      }
     }
+  },
+  "developmentCheckpoint": {
+    "baseCommit": "99ff741ea95f18ed84526c35a6c3f38a37d857b6",
+    "workingTreeClean": false,
+    "sourceScope": "Current dirty file content only; no release or clean-pin claim",
+    "historicalReceiptsPreserved": true
   }
 }

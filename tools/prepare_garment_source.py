@@ -4,7 +4,11 @@ No installation. Canonical source arrays remain read-only.
 import argparse,hashlib,json,re,struct
 from pathlib import Path
 import numpy as np
+import sys
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
+from garment_source_routes import measure_wolverine_routes
+from malemod_base.garment_regions import reference_anatomy_semantics,anatomy_regions,anatomy_regions_header,SEMANTIC_VERSION,full_source_root_boundary,ROOT_BOUNDARY_VERSION
 def table(text,name):
  m=re.search(r'\b'+name+r'\s*\[[^]]*\]\s*=\s*\{(.*?)\};',text,re.S)
  if not m: raise ValueError(name)
@@ -40,23 +44,22 @@ def main():
    if r>0 and -1e-6<=t<=1+1e-6 and (best is None or r>best[0]):best=(r,blend(da,db,float(np.clip(t,0,1))))
   if best is None:raise ValueError('waist contour ray missing '+str(k))
   waist.append(best[1])
- z=np.load(ROOT/'assets/wolverine-reference/geometry.npz');seam=z['unified_collar_data__ucSeamVertices'].reshape(-1,3);opening_ids=np.unique(z['unified_collar_data__ucKeep'][seam[:,1:]])
- anatomy=np.fromfile(args.evaluated/'surface.xyz','<f4').reshape(-1,3);center=anatomy[opening_ids].mean(axis=0);opening_ids=sorted(map(int,opening_ids),key=lambda i:np.arctan2(anatomy[i,2]-center[2],-(anatomy[i,1]-center[1]))%(2*np.pi))
- # Rear paths selected on measured outer glute surface. These recipe targets
- # locate actual surface donors once; they are not assumed future game units.
- targets=[[-8,-10,92],[-13,-9,83],[-10,-8,75],[0,-7,74]]
- straps=[]
- for side in (-1,1):
-  path=[]
-  for target in targets:
-   p=np.array(target,float);p[1]*=side
-   candidates=np.where((body[:,2]>70)&(body[:,2]<99)&(body[:,0]<4)&(body[:,1]*side>0))[0]
-   i=int(candidates[np.argmin(np.linalg.norm(body[candidates]-p,axis=1))]);path.append({int(ids[i]):1.})
-  straps.append(path)
+ z=np.load(ROOT/'assets/wolverine-reference/geometry.npz');anatomy=np.fromfile(args.evaluated/'surface.xyz','<f4').reshape(-1,3)
+ native_triangles=np.fromfile(args.evaluated/'surface.xyz.indices','<u2').reshape(-1,3);opening_ids=full_source_root_boundary(anatomy,native_triangles).tolist()
+ # Calibrated same-side lateral hip/under-glute paths follow actual body edges.
+ straps,routeProof=measure_wolverine_routes(body,ids,faces,waist)
  if args.recipe:
-  saved=json.loads(args.recipe.read_text());waist=[{int(k):v for k,v in row.items()} for row in saved['waist']];opening_ids=[int(next(iter(row))) for row in saved['opening']];straps=[[{int(k):v for k,v in row.items()} for row in path] for path in saved['rearStraps']]
- recipe={'schema':1,'sourceCoordinates':{'forward':'+X','lateral':'-Y','up':'+Z','unit':'uncalibrated source model unit'},'waistPlane':height,'waist':waist,'opening':[{i:1.} for i in opening_ids],'rearStraps':straps,'sourceHashes':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in [args.runtime/'menu_retarget_body_data.h',args.runtime/'neck_render_data.h',ROOT/'assets/wolverine-reference/geometry.npz']}}
- (args.out/'wolverine-jockstrap-donors.json').write_text(json.dumps(recipe,indent=2)+'\n')
+  saved=json.loads(args.recipe.read_text());
+  if saved.get('routeRecipeVersion')!=3 or saved.get('rootBoundaryVersion')!=ROOT_BOUNDARY_VERSION or not saved.get('measuredStrapRoutes'):raise ValueError('Obsolete route or coarse root recipe; regenerate the measured complete opening')
+  waist=[{int(k):v for k,v in row.items()} for row in saved['waist']];saved_opening=[int(next(iter(row))) for row in saved['opening']];
+  if saved_opening!=opening_ids:raise ValueError('Measured complete root opening differs from recipe')
+  straps=[[{int(k):v for k,v in row.items()} for row in path] for path in saved['rearStraps']];routeProof=saved.get('measuredStrapRoutes',[])
+ recipe={'schema':3,'rootBoundaryVersion':ROOT_BOUNDARY_VERSION,'rootBoundaryVertices':len(opening_ids),'routeRecipeVersion':3,'sourceCoordinates':{'forward':'+X','lateral':'-Y','up':'+Z','unit':'uncalibrated source model unit'},'waistPlane':height,'waist':waist,'opening':[{i:1.} for i in opening_ids],'rearStraps':straps,'measuredStrapRoutes':routeProof,'sourceHashes':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in [args.runtime/'menu_retarget_body_data.h',args.runtime/'neck_render_data.h',Path(__file__),Path(__file__).with_name('garment_source_routes.py'),ROOT/'assets/wolverine-reference/geometry.npz']}}
+ regions=anatomy_regions(reference_anatomy_semantics(z))
+ recipe['sourceHashes']['garment_routes.py']=hashlib.sha256((ROOT/'malemod_base/garment_routes.py').read_bytes()).hexdigest()
+ recipe['sourceHashes']['garment_regions.py']=hashlib.sha256((ROOT/'malemod_base/garment_regions.py').read_bytes()).hexdigest()
+ recipe['anatomySemantics']=dict(version=SEMANTIC_VERSION,groupCounts={k:len(v) for k,v in regions.items()},fullAnatomyVertices=len(anatomy),nativeDrawIndicesChanged=False)
+ (args.out/'wolverine-jockstrap-donors.json').write_text(json.dumps(recipe,indent=2)+'\n',newline='\n')
  # Flat arrays permit the canonical runtime to consume donor recipes without
  # JSON/Python or copying shared garment implementation into the adapter.
  lines=['#pragma once','// Measured original-edge/source-vertex donors; generated by Base tools/prepare_garment_source.py.','struct JockstrapMeasuredDonor {unsigned vertex; double weight;};','struct JockstrapMeasuredSample {JockstrapMeasuredDonor donors[4];};']
@@ -65,7 +68,9 @@ def main():
   for row in rows:
    entries=list(row.items())+[(0,0)]*(4-len(row));lines.append(' {{{'+ '},{'.join(str(k)+','+format(v,'.17g') for k,v in entries)+'}}},')
   lines.append('};')
- (args.out/'jockstrap_measured_data.h').write_text('\n'.join(lines)+'\n')
+ (args.out/'jockstrap_measured_data.h').write_text('\n'.join(lines)+'\n',newline='\n')
+ (args.out/'jockstrap_regions_data.h').write_text(anatomy_regions_header(regions),newline='\n')
+ (args.out/'anatomy-regions.json').write_text(json.dumps(dict(semanticVersion=SEMANTIC_VERSION,fullAnatomyVertices=len(anatomy),fullAnatomyTriangles=len(np.fromfile(args.evaluated/'surface.xyz.indices','<u2'))//3,groups={k:v.tolist() for k,v in regions.items()},sourceAssetSHA256=hashlib.sha256((ROOT/'assets/wolverine-reference/geometry.npz').read_bytes()).hexdigest(),exporterSHA256=hashlib.sha256((ROOT/'malemod_base/garment_regions.py').read_bytes()).hexdigest(),nativeDrawIndicesChanged=False),indent=2)+'\n',newline='\n')
  # Portable test fixture protocol: counts + fully measured sample positions,
  # normals and 4 lineage donors, followed by uint32 triangles. No game layouts.
  def sample(p,normal,rows,surface):

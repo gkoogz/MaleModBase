@@ -52,12 +52,18 @@
     },
     {
       "path": "CMakeLists.txt",
-      "sha256": "7d632f338f6ed92ab69a2a3d938c1e22d72b106ac0db57788400bfddf3f36ceb"
+      "sha256": "2b8e86b265162d59d7acd2f38c8fbdbfb16ffa19db4dc55b3c727dba47ea870a"
     },
     {
       "path": "docs/FRAME-CALIBRATION.md",
       "sha256": "61c9cc28116756a16d1e714a17eed51b24d1a05e8af12de3c93207118ab85067"
     }
   ],
-  "buildMetadataUpdate": "Added garment, pelvic frame and garment support test targets; source motion arithmetic and calibration unchanged."
+  "buildMetadataUpdate": "Added garment band midsurface, inactive sewn-contact, analytic rendered contact, geometry/export/coverage and lifecycle SDK test targets. Only CMake metadata refreshed here; other source/runtime/wire hashes remain independently verified or reported stale.",
+  "buildMetadataHistory": [
+    {
+      "previousCMakeSHA256": "7d632f338f6ed92ab69a2a3d938c1e22d72b106ac0db57788400bfddf3f36ceb",
+      "meaning": "Preserved prior build metadata hash; garment SDK-only test target registrations changed, no acceptance inferred for runtime source changes"
+    }
+  ]
 }

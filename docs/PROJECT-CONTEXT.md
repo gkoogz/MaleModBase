@@ -1,5 +1,85 @@
 # Durable project context
 
+Latest side-opening refinement: retain a small lateral opening, but close the
+pouch edges substantially more than the earlier broad exposed side gaps. The
+two smooth continuous elastic hems should contain the sides closely while
+preserving that intentional narrow opening at every size. Verify measured
+side coverage and full cloth geometry together; coverage alone cannot excuse
+folded or crossing material.
+
+Latest pelvic-recruitment clothing requirement: at the largest sizes the actual
+pelvic tissue is recruited upward into the anatomical root ramp. The waistband
+must follow and tilt into that measured ramp, including its finite inner/outer
+thickness, instead of cutting through it or retaining a flat-front belt frame.
+Both upper and lower native body resources and the complete anatomy remain
+active. Verify complete band faces and their sewn attachment, not only discrete
+skin attachment points. Keep this shared and adopted by both game spokes.
+
+Latest waistband refinement: the two horizontal planes were a preliminary
+fitting model. The finished classic waistband should sit naturally on the
+measured male waist, with a smooth nonlevel upper and lower edge, a gentle
+front dip and hip rise, consistent fabric width and a snug skin fit. Preserve
+weighted body attachments, continuous stripes and the broad pouch suspension.
+This shared contour design must reach both Wolverine and Witcher; it is not
+permission to call an untested source render an installed game result.
+
+Latest edge and strap refinement: each end of the approximately 80-degree
+front attachment arc at the lower waistband begins a thicker elastic side
+hem. The two hems follow the respective edges of the one fabric sheet and
+connect continuously to the underside strap junctions. They reinforce and
+gently tension the edges; they do not make the pouch rigid. Move both rear
+strap origins slightly toward the front from the previous lateral hip points,
+and deepen their smooth sweep under the glutes to capture more of the glute
+before returning through the inside thigh. Keep a common Base route contract
+and use measured character surface donors in both game adapters.
+
+Latest material requirement: soft cloth with 95% optical opacity and its own
+mild stretch. Surface walking establishes the initial drape; persistent fabric
+must then hold and contain the complete moving anatomy through material tension
+and physical contact. Opacity is an optical property, separate from mechanical
+softness. A proximity-based gravity bonus does not establish cloth support.
+Keep the rear straps smooth and flat around the glute folds.
+
+Latest waistband clarification: define two transverse planes at the top and
+bottom of the band, intersect the actual body surface with each, and use many
+weighted attachment points along those closed contours to guide a snug gentle
+elastic squeeze. Keep real fabric thickness outside skin and allow limited
+forward loading from the scalable pouch. This is a shared Base system with
+measured current body/pose inputs from both game adapters.
+
+Latest strap clarification: attach at the lateral hip midpoint in side profile,
+then follow a clean arc cupping the underside of each glute and returning along
+the inside thigh to the pouch. Give the pouch a broad upper attachment into the
+front waistband. Preserve the classic white form and fabric dynamics at all
+sizes; supply side and rear renders as the fit develops.
+
+Latest clothing invariant: anatomy never disappears. Changing Naked to
+Jockstrap adds waistband, pouch and straps over the complete existing penis
+and scrotum. Their meshes, scaling and numerical motion remain active inside
+the fabric; only external contact/support forces may constrain their motion.
+Opaque cloth may naturally occlude skin, but cannot replace or hide anatomy
+through a clothing visibility mask or substitute cloth geometry for it.
+
+Latest pouch construction replaces the old radial shell: use an approximately
+80-degree arc along the lower front waistband as a long fabric attachment and
+two smaller attachments to the underside straps. Build measured surface walks
+from that arc toward the existing shaft and glans, around the anatomy and under
+the scrotum, then back to those bottom seams. One continuous material sheet
+spans these paths, with shared UV/material/seam topology and persistent fabric
+state. Anatomical guide samples define draping and unilateral contact, not a
+replacement anatomy mesh or permanently rigid cloth. Keep full anatomy active
+inside while scale and motion change, and show varied-size renders.
+
+Latest clothing clarification: use the supplied classic white jockstrap form,
+with matte elastic, thin red/blue stripes, a knitted scalable pouch, small hem
+and flat straps descending beneath the glute folds. The pouch must use genuine
+persistent fabric dynamics: stretch, sag, inertia and measured anatomy/body
+contacts. A rigid shell or a new static fit each frame does not satisfy this
+requirement. Shared solver state, material constraints and support belong in
+Base and require adoption by both Witcher and canonical Wolverine. Adapters
+provide coherent measured poses, active elapsed time, native rendering and
+isolated verification; presentation transport is not numerical simulation.
+
 Latest authorization (October 3): publish the approved Witcher snapshot as the
 next beta, then repair extreme rest-angle pelvic integrity in Base and both
 Witcher and canonical Wolverine. Preserve the shaft motion while keeping the

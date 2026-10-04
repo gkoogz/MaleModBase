@@ -1,5 +1,270 @@
 # Resume here: cross-repository handoff
 
+## Active October 4 garment work
+
+Latest user steering requires a small lateral opening, particularly at the
+lower sides. Frozen candidate38 is the latest passing retained neutral rest
+checkpoint: eight actual Geralt/Wolverine cases at Overall25/50/75/100,
+State2/Angle50. Complete native clearance, sheet crossings/overlaps/winding,
+authored seams, both route turn limits and individual-component self-crossing
+checks pass. Maximum hem turn is22.35 degrees; straps13.12. Shared pattern
+growth measures projected reach relative to the actual broad top attachment.
+Compact canonical25/50 retain candidate31 OBJ bytes exactly; the six extended
+fits add lower-middle fabric without changing the sewn endpoint tangents.
+The largest Geralt's side coverage improves modestly from87.1/85.8 to88.4/87.1
+percent; its triangular lower opening remains visible. This is a limited source
+checkpoint, not a complete modesty, moving-cloth or every-angle acceptance.
+Covered varied-size renders and exact source hashes are in Witcher
+`build/previews/current/covered-varied-source-candidate38`; same-camera31/38
+comparisons are in `covered-source-comparison31-38`.
+Full original anatomy/body are retained; source preview lighting does not
+demonstrate native95-percent opacity, dynamics or gameplay.
+
+Candidate30 redistributes both sides with ONE common row parameter measured
+from the mean spatial arclength of their actual pressure-hull paths, including
+the native collar transition. Independent side reparameterization is not used.
+It fixes compressed hem sections and their finite-width self-crossings, but
+canonical75 still fails native clearance. Candidate31 combines those measured
+rows with candidate28's orientation-checked spatial motion of free hem edges;
+sewn top/bottom boundary recipes remain prescribed and interior rest motion
+remains radial. Candidates27/28 alone still fail hem quality;29's additional
+body pressure discovery does not converge consistently and was removed.
+
+There are now72 fresh actual UI source inputs, two ports times four Overall
+values times three rest angles times three mechanical states. These are not
+accepted garment fits. The eight largest extreme-angle inputs fail earlier
+chart initialization: seven projected boundary polygons have the opposite
+winding from the prescribed material triangles because the hull-centroid
+origin/pole moves across the actual sewn-root patch. Candidate32 tested a
+measured root origin, minimally clipped inside every ORIGINAL hull plane;
+original pressure geometry and donor lineage remained unchanged. It was
+REJECTED: all eight extreme inputs still fail initialization, all four retained
+canonical neutral cases lose native clearance, three acquire same-hem crossings
+and near180-degree turns, and Geralt side coverage decreases. Live construction
+and active SDK tests were restored to31;32 source/tests and failures remain
+archived. Candidate33 tests stronger measured lower-side fullness on the
+restored31 construction and common spatial rows. It is also rejected: the
+canonical25 lower strip cannot unfold, small Geralt exceeds the hem turn limit
+and canonical100 fails native clearance. Candidate34 preserves both original
+sewn endpoint tangents by adding a squared-sine fullness term instead. It
+exports all eight neutral inputs but canonical25 has16 proper sheet crossings,
+seven same-hem crossings and a71.52-degree turn; canonical100 fails clearance
+and both hem limits. Geralt passes the four neutral contact/turn cases, but
+this does not accept a shared all-port change. Both trials remain frozen.
+
+Candidates35/36 are controlled coefficient studies of the endpoint-preserving
+curve. Their explicit dimensionless setting is recorded with each export, so
+one frozen compiled algorithm tests coverage changes without pretending that
+differing settings are identical geometry. Candidate35 also changed arithmetic
+association: even explicit zero diverges substantially from31 after nonlinear
+fitting. Candidate36 restores the literal31 operation order and all eight zero
+OBJ files are byte-identical to31. Nonzero.15/.30 still fail compact canonical25
+at the terminal hem approach. Six other retained cases independently pass.30;
+the smaller canonical50 remains on the passing zero baseline.
+
+Candidate37 develops a shared pattern rule from actual projected reach divided
+by the broad top seam's lateral width. Additional lower-side fabric grows
+smoothly as that aspect increases; compact panels retain their original terminal
+approach. The quarter-width transition is an authored garment design choice,
+not an anatomical measurement, source-unit assumption or game/UI case lookup.
+Requested maximum, measured aspect and effective fullness are recorded
+separately. Integrated37 has its OWN passing actual eight-case exports; earlier
+explicit36 trials were not relabeled as37. Default maximum is.30, with the two
+compact actual cases receiving exactly zero additional fullness. SDK growth
+measurement, bounds, malformed input and frame/unit covariance tests pass.
+Candidate38 retains that same measured activation and adopts a requested maximum
+of .45. Its own fresh eight-case inputs, source exports and audits pass the
+retained neutral rest gates; controlled36 trials are not substituted for this
+proof. Both compact canonical cases still activate zero and preserve31 OBJ
+bytes. The stronger .60 trial remains rejected for native clearance and hem
+turns. The38 batch runner returned1 after all eight individual sampler exits
+were0; its aggregate was reconstructed from those exact receipts without refits,
+with that orchestration limitation recorded explicitly.
+Actual extreme fits, closer side coverage, moving self-contact and live cadence
+remain gates.
+
+Historical frozen candidate23
+passes the eight retained actual Geralt/Wolverine rest cases at Overall
+25/50/75/100: full native contact, zero proper sheet crossings, positive-area
+overlaps, degenerate faces and winding conflicts, finite authored seams, and
+both hem/strap turn limits of 30 degrees. Maximum hems are 26.01 degrees;
+straps 13.11. The penultimate strap section had erroneously been excluded from
+bending; natural-boundary bending now relaxes every nonendpoint while keeping
+its sewn endpoints fixed within that bending operation (canonical25's 59.73-degree turn becomes
+13.11). Signed radial material fairing preserves the chart and rounds both
+peaks and recesses without attractive tissue forces. Interior folds remain a
+visual-quality concern. Candidates24/25 add lower-side fullness but fail
+finite hem clearance at large canonical sizes;25 also fails two actual sheet
+edge nodes and the 30-degree hem limit. Candidate26's shading-normal profile
+rebuild is rejected: it creates real same-hem self-crossings and new hem kinks.
+Candidate27 instead permits spatial motion of the free side edge through an
+orientation-checked local chart line search and applies elastic edge bending;
+its recorded hem/contact failures led to the refinements above. The authored top/bottom attachment recipes remain unchanged; side
+hems stay free. Subsequent coupled contact fitting can shift joined endpoints
+together: candidate23's largest change from22 is .00032336 circumference;
+all actual authored seam residuals still pass. Bending endpoint preservation
+does not imply byte-identical final contact-adjusted vertices.
+
+The independent full-cloth audit now distinguishes all component pairs.
+Candidate23 has no same-component self-crossings, but617–944 cross-component
+pairs, predominantly sewn hem/sheet, strap/band and underside attachments.
+Their material adjacency and finite-width construction must be certified;
+they are not covered by the passing sheet-only intersection gate. Candidate26
+adds4–29 actual same-hem self-crossings per hem. Preserve the complete-pair
+classification receipts; no blanket neighboring-face exclusion or complete
+garment self-consistency claim is permitted from these source checkpoints.
+
+The stereographic rest chart constrains spherical triangle orientation and
+angular quality before radial casting, with consistent alternate diagonals at
+the two reflex corners. The SDK cube test checks every face, unchanged top
+donors and translated/rotated 100x covariance. Candidates15–17 failed actual
+geometry despite SDK passes; preserve their rejected receipts. Source renders
+use complete native anatomy/body, neutral material and actual cloth faces;
+there is no anatomy visibility mask. Source opacity is not native 95% proof.
+
+Current band cuts have at least 96 material columns independently of the
+37/48 native route samples. Seven measured rows retain original cut positions
+and native donor weights. Frozen candidate18 uses one full-width radial/
+vertical material-column director for all seven rows. All eight raw and
+locally corrected complete bands (2,688 faces each) independently pass zero
+crossings, positive coplanar overlaps and degenerates. The prior local tangent
+normal variant had 19 raw and 33 corrected Geralt100 crossings. Candidate18
+receipts live in Witcher `build/previews/current`; candidate19's complete
+contact proof retains exactly the corrected candidate18 band positions.
+These certify rest geometry, not movement or gameplay.
+
+Frozen candidate16 raw sheets were injective but near singular (aspect up to
+3.59e6); subsequent contact fitting introduced crossings. Candidate17 adds a
+spherical determinant/longest-edge quality constraint, reducing raw aspect to
+107–201 with zero raw crossings across eight actual inputs, but full rest
+still fails crossings and upper hem turns (52–143 degrees in seven cases).
+Candidate19 smooths the native-seam radial transition and restricts REST
+contact fitting to chart rays. Its eight actual rest cases pass contact and
+intersection gates but fail hem turns. Candidate22 fixes those hem turns;
+candidate23 fixes the remaining strap turn. Dynamic cloth remains free in all
+three axes. Preserve all rejected receipts and do not install these dirty
+source checkpoints as accepted cloth.
+
+Private solver experiments identified two independent dynamics defects:
+ordinary contact corrections can open weighted stitches, and independently
+simulating inner/outer band thickness nodes stretches the thickness during
+body motion. A sewn-contact nullspace plus one band material midsurface passes
+48 actual canonical50 source-feedback frames on a frozen prior-chart fixture.
+These changes are not promoted. A fresh frozen19 test separates improved rest
+geometry from moving self-contact: dt0 and frame0 have zero crossings, but
+frame1 develops four genuine sheet crossings, including upper attachment
+faces that share a vertex. Gravity alone also develops crossings. Full fine
+vertex-face and edge-edge self-contact is being prototyped; a shared-vertex
+face pair must not be excluded wholesale.
+
+Frozen19 still passes 48 source-feedback and 60 gravity frames for external
+contact/material budgets. Rendered stitch drift is .0056265 native units
+(limit .058568). Exact action/reaction and expanded particle plus prescribed
+support conservation pass (linear residual <=7.05e-16; angular <=2.16e-13).
+These do not certify self-collision or speed: median source update is 480.8 ms
+and gravity step 70.17 ms versus the required live cadence. Numerical receipt
+is `build/cloth-dynamics-debug/candidate19-dynamics/numerical-conservation-summary.json`.
+Private parallel native point-query batching preserves all eight actual frame
+bytes and physical fields, including 54 stale tickets recomputed after source
+corrections. Its 3–8% total improvement is insufficient and is not promoted.
+No new garment build has been installed or observed in gameplay.
+
+Latest requirement includes tilt into the recruited pelvic root ramp. Actual
+band thickness now uses the full 3D measured normal rather than removing its
+vertical component. `sheet_fit.hpp` locally corrects exact band point/face
+clearance and moves both thickness layers/UV aliases together; the previous
+uniform radial whole-belt inflation is removed. Cloth anchors retain exact mixed
+Body/Anatomy sources and local offsets. These changes must remain shared.
+
+Independent frozen candidate13 tests all eight actual Geralt/Wolverine overall
+sizes 25/50/75/100. Static whole-garment contact passes; proper sheet crossings,
+positive coplanar overlaps, degenerate faces and winding conflicts are all zero.
+All six authored finite seam offsets are certified with maximum normalized
+residual 3.71e-16 (limit .00075); maximum strap/hem turns are 17.69/17.41 degrees
+(both frozen limits 30). Candidate13 receipts/renders are in the Witcher
+`build/previews/current` directory. This is source/static proof only: moving
+cloth still has intermittent contact/material failures and unaccepted cadence.
+No new garment build has been installed or observed in gameplay.
+
+Latest waistband steering replaces the visibly level belt with a naturally
+seated contour. `natural_band.hpp` owns the shared front dip, hip rise and smooth
+rear transition; `band_rest.hpp` measures the center strip on actual skin and
+adjusts row offsets using the measured surface direction across its width.
+The original two-plane API remains a reference. `natural_band_test` passes
+exact donor reconstruction, seven stripe rows, nonlevel fit, approximately
+constant surface width and translated/rotated 100-times unit conversion.
+All eight retained actual Geralt/Wolverine inputs at Overall 25/50/75/100
+independently pass the new cuts and original native donor reconstruction
+(maximum normalized error below 4.7e-16). Diagnostic meshes/receipt live under
+`build/natural-band-actual`; this is band-only source geometry, not moving cloth,
+native material, installation or gameplay acceptance. Covered waist comparisons
+and the full garment gates remain required.
+
+An independent whole-band face audit exposed eight crossings at Geralt100's
+lower front edge in the first seated design despite exact individual cuts.
+`waist_contours.hpp` now supports an optional common radial material coordinate
+on the original cut segments; `band_rest.hpp` uses it for all seven rows. This
+removes the forward seam phase shift without changing the reference plane API,
+source anatomy or native donor weights. Re-exported actual eight-case bands
+all have zero proper crossings, positive-area coplanar overlaps and degenerate
+faces (`build/natural-band-actual/angular-consistency-summary.json`). SDK contour
+and seated-band tests pass. Full pouch/hem/sewing and movement remain unaccepted.
+
+Local BVH exclusion witnesses preserve complete current contact candidates
+after distant surface motion. SDK exhaustive queries pass, including excluded
+faces entering contact. Frozen two-frame actual native/source comparison is
+numerically identical, including the encoded final source; cloth costs decline
+from 612/901 to 585/806 ms, which is still far above the active frame budget.
+This is diagnostic progress, not performance approval. The separate frozen
+query instrumentation attributes most cost to full triangle contact queries;
+no game probe, installation, focus change or audio change occurred.
+
+The shared walking-sheet jockstrap is development work, not the installed
+radial-fit prototype. Its rest material starts from an 80-degree front waistband
+arc and ends at two short lower seams, with two continuous side hems. The full
+anatomy stays active inside. Actual top/bottom cuts now include the joined body
+and anatomy when the expanded graft enters a cutting plane; original native
+triangles and exact mixed donor lineage are retained. Canonical's largest
+angled source state passes all seven band rows independently of drape fitting.
+
+The user requires soft cloth with 95% opacity that physically holds the anatomy,
+smooth flat glute straps and fit across the full size range. Ordinary pose
+changes must retain the garment's material rest graph. The independent
+`garment_lifecycle_test` verifies this against a 2.5% animated waist change;
+explicit morphology, character epoch and clothing toggles have separate
+rest/reset behavior. That test does not establish actual-character contacts.
+
+Dynamic material strain, large-size walk convergence, measured contact reaction
+into both anatomy solvers, actual native opacity and steady worker throughput
+remain active gates. Preserve the installed Base 99ff741 prototype until the
+new shared implementation and both adapters pass. Read GARMENTS.md and
+WAISTBAND-CONTOURS.md; Witcher's current SHARED-GARMENTS.md and local source
+receipts distinguish accepted historical radial checks from this new sheet.
+
+The published Witcher v0.5.0-beta.1 payload stays immutable. Private game tests
+must preserve host focus, input and audio. Audio assets remain deferred.
+
+October 4 source reaction checkpoint: the development Win32 source runtime
+compiles with wire 6. Actual encoded source comparisons cover all three
+mechanical states: disabled support preserves the previous numerical payload,
+physical impulses affect source motion, and repeating the same cumulative
+publication does not apply its impulse twice. The repeatable tool is
+`tools/verify_garment_source_reactions.py`; its dirty diagnostic receipts are
+not clean-pin adoption. The native Wolverine garment draw separately passes
+95% alpha/depth and graphics-state restoration checks. Witcher's MMGRE001
+reader covers the complete native anatomy and rejects malformed ownership
+data. No new garment build has been installed or observed in gameplay.
+
+The latest covered plane-section rest previews export sizes 25 and 50, while
+75 and 100 still fail the material walk. Static hems are continuous, but lower
+sheet folds and faceted rear straps remain. A precise moving-cloth trace found
+an upper sheet edge repeatedly extended by the next material-constraint pass,
+with sewing and contact unchanged. Corrected constraint convergence and steady
+throughput remain required; neither the static preview nor the impulse tests
+establishes those results.
+
+The entries below are historical checkpoints.
+
 October 2 multi-part waist/presentation support: `part_boundary.py` refines
 explicit measured loops across separate parts and LODs, retains sparse attribute
 lineage and original-edge donors, and publishes one canonical positional/skin
@@ -389,3 +654,7 @@ are different; raw displacement vectors between them are not valid transport.
 Two crown joints now implement one similarity transform; lobe fits remain separate.
 Three coherent transport tests, three source rest-frame oracle tests and four
 authored-stage oracle tests pass. See SHAPE-TRANSPORT.md for remaining limitations.
+
+## Wolverine voice-pool transcript (October 2, 2026)
+
+Recovered filename-encoded transcript for the 24 WAVs in the installed Wolverine voice pools. See [VOICE-POOLS.md](VOICE-POOLS.md) and its CSV for exact lines, source MP3 and installed WAV sizes, durations and audio-match evidence. Observed counts are Phase 1 = 13 and Phase 2 = 11; the older synthetic sequence regression uses 13/7. No audio files or runtime behavior were changed. Geralt playback/integration remains deferred.

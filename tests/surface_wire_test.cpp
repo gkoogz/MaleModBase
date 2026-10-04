@@ -29,7 +29,9 @@ int main(){
  auto expectReject=[](auto fn){try{fn();return false;}catch(const std::invalid_argument&){return true;}};
  auto supportBad=q;supportBad.frame.garment.shaftAcceleration={0,0,17};if(!expectReject([&]{wire::Encode(supportBad);}))return 15;
  supportBad=q;supportBad.frame.garment.lobeAcceleration[0]={11,0,0};if(!expectReject([&]{wire::Encode(supportBad);}))return 16;
- auto invalidSupportFlag=bytes;invalidSupportFlag[invalidSupportFlag.size()-40]=2;if(!expectReject([&]{wire::DecodeRequest(invalidSupportFlag);}))return 17;
+ constexpr unsigned physicalTailBytes=5*4+(12+2+2)*3*8;
+ auto invalidSupportFlag=bytes;invalidSupportFlag[invalidSupportFlag.size()-physicalTailBytes-40]=2;if(!expectReject([&]{wire::DecodeRequest(invalidSupportFlag);}))return 17;
+ auto invalidReactionFlag=bytes;invalidReactionFlag[invalidReactionFlag.size()-physicalTailBytes]=2;if(!expectReject([&]{wire::DecodeRequest(invalidReactionFlag);}))return 18;
  auto truncated=encoded;truncated.pop_back();if(!expectReject([&]{wire::DecodeOutput(truncated);}))return 3;
  auto trailing=bytes;trailing.push_back(0);if(!expectReject([&]{wire::DecodeRequest(trailing);}))return 4;
  auto bad=bytes;bad[0]=wire::version+1;if(!expectReject([&]{wire::DecodeRequest(bad);}))return 5;
