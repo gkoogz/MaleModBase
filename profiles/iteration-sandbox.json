@@ -1,0 +1,17 @@
+{
+  "schema": "malemod.iteration-sandbox/1",
+  "purpose": "Native engine character and garment iteration",
+  "floor": {"extentMeters": 32.0, "topMeters": 0.0, "thicknessMeters": 0.5, "colorLinear": [0.3, 0.3, 0.3]},
+  "spawnMeters": [0.0, 0.0, 0.03],
+  "camera": {"targetHeightMeters": 1.0, "distanceMeters": 3.0, "views": ["front", "left", "back", "right"]},
+  "cases": ["idle", "walk", "run", "turn", "size-minimum", "size-default", "size-maximum", "rest-angle-minimum", "rest-angle-maximum", "garment-naked", "garment-jockstrap"],
+  "requirements": {
+    "realGameplayPlayer": true,
+    "realGameAnimation": true,
+    "installedAdapterPhysics": true,
+    "anatomyRetainedUnderGarment": true,
+    "physicalFloor": true,
+    "normalSavesUntouched": true,
+    "hostFocusOrInput": false
+  }
+}
