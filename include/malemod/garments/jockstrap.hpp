@@ -12,6 +12,7 @@
 #include <set>
 #include <queue>
 #include <optional>
+#include <functional>
 #include "proximity_cache.hpp"
 namespace malemod::garments {
 using Point=std::array<double,3>;
@@ -225,6 +226,11 @@ class Session {
 public:
     explicit Session(Parameters p={});
     const Output& Update(Style style,const Input& input,TimeContinuity time=TimeContinuity::Unverified);
+    // Fit material in a measured reference pose, then place its physical nodes
+    // once using adapter-owned skinning. Subsequent updates retain cloth state.
+    // The callback must preserve units and lineage; it never becomes a force.
+    const Output& Initialize(const Input& reference,const Input& current,
+                             const std::function<Sample(const Sample&)>& place);
     void Reset();
 private:
     const Output& Fit(Style style,const Input& input);
@@ -253,6 +259,7 @@ private:
     std::vector<Binding> renderBindings_;
     std::vector<std::array<unsigned,3>> solverTriangles_;
     std::vector<Point> positions_,velocities_,previousTargets_;
+    std::vector<Sample> referenceNodes_;
     std::vector<Anchor> anchors_;
     std::vector<Edge> edges_;
     std::vector<Sew> sewing_;

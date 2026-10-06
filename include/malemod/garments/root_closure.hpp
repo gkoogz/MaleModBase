@@ -127,9 +127,22 @@ inline std::vector<std::array<std::uint32_t,3>> RefineClassificationBoundary(con
  for(auto face:faces){for(auto& id:face){auto found=remap.find(id);if(found!=remap.end())id=found->second;}
   std::vector<unsigned> polygon;bool changed=false;for(unsigned k=0;k<3;k++){auto a=face[k],b=face[(k+1)%3];polygon.push_back(a);auto found=splits.find({a,b});if(found!=splits.end()&&!found->second.empty()){polygon.insert(polygon.end(),found->second.begin(),found->second.end());changed=true;}}
   if(!changed){result.push_back(face);continue;}
+  if(!authored.empty()){
+   // Authored interpolation edges may bend out of this triangle's plane.
+   // Subdivide each original edge towards its opposite corner, rather than
+   // ear-clipping the bent boundary in an unrelated 2D projection. This is
+   // the original triangle's combinatorial subdivision; it never adds a
+   // diagonal between fine points along one original boundary edge.
+   std::vector<std::array<std::uint32_t,3>> refined{face};
+   for(unsigned k=0;k<3;k++){auto a=face[k],b=face[(k+1)%3];auto found=splits.find({a,b});if(found==splits.end()||found->second.empty())continue;bool located=false;
+    for(unsigned j=0;j<refined.size();j++){auto current=refined[j];unsigned edge=0;for(;edge<3;edge++)if(current[edge]==a&&current[(edge+1)%3]==b)break;if(edge==3)continue;auto opposite=current[(edge+2)%3],previous=a;refined.erase(refined.begin()+j);for(auto next:found->second){refined.push_back({previous,next,opposite});previous=next;}refined.push_back({previous,b,opposite});located=true;break;}
+    if(!located)throw std::invalid_argument("Authored root edge subdivision lost its original triangle");
+   }
+   result.insert(result.end(),refined.begin(),refined.end());continue;
+  }
   // EarClip reverses its boundary argument to form a cap. Reverse this
   // triangle polygon first, preserving the body's original face winding.
-  std::reverse(polygon.begin(),polygon.end());auto refined=closure_detail::EarClip(points,std::move(polygon));result.insert(result.end(),refined.begin(),refined.end());}
+  std::reverse(polygon.begin(),polygon.end());std::vector<std::array<std::uint32_t,3>> refined;try{refined=closure_detail::EarClip(points,std::move(polygon));}catch(const std::invalid_argument& e){throw std::invalid_argument(std::string("Refined body edge: ")+e.what());}result.insert(result.end(),refined.begin(),refined.end());}
  auto check=closure_detail::Extract(surface,result,scale);bool complete=false;
  for(const auto& refined:check.loops){if(refined.size()!=root.size())continue;bool matched=true;for(auto id:root){double best=1e100;for(auto candidate:refined)best=(std::min)(best,Length(Sub(points[id],points[candidate])));if(best>1e-9){matched=false;break;}}if(matched)complete=true;}
  if(!complete)throw std::invalid_argument("Classification boundary refinement did not preserve the complete fine root");
@@ -148,6 +161,6 @@ inline std::vector<std::array<std::uint32_t,3>> RootCap(const std::vector<Sample
  std::vector<bool> matched(loop.size());
  for(const auto& sample:opening){auto p=Mul(Sub(sample.position,origin),1/scale);if(!Finite(p))throw std::invalid_argument("Nonfinite measured opening");double best=1e100;unsigned at=0;for(unsigned k=0;k<loop.size();k++){double d=Length(Sub(p,points[loop[k]]));if(d<best){best=d;at=k;}}if(best>1e-6)throw std::invalid_argument("Measured opening differs from anatomy boundary");matched[at]=true;}
  for(bool value:matched)if(!value)throw std::invalid_argument("Measured opening omits an anatomy boundary vertex");
- return closure_detail::EarClip(points,loop);
+ try{return closure_detail::EarClip(points,loop);}catch(const std::invalid_argument& e){throw std::invalid_argument(std::string("Anatomical root cap: ")+e.what());}
 }
 }

@@ -59,4 +59,26 @@ bool CoalescedActiveTime(){
  std::cout<<"PASS continuous coalesced active time retains cloth, bounded catch-up drains without time loss, unverified discontinuity still resets\n";
  return true;
 }
-int main(){try{return PersistentRest()&&CoalescedActiveTime()?0:1;}catch(const std::exception& e){std::cerr<<e.what()<<'\n';return 2;}}
+bool ReferencePlacement(){
+ auto rest=Fixture();rest.anatomyTriangles.clear();rest.gravity={};rest.deltaTime=0;
+ auto current=rest;
+ auto rotate=[](Point p){return Point{-p[1],p[0],p[2]};};
+ auto place=[&](const Sample& source){auto q=source;q.position=Add(rotate(source.position),{3,-4,2});q.normal=rotate(source.normal);return q;};
+ current.frame.origin={3,-4,2};current.frame.lateral=rotate(rest.frame.lateral);current.frame.forward=rotate(rest.frame.forward);current.frame.up=rotate(rest.frame.up);
+ for(auto* group:{&current.waist,&current.opening,&current.anatomy,&current.rearStraps[0],&current.rearStraps[1]})for(auto& sample:*group)sample=place(sample);
+ Session reference;reference.Update(Style::WhiteJockstrap,rest);const auto original=reference.Update(Style::WhiteJockstrap,rest);
+ Session cloth;const auto initialized=cloth.Initialize(rest,current,place);
+ REQUIRE(initialized.physics.stateReady&&initialized.physics.accumulatedSeconds==0);
+ REQUIRE(initialized.measuredCircumference==original.measuredCircumference);
+ REQUIRE(initialized.mesh.vertices.size()==original.mesh.vertices.size());
+ double worst=0;for(unsigned i=0;i<original.mesh.vertices.size();i++)worst=(std::max)(worst,Length(Sub(initialized.mesh.vertices[i].position,Add(rotate(original.mesh.vertices[i].position),{3,-4,2}))));
+ std::cerr<<"placement rigid worst="<<worst<<"\n";REQUIRE(worst<1e-8);
+ current.deltaTime=1./120;auto advanced=cloth.Update(Style::WhiteJockstrap,current,TimeContinuity::Continuous);
+ REQUIRE(!advanced.physics.reset&&advanced.physics.substeps==1);
+ bool rejected=false;try{cloth.Initialize(rest,current,[](const Sample& q){auto bad=q;bad.position[0]=std::numeric_limits<double>::quiet_NaN();return bad;});}catch(const std::invalid_argument&){rejected=true;}
+ REQUIRE(rejected);
+ auto naked=cloth.Update(Style::Naked,current);REQUIRE(naked.mesh.vertices.empty());
+ current.topologyRevision++;rejected=false;try{cloth.Initialize(rest,current,place);}catch(const std::invalid_argument&){rejected=true;}REQUIRE(rejected);
+ std::cout<<"PASS reference material placed rigidly into live pose, persistent advancement, invalid placement and topology rejected\n";return true;
+}
+int main(){try{return PersistentRest()&&CoalescedActiveTime()&&ReferencePlacement()?0:1;}catch(const std::exception& e){std::cerr<<e.what()<<'\n';return 2;}}

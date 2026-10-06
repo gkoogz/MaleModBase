@@ -1,3 +1,17 @@
+## October 6 reference-pose cloth initialization - uninstalled
+
+Session.Initialize fits persistent material in a measured reference pose and
+places physical particles once through an SDK-free lineage-preserving callback.
+Material lengths, topology and physical contact remain shared. Native actor and
+skinning matrices belong to each adapter. Rigid pose covariance is 1.3e-15;
+lifecycle advancement and invalid placement/topology rejection pass. Authored
+bent root-edge refinement uses original triangle edge subdivisions rather than
+projected ear clipping. Root closure and waist graft tests pass. Exact captured
+Wolverine gameplay closure passes, but direct fitting in that animated pose
+collapses its material chart. Reference-pose native adoption is pending. Title
+remote boundary closure remains unresolved. No human/retail installation and
+no complete attachment visual or real-time garment acceptance.
+
 ## October 6 native candidate A root classification failure
 
 Private clean c726cea/Base f906fe7 launched into native gameplay but no cloth

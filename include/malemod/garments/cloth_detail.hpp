@@ -5,6 +5,38 @@
 // Persistent world-space fabric. The measured fitter supplies rest material,
 // never a replacement for the advanced particle positions.
 namespace malemod::garments {
+inline const Output& Session::Initialize(const Input& reference,const Input& current,const std::function<Sample(const Sample&)>& place){
+ if(!parameters_.simulate||!place)throw std::invalid_argument("Cloth initialization requires persistent simulation and placement");
+ if(reference.characterEpoch!=current.characterEpoch||reference.topologyRevision!=current.topologyRevision||reference.restRevision!=current.restRevision||reference.bodyTriangles!=current.bodyTriangles||reference.anatomyTriangles!=current.anatomyTriangles)
+  throw std::invalid_argument("Cloth reference and current pose have different material identities");
+ for(unsigned family=0;family<5;family++){
+  const auto& a=family==0?reference.waist:family==1?reference.opening:family==2?reference.anatomy:reference.rearStraps[family-3];
+  const auto& b=family==0?current.waist:family==1?current.opening:family==2?current.anatomy:current.rearStraps[family-3];
+  if(a.size()!=b.size())throw std::invalid_argument("Cloth reference and current pose have different surface families");
+ }
+ if(reference.bodySurface.size()!=current.bodySurface.size())throw std::invalid_argument("Cloth reference and current body have different topology");
+ Reset();
+ try{
+  auto rest=reference;rest.deltaTime=0;Update(Style::WhiteJockstrap,rest);
+  if(!output_.contactBudgetSatisfied||!output_.physics.materialBudgetSatisfied)throw std::invalid_argument("Cloth reference material failed its fit budgets");
+  if(referenceNodes_.size()!=positions_.size())throw std::logic_error("Cloth reference particle ownership missing");
+  for(unsigned i=0;i<positions_.size();i++){
+   auto source=referenceNodes_[i];source.position=positions_[i];
+   auto posed=place(source);
+   if(!Finite(posed.position)||!Finite(posed.normal)||Length(posed.normal)<1e-12)throw std::invalid_argument("Cloth placement produced a nonfinite or degenerate sample");
+   for(unsigned k=0;k<posed.lineage.donors.size();k++){const auto& a=posed.lineage.donors[k];const auto& b=referenceNodes_[i].lineage.donors[k];if(a.surface!=b.surface||a.vertex!=b.vertex||a.weight!=b.weight)throw std::invalid_argument("Cloth placement changed material lineage");}
+   positions_[i]=posed.position;velocities_[i]={};
+   auto target=referenceNodes_[i];target.position=previousTargets_[i];previousTargets_[i]=place(target).position;
+   if(!Finite(previousTargets_[i]))throw std::invalid_argument("Cloth placement produced a nonfinite anchor");
+  }
+  restInput_=current;previousBodySurface_=current.bodySurface;previousAnatomySurface_=current.anatomy;previousBodies_=current.bodyContacts;
+  for(auto& memos:pointMemos_)for(auto& memo:memos)memo=PointMemo{};
+  for(auto& memos:faceMemos_)for(auto& memo:memos)memo=FaceMemo{};
+  ClassifySurfaces(current,current.frame.origin,output_.measuredCircumference,true);
+  auto initial=current;initial.deltaTime=0;
+  return Update(Style::WhiteJockstrap,initial,TimeContinuity::Continuous);
+ }catch(...){Reset();throw;}
+}
 namespace cloth_detail {
 inline Point Barycentric(Point p,Point a,Point b,Point c){
  auto v=Sub(b,a),w=Sub(c,a),r=Sub(p,a);double vv=Dot(v,v),vw=Dot(v,w),ww=Dot(w,w),rv=Dot(r,v),rw=Dot(r,w),d=vv*ww-vw*vw;
@@ -69,7 +101,7 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
  auto begin=std::chrono::steady_clock::now();auto& mesh=output_.mesh;double C=output_.measuredCircumference;const bool sheetMesh=output_.layout.revision==2;const unsigned waist=sheetMesh?output_.layout.band.columns:output_.band.topAttachments?output_.band.topAttachments:unsigned(input.waist.size()),band=14*(waist+1),rings=parameters_.pouchRings,segments=parameters_.pouchSegments,pouchEnd=sheetMesh?output_.layout.sheet.start+(rings+1)*(segments+1):band+1+rings*(segments+1),hemEnd=sheetMesh?pouchEnd:pouchEnd+4*(segments+1),joinEnd=sheetMesh?pouchEnd:hemEnd+2*(segments+1),strap=sheetMesh?output_.layout.straps[0].start:joinEnd+9*25;
  if(rebuild){
   auto oldPositions=positions_,oldVelocities=velocities_,oldTargets=previousTargets_;auto oldNodes=vertexNodes_;double oldC=restCircumference_;
-  vertexNodes_.assign(mesh.vertices.size(),unsigned(-1));renderBindings_.assign(mesh.vertices.size(),Binding{});solverTriangles_.clear();positions_.clear();velocities_.clear();anchors_.clear();pinned_.clear();edges_.clear();sewing_.clear();previousTargets_.clear();
+  vertexNodes_.assign(mesh.vertices.size(),unsigned(-1));renderBindings_.assign(mesh.vertices.size(),Binding{});solverTriangles_.clear();positions_.clear();referenceNodes_.clear();velocities_.clear();anchors_.clear();pinned_.clear();edges_.clear();sewing_.clear();previousTargets_.clear();
   // Physical aliases share a particle, independent of material/UV duplication.
   std::map<std::array<long long,3>,unsigned> aliases;
   std::map<unsigned,unsigned> anatomyDonors;for(unsigned i=0;i<input.anatomy.size();i++)for(auto d:input.anatomy[i].lineage.donors)if(d.weight>.99999&&d.surface==Surface::Anatomy)anatomyDonors[d.vertex]=i;
@@ -86,7 +118,7 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
    if(!sheetMesh&&i>band&&i<pouchEnd){unsigned row=(i-band-1)/(segments+1)+1,col=(i-band-1)%(segments+1);if(row<rings&&(row%2||col%2))continue;}
    Point world=mesh.vertices[i].position;if(i<band/2)world=band_material::Midsurface(world,mesh.vertices[i+band/2].position);if(i>=strap){world={};for(unsigned k=0;k<4;k++)world=Add(world,mesh.vertices[i+k].position);world=Mul(world,.25);}auto p=input.frame.Local(world);std::array<long long,3> key{std::llround(p[0]/C*1e9),std::llround(p[1]/C*1e9),std::llround(p[2]/C*1e9)};auto found=aliases.find(key);
    if(found!=aliases.end()){vertexNodes_[i]=found->second;pinned_[found->second]=pinned_[found->second]||pinVertex(i);continue;}
-   unsigned id=unsigned(positions_.size());aliases[key]=id;vertexNodes_[i]=id;positions_.push_back(world);velocities_.push_back({});pinned_.push_back(pinVertex(i));
+   unsigned id=unsigned(positions_.size());aliases[key]=id;vertexNodes_[i]=id;positions_.push_back(world);referenceNodes_.push_back({world,mesh.vertices[i].normal,mesh.vertices[i].lineage});velocities_.push_back({});pinned_.push_back(pinVertex(i));
    Anchor anchor;double best=1e100;bool anatomical=mesh.vertices[i].lineage.donors[0].surface==Surface::Anatomy;
    if(anatomical){auto dominant=mesh.vertices[i].lineage.donors[0];auto donor=anatomyDonors.find(dominant.vertex);if(donor!=anatomyDonors.end()){anchor.family=2;anchor.index=donor->second;best=0;}}
    if(best>0){for(unsigned family=0;family<5;family++){if(family==2)continue;const auto& samples=family==0?input.waist:family==1?input.opening:input.rearStraps[family-3];for(unsigned k=0;k<samples.size();k++){double d=Length(Sub(mesh.vertices[i].position,samples[k].position));if(d<best){best=d;anchor.family=family;anchor.index=k;}}}}
