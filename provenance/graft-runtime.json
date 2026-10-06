@@ -5,7 +5,7 @@
   "files": [
     {
       "path": "include/malemod/surface/graft_runtime.hpp",
-      "sha256": "ba75aae541bb9f8790dcf61a50a0522a26f1dd30b36d3997d8b7600acde3ca5d"
+      "sha256": "067eceed44629ab5e877c59b7e0a1a6c669fc0d637472b1108e764be4a99b431"
     },
     {
       "path": "include/malemod/surface/binding.hpp",
@@ -13,7 +13,7 @@
     },
     {
       "path": "src/surface/graft_runtime.cpp",
-      "sha256": "acec3857afffcc327e2b8d68f848ebaa9ea98bbc54f427fa7e6c68b7fdf5974c"
+      "sha256": "e1e72b5c66fc1ffe7eb4299309f0fc6838664bd26255b98920729e97c0b98e3e"
     },
     {
       "path": "tests/graft_runtime_cli.cpp",
@@ -449,7 +449,7 @@
   ],
   "adoption": "docs/FULL-RUNTIME-ADOPTION.md",
   "sharedRecruitmentAPI": "GraftRecruitmentWeight: same support law as GraftPlan; all 22 Geralt frame/domain weight cases match Python within 1e-12",
-  "librarySHA256": "3a54436ace73745ee656adeb3fb21336b8094dba06836bd8b2ed561ae19a0242",
+  "librarySHA256": "b7e08a226c68b90f5453a3d25018abd832dddab3a976898edce63140ee4ac01d",
   "libraryArchitecture": "x64",
   "exactUpdatedFrameCases": 110,
   "prescribedBoundaryVerification": {
@@ -889,7 +889,7 @@
     "files": [
       {
         "path": "include/malemod/surface/root_transition.hpp",
-        "sha256": "7363726205d2b596cd9cf83129b9432fa8046551b3db3db869c111ad2d3dd75a"
+        "sha256": "8248770e035ddb76abda795b61690edf6536f33146b154e46e0be351e7e4909a"
       },
       {
         "path": "tests/root_transition_test.cpp",
@@ -902,6 +902,16 @@
     "unitAndRotationCovarianceTested": true,
     "observedGameplay": false,
     "installed": false,
-    "completeMorphologyOutsideSewnNeighborhood": true
+    "completeMorphologyOutsideSewnNeighborhood": true,
+    "bodyOrientationProjection": {
+      "optional": true,
+      "triangleSelection": "adapter measured body collar; anatomy rotations excluded",
+      "exactDonors": true,
+      "protectedAndPrescribedRowsFixed": true,
+      "infeasibleGeometryRejected": true,
+      "test": "tests/graft_orientation_test.cpp",
+      "testSHA256": "5caa6a24316ef09f68aa3705fe3ad0450b687944e05c86e2c5e7c987d97679e6",
+      "observedGameplay": false
+    }
   }
 }

@@ -1,5 +1,33 @@
 # Shared pelvic recruitment and exact seam constraints
 
+## Measured target attachment repair (October 6)
+
+`RootTransition` evaluates one stable C2 root field around the measured opening
+and preserves complete morphology outside its radius-dependent neighborhood.
+`GraftDomain::orientationTriangles` optionally identifies pelvic triangles that
+must retain positive rest-frame projected area. Projection acts on independent
+masters, preserving exact original-edge elimination and protected/prescribed
+rows; an infeasible field is rejected. Leave the list empty for the historical
+solver, including freely rotating anatomy triangles.
+
+Geralt adopts this through two coupled solves: recruit/fair the body against the
+stable root field, then prescribe those body masters while fitting independent
+anatomy motion back to the same sewn edge. The adapter supplies measured body
+membership, opening and native edge/UV aliases. Shared geometry and constraints
+remain here. The first broad body prescription and an all-body orientation
+restriction were rejected; neither is a deployed solution.
+
+Shared tests exercise folds, exact donors, repeatability, infeasible rejection
+and transition unit/rotation covariance. Geralt's 278 native-buffer exports pass
+the local collar orientation and seam checks, with separate waist/LOD tests.
+These are offline evidence; native grey-room and campaign visual acceptance
+must be recorded by the adapter before installation is accepted.
+
+Adoption: canonical Wolverine must explicitly pin and test this measured-target
+path before consuming it; its authoritative runtime remains unchanged. Future
+spokes provide their actual opening and body membership and run the same
+attachment gate, with their native seam/lighting contracts in the adapter.
+
 Feature `surface.pelvic-collar`, algorithm revision 1, lives in Base.
 See `modules/pelvic-collar.json` for its versioned contract and
 `provenance/collar.json` for source hashes and omissions.

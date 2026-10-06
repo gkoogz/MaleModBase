@@ -200,7 +200,7 @@
   "files": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "46e0ce519cfb479b2801e82675b7c99f189e2f207888bb965c08be04182b3d37"
+      "sha256": "9013f295e8ddda5375b041e13b01d0d535cae3c6bf777d89a98622f8655af769"
     },
     {
       "path": "include/malemod/surface/runtime.hpp",
@@ -5417,7 +5417,7 @@
     "observedGameplay": false
   },
   "attachmentTestRegistration": {
-    "change": "Added standalone SDK-free root transition test only",
+    "change": "SDK-free root transition and optional measured body orientation tests; source numerical implementation unchanged",
     "compiledSourcePhysicsChanged": false
   }
 }

@@ -2,6 +2,15 @@
 
 ## October 6 attachment-integrity requirement and repair checkpoint
 
+Latest candidate: adaptive measured transition plus optional original-edge
+master-space orientation projection. Geralt uses stable body recruitment followed
+by a separately sewn moving-anatomy solve. 278 offline native-buffer cases have
+zero reversed local body collar faces and maximum seam residual 1.091e-7 metres;
+39 body/render tests preserve both resources, both LODs and 37 waist knots.
+The historical empty-constraint graft path passes all 22 Python/native fixtures
+and 110 updated-frame replays. Shared tests and full provenance pass. Native
+grey-room/campaign review is next; no installed or visual acceptance yet.
+
 The highest-priority attachment regression gate is now committed in Base,
 Witcher and canonical Wolverine `AGENTS.md` and `docs/PROJECT-CONTEXT.md`.
 Every mod edit requires geometric and visual checks across scale, shape, state,

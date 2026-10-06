@@ -37,6 +37,10 @@ struct GraftPlan::Impl {
  std::size_t count;
  std::vector<std::uint32_t> masters,free,fixed,protectedVertices,prescribedVertices;
  std::vector<Vector> points;
+ struct Orientation {std::array<std::uint32_t,3> face;Vector normal;double area;};
+ std::vector<Orientation> orientations;
+ std::vector<std::vector<std::pair<unsigned,double>>> vertexMasters;
+ std::vector<bool> orientationLocked;
  Eigen::VectorXd area;
  Sparse projection,boundary,attraction,baseMetric;
  std::vector<int> patternOuter,patternInner;
@@ -68,6 +72,15 @@ struct GraftPlan::Impl {
    entries.emplace_back(e.slave,masterOf[e.a],1-e.weight);entries.emplace_back(e.slave,masterOf[e.b],e.weight);
   }
   projection.resize(int(count),int(masters.size()));projection.setFromTriplets(entries.begin(),entries.end());
+  vertexMasters.resize(count);orientationLocked.resize(masters.size());
+  for(unsigned i=0;i<masters.size();i++){vertexMasters[masters[i]].push_back({i,1});orientationLocked[i]=locked[masters[i]];}
+  for(auto e:domain.seams){vertexMasters[e.slave]={{masterOf[e.a],1-e.weight},{masterOf[e.b],e.weight}};}
+  for(auto id:domain.orientationTriangles){
+   if(id>=domain.triangles.size())throw std::invalid_argument("Orientation triangle outside graft domain");
+   auto face=domain.triangles[id];if(*std::max_element(face.begin(),face.end())>=count)throw std::invalid_argument("Orientation vertex outside graft domain");
+   Vector normal=(points[face[1]]-points[face[0]]).cross(points[face[2]]-points[face[0]]);double twice=normal.norm();
+   if(twice>1e-12)orientations.push_back({face,normal/twice,twice});
+  }
   area=Eigen::VectorXd::Zero(count);
   entries.clear();
   if(domain.triangles.empty())throw std::invalid_argument("Empty graft triangles");
@@ -145,6 +158,32 @@ struct GraftPlan::Impl {
    rhs-=boundary*fixedValues;const Eigen::MatrixXd result=factor.solve(rhs);
    if(factor.info()!=Eigen::Success||!result.allFinite())throw std::runtime_error("Graft displacement solve failed");
    for(unsigned i=0;i<free.size();i++)solved.row(free[i])=result.row(i);
+  }
+  // Project violated signed-area inequalities in independent master space.
+  // Seam slaves remain exact original-edge interpolations throughout; neither
+  // a protected boundary nor a shared prescribed waist master can move.
+  if(!orientations.empty()){
+   auto position=[&](unsigned id)->Vector{Vector p=points[id];for(auto [master,w]:vertexMasters[id])p+=solved.row(master).transpose()*w;return p;};
+   for(unsigned iteration=0;iteration<128;iteration++){
+    bool changed=false;
+    for(const auto& constraint:orientations){
+     const auto f=constraint.face;const Vector a=position(f[0]),b=position(f[1]),c=position(f[2]);
+     const double value=(b-a).cross(c-a).dot(constraint.normal),minimum=.02*constraint.area;
+     if(value>=minimum-constraint.area*1e-8)continue;
+     const Vector gb=(c-a).cross(constraint.normal),gc=constraint.normal.cross(b-a);const Vector gradient[3]={-gb-gc,gb,gc};
+     std::vector<std::pair<unsigned,Vector>> accumulated;
+     for(unsigned vertex=0;vertex<3;vertex++)for(auto [master,w]:vertexMasters[f[vertex]])if(!orientationLocked[master]){
+      auto found=std::find_if(accumulated.begin(),accumulated.end(),[&](const auto& row){return row.first==master;});
+      if(found==accumulated.end())accumulated.push_back({master,gradient[vertex]*w});else found->second+=gradient[vertex]*w;
+     }
+     double denominator=0;for(const auto& row:accumulated)denominator+=row.second.squaredNorm();
+     if(denominator<1e-20)throw std::runtime_error("Graft orientation conflicts with fixed boundaries");
+     const double correction=.8*(minimum-value)/denominator;
+     for(const auto& row:accumulated)solved.row(row.first)+=(correction*row.second).transpose();changed=true;
+    }
+    if(!changed)break;
+   }
+   for(const auto& constraint:orientations){auto f=constraint.face;double value=(position(f[1])-position(f[0])).cross(position(f[2])-position(f[0])).dot(constraint.normal);if(value<.001*constraint.area)throw std::runtime_error("Graft signed-area constraints did not converge at "+std::to_string(f[0])+","+std::to_string(f[1])+","+std::to_string(f[2])+" (ratio "+std::to_string(value/constraint.area)+")");}
   }
   Eigen::MatrixXd expanded=projection*solved*scale;if(!expanded.allFinite())throw std::runtime_error("Non-finite graft result");
   std::vector<PrecisePoint> output(count);for(unsigned i=0;i<count;i++)output[i]={expanded(i,0),expanded(i,1),expanded(i,2)};return output;

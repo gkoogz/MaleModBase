@@ -46,7 +46,7 @@ class RootTransition {
  }
  std::vector<PrecisePoint> Evaluate(const std::vector<PrecisePoint>& completeDelta,const GraftFrame& frame,double neutralRadius)const{
   if(completeDelta.size()!=rest_.size())throw std::invalid_argument("Root transition topology differs");
-  auto out=completeDelta;const double reach=2*neutralRadius;
+  auto out=completeDelta;const double reach=std::max(2*neutralRadius,1.5*frame.radius);
   for(unsigned i=0;i<out.size();i++){
    auto d=BodyDisplacement(i,frame,neutralRadius);
    // Preserve the complete morphology field outside the sewn neighborhood,

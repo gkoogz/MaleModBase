@@ -25,6 +25,10 @@ struct GraftDomain {
  // the one versioned boundary state, identically for every resource and LOD.
  // These are Dirichlet rows, distinct from protected zero-displacement rows.
  std::vector<std::uint32_t> prescribedVertices;
+ // Optional body triangles whose signed area must remain positive in the
+ // character's rest frame. Empty retains the historical solve byte for byte.
+ // Anatomy may rotate independently; the adapter identifies body topology.
+ std::vector<std::uint32_t> orientationTriangles;
 };
 // The same support law used by the target collar matrix. Adapters can suppress
 // distant body-field inputs without maintaining another copy of that law.

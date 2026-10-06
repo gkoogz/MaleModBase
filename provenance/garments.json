@@ -119,7 +119,7 @@
   },
   "fileHashes": {
     "assets/garments/wolverine-jockstrap-donors.json": "cff5232988888e03c7eb87883a0eb63fa9151e3eecbbbe5a26162e364384b8d0",
-    "CMakeLists.txt": "46e0ce519cfb479b2801e82675b7c99f189e2f207888bb965c08be04182b3d37",
+    "CMakeLists.txt": "9013f295e8ddda5375b041e13b01d0d535cae3c6bf777d89a98622f8655af769",
     "docs/GARMENT-CONTACT-REPAIR.md": "d44e864d34869406d4d2ac8b42ed9eeb12397fdda53c1f8716449e2479d5dc6d",
     "docs/GARMENT-GEOMETRY-AUDIT.md": "f99a4f473b3b9bdc3b3ab6c4821897a84930d74ab12b17378f9091c3a782b2e0",
     "docs/GARMENT-NUMERICAL-SUPPORT.md": "80e7cc520d149761f09ff625b21c0829ef066b885943c6083f44ff5b309a59c8",
