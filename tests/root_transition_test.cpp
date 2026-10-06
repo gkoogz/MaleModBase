@@ -48,6 +48,12 @@ int main(){try{
  std::vector<PrecisePoint> lip={{0,0,outer-.001},{0,0,outer},{0,0,outer+.001},{0,1,0}};
  RootTransition lipRamp(lip,3,opening);auto near=lipRamp.BodyDisplacement(0,biggest,2.9);
  Check(Error(near,{0,0,0})<1e-9&&lipRamp.BodyDisplacement(1,biggest,2.9)==PrecisePoint{}&&lipRamp.BodyDisplacement(2,biggest,2.9)==PrecisePoint{},"Bell outer edge leaves a shelf");
+ // A steep cylindrical fit must not compress adjacent native edge samples
+ // into a nearly collapsed ring. Preserve half their radial spacing locally.
+ std::vector<PrecisePoint> closeRings={{0,0,1.01},{0,0,1.02},{0,1,0}};
+ RootTransition spacing(closeRings,2,opening);
+ auto innerA=spacing.BodyDisplacement(0,biggest,2.9),innerB=spacing.BodyDisplacement(1,biggest,2.9);
+ Check(.01+innerB[2]-innerA[2]>.0049,"Bell collapses adjacent inner rings");
  auto scaledRest=rest,scaledOpening=opening,scaledDelta=delta;for(auto* v:{&scaledRest,&scaledOpening,&scaledDelta})for(auto& p:*v)for(auto& x:p)x*=2;
  RootTransition scaled(scaledRest,5,scaledOpening);auto twice=f;twice.radius*=2;twice.length*=2;twice.sourceLengthScale=2;auto doubled=scaled.Evaluate(scaledDelta,twice,5.8);for(unsigned i=0;i<out.size();i++){auto expected=out[i];for(auto& x:expected)x*=2;Check(Error(doubled[i],expected)<1e-12,"Calibrated unit scaling changes ramp");}
  auto rotate=[](PrecisePoint p){return PrecisePoint{-p[1],p[0],p[2]};};auto rotatedRest=rest,rotatedOpening=opening,rotatedDelta=delta;for(auto* v:{&rotatedRest,&rotatedOpening,&rotatedDelta})for(auto& p:*v)p=rotate(p);

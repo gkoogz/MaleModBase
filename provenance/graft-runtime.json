@@ -885,15 +885,15 @@
     ]
   },
   "measuredTransitionCandidate": {
-    "version": 3,
+    "version": 4,
     "files": [
       {
         "path": "include/malemod/surface/root_transition.hpp",
-        "sha256": "512c381f9a92536a05ae963558f6a03b78c6b9eb5983f96d4e1337b8da85f425"
+        "sha256": "f23948fd380ab39de9b996d9225c1c2a9f2d2f64ae2f13a39faf91c00f44390b"
       },
       {
         "path": "tests/root_transition_test.cpp",
-        "sha256": "f20782caef54769faf7320fb18a9de5948b0fd0796a3ea1e2001327258b7f243"
+        "sha256": "002762a39789a4f2021f095cc538625b49e3c5f8dc471b45cd8dc72ae912e915"
       }
     ],
     "sdkFree": true,
@@ -939,10 +939,11 @@
       "restPelvisPreservedOutsideSupport": true,
       "measuredAngularOpening": true,
       "outerPositionTangentCurvatureMatched": true,
-      "positiveInnerRingSlope": 0.1,
+      "positiveInnerRingSlope": 0.5,
       "noBroadUpperLoft": true,
       "userRejectedPreviousVisualAcceptance": true,
-      "observedGameplay": false
+      "observedGameplay": false,
+      "coarseOriginalEdgeSpacingPreserved": true
     }
   },
   "currentDefaultReplay": {

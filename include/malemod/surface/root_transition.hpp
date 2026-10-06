@@ -45,13 +45,14 @@ class RootTransition {
   if(dilation<=1e-12*scale)return d;
   const double inner=r0+dilation,width=.45*r0+1.5*dilation,outer=inner+width,length=outer-r0;
   if(rho>=outer)return d;
-  const double t=(rho-r0)/length,m0=.1*length/width,m1=length/width;
+  const double innerSlope=.5;
+  const double t=(rho-r0)/length,m0=innerSlope*length/width,m1=length/width;
   // A monotone Hermite bell connects the expanded section to the unchanged
   // pelvis. Its outer position, tangent and curvature match the original
   // surface. A small positive inner radial slope preserves distinct rings.
   const double clamped=std::max(0.,t),t2=clamped*clamped,t3=t2*clamped,t4=t3*clamped,t5=t4*clamped;
   const double hermite=m0*clamped+(10-6*m0-4*m1)*t3+(8*m0+7*m1-15)*t4+(6-3*m0-3*m1)*t5;
-  const double radius=t<0?inner+.1*(rho-r0):inner+width*hermite;
+  const double radius=t<0?inner+innerSlope*(rho-r0):inner+width*hermite;
   const double bell=t<0?1-t:1-clamped-4*t3+7*t4-3*t5;
   const double anterior=Smooth((s+3*neutralRadius)/(1.5*neutralRadius));
   const double depth=1-Smooth(std::max(0.,s)/(2*inner));
