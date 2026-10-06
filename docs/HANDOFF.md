@@ -1,5 +1,23 @@
 # Resume here: cross-repository handoff
 
+## October 6 attachment-integrity requirement and repair checkpoint
+
+The highest-priority attachment regression gate is now committed in Base,
+Witcher and canonical Wolverine `AGENTS.md` and `docs/PROJECT-CONTEXT.md`.
+Every mod edit requires geometric and visual checks across scale, shape, state,
+angle, motion, body resources and LODs. A positional weld is not acceptance.
+
+Geralt's reported large-size dark collar remains an active repair, not an
+accepted installation. The installed beta.2 runtime has not been changed.
+Shared `root_transition.hpp`, optional measured seam support in `GraftPlan`,
+and donor lighting are uncommitted candidates. Basic SDK-free transition,
+lighting, unit/rotation covariance, waist and prescribed-boundary tests pass.
+The first multiplicative body ramp was rejected after a side-view review
+revealed excess abdominal displacement. Its bounded-barrel replacement and
+explicit cooked seam donors are still diagnostic and require broader geometry
+and native visual acceptance. Do not promote these tests to a gameplay claim.
+Wolverine's runtime is unchanged. See the Witcher HANDOFF for artifact paths.
+
 ## October 5 repository sync and developer packaging
 
 Read [REPOSITORY-CHECKPOINT.md](REPOSITORY-CHECKPOINT.md) for the packaged room
