@@ -13,7 +13,9 @@ inline JoinedSurface JoinedPhysicalSurface(const Input& input,double circumferen
  std::set<unsigned> originalRoot;for(auto face:cap)for(auto id:face)originalRoot.insert(id);
  JoinedSurface out;out.originalBodyVertices=input.bodySurface.size();out.originalAnatomyVertices=input.anatomy.size();out.samples=input.bodySurface;out.samples.insert(out.samples.end(),input.anatomy.begin(),input.anatomy.end());
  const auto offset=std::uint32_t(input.bodySurface.size());std::vector<std::uint32_t> joinedRoot;for(auto id:originalRoot)joinedRoot.push_back(offset+id);
- out.triangles=RefineClassificationBoundary(out.samples,input.bodyTriangles,joinedRoot,circumference);out.refinedBodyTriangles=out.triangles.size();
+ std::vector<RootSubdivision> subdivisions;std::set<unsigned> seen;
+ for(auto s:input.rootSubdivisions){if(!originalRoot.count(s.vertex)||!originalRoot.count(s.a)||!originalRoot.count(s.b)||!seen.insert(s.vertex).second)throw std::invalid_argument("Authored waist subdivision is not in the measured anatomical opening");subdivisions.push_back({offset+s.vertex,offset+s.a,offset+s.b,s.t});}
+ out.triangles=RefineClassificationBoundary(out.samples,input.bodyTriangles,joinedRoot,circumference,subdivisions);out.refinedBodyTriangles=out.triangles.size();
  for(auto face:input.anatomyTriangles){for(auto& id:face)id+=offset;out.triangles.push_back(face);}
  // The virtual cap above identified and validated the exact anatomical edge.
  // No cap triangle is appended to the actual joined cut surface.

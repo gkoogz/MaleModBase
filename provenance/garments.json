@@ -183,7 +183,8 @@
       "pass": "root_closure_test with bent20-to54-boundary, original physical vertices/faces retained, invalid parent/non-edge/duplicate/endpoint parameter rejected",
       "nativeStatus": "CandidateA rejects native bent fine root; authored bindings prepared for candidateB verification",
       "adoption": "Wolverine passes final unified collar ucSeam bindings; Geralt/future adapters may supply their own proven original edge bindings when needed"
-    }
+    },
+    "authoredWaistSubdivision": "PASS animated root edge ownership reaches actual joined waistband cuts; unchanged measured tissue; native validation pending"
   },
   "fileHashes": {
     "assets/garments/wolverine-jockstrap-donors.json": "cff5232988888e03c7eb87883a0eb63fa9151e3eecbbbe5a26162e364384b8d0",
@@ -221,7 +222,7 @@
     "include/malemod/garments/strap_route.hpp": "bc67d7d807897c392883c9b4cb2b4a55b71a4c345b5cbc42ff911c837d69e5e6",
     "include/malemod/garments/surface_classification.hpp": "169d6191eef38647c5feecb445bfdb4e5d9b1d83c4f65da1ff6858b38ebcbdc8",
     "include/malemod/garments/waist_contours.hpp": "e741c81dc6082ac9e817a05daba9e7b877a793fb218b878fdc17b3db99566eaa",
-    "include/malemod/garments/waist_graft.hpp": "1dd8880d3ab85ad88d9dc7da07e3c45efc6190ef59bc9721ed4661dcd77df314",
+    "include/malemod/garments/waist_graft.hpp": "2e730bba2b8e756d5c9b22689b1293ad3d8e302c8c75621a58472349b9b351a6",
     "malemod_base/garment_coverage.py": "abaed32603d7e3a5c98c22ab655f9d39ceb695f7eaf26a249116e9bf29af050d",
     "malemod_base/garment_geometry_audit.py": "135d9a4d84da13e99aea2def2b3a64b620f470d43419c9f35c81a4bc9b9f4bf8",
     "malemod_base/garment_reactions.py": "6330f201697b75dbd9fed75b1aabc0a9784d4fb66762029a21a89626825618e0",
@@ -252,7 +253,7 @@
     "tests/test_garment_regions.py": "68d1eb7c8641ac432b9d7e823ffecda3f47dcea0505d0193386b44bf1bf109db",
     "tests/test_garment_routes.py": "5256b48b59b9b555891d13c319f161bcfdf4700f07bc9094eb68b90fe8575c36",
     "tests/waist_contours_test.cpp": "73874700be7caf9f6e4d5e591bd9182401d4a234784d918235812388c85262bd",
-    "tests/waist_graft_test.cpp": "d6e397a3045f20023768307de749ad9c15b62e980e59bec53ae4ab9c0d40593d",
+    "tests/waist_graft_test.cpp": "5394b21e298c18c4c17f1d9ee9501f65784ddd4cb0a06989483d906c1571467c",
     "tools/audit_garment_matrix.py": "0cabfeb8f8745247fe26d6b9db472eebea4c831c54e1f20c248bddf12f4ccdfc",
     "tools/audit_surface_intersections.cpp": "5da8bbd9be7bac336770d2925d69ce808ccaf956b65080edae71cba4fc70a9fd",
     "tools/bake_garment_materials.py": "9bda19a3897d9139ccfb20a7b50851714a41ec25feb6f19026700529a055ecf4",
