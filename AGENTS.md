@@ -61,3 +61,23 @@ test is not proof of campaign transitions, every garment or performance parity.
 Preserve normal saves/settings/audio, and never drive the host's keyboard,
 mouse or focus during automated runs. Record exact package/runtime identities,
 cleanup and observed results independently from successful compilation.
+
+## Mandatory attachment-integrity gate
+
+The pelvic attachment is the project's highest-priority visual invariant. After
+EVERY mod edit, run and record an attachment regression pass before installation
+or release, including edits to physics, garments, shaders, lighting, controls,
+transport and packaging. A welded position alone is insufficient. Reject gaps,
+folded/inverted collar triangles, dark shading rings, pinched or constricted
+roots, abrupt normal/tangent changes and unnatural wedges. Preserve the neutral
+pelvic surface and a smooth continuous recruited ramp into the anatomy.
+
+Cover minimum/default/maximum and intermediate Overall/Width, combinations of
+shape controls, all mechanical states, extreme rest angles, both body resources
+and supported LODs, and animated motion. Preserve original-edge seam donors, UV
+aliases and the shared waist. Review front/side/oblique native renders in the
+grey room; include a campaign check for scene-dependent regressions. Record
+source, offline, native and visual evidence separately. If any part is untested,
+state it explicitly and do not claim the attachment gate passed. Retain the last
+accepted runtime and exact rollback until the replacement passes. Put shared
+algorithms and regression cases in Base and adopt them through pinned adapters.

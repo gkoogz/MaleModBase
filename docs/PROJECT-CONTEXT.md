@@ -1,5 +1,12 @@
 # Durable project context
 
+Highest-priority enduring requirement (October 5): attachment integrity, smooth
+collar continuity and a natural pelvic ramp are the most critical aspects of
+the entire project at every scale. Every mod edit requires a regression pass
+for gaps, dark seams, folds, constrictions and wedges across size/angle/state/
+motion. Numerical welding is not visual acceptance. See the mandatory gate
+in AGENTS.md; preserve the last accepted runtime when a candidate fails.
+
 Latest development-workflow request (October 5): package the Wolverine and
 Witcher grey development rooms in their respective repositories, reproducible
 from each developer's licensed vanilla installation. Future agents should use
