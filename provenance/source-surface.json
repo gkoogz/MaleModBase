@@ -5068,15 +5068,15 @@
   "currentProcessRuntime": {
     "recipe": "Win32 MSVC Release /fp:precise, original4-worker16-batch geometry, process-isolated",
     "serialGeometry": false,
-    "librarySHA256": "89fb86d83dfcaeadaba491d3c65d44317bba7f95ea3fdfd76b9a8535a2da4345",
+    "librarySHA256": "b954885a86c3d470f1ff2d2c52fd69cac0c55611881cb9e1eebbcf527c3213a3",
     "supportExecutableSHA256": "f0fa413827b6f3e3c47030f8133e9b06b1b817517bc3a17b6b67d5303edffb42",
     "generatedKernelSHA256": "2d6d79010a77918e71cd06a4abf8c04c5da745059bf391b6a2c1fc53055637a2",
     "wireVersion": 6,
     "behaviorRevision": 2,
     "workingTreeClean": false,
     "status": "DIRTY offline process source-consumption proof; no cloth/native/clean-pin acceptance",
-    "sourceConsumptionProofPath": "build/physical-reaction-source-proof-dirty-current2/proof.json",
-    "sourceConsumptionProofSHA256": "0704593ea7e8eaa21d46f4e10946fd34daf011aec972e7f77f752e14356f6c68",
+    "sourceConsumptionProofPath": "build/physical-reaction-source-proof-be2cceb-current/proof.json",
+    "sourceConsumptionProofSHA256": "3842973b19d9170b94cf7040d47f074466f16d9718e0fe0db59488aaca649df9",
     "disabledReferenceGate": "currentSourceExtractionVerification.sourceConsumptionRecheck",
     "observedGameplay": false,
     "installed": false,
@@ -5087,7 +5087,9 @@
       "requiresExactCleanSourceCommit": true,
       "historicalDirtyProofCannotAuthorizeDeployment": true,
       "clothPhysicsOrNativeAcceptanceImplied": false
-    }
+    },
+    "freshBuildRecipe": "build/source-collar-process-20261006, Win32 process-isolated /fp:precise",
+    "sourcePhysicsBehaviorChanged": false
   },
   "historicalProcessRuntimeReceipts": [
     {
