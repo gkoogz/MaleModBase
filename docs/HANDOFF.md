@@ -1,3 +1,20 @@
+## October 6 native candidate A root classification failure
+
+Private clean c726cea/Base f906fe7 launched into native gameplay but no cloth
+was published: Classification root vertex is not on its measured body edge.
+It was closed normally with exit0, host input/focus untouched, no human install.
+The final collar supplies exact original-edge subdivision ownership, but native
+packed skinning can bend intermediate fine vertices off the coarse body chord.
+
+Base now accepts optional authored RootSubdivision bindings for virtual volume
+closure only. Default geometric rejection is unchanged. Parent endpoints must
+belong to one actual measured boundary edge, weights must be interior/unique,
+and complete refined closure still validates. Physical/rendered vertices,
+triangles, lineage and contacts are untouched. Bent20-to54 test and malformed
+binding rejection pass. Wolverine supplies its final ucSeam source bindings;
+Geralt/future spokes can supply their own proven edges through the same API.
+Candidate B still needs native confirmation before any human install.
+
 # Resume here: cross-repository handoff
 
 ## October 6 playable candidate source preparation

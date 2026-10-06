@@ -175,6 +175,14 @@
         61.8625
       ],
       "remaining": "Native private room and sustained cloth performance/contacts/attachment acceptance"
+    },
+    "authoredRootSubdivision": {
+      "physicalGeometryChanged": false,
+      "classificationOnly": true,
+      "defaultGeometricValidationUnchanged": true,
+      "pass": "root_closure_test with bent20-to54-boundary, original physical vertices/faces retained, invalid parent/non-edge/duplicate/endpoint parameter rejected",
+      "nativeStatus": "CandidateA rejects native bent fine root; authored bindings prepared for candidateB verification",
+      "adoption": "Wolverine passes final unified collar ucSeam bindings; Geralt/future adapters may supply their own proven original edge bindings when needed"
     }
   },
   "fileHashes": {
@@ -199,7 +207,7 @@
     "include/malemod/garments/drape_section.hpp": "88101664efca1435b0682dfbf7a1b8821801339ad4a1968e91b61f46611eacae",
     "include/malemod/garments/drape_sheet.hpp": "8da46939c04749ba207fdfa3eef74c1c21c92e54349f22071a01cbb1ecba9c1d",
     "include/malemod/garments/geometry_export.hpp": "8b214acffbed298b389254f67b3834e12dc6a6274d4131b0c377b2b31e6d229b",
-    "include/malemod/garments/jockstrap.hpp": "2364a17af2c333b43a1c2fbb3d556ac29dacdb558143ddd603622c2abef15582",
+    "include/malemod/garments/jockstrap.hpp": "4c9353ae74b4495e2ee7a9d774bff33a799b4ae1fd88e785659ede8947e4d801",
     "include/malemod/garments/jockstrap_detail.hpp": "b7d73cc14351847c4ea9f4a707e880ad7bbcadd31b70f3ea10635e8c226ece39",
     "include/malemod/garments/material_grid.hpp": "9e51498d03e853cd708d1a6357eafba1fa60d49f7b42657d53eb651888785f57",
     "include/malemod/garments/natural_band.hpp": "101a595bb200997ee31bb41ddef568c46b6d46991a1d0fa5478a2a751b94d611",
@@ -207,11 +215,11 @@
     "include/malemod/garments/proximity_cache.hpp": "38c7b55b33530088620d3b4b3102e0639c6806cd01b83300d25604a9e765da60",
     "include/malemod/garments/reaction_support.hpp": "ea4491fc85b7216b1a0766fac3ba5c232edf964973359205e01b5d3a5648aa3f",
     "include/malemod/garments/render_contact.hpp": "32e55250faa8b370e1e825ebc0576e4484646df5c3685d2bce86c68a2ced7fd3",
-    "include/malemod/garments/root_closure.hpp": "ce6a85d74f68cc34a94c9b6294323ecd3459a35440309b217ad4ebb42922faaf",
+    "include/malemod/garments/root_closure.hpp": "4ce32a24a6f5f3561fbecec84d5312bbfe53f223429723bd599db6c75a600521",
     "include/malemod/garments/sewn_contact.hpp": "6919f6445f08f6022223a032dbfe06c78e11984d89e86d8859a885492d7a22eb",
     "include/malemod/garments/sheet_fit.hpp": "eb1f7fe6bd0856a183116de266ef8230a2a233f945d642cefa8e7f12835973b9",
     "include/malemod/garments/strap_route.hpp": "bc67d7d807897c392883c9b4cb2b4a55b71a4c345b5cbc42ff911c837d69e5e6",
-    "include/malemod/garments/surface_classification.hpp": "d15ac6c0a0daef31e12d0f020ac3c361e4f2495db0a2770a192b72b96726c2f9",
+    "include/malemod/garments/surface_classification.hpp": "169d6191eef38647c5feecb445bfdb4e5d9b1d83c4f65da1ff6858b38ebcbdc8",
     "include/malemod/garments/waist_contours.hpp": "e741c81dc6082ac9e817a05daba9e7b877a793fb218b878fdc17b3db99566eaa",
     "include/malemod/garments/waist_graft.hpp": "1dd8880d3ab85ad88d9dc7da07e3c45efc6190ef59bc9721ed4661dcd77df314",
     "malemod_base/garment_coverage.py": "abaed32603d7e3a5c98c22ab655f9d39ceb695f7eaf26a249116e9bf29af050d",
@@ -251,7 +259,8 @@
     "tools/garment_source_routes.py": "b9712e67bd1a629c6bb64bf54b2b0033b6a9d15110176d20ac52255778ac647b",
     "tools/prepare_garment_source.py": "049e413a706f056f4827478ac9151a8d5783d7ba9853dde26f71d6e5701e959e",
     "tools/test_garment_worker_support.py": "7c2e79e2ec69366400ff8ed028e8177884e4416aca00e389f9e0b52ebe15fe5b",
-    "tools/verify_garment_source_reactions.py": "bbad2e2b8cfa8f6c75c984bd26260d69c17f3af3a32649835bef815f3d1d7f77"
+    "tools/verify_garment_source_reactions.py": "bbad2e2b8cfa8f6c75c984bd26260d69c17f3af3a32649835bef815f3d1d7f77",
+    "tests/root_closure_test.cpp": "28495894ee691be34746e66419427410572f63458b9ef2a57279cc5a6357e858"
   },
   "historicalVerification": {
     "v2ActualGeraltFit": {

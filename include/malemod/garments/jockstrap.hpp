@@ -97,6 +97,10 @@ struct MaterialLayout {
     double measuredCircumference=0,bandThicknessNormalized=0;
     std::vector<AuthoredJoint> authoredJoints;
 };
+// Authored subdivision of a measured coarse root edge. Animated skinning can
+// bend the intermediate vertex off the straight chord; classification closure
+// must retain its proven original edge ownership. These never replace contacts.
+struct RootSubdivision {unsigned vertex=0,a=0,b=0;double t=0;};
 struct Input {
     Frame frame;
     std::uint64_t characterEpoch=0,topologyRevision=0;
@@ -105,6 +109,7 @@ struct Input {
     // measured anatomical/body join, angle around forward: lateral toward up.
     std::vector<Sample> waist,opening,anatomy;
     std::vector<std::array<std::uint32_t,3>> anatomyTriangles;
+    std::vector<RootSubdivision> rootSubdivisions;
     AnatomyRegions anatomyRegions;
     // Two ordered measured curves from lateral hip midpoint, under each glute, to
     // the corresponding lower pouch opening. They are not inferred skeletons.

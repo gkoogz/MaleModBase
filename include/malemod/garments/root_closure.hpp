@@ -7,9 +7,10 @@
 #include <unordered_map>
 namespace malemod::garments {
 struct Sample;
+struct RootSubdivision;
 inline std::vector<std::array<std::uint32_t,3>> RootCap(const std::vector<Sample>&,const std::vector<std::array<std::uint32_t,3>>&,const std::vector<Sample>&,double);
 inline std::vector<std::array<std::uint32_t,3>> SurfaceCaps(const std::vector<Sample>&,const std::vector<std::array<std::uint32_t,3>>&,double);
-inline std::vector<std::array<std::uint32_t,3>> RefineClassificationBoundary(const std::vector<Sample>&,const std::vector<std::array<std::uint32_t,3>>&,const std::vector<std::uint32_t>&,double);
+inline std::vector<std::array<std::uint32_t,3>> RefineClassificationBoundary(const std::vector<Sample>&,const std::vector<std::array<std::uint32_t,3>>&,const std::vector<std::uint32_t>&,double,const std::vector<RootSubdivision>& = {});
 }
 #include "jockstrap.hpp"
 namespace malemod::garments {
@@ -89,7 +90,7 @@ inline std::vector<std::array<std::uint32_t,3>> EarClip(const std::vector<Point>
 // indices before inserting its reversed cap. This changes classification
 // triangles only. Float interpolation residuals are bounded in measured
 // circumference units; no new point or guessed body frame is introduced.
-inline std::vector<std::array<std::uint32_t,3>> RefineClassificationBoundary(const std::vector<Sample>& surface,const std::vector<std::array<std::uint32_t,3>>& faces,const std::vector<std::uint32_t>& root,double scale){
+inline std::vector<std::array<std::uint32_t,3>> RefineClassificationBoundary(const std::vector<Sample>& surface,const std::vector<std::array<std::uint32_t,3>>& faces,const std::vector<std::uint32_t>& root,double scale,const std::vector<RootSubdivision>& subdivisions){
  if(root.size()<3||root.size()>1024)throw std::invalid_argument("Measured classification root outside refinement budget");
  auto boundary=closure_detail::Extract(surface,faces,scale);constexpr double tolerance=1e-7;
  std::set<unsigned> unique;for(auto id:root)if(id>=surface.size()||!unique.insert(id).second)throw std::invalid_argument("Invalid classification root index");
@@ -102,8 +103,16 @@ inline std::vector<std::array<std::uint32_t,3>> RefineClassificationBoundary(con
  const auto& loop=*selected;std::vector<unsigned> endpoints;std::set<unsigned> endpointIds;
  for(auto endpoint:loop){double best=1e100;unsigned match=0;for(auto id:root){double d=Length(Sub(points[endpoint],points[id]));if(d<best){best=d;match=id;}}
   if(!endpointIds.insert(match).second)throw std::invalid_argument("Classification root merges distinct body endpoints");endpoints.push_back(match);}
+ std::map<unsigned,RootSubdivision> authored;
+ for(auto s:subdivisions){if(!unique.count(s.vertex)||!endpointIds.count(s.a)||!endpointIds.count(s.b)||s.a==s.b||!std::isfinite(s.t)||s.t<=0||s.t>=1||endpointIds.count(s.vertex)||!authored.emplace(s.vertex,s).second)throw std::invalid_argument("Invalid authored classification root subdivision");}
  std::vector<std::vector<std::pair<double,unsigned>>> interior(loop.size());
  for(auto id:root){if(endpointIds.count(id))continue;double best=1e100,bestT=0;unsigned at=0;
+  auto binding=authored.find(id);if(binding!=authored.end()){
+   const auto s=binding->second;bool found=false;
+   for(unsigned edge=0;edge<loop.size();edge++){auto a=endpoints[edge],b=endpoints[(edge+1)%loop.size()];if(a==s.a&&b==s.b){at=edge;bestT=s.t;found=true;break;}if(a==s.b&&b==s.a){at=edge;bestT=1-s.t;found=true;break;}}
+   if(!found)throw std::invalid_argument("Authored root subdivision does not belong to a measured boundary edge");
+   interior[at].push_back({bestT,id});continue;
+  }
   for(unsigned edge=0;edge<loop.size();edge++){auto a=points[loop[edge]],b=points[loop[(edge+1)%loop.size()]],direction=Sub(b,a);double square=Dot(direction,direction);if(square<=1e-18)throw std::invalid_argument("Degenerate classification body edge");double t=std::clamp(Dot(Sub(points[id],a),direction)/square,0.,1.);double d=Length(Sub(points[id],Add(a,Mul(direction,t))));if(d<best){best=d;bestT=t;at=edge;}}
   if(best>tolerance||bestT<=1e-9||bestT>=1-1e-9)throw std::invalid_argument("Classification root vertex is not on its measured body edge");
   interior[at].push_back({bestT,id});}

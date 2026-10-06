@@ -10,7 +10,9 @@ inline void Session::ClassifySurfaces(const Input& input,Point origin,double sca
   closedBodyFaces_=input.bodyTriangles;std::map<unsigned,unsigned> index;for(unsigned i=0;i<rootVertices_.size();i++)index[rootVertices_[i]]=unsigned(input.bodySurface.size())+i;
   if(!input.bodySurface.empty()){
    auto body=input.bodySurface;for(auto id:rootVertices_)body.push_back(input.anatomy[id]);std::vector<unsigned> rootIndices;for(unsigned i=0;i<rootVertices_.size();i++)rootIndices.push_back(unsigned(input.bodySurface.size())+i);
-   if(!rootIndices.empty())closedBodyFaces_=RefineClassificationBoundary(body,closedBodyFaces_,rootIndices,scale);
+   std::vector<RootSubdivision> subdivisions;std::set<unsigned> seen;
+   for(auto s:input.rootSubdivisions){if(!index.count(s.vertex)||!index.count(s.a)||!index.count(s.b)||!seen.insert(s.vertex).second)throw std::invalid_argument("Authored root subdivision is not in the measured anatomical opening");subdivisions.push_back({index.at(s.vertex),index.at(s.a),index.at(s.b),s.t});}
+   if(!rootIndices.empty())closedBodyFaces_=RefineClassificationBoundary(body,closedBodyFaces_,rootIndices,scale,subdivisions);
    for(auto f:rootCap_)closedBodyFaces_.push_back({index[f[2]],index[f[1]],index[f[0]]});
    auto remote=SurfaceCaps(body,closedBodyFaces_,scale);closedBodyFaces_.insert(closedBodyFaces_.end(),remote.begin(),remote.end());
   }

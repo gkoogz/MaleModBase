@@ -67,6 +67,19 @@ int main(){try{
  auto coarseAlias=coarse;for(auto& face:coarseAlias.faces)for(auto& id:face){coarseAlias.points.push_back(coarseAlias.points[id]);id=unsigned(coarseAlias.points.size()-1);}auto aliasRefined=RefineClassificationBoundary(coarseAlias.points,coarseAlias.faces,fine,4);Check(SurfaceCaps(coarseAlias.points,aliasRefined,4)==classificationCaps,"Classification body aliases changed refined closure");
  auto invalidFine=fine;invalidFine.erase(invalidFine.begin());Rejected([&]{RefineClassificationBoundary(coarse.points,coarse.faces,invalidFine,4);});
  auto offEdge=coarse;offEdge.points[fine[1]].position[2]+=.0001;Rejected([&]{RefineClassificationBoundary(offEdge.points,coarse.faces,fine,4);});
+ // A proven source edge subdivision can bend under native skinning. Only its
+ // virtual membership closure is refined; physical vertices/faces stay exact.
+ std::vector<RootSubdivision> authored;unsigned authoredOffset=0;
+ for(unsigned i=0;i<coarseN;i++){unsigned count=i<14?3:2;for(unsigned k=1;k<count;k++)authored.push_back({fine[authoredOffset+k],fine[authoredOffset],fine[(authoredOffset+count)%fine.size()],double(k)/count});authoredOffset+=count;}
+ auto bent=coarse;for(auto s:authored)bent.points[s.vertex].position[2]+=.003*std::sin(s.t*3.141592653589793);
+ Rejected([&]{RefineClassificationBoundary(bent.points,bent.faces,fine,4);});
+ auto exactPoints=bent.points;auto bentRefined=RefineClassificationBoundary(bent.points,bent.faces,fine,4,authored);
+ Check(bent.faces==originals&&bent.points.size()==exactPoints.size(),"Authored virtual refinement changed physical surface");
+ for(unsigned i=0;i<bent.points.size();i++)Check(bent.points[i].position==exactPoints[i].position,"Virtual closure moved a physical vertex");
+ auto bentCaps=SurfaceCaps(bent.points,bentRefined,4);bentRefined.insert(bentRefined.end(),bentCaps.begin(),bentCaps.end());Check(closure_detail::Extract(bent.points,bentRefined,4).loops.empty(),"Bent authored root closure has an open edge");
+ auto malformed=authored;malformed[0].b=fine[5];Rejected([&]{RefineClassificationBoundary(bent.points,bent.faces,fine,4,malformed);});
+ malformed=authored;malformed[0].t=0;Rejected([&]{RefineClassificationBoundary(bent.points,bent.faces,fine,4,malformed);});
+ malformed=authored;malformed.push_back(malformed[0]);Rejected([&]{RefineClassificationBoundary(bent.points,bent.faces,fine,4,malformed);});
  invalidFine=fine;invalidFine[1]=invalidFine[0];Rejected([&]{RefineClassificationBoundary(coarse.points,coarse.faces,invalidFine,4);});
  std::cout<<"PASS measured closures and 20-to-54 existing-index classification refinement, aliases, unit covariance and rejection\n";return 0;
  }catch(const std::exception& e){std::cerr<<e.what()<<'\n';return 1;}}
