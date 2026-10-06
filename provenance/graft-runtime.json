@@ -885,15 +885,15 @@
     ]
   },
   "measuredTransitionCandidate": {
-    "version": 2,
+    "version": 3,
     "files": [
       {
         "path": "include/malemod/surface/root_transition.hpp",
-        "sha256": "aaba3d7e21c47ca9e7c6b52838f1c0bc90169f5e482295992aa0903feb7261eb"
+        "sha256": "512c381f9a92536a05ae963558f6a03b78c6b9eb5983f96d4e1337b8da85f425"
       },
       {
         "path": "tests/root_transition_test.cpp",
-        "sha256": "81758244c98290614aedd77fd0fe953cce49c2de48baad842cab8ea048bc1548"
+        "sha256": "f20782caef54769faf7320fb18a9de5948b0fd0796a3ea1e2001327258b7f243"
       }
     ],
     "sdkFree": true,
@@ -913,7 +913,7 @@
       "testSHA256": "9c22208b3be2e4c295bb4797954fc068740c0e2dd09dc76eab7c5f4ba13303a2",
       "observedGameplay": false
     },
-    "measuredAnteriorShoulder": true,
+    "measuredAnteriorShoulder": false,
     "expandingRadialSupport": true,
     "characterBodyUsesMeasuredOpening": true,
     "preserveMeasuredBodyDifferential": {
@@ -933,6 +933,15 @@
       "noSmoothingFactorization": true,
       "validSurfaceUnchanged": true,
       "testSHA256": "9c22208b3be2e4c295bb4797954fc068740c0e2dd09dc76eab7c5f4ba13303a2",
+      "observedGameplay": false
+    },
+    "localMeasuredBell": {
+      "restPelvisPreservedOutsideSupport": true,
+      "measuredAngularOpening": true,
+      "outerPositionTangentCurvatureMatched": true,
+      "positiveInnerRingSlope": 0.1,
+      "noBroadUpperLoft": true,
+      "userRejectedPreviousVisualAcceptance": true,
       "observedGameplay": false
     }
   },

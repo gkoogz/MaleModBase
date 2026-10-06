@@ -2,18 +2,16 @@
 
 ## October 6 attachment-integrity requirement and repair checkpoint
 
-Side-profile refinement: ordered concentric rings now expand with dilation;
-the optional differential-preserving body solve avoids attenuating the ramp
-beside prescribed waist rows. A cached constraint-only projection guards the
-actual cooked triangle surface after exact original-edge welding. All 46
-adapter diagnostic cases pass with no reversed local collar faces. Shared
-orientation/transition tests and 22 historical fixtures/110 updated-frame
-replays pass. The full adapter sweep and native visual review are pending.
-The stronger intermediate loft at Base 4f0148d was rejected in the grey room
-for a waist shelf; its runtime was restored to accepted Base 2ad61e3. Do not
-promote the intermediate commit to installed acceptance. Current native proof
-belongs in the Witcher HANDOFF and provenance/collar-repair.json. Wolverine
-remains untouched.
+The user rejected the installed 40dfa86 shape: exact welding and geometric
+orientation passes had not prevented a raised shelf around the root. Its
+native aesthetic acceptance is revoked. Current candidate starts from the
+original bare pelvis and measured angular opening, using a local Hermite bell
+into the growing shaft section. Exterior and neutral rest shape are preserved;
+the outer support matches position/tangent/curvature. Shared tests and the
+adapter's 46-case diagnostic pass with zero body reversals. Full native review
+is pending; do not label source/offline success as visual acceptance. Read the
+new framework in PROJECT-CONTEXT and the adapter's current HANDOFF/certificate.
+Wolverine remains untouched; shared adoption requires its own native gate.
 
 The highest-priority attachment regression gate is now committed in Base,
 Witcher and canonical Wolverine `AGENTS.md` and `docs/PROJECT-CONTEXT.md`.
@@ -201,18 +199,18 @@ all actual authored seam residuals still pass. Bending endpoint preservation
 does not imply byte-identical final contact-adjusted vertices.
 
 The independent full-cloth audit now distinguishes all component pairs.
-Candidate23 has no same-component self-crossings, but617–944 cross-component
+Candidate23 has no same-component self-crossings, but617â€“944 cross-component
 pairs, predominantly sewn hem/sheet, strap/band and underside attachments.
 Their material adjacency and finite-width construction must be certified;
 they are not covered by the passing sheet-only intersection gate. Candidate26
-adds4–29 actual same-hem self-crossings per hem. Preserve the complete-pair
+adds4â€“29 actual same-hem self-crossings per hem. Preserve the complete-pair
 classification receipts; no blanket neighboring-face exclusion or complete
 garment self-consistency claim is permitted from these source checkpoints.
 
 The stereographic rest chart constrains spherical triangle orientation and
 angular quality before radial casting, with consistent alternate diagonals at
 the two reflex corners. The SDK cube test checks every face, unchanged top
-donors and translated/rotated 100x covariance. Candidates15–17 failed actual
+donors and translated/rotated 100x covariance. Candidates15â€“17 failed actual
 geometry despite SDK passes; preserve their rejected receipts. Source renders
 use complete native anatomy/body, neutral material and actual cloth faces;
 there is no anatomy visibility mask. Source opacity is not native 95% proof.
@@ -231,8 +229,8 @@ These certify rest geometry, not movement or gameplay.
 Frozen candidate16 raw sheets were injective but near singular (aspect up to
 3.59e6); subsequent contact fitting introduced crossings. Candidate17 adds a
 spherical determinant/longest-edge quality constraint, reducing raw aspect to
-107–201 with zero raw crossings across eight actual inputs, but full rest
-still fails crossings and upper hem turns (52–143 degrees in seven cases).
+107â€“201 with zero raw crossings across eight actual inputs, but full rest
+still fails crossings and upper hem turns (52â€“143 degrees in seven cases).
 Candidate19 smooths the native-seam radial transition and restricts REST
 contact fitting to chart rays. Its eight actual rest cases pass contact and
 intersection gates but fail hem turns. Candidate22 fixes those hem turns;
@@ -261,7 +259,7 @@ and gravity step 70.17 ms versus the required live cadence. Numerical receipt
 is `build/cloth-dynamics-debug/candidate19-dynamics/numerical-conservation-summary.json`.
 Private parallel native point-query batching preserves all eight actual frame
 bytes and physical fields, including 54 stale tickets recomputed after source
-corrections. Its 3–8% total improvement is insufficient and is not promoted.
+corrections. Its 3â€“8% total improvement is insufficient and is not promoted.
 No new garment build has been installed or observed in gameplay.
 
 Latest requirement includes tilt into the recruited pelvic root ramp. Actual
@@ -632,7 +630,7 @@ Read `AUTHORED-SHAPE.md` for the new source-derived early coarse-shape evaluator
 1,300 original-code fixture samples, coupled graft collar domain and protected
 native part boundaries. The checked correction preserves both sides of the
 seam and prevents inverted triangles. An actual-Geralt synthetic stress probe
-passes those invariants in both LODs but accepts only 17â€“36% of its requested
+passes those invariants in both LODs but accepts only 17Ã¢â‚¬â€œ36% of its requested
 correction: the full-range deformation envelope is NOT established. Actual
 guide/rest-stage completion and native output remain required. The spoke has a
 native-cooked isolated scale graph; pose/dangle compatibility is not verified.

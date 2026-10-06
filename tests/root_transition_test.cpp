@@ -34,6 +34,20 @@ int main(){try{
   previousSlope=slope;haveSlope=true;
  }
  auto neutral=f;neutral.radius=2.9;auto base=ramp.Evaluate(delta,neutral,2.9);for(unsigned i=0;i<4;i++)Check(base[i]==PrecisePoint{},"Neutral opening altered");
+ // A noncircular measured opening is not inflated by its nominal radius.
+ // Exterior pelvis stays exactly at rest, including at maximum dilation.
+ std::vector<PrecisePoint> oval={{0,0,5},{0,3,0},{0,0,-4},{0,-3,0}};
+ std::vector<PrecisePoint> pelvic={{0,0,5},{0,0,12},{0,0,20},{-20,0,5},{0,10,0},{0,-3,0}};
+ RootTransition bellRamp(pelvic,5,oval);auto biggest=f;biggest.radius=7.7;
+ Check(bellRamp.BodyDisplacement(2,biggest,2.9)==PrecisePoint{},"Maximum bell reshapes exterior abdomen");
+ Check(bellRamp.BodyDisplacement(3,biggest,2.9)==PrecisePoint{},"Maximum bell reshapes posterior pelvis");
+ auto smaller=biggest;smaller.radius=2.9;for(unsigned i=0;i<pelvic.size();i++)Check(bellRamp.BodyDisplacement(i,smaller,2.9)==PrecisePoint{},"Neutral noncircular pelvis altered");
+ // Check the analytical outer boundary in a circular section: position and
+ // both derivatives return to the original body, rather than a raised lip.
+ const double radius0=1,dilation=biggest.radius*1.04-radius0,outer=radius0+dilation+.45*radius0+1.5*dilation;
+ std::vector<PrecisePoint> lip={{0,0,outer-.001},{0,0,outer},{0,0,outer+.001},{0,1,0}};
+ RootTransition lipRamp(lip,3,opening);auto near=lipRamp.BodyDisplacement(0,biggest,2.9);
+ Check(Error(near,{0,0,0})<1e-9&&lipRamp.BodyDisplacement(1,biggest,2.9)==PrecisePoint{}&&lipRamp.BodyDisplacement(2,biggest,2.9)==PrecisePoint{},"Bell outer edge leaves a shelf");
  auto scaledRest=rest,scaledOpening=opening,scaledDelta=delta;for(auto* v:{&scaledRest,&scaledOpening,&scaledDelta})for(auto& p:*v)for(auto& x:p)x*=2;
  RootTransition scaled(scaledRest,5,scaledOpening);auto twice=f;twice.radius*=2;twice.length*=2;twice.sourceLengthScale=2;auto doubled=scaled.Evaluate(scaledDelta,twice,5.8);for(unsigned i=0;i<out.size();i++){auto expected=out[i];for(auto& x:expected)x*=2;Check(Error(doubled[i],expected)<1e-12,"Calibrated unit scaling changes ramp");}
  auto rotate=[](PrecisePoint p){return PrecisePoint{-p[1],p[0],p[2]};};auto rotatedRest=rest,rotatedOpening=opening,rotatedDelta=delta;for(auto* v:{&rotatedRest,&rotatedOpening,&rotatedDelta})for(auto& p:*v)p=rotate(p);

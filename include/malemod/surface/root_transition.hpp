@@ -13,49 +13,51 @@ class RootTransition {
  unsigned bodyCount_;
  PrecisePoint root_{};
  PrecisePoint forward_;
+ PrecisePoint openingUp_;
+ PrecisePoint openingSide_;
+ std::vector<double> openingRadius_;
  static double Smooth(double t){t=std::clamp(t,0.,1.);return t*t*t*(t*(t*6-15)+10);}
  public:
- RootTransition(std::vector<PrecisePoint> rest,unsigned bodyCount,const std::vector<PrecisePoint>& opening,PrecisePoint forward={1,0,0}):rest_(std::move(rest)),bodyCount_(bodyCount),forward_(forward){
+ RootTransition(std::vector<PrecisePoint> rest,unsigned bodyCount,const std::vector<PrecisePoint>& opening,PrecisePoint forward={1,0,0},PrecisePoint openingUp={0,0,1}):rest_(std::move(rest)),bodyCount_(bodyCount),forward_(forward),openingUp_(openingUp){
   if(opening.size()<3||!bodyCount_||bodyCount_>=rest_.size())throw std::invalid_argument("Incomplete measured root transition");
   double f=0;for(double x:forward_){if(!std::isfinite(x))throw std::invalid_argument("Nonfinite pelvic forward");f+=x*x;}if(f<1e-12)throw std::invalid_argument("Degenerate pelvic forward");for(auto& x:forward_)x/=std::sqrt(f);
   for(auto p:opening)for(unsigned a=0;a<3;a++){if(!std::isfinite(p[a]))throw std::invalid_argument("Nonfinite opening");root_[a]+=p[a]/opening.size();}
+  double u=0,fu=0;for(unsigned a=0;a<3;a++){if(!std::isfinite(openingUp_[a]))throw std::invalid_argument("Nonfinite opening up");u+=openingUp_[a]*openingUp_[a];fu+=openingUp_[a]*forward_[a];}if(std::abs(u-1)>1e-5||std::abs(fu)>1e-5)throw std::invalid_argument("Opening frame must be orthonormal");
+  openingSide_={openingUp_[1]*forward_[2]-openingUp_[2]*forward_[1],openingUp_[2]*forward_[0]-openingUp_[0]*forward_[2],openingUp_[0]*forward_[1]-openingUp_[1]*forward_[0]};
+  // Cache a smooth angular section of this measured opening, not the source
+  // character's nominal circular radius. This is immutable instance data.
+  std::vector<std::array<double,3>> section;
+  for(auto p:opening){double z=0,y=0;for(unsigned a=0;a<3;a++){z+=(p[a]-root_[a])*openingUp_[a];y+=(p[a]-root_[a])*openingSide_[a];}double r=std::hypot(z,y);if(r>1e-10)section.push_back({z/r,y/r,r});}
+  if(section.size()<3)throw std::invalid_argument("Degenerate opening cross section");
+  for(auto p:rest_){double z=0,y=0;for(unsigned a=0;a<3;a++){z+=(p[a]-root_[a])*openingUp_[a];y+=(p[a]-root_[a])*openingSide_[a];}double r=std::hypot(z,y),total=0,weighted=0;const double uz=r>1e-10?z/r:1,uy=r>1e-10?y/r:0;for(auto q:section){double w=std::exp(24*(uz*q[0]+uy*q[1]-1));weighted+=w*q[2];total+=w;}openingRadius_.push_back(weighted/total);}
   for(auto p:rest_){double best=1e100;for(auto q:opening){double ds=0;for(unsigned a=0;a<3;a++){if(!std::isfinite(p[a]))throw std::invalid_argument("Nonfinite rest transition");ds+=(p[a]-q[a])*(p[a]-q[a]);}best=std::min(best,std::sqrt(ds));}seamDistance_.push_back(best);}
  }
  PrecisePoint Root()const{return root_;}
  PrecisePoint BodyDisplacement(unsigned i,const GraftFrame& frame,double neutralRadius)const{
   if(i>=rest_.size()||!std::isfinite(neutralRadius)||neutralRadius<=0||!std::isfinite(frame.radius)||frame.radius<=0)throw std::invalid_argument("Invalid root transition dimensions");
   if(!std::isfinite(frame.sourceLengthScale)||frame.sourceLengthScale<=0||!std::isfinite(frame.length)||frame.length<=0)throw std::invalid_argument("Invalid root transition scale or length");
-  PrecisePoint lateral={frame.up[1]*frame.axis[2]-frame.up[2]*frame.axis[1],frame.up[2]*frame.axis[0]-frame.up[0]*frame.axis[2],frame.up[0]*frame.axis[1]-frame.up[1]*frame.axis[0]};
   double aa=0,uu=0,au=0;for(unsigned a=0;a<3;a++){aa+=frame.axis[a]*frame.axis[a];uu+=frame.up[a]*frame.up[a];au+=frame.axis[a]*frame.up[a];}if(!std::isfinite(aa+uu+au)||std::abs(aa-1)>1e-5||std::abs(uu-1)>1e-5||std::abs(au)>1e-5)throw std::invalid_argument("Invalid transition frame");
-  PrecisePoint q{},d{};double s=0,z=0,y=0,anterior=0;
-  for(unsigned a=0;a<3;a++){q[a]=rest_[i][a]-root_[a];s+=q[a]*frame.axis[a];z+=q[a]*frame.up[a];y+=q[a]*lateral[a];anterior+=q[a]*forward_[a];}
-  const double rho=std::hypot(y,z),scale=frame.sourceLengthScale;
-  const double reach=frame.radius*1.25+3*scale;
-  // Spread dilation over ordered concentric rings rather than collapsing the
-  // inner annulus onto one barrel radius. A quintic has maximum derivative
-  // 1.875; support width 2*(dilation+neutralBarrel) bounds radial compression
-  // below one. The field and its first two derivatives fade at the outer edge.
-  const double growth=Smooth((frame.radius-neutralRadius)/(4.72*scale));
-  const double profile=1-Smooth((s/frame.length+.03)/.26);
-  const double barrel=frame.radius*(1.025+(.06+.12*growth)*profile);
-  const double neutralBarrel=neutralRadius*(1.025+.06*profile);
-  const double dilation=std::max(0.,barrel-neutralBarrel);
-  const double radial=1-Smooth((rho-neutralBarrel)/(2*(dilation+neutralBarrel)));
-  const double depth=1-Smooth(std::abs(s)/reach);
-  const double upper=rho>1e-8*scale?std::clamp((z/rho+1)*.5,0.,1.):0.;
-  // The inferior sector has less radial freedom beside the thigh attachment;
-  // carry more of its recruitment forward instead of expanding into the legs.
-  const double gap=dilation*radial*depth*(.55+.45*upper)
-      *Smooth((anterior+2*neutralRadius)/(2*neutralRadius));
-  if(rho>1e-8*scale)for(unsigned a=0;a<3;a++)d[a]=(frame.up[a]*z+lateral[a]*y)*gap/rho;
-  // The same annulus carries an anterior loft, rather than an independent
-  // upper-sector bump. Its sides and underside participate too, so the ramp
-  // wraps the attachment instead of forming a platform above it. Posterior
-  // tissue remains excluded by the measured anterior half-space.
-  const double shoulder=.8*std::max(0.,frame.radius-neutralRadius)*growth*(.35+.65*upper*upper)
-      *radial*depth
-      *Smooth((anterior+neutralRadius)/(2*neutralRadius));
-  for(unsigned a=0;a<3;a++)d[a]+=forward_[a]*shoulder;
+  PrecisePoint q{},d{};double s=0,z=0,y=0;
+  for(unsigned a=0;a<3;a++){q[a]=rest_[i][a]-root_[a];s+=q[a]*forward_[a];z+=q[a]*openingUp_[a];y+=q[a]*openingSide_[a];}
+  const double rho=std::hypot(y,z),scale=frame.sourceLengthScale,r0=openingRadius_[i];
+  const double growth=Smooth((frame.radius-neutralRadius)/(.75*neutralRadius));
+  const double dilation=std::max(0.,frame.radius*1.04-r0)*growth;
+  if(dilation<=1e-12*scale)return d;
+  const double inner=r0+dilation,width=.45*r0+1.5*dilation,outer=inner+width,length=outer-r0;
+  if(rho>=outer)return d;
+  const double t=(rho-r0)/length,m0=.1*length/width,m1=length/width;
+  // A monotone Hermite bell connects the expanded section to the unchanged
+  // pelvis. Its outer position, tangent and curvature match the original
+  // surface. A small positive inner radial slope preserves distinct rings.
+  const double clamped=std::max(0.,t),t2=clamped*clamped,t3=t2*clamped,t4=t3*clamped,t5=t4*clamped;
+  const double hermite=m0*clamped+(10-6*m0-4*m1)*t3+(8*m0+7*m1-15)*t4+(6-3*m0-3*m1)*t5;
+  const double radius=t<0?inner+.1*(rho-r0):inner+width*hermite;
+  const double bell=t<0?1-t:1-clamped-4*t3+7*t4-3*t5;
+  const double anterior=Smooth((s+3*neutralRadius)/(1.5*neutralRadius));
+  const double depth=1-Smooth(std::max(0.,s)/(2*inner));
+  const double weight=anterior*depth;
+  if(rho>1e-8*scale)for(unsigned a=0;a<3;a++)d[a]=(openingUp_[a]*z+openingSide_[a]*y)*(radius-rho)*weight/rho;
+  for(unsigned a=0;a<3;a++)d[a]+=forward_[a]*(.6*dilation*bell*weight);
   // The lower ramp may grow down/out, never backward into the thighs.
   double backward=0;for(unsigned a=0;a<3;a++)backward+=d[a]*forward_[a];if(backward<0)for(unsigned a=0;a<3;a++)d[a]-=backward*forward_[a];return d;
  }

@@ -2,17 +2,17 @@
 
 ## Measured target attachment repair (October 6)
 
-`RootTransition` evaluates one stable C2 root field around the measured opening
-and preserves complete morphology outside its radius-dependent neighborhood.
-Its radial support expands with effective root radius. Ordered tissue rings
-receive a quintic falloff whose width grows with dilation; they are not collapsed
-onto a common barrel radius. First and second derivatives fade at the outer
-support. The inferior sector has less radial expansion beside the thighs and
-receives forward recruitment instead. A concentric anterior
-loft recruits the upper, lateral and lower annulus, fading into the abdomen;
-it does not lift the waist into a separate shield. Character body recruitment
-must use that character's measured opening, including both sides of existing
-body-resource joins. Geralt does not copy Wolverine's absolute pelvic field.
+`RootTransition` starts from the measured rest pelvis and opening. It caches
+an immutable smooth angular opening section, so an irregular body cutout is
+not treated as the source character's nominal circular radius. A monotone
+Hermite bell enlarges the local section toward the shaft radius, then returns
+to the original pelvic position, tangent and curvature at its outer support.
+The small positive inner radial slope keeps adjacent rings distinct. The local
+anterior bell replaces the broad upper loft that raised a shelf at the waist.
+Neutral and exterior pelvis are exact rest inputs. Shaft motion is blended
+separately outside the sewn neighborhood. All dimensions use the supplied
+calibration; the adapter owns the observed opening and stable opening frame.
+Character body recruitment includes both sides of native resource joins.
 `GraftDomain::orientationTriangles` optionally identifies pelvic triangles that
 must retain positive rest-frame projected area. Projection acts on independent
 masters, preserving exact original-edge elimination and protected/prescribed

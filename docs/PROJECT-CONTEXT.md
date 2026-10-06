@@ -1,3 +1,12 @@
+Latest attachment clarification (October 6): start from the unmodified bare
+pelvis. The shaft retains its full cross-section, including Overall 100 and
+Width 100. Recruit triangles concentrically only where needed for a gentle
+bell-shaped transition from that original surface into the growing shaft.
+The surrounding waist/abdomen must retain their original form. A shelf, shield,
+raised pelvic platform or root constriction is a failure even if the weld is
+exact and numerical tests pass. User rejected the 40dfa86 native result on
+this aesthetic criterion; its previous visual acceptance is superseded.
+
 # Durable project context
 
 Highest-priority enduring requirement (October 5): attachment integrity, smooth
