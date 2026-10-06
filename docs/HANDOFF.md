@@ -1,3 +1,51 @@
+## October 6 contact-cache checkpoint, uninstalled
+
+Conservative per-point triangle neighborhoods reduce the saved dressing replay
+from 96-141 ms/step to 79-108 ms/step. All 12 meshes are byte-identical to the
+uncached result. Cache tests cover point travel, moving surfaces and collider
+ownership. A hash index preserves active-contact discovery/solve order. Neither
+change reduces geometry, contact coverage or material constraints. Coarser
+physical sheet trial failed rest equilibrium and is not adopted. Relaxed active
+contact stopping did not materially improve cost and is not adopted.
+
+Phase profile: collisions 25-45 ms, contact residual validation 8-13 ms,
+coupled extension/sewing 8-10 ms, active manifold 2-3 ms; additional cost is
+final validation/transport/reaction processing. This remains too slow for
+real-time simulation. The next native candidate adopts InitializeDraped solely
+for isolated verification; no accepted installed-runtime or performance claim.
+
+## October 6 cloth repair - SOURCE ONLY, NOT PLAYABLE
+
+Current dirty Base fixes waistband clearance transport using stored reference
+skin normals and current measured normals. Free band rows no longer have a
+near-rigid guide fighting stretch/contact. A thickness/12 reserve protects band
+faces between anchors; full contact checks remain. InitializeDraped performs
+an unpublished 90-step reference-to-live dressing solve, rejects invalid final
+contact/material equilibrium, and clears preparation reactions and game time.
+
+Exact saved Wolverine replay passes contact/material at initialization and 12
+updates (stretch ~1.05-1.057, joined stitches). Earlier direct placement exceeded
+100x stretch. Lifecycle, anchor rotation/unit covariance, root closure, waist
+graft and contact-gradient tests pass. Offline front/side inspection shows the
+strap spikes and waistband buckling resolved in this one pose; wrinkles remain.
+
+NOT READY TO INSTALL: preparation ~23 seconds; each 1/120-second step costs
+96-141 ms. Profile: point queries ~26 ms, face queries ~14 ms, remaining work
+constraints/validation. Native adoption, all-size motion matrix, campaign and
+attachment visual gate are untested. Wolverine still pins 674f89e and does not
+call InitializeDraped. Geralt unchanged. Adopt through tested Base pins later.
+Human/retail runtimes are unchanged. No installed-game success claim.
+Private owned diagnostic DLL restored to accepted 02A654BA91B7AAC7 baseline
+and exact backed-up WolverineLive.ini. No Wolverine process remains. Retail
+4F4900A5E70CE9BB and human 02A654BA91B7AAC7 hashes verified unchanged.
+
+Ignored local evidence: build/jockstrap-resume-20261006/dressed-output,
+canonical-transition-output, dressed-fit-front.png, dressed-fit-side.png.
+Exact current/reference input and donor maps already exist there; no recapture
+needed. diagnostic/, coupled/, convergence/, profile/ are experiments, not
+canonical source. Relaxed convergence barely improved speed and was not adopted.
+A 16x32 fit collapses its material chart and was not adopted.
+
 ## October 6 reference-pose cloth initialization - uninstalled
 
 Session.Initialize fits persistent material in a measured reference pose and

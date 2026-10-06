@@ -61,6 +61,27 @@ inline unsigned BodyCollider::Build(unsigned begin,unsigned end){unsigned at=uns
 inline void BodyCollider::Refit(unsigned at){auto& node=nodes_[at];node.lo={1e100,1e100,1e100};node.hi={-1e100,-1e100,-1e100};if(node.left){Refit(node.left);Refit(node.right);for(unsigned k=0;k<3;k++){node.lo[k]=(std::min)(nodes_[node.left].lo[k],nodes_[node.right].lo[k]);node.hi[k]=(std::max)(nodes_[node.left].hi[k],nodes_[node.right].hi[k]);}}else for(unsigned j=node.begin;j<node.end;j++)for(auto id:triangles_[order_[j]])for(unsigned k=0;k<3;k++){node.lo[k]=(std::min)(node.lo[k],points_[id][k]);node.hi[k]=(std::max)(node.hi[k],points_[id][k]);}}
 inline BodyCollider::Hit BodyCollider::Closest(Point point,unsigned seedTriangle)const{MALEMOD_SURFACE_TIME(false) Hit hit;if(!Empty()){if(seedTriangle<triangles_.size())Consider(seedTriangle,point,hit);Search(0,point,hit);}return hit;}
 inline BodyCollider::Hit BodyCollider::Near(Point point,double radius,unsigned seedTriangle)const{MALEMOD_SURFACE_TIME(false) if(!std::isfinite(radius)||radius<=0)throw std::invalid_argument("Invalid surface neighborhood");Hit hit;hit.distance=radius;if(!Empty()){if(seedTriangle<triangles_.size())Consider(seedTriangle,point,hit);Search(0,point,hit);}return hit;}
+inline bool BodyCollider::CollectPoints(unsigned at,Point point,double radius,std::vector<unsigned>& candidates)const{
+ const auto& node=nodes_[at];const double square=radius*radius;
+ if(BoxDistance(point,node.lo,node.hi)>square)return true;
+ if(node.left)return CollectPoints(node.left,point,radius,candidates)&&CollectPoints(node.right,point,radius,candidates);
+ for(unsigned j=node.begin;j<node.end;j++){auto id=order_[j];if(BoxDistance(point,faceLo_[id],faceHi_[id])<=square){if(candidates.size()==256)return false;candidates.push_back(id);}}
+ return true;
+}
+inline BodyCollider::Hit BodyCollider::NearCached(Point point,double radius,PointNeighborhood& neighborhood,unsigned seedTriangle)const{
+ if(!std::isfinite(radius)||radius<=0||!Finite(point))throw std::invalid_argument("Invalid cached point neighborhood");
+ Hit hit;hit.distance=hit.signedDistance=radius;hit.triangle=UINT32_MAX;if(Empty())return hit;
+ const std::array<Point,3> repeated{point,point,point};const auto owner=reinterpret_cast<std::uintptr_t>(this);const auto stamp=MotionStamp();
+ if(!neighborhood.bound_.Covers(repeated,radius,stamp,owner)){
+  const double padded=radius*4;if(!std::isfinite(padded))throw std::invalid_argument("Point neighborhood radius overflow");
+  neighborhood.candidates_.clear();
+  if(!CollectPoints(0,point,padded,neighborhood.candidates_)){neighborhood.bound_={};neighborhood.candidates_.clear();return Near(point,radius,seedTriangle);}
+  neighborhood.bound_.Remember(repeated,padded,stamp,owner);
+ }
+ if(seedTriangle<triangles_.size())Consider(seedTriangle,point,hit);
+ for(auto id:neighborhood.candidates_)Consider(id,point,hit);
+ return hit;
+}
 inline void BodyCollider::Consider(unsigned id,Point p,Hit& hit)const{
  auto n=faceNormals_[id];if(n==Point{}||BoxDistance(p,faceLo_[id],faceHi_[id])>hit.distance*hit.distance)return;
  auto f=triangles_[id];auto q=ClosestTriangle(p,points_[f[0]],points_[f[1]],points_[f[2]]),delta=Sub(p,q);double square=Dot(delta,delta);

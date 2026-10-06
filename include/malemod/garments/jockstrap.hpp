@@ -9,6 +9,7 @@
 #include <vector>
 #include <chrono>
 #include <map>
+#include <unordered_map>
 #include <set>
 #include <queue>
 #include <optional>
@@ -169,6 +170,11 @@ class BodyCollider {
 public:
  enum class Side {Outside,Inside,Boundary,Indeterminate};
  struct Hit {Point point{},normal{};double distance=1e100,signedDistance=1e100;unsigned triangle=0;Point clothPoint{};};
+ class PointNeighborhood {
+  friend class BodyCollider;
+  proximity::NeighborhoodBound bound_;
+  std::vector<unsigned> candidates_;
+ };
  class FaceNeighborhood {
   friend class BodyCollider;
   proximity::NeighborhoodBound bound_;
@@ -189,6 +195,7 @@ public:
  void Update(const std::vector<Sample>& vertices,const std::vector<std::array<std::uint32_t,3>>& faces,Point origin={},double scale=1);
  Hit Closest(Point point,unsigned seedTriangle=unsigned(-1))const;
  Hit Near(Point point,double radius,unsigned seedTriangle=unsigned(-1))const;
+ Hit NearCached(Point point,double radius,PointNeighborhood& neighborhood,unsigned seedTriangle=unsigned(-1))const;
  // Exact within-margin triangle contact. No hit returns the query radius,
  // a conservative lower bound; it is not a measured global closest distance.
  Hit ClosestFace(const std::array<Point,3>& face,double margin,unsigned seedTriangle=unsigned(-1))const;
@@ -211,6 +218,7 @@ private:
  unsigned Build(unsigned begin,unsigned end);
  void Refit(unsigned node);
  void Search(unsigned node,Point point,Hit& hit)const;
+ bool CollectPoints(unsigned node,Point point,double radius,std::vector<unsigned>& candidates)const;
  void Consider(unsigned triangle,Point point,Hit& hit)const;
  void SearchFace(unsigned node,const SurfaceFaceQuery& query,double margin,Hit& hit)const;
  void ConsiderFace(unsigned triangle,const SurfaceFaceQuery& query,Hit& hit)const;
@@ -231,6 +239,9 @@ public:
     // The callback must preserve units and lineage; it never becomes a force.
     const Output& Initialize(const Input& reference,const Input& current,
                              const std::function<Sample(const Sample&)>& place);
+    // Unpublished dressing solve: retain reference material and move measured
+    // obstacles into the live pose before permitting physical feedback.
+    const Output& InitializeDraped(const Input& reference,const Input& current);
     void Reset();
 private:
     const Output& Fit(Style style,const Input& input);
@@ -242,8 +253,8 @@ private:
     struct Edge {unsigned a,b;double rest,compliance,lambda=0;bool bend=false,tether=false;};
     struct Binding {std::array<unsigned,4> nodes{};std::array<double,4> weights{};Point residual{};std::array<unsigned,3> materialFrame{};Point materialResidual{},restTangent{};bool transported=false,ribbon=false;};
     struct Sew {std::array<unsigned,28> nodes{};std::array<double,28> weights{};unsigned count=0;Point residual{};};
-    struct Anchor {unsigned family=0,index=0;Point residual{};std::array<unsigned,16> bodyIndices{};std::array<double,16> bodyWeights{};std::array<Surface,16> attachmentSurfaces{};bool bodyAttachment=false;};
-    struct PointMemo {proximity::PointCertificate certificate;unsigned closedSeed=unsigned(-1),physicalSeed=unsigned(-1);};
+    struct Anchor {unsigned family=0,index=0;Point residual{},referenceNormal{};std::array<unsigned,16> bodyIndices{};std::array<double,16> bodyWeights{};std::array<Surface,16> attachmentSurfaces{};bool bodyAttachment=false;};
+    struct PointMemo {proximity::PointCertificate certificate;unsigned closedSeed=unsigned(-1),physicalSeed=unsigned(-1);detail::BodyCollider::PointNeighborhood physicalNeighborhood;};
     struct FaceMemo {proximity::FaceCertificate certificate;unsigned closedSeed=UINT32_MAX,physicalSeed=UINT32_MAX;detail::BodyCollider::FaceNeighborhood physicalNeighborhood,closedNeighborhood;};
     std::array<std::vector<PointMemo>,2> pointMemos_;
     std::array<std::vector<FaceMemo>,2> faceMemos_;
@@ -292,4 +303,5 @@ private:
 #include "render_contact.hpp"
 #include "band_material.hpp"
 #include "cloth_stretch.hpp"
+#include "anchor_transport.hpp"
 #include "cloth_detail.hpp"

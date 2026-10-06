@@ -4,7 +4,7 @@
   "legacyChanged": false,
   "characterRecipe": "assets/garments/wolverine-jockstrap-donors.json",
   "verification": {
-    "status": "Unaccepted development checkpoint; no clean adapter adoption, install or observed gameplay",
+    "status": "Uninstalled development: saved live-pose dressing contact/material replay passes; real-time performance and native attachment matrix fail or untested",
     "workingTreeClean": false,
     "geometryBindingRevision": 2,
     "reactionWire": 6,
@@ -198,8 +198,8 @@
     "docs/WAISTBAND-CONTOURS.md": "a51e11379e3d6b896cc7328772a2b1f5d8545168b96a6ef2133d78979c9c0aae",
     "include/malemod/garments/band_material.hpp": "fae1214ae54029f731b79f2f56c51b717594df885b9fa9b817f2b58324c7a177",
     "include/malemod/garments/band_rest.hpp": "67126bb711edbf985c2b1c1a910c394d93ec29931f6fccf27b8588357fa1da93",
-    "include/malemod/garments/body_surface.hpp": "f3e28a801f62374077edf54f28af2267587b787a9ffa2695e7adf17c1539ebc3",
-    "include/malemod/garments/cloth_detail.hpp": "715715192f8a92f61e1ef915c4f95e73f773a27a59db9102320cc9a7d0ef9a28",
+    "include/malemod/garments/body_surface.hpp": "3cbecaa1c968e0b5948ebbe4cf73c2e654c3aad6be0b224243100350a15d306a",
+    "include/malemod/garments/cloth_detail.hpp": "c66bc21172e48a85ff0c73cb15f49d09d94a0587a2a9ddf1e93380d528bba4c8",
     "include/malemod/garments/cloth_reaction.hpp": "3b7d38d47df5ac80bf576c9b8e61ef9faf82417e58809e6bf93cdb8cd2263050",
     "include/malemod/garments/cloth_stretch.hpp": "40fca9a3d45e782360afe4d3cff1c53dbdfe1a41151a56037dddaac7a1fc5e56",
     "include/malemod/garments/contact_velocity.hpp": "0b405f733b9ebce5f5f81dccd32ce6136f3a28c58de16416a55806826ebb2a07",
@@ -208,7 +208,7 @@
     "include/malemod/garments/drape_section.hpp": "88101664efca1435b0682dfbf7a1b8821801339ad4a1968e91b61f46611eacae",
     "include/malemod/garments/drape_sheet.hpp": "8da46939c04749ba207fdfa3eef74c1c21c92e54349f22071a01cbb1ecba9c1d",
     "include/malemod/garments/geometry_export.hpp": "8b214acffbed298b389254f67b3834e12dc6a6274d4131b0c377b2b31e6d229b",
-    "include/malemod/garments/jockstrap.hpp": "ab640aab466ca865820c6095e09ac9673d5a105f4a161b7b8836ee5b3ee9aba9",
+    "include/malemod/garments/jockstrap.hpp": "32627db78fb04b98ad39827278de21d70f1cc53cbe26b40c900279ab904128d3",
     "include/malemod/garments/jockstrap_detail.hpp": "774781787e9f065f21e361b85e0d6609ec0828b2b4b859784d04e2bbf9866bf8",
     "include/malemod/garments/material_grid.hpp": "9e51498d03e853cd708d1a6357eafba1fa60d49f7b42657d53eb651888785f57",
     "include/malemod/garments/natural_band.hpp": "101a595bb200997ee31bb41ddef568c46b6d46991a1d0fa5478a2a751b94d611",
@@ -236,7 +236,7 @@
     "tests/garment_cloth_test.cpp": "b4608a88f606dfb88a77b1f14cdce36d78b5ddfa16cd0e868e65352e5cd6636d",
     "tests/garment_hem_checks.hpp": "715e22776bb5c28f25a56b7a52cf4e032385bcf2400f3aa2517eb45710a32723",
     "tests/garment_hem_test.cpp": "0929859db58d421d7ecd0e7088f36fab6741f1dbc2444b98f02226e5b472b8a8",
-    "tests/garment_lifecycle_test.cpp": "bd39d3cda5618f0b81b79bed8a3960a7133a3ae65abfbe543e7e5d79488a3ec8",
+    "tests/garment_lifecycle_test.cpp": "92ea7623514fad51883b4a057593b98a78b079e5d873279ff7acabc68cccb18f",
     "tests/garment_reaction_test.cpp": "36309ee701dde35eafbaa140aba61cd2e70693f866721e6903b2868588affcea",
     "tests/garment_shape_checks.hpp": "e31387b30d1df68c74defd847ff1b7be5e414d7610f137720a9de70b5aa89e24",
     "tests/garment_support_runtime_cli.cpp": "a59721836c045ff452cd7c3c9864bf940dafcf5c240bf633e5a9c944caa245e0",
@@ -261,7 +261,9 @@
     "tools/prepare_garment_source.py": "049e413a706f056f4827478ac9151a8d5783d7ba9853dde26f71d6e5701e959e",
     "tools/test_garment_worker_support.py": "7c2e79e2ec69366400ff8ed028e8177884e4416aca00e389f9e0b52ebe15fe5b",
     "tools/verify_garment_source_reactions.py": "bbad2e2b8cfa8f6c75c984bd26260d69c17f3af3a32649835bef815f3d1d7f77",
-    "tests/root_closure_test.cpp": "28495894ee691be34746e66419427410572f63458b9ef2a57279cc5a6357e858"
+    "tests/root_closure_test.cpp": "28495894ee691be34746e66419427410572f63458b9ef2a57279cc5a6357e858",
+    "include/malemod/garments/anchor_transport.hpp": "7d9421798155f4f51f5bdd94ad939681f1540934623ed04e3799082b34e034bd",
+    "tests/body_surface_test.cpp": "9a16bc892fb5a74bc305177d774e763535864d540e632920ad9ff5036440015e"
   },
   "historicalVerification": {
     "v2ActualGeraltFit": {

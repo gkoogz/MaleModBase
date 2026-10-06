@@ -5,6 +5,48 @@
 // Persistent world-space fabric. The measured fitter supplies rest material,
 // never a replacement for the advanced particle positions.
 namespace malemod::garments {
+inline const Output& Session::InitializeDraped(const Input& reference,const Input& current){
+ if(reference.characterEpoch!=current.characterEpoch||reference.topologyRevision!=current.topologyRevision||reference.restRevision!=current.restRevision||reference.bodyTriangles!=current.bodyTriangles||reference.anatomyTriangles!=current.anatomyTriangles)
+  throw std::invalid_argument("Dressing reference and live pose have different material identities");
+ auto place=[&](const Sample& source){
+  auto result=source;result.position=current.frame.World(reference.frame.Local(source.position));
+  auto n=reference.frame.Local(Add(reference.frame.origin,source.normal));
+  result.normal=Unit(Add(Add(Mul(current.frame.lateral,n[0]),Mul(current.frame.forward,n[1])),Mul(current.frame.up,n[2])));
+  return result;
+ };
+ auto aligned=reference;aligned.frame=current.frame;aligned.gravity={};
+ for(auto* group:{&aligned.waist,&aligned.opening,&aligned.anatomy,&aligned.bodySurface,&aligned.rearStraps[0],&aligned.rearStraps[1]})for(auto& sample:*group)sample=place(sample);
+ // Explicitly reject unimplemented capsule transforms instead of using
+ // reference-space obstacles in an unrelated live coordinate frame.
+ if(reference.bodySurface.empty()||current.bodySurface.empty())throw std::invalid_argument("Dressing requires measured body surfaces");
+ aligned.bodyContacts.clear(); // measured triangles supersede legacy capsules
+ try{
+  Initialize(reference,aligned,place);
+  constexpr unsigned dressingSteps=90;
+  for(unsigned step=1;step<=dressingSteps;step++){
+   auto pose=current;pose.gravity={};pose.deltaTime=1./120;pose.bodyContacts.clear();
+   const double fraction=double(step)/dressingSteps;
+   auto blend=[&](std::vector<Sample>& target,const std::vector<Sample>& source){
+    if(target.size()!=source.size())throw std::invalid_argument("Dressing surface topology changed");
+    for(unsigned i=0;i<target.size();i++){
+     target[i].position=Add(Mul(source[i].position,1-fraction),Mul(target[i].position,fraction));
+     auto normal=Add(Mul(source[i].normal,1-fraction),Mul(target[i].normal,fraction));
+     target[i].normal=Length(normal)>1e-12?Unit(normal):target[i].normal;
+    }
+   };
+   blend(pose.waist,aligned.waist);blend(pose.opening,aligned.opening);
+   blend(pose.anatomy,aligned.anatomy);blend(pose.bodySurface,aligned.bodySurface);
+   for(unsigned side=0;side<2;side++)blend(pose.rearStraps[side],aligned.rearStraps[side]);
+   Update(Style::WhiteJockstrap,pose,TimeContinuity::Continuous);
+  }
+  if(!output_.contactBudgetSatisfied||!output_.physics.materialBudgetSatisfied)throw std::invalid_argument("Dressing did not reach contact/material equilibrium");
+  // Dressing is preparation, not elapsed gameplay or a kick to the character.
+  std::fill(velocities_.begin(),velocities_.end(),Point{});clock_=accumulator_=0;
+  output_.reactions.clear();output_.support.clear();output_.reaction={};
+  output_.physics.advancedSeconds=output_.physics.accumulatedSeconds=0;
+  output_.physics.substeps=0;return output_;
+ }catch(...){Reset();throw;}
+}
 inline const Output& Session::Initialize(const Input& reference,const Input& current,const std::function<Sample(const Sample&)>& place){
  if(!parameters_.simulate||!place)throw std::invalid_argument("Cloth initialization requires persistent simulation and placement");
  if(reference.characterEpoch!=current.characterEpoch||reference.topologyRevision!=current.topologyRevision||reference.restRevision!=current.restRevision||reference.bodyTriangles!=current.bodyTriangles||reference.anatomyTriangles!=current.anatomyTriangles)
@@ -17,8 +59,13 @@ inline const Output& Session::Initialize(const Input& reference,const Input& cur
  if(reference.bodySurface.size()!=current.bodySurface.size())throw std::invalid_argument("Cloth reference and current body have different topology");
  Reset();
  try{
-  auto rest=reference;rest.deltaTime=0;Update(Style::WhiteJockstrap,rest);
-  if(!output_.contactBudgetSatisfied||!output_.physics.materialBudgetSatisfied)throw std::invalid_argument("Cloth reference material failed its fit budgets");
+  auto rest=reference;rest.deltaTime=0;rest.gravity={};Update(Style::WhiteJockstrap,rest);
+  // A finite-element render director and its sewn joints can require a short
+  // equilibrium solve after the fitted sheet becomes physical material.
+  // Keep its rest metric fixed and run the real constraints/contact oracle;
+  // never publish an unverified initial penetration or change rest lengths.
+  for(unsigned relax=0;relax<32&&(!output_.contactBudgetSatisfied||!output_.physics.materialBudgetSatisfied);relax++){rest.deltaTime=1./120;Update(Style::WhiteJockstrap,rest,TimeContinuity::Continuous);}
+  if(!output_.contactBudgetSatisfied||!output_.physics.materialBudgetSatisfied)throw std::invalid_argument("Cloth reference material did not reach contact/material equilibrium");
   if(referenceNodes_.size()!=positions_.size())throw std::logic_error("Cloth reference particle ownership missing");
   for(unsigned i=0;i<positions_.size();i++){
    auto source=referenceNodes_[i];source.position=positions_[i];
@@ -33,7 +80,7 @@ inline const Output& Session::Initialize(const Input& reference,const Input& cur
   for(auto& memos:pointMemos_)for(auto& memo:memos)memo=PointMemo{};
   for(auto& memos:faceMemos_)for(auto& memo:memos)memo=FaceMemo{};
   ClassifySurfaces(current,current.frame.origin,output_.measuredCircumference,true);
-  auto initial=current;initial.deltaTime=0;
+  clock_=accumulator_=0;auto initial=current;initial.deltaTime=0;
   return Update(Style::WhiteJockstrap,initial,TimeContinuity::Continuous);
  }catch(...){Reset();throw;}
 }
@@ -122,7 +169,7 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
    Anchor anchor;double best=1e100;bool anatomical=mesh.vertices[i].lineage.donors[0].surface==Surface::Anatomy;
    if(anatomical){auto dominant=mesh.vertices[i].lineage.donors[0];auto donor=anatomyDonors.find(dominant.vertex);if(donor!=anatomyDonors.end()){anchor.family=2;anchor.index=donor->second;best=0;}}
    if(best>0){for(unsigned family=0;family<5;family++){if(family==2)continue;const auto& samples=family==0?input.waist:family==1?input.opening:input.rearStraps[family-3];for(unsigned k=0;k<samples.size();k++){double d=Length(Sub(mesh.vertices[i].position,samples[k].position));if(d<best){best=d;anchor.family=family;anchor.index=k;}}}}
-   if(i<band&&!input.bodySurface.empty()){Point attached{};double sum=0;for(unsigned k=0;k<16;k++){auto donor=mesh.vertices[i].lineage.donors[k];if(donor.weight==0)continue;const auto& map=donor.surface==Surface::Body?bodyDonors:anatomyDonors;auto found=map.find(donor.vertex);if(found==map.end())throw std::invalid_argument("Band measured body/anatomy attachment missing");anchor.bodyIndices[k]=found->second;anchor.bodyWeights[k]=donor.weight;anchor.attachmentSurfaces[k]=donor.surface;const auto& surface=donor.surface==Surface::Body?input.bodySurface:input.anatomy;attached=Add(attached,Mul(surface[found->second].position,donor.weight));sum+=donor.weight;}if(std::abs(sum-1)>1e-5)throw std::invalid_argument("Band attachment weights invalid");anchor.bodyAttachment=true;anchor.residual=Sub(p,input.frame.Local(attached));}else anchor.residual=Sub(p,input.frame.Local(SampleAt(input,anchor.family,anchor.index).position));anchors_.push_back(anchor);
+   if(i<band&&!input.bodySurface.empty()){Point attached{};double sum=0;for(unsigned k=0;k<16;k++){auto donor=mesh.vertices[i].lineage.donors[k];if(donor.weight==0)continue;const auto& map=donor.surface==Surface::Body?bodyDonors:anatomyDonors;auto found=map.find(donor.vertex);if(found==map.end())throw std::invalid_argument("Band measured body/anatomy attachment missing");anchor.bodyIndices[k]=found->second;anchor.bodyWeights[k]=donor.weight;anchor.attachmentSurfaces[k]=donor.surface;const auto& surface=donor.surface==Surface::Body?input.bodySurface:input.anatomy;attached=Add(attached,Mul(surface[found->second].position,donor.weight));sum+=donor.weight;}if(std::abs(sum-1)>1e-5)throw std::invalid_argument("Band attachment weights invalid");Point normal{};for(unsigned k=0;k<16;k++)if(anchor.bodyWeights[k]){const auto& surface=anchor.attachmentSurfaces[k]==Surface::Body?input.bodySurface:input.anatomy;normal=Add(normal,Mul(surface[anchor.bodyIndices[k]].normal,anchor.bodyWeights[k]));}anchor.referenceNormal=Unit(input.frame.Local(Add(input.frame.origin,normal)));anchor.bodyAttachment=true;anchor.residual=Sub(p,input.frame.Local(attached));}else anchor.residual=Sub(p,input.frame.Local(SampleAt(input,anchor.family,anchor.index).position));anchors_.push_back(anchor);
   }
   auto sheetMaterialFaces=sheetMesh?cloth_detail::SheetTriangles(band,rings,segments):std::vector<std::array<unsigned,3>>{};
   for(unsigned i=0;i<mesh.vertices.size();i++){
@@ -199,7 +246,23 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
   restCircumference_=C;
  }
  if(input.anatomyMass>0){const double desired=input.anatomyMass*parameters_.mechanics.massFraction;if(clothMass_>0&&desired!=clothMass_){const double scale=clothMass_/desired;for(auto& mass:inverseMass_)mass*=scale;for(auto& edge:edges_)edge.compliance*=scale;clothMass_=desired;}}
- std::vector<Point> targets(positions_.size());for(unsigned i=0;i<targets.size();i++){auto a=anchors_[i];Point sample{};if(a.bodyAttachment){for(unsigned k=0;k<16;k++)if(a.bodyWeights[k]){const auto& surface=a.attachmentSurfaces[k]==Surface::Body?input.bodySurface:input.anatomy;sample=Add(sample,Mul(surface.at(a.bodyIndices[k]).position,a.bodyWeights[k]));}}else sample=SampleAt(input,a.family,a.index).position;targets[i]=input.frame.World(Add(input.frame.Local(sample),a.residual));}
+ std::vector<Point> targets(positions_.size());
+ for(unsigned i=0;i<targets.size();i++){
+  const auto& a=anchors_[i];Point sample{},normal{},offset=a.residual;
+  if(a.bodyAttachment){
+   for(unsigned k=0;k<16;k++)if(a.bodyWeights[k]){
+    const auto& surface=a.attachmentSurfaces[k]==Surface::Body?input.bodySurface:input.anatomy;
+    const auto& donor=surface.at(a.bodyIndices[k]);
+    sample=Add(sample,Mul(donor.position,a.bodyWeights[k]));
+    normal=Add(normal,Mul(donor.normal,a.bodyWeights[k]));
+   }
+   normal=input.frame.Local(Add(input.frame.origin,normal));
+   // Small finite-thickness reserve for faces spanning curved skin between
+   // measured anchors. Full face contact validation remains authoritative.
+   offset=anchor_transport::Offset(offset,a.referenceNormal,normal,C*parameters_.bandThickness/12);
+  }else sample=SampleAt(input,a.family,a.index).position;
+  targets[i]=input.frame.World(Add(input.frame.Local(sample),offset));
+ }
  if(input.deltaTime==0){for(unsigned i=0;i<positions_.size();i++)if(pinned_[i])positions_[i]=targets[i];}
  auto oldTargets=previousTargets_;previousTargets_=targets;
  auto& telemetry=output_.physics;telemetry.active=true;telemetry.stateReady=true;telemetry.nodes=unsigned(positions_.size());telemetry.constraints=unsigned(edges_.size()+sewing_.size());
@@ -237,7 +300,7 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
    // conservative coverage telemetry and must remain outside those guards.
    if(clearance==0){hit.distance=hit.signedDistance=memo.certificate.LowerBound({point},stamp);return hit;}
    const double guard=(std::max)(clearance,margin+1e-5)+1e-8;
-   hit=physical.Near(point,guard,memo.physicalSeed);
+   hit=physical.NearCached(point,guard,memo.physicalNeighborhood,memo.physicalSeed);
    if(hit.distance<guard)memo.physicalSeed=hit.triangle;else hit.triangle=UINT32_MAX;
    hit.signedDistance=hit.distance;auto delta=Sub(point,hit.point);
    if(hit.distance<guard&&Length(delta)>1e-14)hit.normal=Unit(delta);return hit;
@@ -285,9 +348,13 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
  auto compatibleDirection=[&](Point point,Point direction,bool front){if(!front||measuredAnatomy)return direction;auto local=input.frame.Local(Add(origin,Mul(point,C)));auto gradient=envelope.ValueGradient(local).second;auto n=Add(Add(Mul(input.frame.lateral,gradient[0]),Mul(input.frame.forward,gradient[1])),Mul(input.frame.up,gradient[2]));double magnitude=Dot(n,n),against=Dot(direction,n);if(magnitude>1e-20&&against<0){auto tangent=Sub(direction,Mul(n,against/magnitude));double cosine=Dot(tangent,direction);if(cosine>1e-4)return Mul(tangent,1/cosine);}return direction;};
  auto projectVolume=[&](Point& point,const Capsule& volume,bool front){auto projected=point;if(!detail::Project(projected,volume,margin+1e-5,input.frame.forward))return false;auto correction=Sub(projected,point);double d=Length(correction);point=Add(point,Mul(compatibleDirection(point,Mul(correction,1/d),front),d));return true;};
  struct ActiveContact {unsigned clothFace,physicalFace;bool anatomy;Point normal;};
- std::vector<ActiveContact> activeContacts;const Input* contactGeometry=&input;
+ std::vector<ActiveContact> activeContacts;std::unordered_map<std::uint64_t,unsigned> activeIndex;const Input* contactGeometry=&input;
  auto rememberContact=[&](bool anatomical,unsigned clothFace,const detail::BodyCollider::Hit& hit){
-  if(hit.triangle==UINT32_MAX)return;for(auto& c:activeContacts)if(c.clothFace==clothFace&&c.physicalFace==hit.triangle&&c.anatomy==anatomical){if(Finite(hit.normal)&&Length(hit.normal)>1e-14&&Dot(hit.normal,c.normal)>=0)c.normal=hit.normal;return;}
+  if(hit.triangle==UINT32_MAX)return;
+  const auto key=(std::uint64_t(anatomical)<<63)|(std::uint64_t(clothFace)<<32)|hit.triangle;
+  auto found=activeIndex.find(key);
+  if(found!=activeIndex.end()){auto& c=activeContacts[found->second];if(Finite(hit.normal)&&Length(hit.normal)>1e-14&&Dot(hit.normal,c.normal)>=0)c.normal=hit.normal;return;}
+  activeIndex.emplace(key,unsigned(activeContacts.size()));
   activeContacts.push_back({clothFace,hit.triangle,anatomical,hit.normal});
  };
  auto solveActiveContacts=[&](){
@@ -355,7 +422,7 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
  std::optional<Input> interpolation;if(steps>1)interpolation=input;
  for(unsigned substep=0;substep<steps;substep++){
   reactionStep=step;
-  std::fill(contactImpulse.begin(),contactImpulse.end(),Point{});std::fill(tissueCorrection.begin(),tissueCorrection.end(),Point{});activeContacts.clear();
+  std::fill(contactImpulse.begin(),contactImpulse.end(),Point{});std::fill(tissueCorrection.begin(),tissueCorrection.end(),Point{});activeContacts.clear();activeIndex.clear();
   double fraction=double(substep+1)/steps;std::vector<Point> subTargets(targets.size());for(unsigned i=0;i<targets.size();i++)subTargets[i]=Add(Mul(oldTargets[i],1-fraction),Mul(targets[i],fraction));for(unsigned k=0;k<volumes.size();k++){volumes[k].a=Add(Mul(oldVolumes[k].a,1-fraction),Mul(finalVolumes[k].a,fraction));volumes[k].b=Add(Mul(oldVolumes[k].b,1-fraction),Mul(finalVolumes[k].b,fraction));volumes[k].radius=oldVolumes[k].radius*(1-fraction)+finalVolumes[k].radius*fraction;}
   if(interpolation){for(unsigned i=0;i<interpolation->bodySurface.size();i++)interpolation->bodySurface[i].position=Add(Mul(previousBody[i].position,1-fraction),Mul(input.bodySurface[i].position,fraction));for(unsigned i=0;i<interpolation->anatomy.size();i++)interpolation->anatomy[i].position=Add(Mul(previousAnatomy[i].position,1-fraction),Mul(input.anatomy[i].position,fraction));}
   const auto& contactInput=interpolation?*interpolation:input;
@@ -363,7 +430,7 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
   contactGeometry=&contactInput;bodyCollider_.Update(contactInput.bodySurface,input.bodyTriangles,origin,C);if(measuredAnatomy)anatomyCollider_.Update(contactInput.anatomy,input.anatomyTriangles,origin,C);ClassifySurfaces(contactInput,origin,C);
   auto old=x;double damp=std::exp(-parameters_.mechanics.dampingRate*step);for(unsigned i=0;i<x.size();i++){if(pinned_[i])x[i]=subTargets[i];else{v[i]=Add(Mul(v[i],damp),Mul(input.gravity,step/C));x[i]=Add(x[i],Mul(v[i],step));}}
   if(measuredAnatomy)for(unsigned i=0;i<x.size();i++)if(!pinned_[i]){auto hit=anatomyCollider_.Sweep(old[i],x[i]);if(hit.distance<1e99){auto before=x[i];x[i]=Add(hit.point,Mul(hit.normal,margin+1e-5));recordReaction(hit,Sub(x[i],before),inverseMass_[i],{x[i],1});tissueCorrection[i]=Add(tissueCorrection[i],Sub(x[i],before));contactImpulse[i]=Add(contactImpulse[i],Sub(x[i],old[i]));output_.projectedContacts++;}}
-  for(auto& e:edges_)e.lambda=0;std::vector<Point> guideLambda(x.size());
+  for(auto& e:edges_)e.lambda=0;
   // XPBD lambda is local to a substep. Triangle diagonals provide shear;
   // opposite-triangle distance constraints provide material bending resistance.
   const unsigned solveIterations=12u;
@@ -390,7 +457,9 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
 #ifdef MALEMOD_GARMENT_DIAGNOSTIC
    traceMaterial("material",iteration);
 #endif
-   for(unsigned i=0;i<x.size();i++)if(anchors_[i].bodyAttachment&&!pinned_[i]){double alpha=2e-5/(step*step),weight=inverseMass_[i];auto dl=Mul(Sub(Sub(subTargets[i],x[i]),Mul(guideLambda[i],alpha)),1/(weight+alpha));guideLambda[i]=Add(guideLambda[i],dl);x[i]=Add(x[i],Mul(dl,weight));}
+   // Free waistband rows obey elastic material, stitches and skin contact.
+   // A near-rigid guide on every row conflicts with those constraints during
+   // waist flexion; only prescribed attachment rows follow their skin targets.
    if(iteration+1==solveIterations){auto projected=cloth_stretch::ProjectCoupled(x,inverseMass_,edges_,stretchAdjacency_,sewing_,residual,parameters_.mechanics.extensionLimit);
 #ifdef MALEMOD_GARMENT_DIAGNOSTIC
     std::fprintf(stderr,"coupled projection clock %.9g visits %u exhausted %d\n",clock_,projected.visits,int(projected.exhausted));

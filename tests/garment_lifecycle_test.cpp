@@ -81,4 +81,15 @@ bool ReferencePlacement(){
  current.topologyRevision++;rejected=false;try{cloth.Initialize(rest,current,place);}catch(const std::invalid_argument&){rejected=true;}REQUIRE(rejected);
  std::cout<<"PASS reference material placed rigidly into live pose, persistent advancement, invalid placement and topology rejected\n";return true;
 }
-int main(){try{return PersistentRest()&&CoalescedActiveTime()&&ReferencePlacement()?0:1;}catch(const std::exception& e){std::cerr<<e.what()<<'\n';return 2;}}
+bool AnchorTransport(){
+ const Point normal{0,1,0},bent{0,0,1},offset{.02,.01,0};
+ auto placed=anchor_transport::Offset(offset,normal,bent,.003);
+ REQUIRE(Length(Sub(placed,Point{.02,0,.013}))<1e-12);
+ auto reversed=anchor_transport::Offset(normal,normal,Mul(normal,-1),0);
+ REQUIRE(Length(Add(reversed,normal))<1e-12);
+ // Changing source units must change the clearance and offset together.
+ REQUIRE(Length(Sub(anchor_transport::Offset(Mul(offset,100),normal,bent,.3),Mul(placed,100)))<1e-12);
+ std::cout<<"PASS local skin clearance follows flexion, reversed normals and unit changes\n";
+ return true;
+}
+int main(){try{return AnchorTransport()&&PersistentRest()&&CoalescedActiveTime()&&ReferencePlacement()?0:1;}catch(const std::exception& e){std::cerr<<e.what()<<'\n';return 2;}}

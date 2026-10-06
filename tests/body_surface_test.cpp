@@ -12,5 +12,22 @@ int main(){try{
  // Refit retained topology, changing the actual measured surface.
  for(auto& vertex:body)vertex.position[2]=.1;collider.Update(body,faces);Check(std::abs(collider.Closest({0,0,.3}).signedDistance-.2)<1e-12,"Body pose refit stale");
  Point origin{1000,-900,800};for(auto& vertex:body)vertex.position=Add(origin,Mul(vertex.position,100));collider.Update(body,faces,origin,100);Check(std::abs(collider.Closest({0,0,.3}).signedDistance-.2)<1e-12,"Unit/world-origin covariance failed");
+ detail::BodyCollider::PointNeighborhood neighborhood;
+ for(unsigned motion=0;motion<5;motion++){
+  for(auto& vertex:body)vertex.position[2]+=.02*100;
+  collider.Update(body,faces,origin,100);
+  for(unsigned i=0;i<120;i++){
+   Point p{double(i%17)/4-2,double(i%13)/4-1.5,double(i%9)/50};
+   double radius=.03+double(i%5)*.025;
+   auto exact=collider.Near(p,radius),cached=collider.NearCached(p,radius,neighborhood);
+   Check(std::abs(exact.distance-cached.distance)<1e-12,"Cached point neighborhood missed a current triangle");
+   if(exact.distance<radius)Check(std::abs(exact.signedDistance-cached.signedDistance)<1e-12,"Cached point contact changed its side");
+  }
+ }
+ // A neighborhood must never be reused for another collider's geometry.
+ detail::BodyCollider other;auto changedBody=body;for(auto& s:changedBody)s.position[2]-=50;
+ other.Update(changedBody,faces,origin,100);
+ auto exact=other.Near({0,0,0},1),cached=other.NearCached({0,0,0},1,neighborhood);
+ Check(std::abs(exact.distance-cached.distance)<1e-12,"Cached point neighborhood leaked across collider owners");
  bool invalid=false;try{collider.Update(body,{{0,1,99}});}catch(const std::invalid_argument&){invalid=true;}Check(invalid,"Out-of-range native topology accepted");collider.Clear();Check(collider.Empty(),"Body collider reset failed");std::cout<<"PASS measured body signed contacts, actual face piercing, topology refit and unit/world-origin covariance\n";return 0;
  }catch(const std::exception& error){std::cerr<<error.what()<<'\n';return 1;}}
