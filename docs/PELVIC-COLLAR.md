@@ -4,9 +4,11 @@
 
 `RootTransition` evaluates one stable C2 root field around the measured opening
 and preserves complete morphology outside its radius-dependent neighborhood.
-Its radial support expands with effective root radius. The barrel contact
-threshold uses an integrated smoothstep with continuous first and second
-derivatives, rather than a hard positive-part kink. A concentric anterior
+Its radial support expands with effective root radius. Ordered tissue rings
+receive a quintic falloff whose width grows with dilation; they are not collapsed
+onto a common barrel radius. First and second derivatives fade at the outer
+support. The inferior sector has less radial expansion beside the thighs and
+receives forward recruitment instead. A concentric anterior
 loft recruits the upper, lateral and lower annulus, fading into the abdomen;
 it does not lift the waist into a separate shield. Character body recruitment
 must use that character's measured opening, including both sides of existing
@@ -23,6 +25,23 @@ anatomy motion back to the same sewn edge. The adapter supplies measured body
 membership, opening and native edge/UV aliases. Shared geometry and constraints
 remain here. The first broad body prescription and an all-body orientation
 restriction were rejected; neither is a deployed solution.
+
+For an already smooth measured body field, set the optional
+`GraftDomain::preserveTargetDifferential` flag. The screened solve then fairs
+deviations from that field, preserving its differential coordinates around
+prescribed waist rows. Fairing displacement toward zero while prescribing the
+waist creates an artificial shelf there. This opt-in does not alter historical
+anatomy fitting; the empty/default path retains its replay. Original-edge
+constraints, protected boundaries and signed-area projection remain active.
+
+`GraftPlan(domain).ProjectDisplacement` caches just the constraint space for an
+actual cooked surface, without a support frame or smoothing factorization. An
+adapter may use this after transporting authored positions to native packing,
+to retain native body orientation on needle-like subdivision triangles. Supply
+original edge donors, exact geometric aliases and fixed resource joins; exclude
+freely rotating anatomy faces. Valid positions pass through unchanged. This is
+an additional native geometry check, not permission to exempt tiny collar faces
+from the gate or hide their diagnostics.
 
 Shared tests exercise folds, exact donors, repeatability, infeasible rejection
 and transition unit/rotation covariance. They also sample radial contact onset

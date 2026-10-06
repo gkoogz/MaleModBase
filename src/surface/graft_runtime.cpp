@@ -35,6 +35,8 @@ struct GraftPlan::Impl {
  std::vector<double> seamDistance;
  double scale;
  std::size_t count;
+ bool preserveTargetDifferential;
+ bool projectionOnly;
  std::vector<std::uint32_t> masters,free,fixed,protectedVertices,prescribedVertices;
  std::vector<Vector> points;
  struct Orientation {std::array<std::uint32_t,3> face;Vector normal;double area;};
@@ -45,7 +47,7 @@ struct GraftPlan::Impl {
  Sparse projection,boundary,attraction,baseMetric;
  std::vector<int> patternOuter,patternInner;
  Eigen::SimplicialLDLT<Sparse> factor;
- Impl(const GraftDomain& domain,const GraftFrame& frame):scale(frame.sourceLengthScale),count(domain.points.size()){
+ Impl(const GraftDomain& domain,const GraftFrame& frame,bool only=false):scale(frame.sourceLengthScale),count(domain.points.size()),preserveTargetDifferential(domain.preserveTargetDifferential),projectionOnly(only){
   if(!count||count>1000000||!Finite(frame.root)||!Finite(frame.axis)||!Finite(frame.up)||!std::isfinite(scale)||scale<=0||!std::isfinite(frame.radius)||frame.radius<=0||!std::isfinite(frame.length)||frame.length<=0)throw std::invalid_argument("Invalid graft frame/domain");
   const auto axis=V(frame.axis),up=V(frame.up);
   if(std::abs(axis.norm()-1)>1e-5||std::abs(up.norm()-1)>1e-5||std::abs(axis.dot(up))>1e-5)throw std::invalid_argument("Graft axis/up must be orthonormal");
@@ -81,6 +83,7 @@ struct GraftPlan::Impl {
    Vector normal=(points[face[1]]-points[face[0]]).cross(points[face[2]]-points[face[0]]);double twice=normal.norm();
    if(twice>1e-12)orientations.push_back({face,normal/twice,twice});
   }
+  if(projectionOnly)return;
   area=Eigen::VectorXd::Zero(count);
   entries.clear();
   if(domain.triangles.empty())throw std::invalid_argument("Empty graft triangles");
@@ -145,14 +148,17 @@ struct GraftPlan::Impl {
    factor.factorize(freeMetric);if(factor.info()!=Eigen::Success)throw std::runtime_error("Graft factorization failed");
   }
  }
- std::vector<PrecisePoint> Solve(const std::vector<PrecisePoint>& input)const{
+ std::vector<PrecisePoint> Solve(const std::vector<PrecisePoint>& input,bool project=false)const{
+  if(projectionOnly&&!project)throw std::invalid_argument("Constraint-only graft plan cannot smooth displacement");
   if(input.size()!=count)throw std::invalid_argument("Graft displacement topology differs");
   for(auto id:protectedVertices)for(double value:input[id])if(!std::isfinite(value)||std::abs(value)>1e-10)throw std::invalid_argument("Graft displacement moves a protected part boundary");
   Eigen::MatrixXd target(count,3),solved(masters.size(),3),fixedValues(fixed.size(),3);
   for(unsigned i=0;i<count;i++){if(!Finite(input[i]))throw std::invalid_argument("Non-finite graft displacement");target.row(i)=(V(input[i])/scale).transpose();}
   for(unsigned i=0;i<masters.size();i++)solved.row(i)=target.row(masters[i]);
-  if(!free.empty()){
-   const Eigen::MatrixXd allRHS=attraction*target;Eigen::MatrixXd rhs(free.size(),3);
+  if(!project&&!free.empty()){
+   Eigen::MatrixXd allRHS=attraction*target;
+   if(preserveTargetDifferential)allRHS+=baseMetric*solved;
+   Eigen::MatrixXd rhs(free.size(),3);
    for(unsigned i=0;i<free.size();i++)rhs.row(i)=allRHS.row(free[i]);
    for(unsigned i=0;i<fixed.size();i++)fixedValues.row(i)=solved.row(fixed[i]);
    rhs-=boundary*fixedValues;const Eigen::MatrixXd result=factor.solve(rhs);
@@ -190,7 +196,9 @@ struct GraftPlan::Impl {
  }
 };
 GraftPlan::GraftPlan(const GraftDomain& d,const GraftFrame& f):impl_(std::make_unique<Impl>(d,f)){}
+GraftPlan::GraftPlan(const GraftDomain& d):impl_(std::make_unique<Impl>(d,GraftFrame{{0,0,0},{1,0,0},{0,0,1},1,1,1},true)){}
 GraftPlan::~GraftPlan()=default;
-void GraftPlan::UpdateFrame(const GraftFrame& frame){impl_->Update(frame);}
+void GraftPlan::UpdateFrame(const GraftFrame& frame){if(impl_->projectionOnly)throw std::invalid_argument("Constraint-only graft plan has no support frame");impl_->Update(frame);}
 std::vector<PrecisePoint> GraftPlan::SolveDisplacement(const std::vector<PrecisePoint>& displacement)const{return impl_->Solve(displacement);}
+std::vector<PrecisePoint> GraftPlan::ProjectDisplacement(const std::vector<PrecisePoint>& displacement)const{return impl_->Solve(displacement,true);}
 }

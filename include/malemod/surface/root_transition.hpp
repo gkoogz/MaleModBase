@@ -14,10 +14,6 @@ class RootTransition {
  PrecisePoint root_{};
  PrecisePoint forward_;
  static double Smooth(double t){t=std::clamp(t,0.,1.);return t*t*t*(t*(t*6-15)+10);}
- static double Positive(double x,double width){
-  if(x<=-width)return 0;if(x>=width)return x;
-  const double t=(x+width)/(2*width);return width*(2*t*t*t-t*t*t*t);
- }
  public:
  RootTransition(std::vector<PrecisePoint> rest,unsigned bodyCount,const std::vector<PrecisePoint>& opening,PrecisePoint forward={1,0,0}):rest_(std::move(rest)),bodyCount_(bodyCount),forward_(forward){
   if(opening.size()<3||!bodyCount_||bodyCount_>=rest_.size())throw std::invalid_argument("Incomplete measured root transition");
@@ -35,9 +31,10 @@ class RootTransition {
   for(unsigned a=0;a<3;a++){q[a]=rest_[i][a]-root_[a];s+=q[a]*frame.axis[a];z+=q[a]*frame.up[a];y+=q[a]*lateral[a];anterior+=q[a]*forward_[a];}
   const double rho=std::hypot(y,z),scale=frame.sourceLengthScale;
   const double reach=frame.radius*1.25+3*scale;
-  // Round the barrel's contact threshold instead of abruptly clamping it.
-  // Positive is the integral of a cubic smoothstep, with continuous first and
-  // second derivatives where contact starts and reaches the interior barrel.
+  // Spread dilation over ordered concentric rings rather than collapsing the
+  // inner annulus onto one barrel radius. A quintic has maximum derivative
+  // 1.875; support width 2*(dilation+neutralBarrel) bounds radial compression
+  // below one. The field and its first two derivatives fade at the outer edge.
   const double growth=Smooth((frame.radius-neutralRadius)/(4.72*scale));
   const double profile=1-Smooth((s/frame.length+.03)/.26);
   const double barrel=frame.radius*(1.025+(.06+.12*growth)*profile);
@@ -45,18 +42,18 @@ class RootTransition {
   const double dilation=std::max(0.,barrel-neutralBarrel);
   const double radial=1-Smooth((rho-neutralBarrel)/(2*(dilation+neutralBarrel)));
   const double depth=1-Smooth(std::abs(s)/reach);
-  const double envelope=frame.radius*1.55+2*scale;
-  const double gap=std::max(0.,Positive(barrel-rho,2*scale)-Positive(neutralBarrel-rho,2*scale))
-      *depth*(1-Smooth((rho-envelope)/(5*scale)))
+  const double upper=rho>1e-8*scale?std::clamp((z/rho+1)*.5,0.,1.):0.;
+  // The inferior sector has less radial freedom beside the thigh attachment;
+  // carry more of its recruitment forward instead of expanding into the legs.
+  const double gap=dilation*radial*depth*(.55+.45*upper)
       *Smooth((anterior+2*neutralRadius)/(2*neutralRadius));
   if(rho>1e-8*scale)for(unsigned a=0;a<3;a++)d[a]=(frame.up[a]*z+lateral[a]*y)*gap/rho;
   // The same annulus carries an anterior loft, rather than an independent
   // upper-sector bump. Its sides and underside participate too, so the ramp
   // wraps the attachment instead of forming a platform above it. Posterior
   // tissue remains excluded by the measured anterior half-space.
-  const double upper=rho>1e-8*scale?std::clamp((z/rho+1)*.5,0.,1.):0.;
-  const double shoulder=1.6*std::max(0.,frame.radius-neutralRadius)*growth*(.35+.65*upper*upper)
-      *radial*(1-Smooth(std::abs(s)/(1.8*frame.radius+neutralRadius)))
+  const double shoulder=.8*std::max(0.,frame.radius-neutralRadius)*growth*(.35+.65*upper*upper)
+      *radial*depth
       *Smooth((anterior+neutralRadius)/(2*neutralRadius));
   for(unsigned a=0;a<3;a++)d[a]+=forward_[a]*shoulder;
   // The lower ramp may grow down/out, never backward into the thighs.

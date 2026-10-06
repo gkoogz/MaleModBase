@@ -2,25 +2,18 @@
 
 ## October 6 attachment-integrity requirement and repair checkpoint
 
-Side-profile refinement: the user accepted the previous Geralt repair as much
-improved, but reports an abrupt upper/lateral shoulder. The current shared
-candidate rounds the barrel contact threshold and broadens the concentric
-anterior loft to the lateral and lower sectors. Radial slope, covariance and
-original-donor tests pass; the adapter's 46-case diagnostic native-buffer sweep
-passes both resources/LODs. A broader radial-displacement candidate was rejected
-offline for an abdominal bulge. The last accepted installed runtime remains
-Base 2ad61e3 until the adapter records a new native visual pass. Older checkpoint
-paragraphs below are historical; current installed proof lives in the Witcher
-HANDOFF and provenance/collar-repair.json. Wolverine remains untouched.
-
-Latest candidate: adaptive measured transition plus optional original-edge
-master-space orientation projection. Geralt uses stable body recruitment followed
-by a separately sewn moving-anatomy solve. 278 offline native-buffer cases have
-zero reversed local body collar faces and maximum seam residual 1.091e-7 metres;
-39 body/render tests preserve both resources, both LODs and 37 waist knots.
-The historical empty-constraint graft path passes all 22 Python/native fixtures
-and 110 updated-frame replays. Shared tests and full provenance pass. Native
-grey-room/campaign review is next; no installed or visual acceptance yet.
+Side-profile refinement: ordered concentric rings now expand with dilation;
+the optional differential-preserving body solve avoids attenuating the ramp
+beside prescribed waist rows. A cached constraint-only projection guards the
+actual cooked triangle surface after exact original-edge welding. All 46
+adapter diagnostic cases pass with no reversed local collar faces. Shared
+orientation/transition tests and 22 historical fixtures/110 updated-frame
+replays pass. The full adapter sweep and native visual review are pending.
+The stronger intermediate loft at Base 4f0148d was rejected in the grey room
+for a waist shelf; its runtime was restored to accepted Base 2ad61e3. Do not
+promote the intermediate commit to installed acceptance. Current native proof
+belongs in the Witcher HANDOFF and provenance/collar-repair.json. Wolverine
+remains untouched.
 
 The highest-priority attachment regression gate is now committed in Base,
 Witcher and canonical Wolverine `AGENTS.md` and `docs/PROJECT-CONTEXT.md`.

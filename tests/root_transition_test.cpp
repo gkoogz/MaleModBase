@@ -14,7 +14,7 @@ int main(){try{
  std::vector<PrecisePoint> shoulderRest={{2,0,9},{-10,0,9},{2,0,100},{0,-1,0}};
  RootTransition shoulderRamp(shoulderRest,3,opening);
  const auto shoulder=shoulderRamp.BodyDisplacement(0,f,2.9);
- Check(shoulder[0]>0&&shoulder[2]<shoulder[0]*.2,"Upper annulus is lifted into a shield instead of recruiting forward");
+ Check(shoulder[0]>0&&shoulder[2]<f.radius-2.9,"Upper annulus lacks bounded forward recruitment");
  Check(shoulderRamp.BodyDisplacement(1,f,2.9)==PrecisePoint{},"Shoulder moves posterior pelvic tissue");
  Check(shoulderRamp.BodyDisplacement(2,f,2.9)==PrecisePoint{},"Shoulder reaches distant abdomen");
  // Sample the actual field across radial contact onset and the outer support.
@@ -29,6 +29,7 @@ int main(){try{
   // The origin has no radial direction and is inside the removed opening.
   if(i<60)continue;
   const double slope=(b[2]-a[2])/.05;
+  Check(1+slope>.05,"Concentric tissue rings collapse or reverse their radial order");
   if(haveSlope)Check(std::abs(slope-previousSlope)<.045,"Radial contact produces an abrupt slope discontinuity");
   previousSlope=slope;haveSlope=true;
  }

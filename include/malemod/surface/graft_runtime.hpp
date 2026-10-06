@@ -29,6 +29,11 @@ struct GraftDomain {
  // character's rest frame. Empty retains the historical solve byte for byte.
  // Anatomy may rotate independently; the adapter identifies body topology.
  std::vector<std::uint32_t> orientationTriangles;
+ // Preserve an already smooth measured body target. Fair corrections to its
+ // differential coordinates, rather than flattening the target displacement
+ // against independently prescribed resource-boundary rows. Default false
+ // preserves historical anatomy fitting and its numerical replay exactly.
+ bool preserveTargetDifferential=false;
 };
 // The same support law used by the target collar matrix. Adapters can suppress
 // distant body-field inputs without maintaining another copy of that law.
@@ -39,6 +44,9 @@ double GraftRecruitmentWeight(PrecisePoint,const GraftFrame&);
 class GraftPlan {
  public:
   GraftPlan(const GraftDomain&,const GraftFrame&);
+  // Cached constraint-only plan for a measured cooked surface. It does not
+  // build a smoothing matrix or require anatomy support dimensions.
+  explicit GraftPlan(const GraftDomain&);
   ~GraftPlan();
   GraftPlan(const GraftPlan&)=delete;
   GraftPlan& operator=(const GraftPlan&)=delete;
@@ -46,6 +54,7 @@ class GraftPlan {
   // A different sourceLengthScale requires a new plan. No frame quantization.
   void UpdateFrame(const GraftFrame&);
   std::vector<PrecisePoint> SolveDisplacement(const std::vector<PrecisePoint>&)const;
+  std::vector<PrecisePoint> ProjectDisplacement(const std::vector<PrecisePoint>&)const;
  private:
   struct Impl;std::unique_ptr<Impl> impl_;
 };
