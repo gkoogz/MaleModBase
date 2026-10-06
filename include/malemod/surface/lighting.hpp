@@ -11,10 +11,22 @@ namespace malemod::surface {
 // remain per render vertex, retaining each UV island's handedness.
 using LightingPoint=std::array<double,3>;
 struct LightingFrame {LightingPoint normal,tangent;double sign=1;};
+struct LightingEdgeConstraint {std::uint32_t slave,a,b;double weight;};
 inline LightingPoint LightingSub(LightingPoint a,LightingPoint b){for(unsigned i=0;i<3;i++)a[i]-=b[i];return a;}
 inline LightingPoint LightingCross(LightingPoint a,LightingPoint b){return {a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]};}
 inline double LightingDot(LightingPoint a,LightingPoint b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}
 inline LightingPoint LightingUnit(LightingPoint p,LightingPoint fallback){double s=LightingDot(p,p);if(s<1e-24){p=fallback;s=LightingDot(p,p);}if(!std::isfinite(s)||s<1e-24)throw std::invalid_argument("Degenerate lighting direction");for(auto& x:p)x/=std::sqrt(s);return p;}
+// Interpolated positional seams require the same donor normal field. Keep each
+// UV island's own tangent direction and handedness; do not average UV charts.
+inline void WeldEdgeLighting(std::vector<LightingFrame>& frames,const std::vector<LightingEdgeConstraint>& edges){
+ const auto before=frames;
+ for(auto e:edges){
+  if(e.slave>=frames.size()||e.a>=frames.size()||e.b>=frames.size()||!std::isfinite(e.weight)||e.weight<0||e.weight>1)throw std::invalid_argument("Invalid lighting seam donor");
+  auto& f=frames[e.slave];LightingPoint n{};for(unsigned a=0;a<3;a++)n[a]=(1-e.weight)*before[e.a].normal[a]+e.weight*before[e.b].normal[a];
+  f.normal=LightingUnit(n,before[e.slave].normal);auto t=before[e.slave].tangent;const auto dot=LightingDot(t,f.normal);for(unsigned a=0;a<3;a++)t[a]-=dot*f.normal[a];
+  auto fallback=LightingCross(f.normal,std::abs(f.normal[2])<.9?LightingPoint{0,0,1}:LightingPoint{0,1,0});f.tangent=LightingUnit(t,fallback);
+ }
+}
 inline std::vector<LightingFrame> RebuildLighting(const std::vector<LightingPoint>& positions,
  const std::vector<std::array<double,2>>& uv,const std::vector<std::array<std::uint32_t,3>>& faces,
  const std::vector<std::uint32_t>& normalGroups,const std::vector<LightingFrame>& fallback){

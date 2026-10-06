@@ -9,6 +9,9 @@ using PrecisePoint=std::array<double,3>;
 struct GraftFrame {
  PrecisePoint root,axis,up;
  double radius,length,sourceLengthScale=1;
+ // Optional target-character seam support, in the same calibrated units.
+ // Zero preserves the historical source-only support field exactly.
+ double seamSupportRadius=0;
 };
 struct EdgeConstraint {std::uint32_t slave,a,b;double weight;};
 // Unique geometric domain. Render aliases/UVs and resource splits stay in the

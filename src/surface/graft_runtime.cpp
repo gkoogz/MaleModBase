@@ -32,6 +32,7 @@ double GraftRecruitmentWeight(PrecisePoint point,const GraftFrame& frame){
  return Recruitment(V(point)/frame.sourceLengthScale,frame);
 }
 struct GraftPlan::Impl {
+ std::vector<double> seamDistance;
  double scale;
  std::size_t count;
  std::vector<std::uint32_t> masters,free,fixed,protectedVertices,prescribedVertices;
@@ -52,6 +53,9 @@ struct GraftPlan::Impl {
   }
   for(auto e:domain.seams)if(slaves[e.a]||slaves[e.b])throw std::invalid_argument("Seam donors must be independent masters");
   for(auto id:domain.protectedVertices){if(id>=count||slaves[id])throw std::invalid_argument("Protected boundary must be an independent master");locked[id]=true;}
+  seamDistance.assign(count,1e100);
+  for(unsigned i=0;i<count;i++)for(const auto& e:domain.seams)
+   seamDistance[i]=std::min(seamDistance[i],(points[i]-points[e.slave]).norm());
   protectedVertices=domain.protectedVertices;
   for(auto id:domain.prescribedVertices){if(id>=count||slaves[id]||locked[id])throw std::invalid_argument("Prescribed boundary must be an independent unprotected master");locked[id]=true;}
   prescribedVertices=domain.prescribedVertices;
@@ -89,13 +93,16 @@ struct GraftPlan::Impl {
   Update(frame);
  }
  void Update(const GraftFrame& frame){
-  if(!Finite(frame.root)||!Finite(frame.axis)||!Finite(frame.up)||frame.sourceLengthScale!=scale||!std::isfinite(frame.radius)||frame.radius<=0||!std::isfinite(frame.length)||frame.length<=0)throw std::invalid_argument("Invalid updated graft frame/scale");
+  if(!Finite(frame.root)||!Finite(frame.axis)||!Finite(frame.up)||frame.sourceLengthScale!=scale||!std::isfinite(frame.radius)||frame.radius<=0||!std::isfinite(frame.length)||frame.length<=0||!std::isfinite(frame.seamSupportRadius)||frame.seamSupportRadius<0)throw std::invalid_argument("Invalid updated graft frame/scale");
   const auto axis=V(frame.axis),up=V(frame.up);
   if(std::abs(axis.norm()-1)>1e-5||std::abs(up.norm()-1)>1e-5||std::abs(axis.dot(up))>1e-5)throw std::invalid_argument("Invalid updated graft basis");
   Eigen::VectorXd screen(count),mask(count);std::vector<Entry> screenEntries;
   screenEntries.reserve(count);
   for(unsigned i=0;i<count;i++){
-   mask[i]=Recruitment(points[i],frame);screen[i]=area[i]*(2.5+2*std::pow(1-mask[i],4));
+   mask[i]=Recruitment(points[i],frame);
+   if(frame.seamSupportRadius>0)
+    mask[i]=std::max(mask[i],Smoother(1-seamDistance[i]/(frame.seamSupportRadius/scale)));
+   screen[i]=area[i]*(2.5+2*std::pow(1-mask[i],4));
    screenEntries.emplace_back(i,i,screen[i]);
   }
   Sparse screenMatrix(count,count);screenMatrix.setFromTriplets(screenEntries.begin(),screenEntries.end());

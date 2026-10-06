@@ -52,7 +52,7 @@
     },
     {
       "path": "CMakeLists.txt",
-      "sha256": "2b8e86b265162d59d7acd2f38c8fbdbfb16ffa19db4dc55b3c727dba47ea870a"
+      "sha256": "46e0ce519cfb479b2801e82675b7c99f189e2f207888bb965c08be04182b3d37"
     },
     {
       "path": "docs/FRAME-CALIBRATION.md",
@@ -65,5 +65,10 @@
       "previousCMakeSHA256": "7d632f338f6ed92ab69a2a3d938c1e22d72b106ac0db57788400bfddf3f36ceb",
       "meaning": "Preserved prior build metadata hash; garment SDK-only test target registrations changed, no acceptance inferred for runtime source changes"
     }
-  ]
+  ],
+  "attachmentTestRegistration": {
+    "change": "Added standalone SDK-free root transition test only",
+    "sourcePhysicsChanged": false,
+    "sourceGarmentChanged": false
+  }
 }

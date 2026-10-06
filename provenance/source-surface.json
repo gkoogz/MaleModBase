@@ -200,7 +200,7 @@
   "files": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "2b8e86b265162d59d7acd2f38c8fbdbfb16ffa19db4dc55b3c727dba47ea870a"
+      "sha256": "46e0ce519cfb479b2801e82675b7c99f189e2f207888bb965c08be04182b3d37"
     },
     {
       "path": "include/malemod/surface/runtime.hpp",
@@ -5412,5 +5412,9 @@
     "nativeAdoptionAccepted": false,
     "installed": false,
     "observedGameplay": false
+  },
+  "attachmentTestRegistration": {
+    "change": "Added standalone SDK-free root transition test only",
+    "compiledSourcePhysicsChanged": false
   }
 }
