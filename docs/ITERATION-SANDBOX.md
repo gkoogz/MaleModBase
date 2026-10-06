@@ -20,6 +20,8 @@ transitions separately. A grey room does not certify every feature or establish
 identical timing between engines.
 
 - Wolverine: [adapter repository](https://github.com/gkoogz/XMenOriginsWolverineMaleMod).
+  Its compact recipe is `tools/iteration/README.md`, also indexed by
+  `dev/sandbox/README.md`.
 - Witcher: [adapter repository](https://github.com/gkoogz/TheWitcher3MaleMod),
   `dev/sandbox/README.md`.
 
@@ -42,6 +44,17 @@ checkpoints distinct. A new shared commit does not upgrade either installed game
 Record the actual native renderer, physics sequence/cadence, body completeness,
 floor collision, views, movement, controls exercised and cleanup after testing.
 
+## Current Wolverine checkpoint
+
+The 27-file source recipe passed a clean Git clone check and a fresh
+vanilla-derived private setup. The engine created its own profile; a typed
+development seed generated the local checkpoint without importing a personal
+save. Native captures show the complete character on the grey floor. Movement,
+F6 and a live Overall change from 50 to 51 were acknowledged. The private child
+closed and scoped audio was restored. Stock `jungle1_p` remains underneath;
+there is no claim of a smallest standalone world or improved physics cadence.
+See the adapter's `tools/iteration/README.md` for prerequisites and reproduction.
+
 ## Current Witcher checkpoint
 
 The transient grey studio passed observed grounded walking with the complete
@@ -59,8 +72,10 @@ Record resource authoring, native load/cook, installed package and observed
 gameplay independently. Observe the correct world, grounded player, advancing
 animation and numerical physics, rendered anatomy and garment, the existing F6
 controls, and frame/solver timing. Capture the shared cases and orthogonal views.
-No automated test may read or write the user's ordinary saves, switch the
-physical desktop, send host input or mute the host's audio.
+Do not use ordinary personal saves as sandbox bootstrap or captured test input.
+Adapter transactions may back up and hash-check the owner's files solely to
+preserve them during an isolated run; verify exact restoration afterward.
+Never switch the physical desktop, send host input or mute the host's audio.
 
 ## October 4 discovery checkpoint (historical)
 

@@ -2,6 +2,9 @@
 
 ## October 5 repository sync and developer packaging
 
+Read [REPOSITORY-CHECKPOINT.md](REPOSITORY-CHECKPOINT.md) for the packaged room
+entries, vanilla reproduction boundaries and frozen runtime versus source pins.
+
 Grey rooms are the default native development environment; read
 [ITERATION-SANDBOX.md](ITERATION-SANDBOX.md) and each adapter's repository-owned
 developer package before character, garment, material, physics or control work.
