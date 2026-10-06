@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "include/malemod/surface/lighting.hpp",
-      "sha256": "2bc22995253a541b9ea1d611bfa1f807915ad343f6c4a73fc03b421b60007989"
+      "sha256": "4d31dbac8ba7dbd6f5f5e726fb911f8c198ca39f8d37696fb273dad1971c5107"
     },
     {
       "path": "tests/surface_lighting_test.cpp",
@@ -14,7 +14,7 @@
     }
   ],
   "sdkFree": true,
-  "executableSHA256": "9d0ae22250c6d8bbe02ffcdf942f11e2eadbbae40ae8a1b501f5d80c98ce5965",
+  "executableSHA256": "205f8620cf24141dba18162e81ab1e6b4669d089f27806ba7464a5d263e24a28",
   "reportSHA256": "184098e28575eb2d173773aef82838f3f241ef24b27dbc08dc7d85d262498259",
   "exitCode": 0,
   "sourceSolverChanged": false,

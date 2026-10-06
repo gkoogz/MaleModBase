@@ -1,3 +1,24 @@
+Latest localized attachment clarification (October 6): side flare belongs
+right beside the weld, not in a wider leg/hip recruitment annulus. The user
+rejected the trial that expanded the legs. At large sizes thicken the underside
+root and return it deeper into the pelvis, filling the marked posterior ventral
+hollow while preserving the outer leg contours. Continue showing renders before
+installation. The original broad-body trial must not be installed.
+
+Latest clarification (October 6): the attachment should read as one continuous
+surface. Slightly broaden the bell and flare both the shaft base and pelvic
+side together. Do not satisfy this with extra forward displacement or a raised
+surrounding shelf. Preserve the original pelvis outside the local ramp. Show
+matched bare/attached previews at several sizes and angles before installation.
+
+Latest preview feedback (October 6): bring recruited pelvic tissue farther
+forward for more blend. Preserve the original exterior and show camera-matched
+renders before installation. Numerical tests do not imply visual acceptance.
+
+Latest preview feedback (October 6): enlarge and smooth the local pelvic ramp.
+Show revised camera-matched bare/attached meshes for approval before installation.
+Keep the original pelvis outside the recruited transition.
+
 Latest attachment clarification (October 6): start from the unmodified bare
 pelvis. The shaft retains its full cross-section, including Overall 100 and
 Width 100. Recruit triangles concentrically only where needed for a gentle

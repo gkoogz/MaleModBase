@@ -5,7 +5,7 @@
   "files": [
     {
       "path": "include/malemod/surface/graft_runtime.hpp",
-      "sha256": "59e68951ed61b6df5f8f18877c741429292f0a9aae45da6a10a3e0d7170f93ae"
+      "sha256": "0a2ea4d14b4c026756253f6413685959098087c183c0d9d2455f9209cc5325d0"
     },
     {
       "path": "include/malemod/surface/binding.hpp",
@@ -13,7 +13,7 @@
     },
     {
       "path": "src/surface/graft_runtime.cpp",
-      "sha256": "6f996b963507361ed5bf63871a4886d64082848ed5cb7c98547747e8184cbeb4"
+      "sha256": "9f29efd1128957fe8a416d7f4803d3211adf70f9becf9e143d0b99efde01a98c"
     },
     {
       "path": "tests/graft_runtime_cli.cpp",
@@ -885,15 +885,15 @@
     ]
   },
   "measuredTransitionCandidate": {
-    "version": 4,
+    "version": 10,
     "files": [
       {
         "path": "include/malemod/surface/root_transition.hpp",
-        "sha256": "f23948fd380ab39de9b996d9225c1c2a9f2d2f64ae2f13a39faf91c00f44390b"
+        "sha256": "c0bf268deebc19d74a09eb7ca7f0425dca24af3b0265e8c9f2422c6c73248f50"
       },
       {
         "path": "tests/root_transition_test.cpp",
-        "sha256": "002762a39789a4f2021f095cc538625b49e3c5f8dc471b45cd8dc72ae912e915"
+        "sha256": "8c990767400817769803b1c9809315263551cf301fb0d6c957f6de8e41bb93e6"
       }
     ],
     "sdkFree": true,
@@ -910,7 +910,7 @@
       "protectedAndPrescribedRowsFixed": true,
       "infeasibleGeometryRejected": true,
       "test": "tests/graft_orientation_test.cpp",
-      "testSHA256": "9c22208b3be2e4c295bb4797954fc068740c0e2dd09dc76eab7c5f4ba13303a2",
+      "testSHA256": "dde2ce08586c2cbee39a354b1e03945f44b2bd20f7d4965c816c2e0914bbd409",
       "observedGameplay": false
     },
     "measuredAnteriorShoulder": false,
@@ -932,7 +932,7 @@
       "cachedMasterSpace": true,
       "noSmoothingFactorization": true,
       "validSurfaceUnchanged": true,
-      "testSHA256": "9c22208b3be2e4c295bb4797954fc068740c0e2dd09dc76eab7c5f4ba13303a2",
+      "testSHA256": "dde2ce08586c2cbee39a354b1e03945f44b2bd20f7d4965c816c2e0914bbd409",
       "observedGameplay": false
     },
     "localMeasuredBell": {
@@ -943,7 +943,67 @@
       "noBroadUpperLoft": true,
       "userRejectedPreviousVisualAcceptance": true,
       "observedGameplay": false,
-      "coarseOriginalEdgeSpacingPreserved": true
+      "coarseOriginalEdgeSpacingPreserved": true,
+      "supportWidthOpeningFactor": 0.81,
+      "supportWidthDilationFactor": 2.18,
+      "forwardDilationFactor": 1.3,
+      "userRequestedBroaderRamp": true,
+      "sectionFlareFactor": 1.12,
+      "userRequestedSmoothBothSides": true,
+      "userRejectedProjectionOnlyRevision": true
+    },
+    "localSurfaceFairing": {
+      "optional": true,
+      "defaultOff": true,
+      "actualPositionsNotOnlyDisplacement": true,
+      "cachedMetric": true,
+      "exactOriginalEdgeDonors": true,
+      "protectedPrescribedBoundaries": true,
+      "creaseReductionTested": true,
+      "calibratedUnitsTested": true,
+      "observedGameplay": false,
+      "installed": false,
+      "test": "tests/graft_orientation_test.cpp",
+      "testSHA256": "dde2ce08586c2cbee39a354b1e03945f44b2bd20f7d4965c816c2e0914bbd409"
+    },
+    "geometricNormalAlignment": {
+      "files": [
+        {
+          "path": "include/malemod/surface/lighting.hpp",
+          "sha256": "4d31dbac8ba7dbd6f5f5e726fb911f8c198ca39f8d37696fb273dad1971c5107"
+        }
+      ],
+      "uvHandednessPreserved": true,
+      "observedGameplay": false
+    },
+    "localNormalFieldFairing": {
+      "iterations": 8,
+      "exteriorWeightZeroUnchanged": true,
+      "perUvTangentAndHandednessPreserved": true,
+      "observedGameplay": false,
+      "installed": false,
+      "testSHA256": "90fd26fbbf7b0c1676232f03e66b4fc1fde089581288547a9039425f86663eca"
+    },
+    "localRootThickness": {
+      "sideRadiusFactor": 0.06,
+      "inferiorRadiusFactor": 0.14,
+      "compactSupportNeutralRadii": 2,
+      "inferiorForwardReturn": 0.4,
+      "unchangedOuterAnnulus": true,
+      "neutralUnchanged": true,
+      "sharedBodyAndSewnAnatomyField": true,
+      "observedGameplay": false,
+      "installed": false,
+      "testSHA256": "8c990767400817769803b1c9809315263551cf301fb0d6c957f6de8e41bb93e6",
+      "sideAngularExponent": 6
+    },
+    "orientationAreaHeadroom": {
+      "defaultTargetRatio": 0.02,
+      "geraltNativeTargetRatio": 0.1,
+      "exactDonors": true,
+      "protectedPrescribedRowsFixed": true,
+      "notAC1OrGameplayProof": true,
+      "testSHA256": "dde2ce08586c2cbee39a354b1e03945f44b2bd20f7d4965c816c2e0914bbd409"
     }
   },
   "currentDefaultReplay": {
@@ -1352,5 +1412,15 @@
         "resultSHA256": "4c603a2126d7d18dd01584bfb37852247bee46f518dc6851acd960c9a4119c5e"
       }
     ]
+  },
+  "currentOptionalFairingDefaultReplay": {
+    "path": "build/compact-root-default-replay/verification.json",
+    "sha256": "c5373807ff3934185ec812af2ac31cebfebdef030972f5a2994b3801db1ca3f9",
+    "fixtureCount": 22,
+    "byteIdentical": true,
+    "maximumComponentError": 0.0,
+    "optionalFairing": false,
+    "orientationAreaTargetRatio": 0.02,
+    "observedGameplay": false
   }
 }

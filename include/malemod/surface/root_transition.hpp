@@ -41,9 +41,18 @@ class RootTransition {
   for(unsigned a=0;a<3;a++){q[a]=rest_[i][a]-root_[a];s+=q[a]*forward_[a];z+=q[a]*openingUp_[a];y+=q[a]*openingSide_[a];}
   const double rho=std::hypot(y,z),scale=frame.sourceLengthScale,r0=openingRadius_[i];
   const double growth=Smooth((frame.radius-neutralRadius)/(.75*neutralRadius));
-  const double dilation=std::max(0.,frame.radius*1.04-r0)*growth;
+  // Local side/underside thickening must not widen the surrounding annulus
+  // into the legs. Angular weights use the immutable measured opening frame.
+  const double lateral=rho>1e-8*scale?(y*y)/(rho*rho):0;
+  // Fill out the ventral root as the section grows. This recruits the lower
+  // body and sewn anatomy together instead of leaving a thin root above an
+  // empty underside wedge. No enlargement is applied at neutral size.
+  const double inferior=rho>1e-8*scale?std::pow(std::max(0.,-z/rho),2):0;
+  const double dilation=std::max(0.,frame.radius*1.12-r0)*growth;
   if(dilation<=1e-12*scale)return d;
-  const double inner=r0+dilation,width=.45*r0+1.5*dilation,outer=inner+width,length=outer-r0;
+  // Enlarge the support annulus with growth instead of concentrating the
+  // transition beside the cutout. The exterior still returns exactly to rest.
+  const double inner=r0+dilation,width=.81*r0+2.18*dilation,outer=inner+width,length=outer-r0;
   if(rho>=outer)return d;
   const double innerSlope=.5;
   const double t=(rho-r0)/length,m0=innerSlope*length/width,m1=length/width;
@@ -52,13 +61,21 @@ class RootTransition {
   // surface. A small positive inner radial slope preserves distinct rings.
   const double clamped=std::max(0.,t),t2=clamped*clamped,t3=t2*clamped,t4=t3*clamped,t5=t4*clamped;
   const double hermite=m0*clamped+(10-6*m0-4*m1)*t3+(8*m0+7*m1-15)*t4+(6-3*m0-3*m1)*t5;
-  const double radius=t<0?inner+innerSlope*(rho-r0):inner+width*hermite;
+  const double localBell=1-Smooth(std::max(0.,rho-r0)/(2*neutralRadius));
+  const double rootThickness=frame.radius*(.06*lateral*lateral*lateral+.14*inferior)*growth*localBell;
+  const double radius=(t<0?inner+innerSlope*(rho-r0):inner+width*hermite)+rootThickness;
   const double bell=t<0?1-t:1-clamped-4*t3+7*t4-3*t5;
   const double anterior=Smooth((s+3*neutralRadius)/(1.5*neutralRadius));
   const double depth=1-Smooth(std::max(0.,s)/(2*inner));
   const double weight=anterior*depth;
   if(rho>1e-8*scale)for(unsigned a=0;a<3;a++)d[a]=(openingUp_[a]*z+openingSide_[a]*y)*(radius-rho)*weight/rho;
-  for(unsigned a=0;a<3;a++)d[a]+=forward_[a]*(.6*dilation*bell*weight);
+  // Bring the recruited tissue forward through the same smooth bell; leave
+  // its outer boundary and the original surrounding pelvis at rest.
+  // The lower root returns deeper into the pelvis instead of moving forward
+  // as far as the upper bell. This fills the posterior ventral hollow locally;
+  // the surrounding body annulus keeps the previous displacement exactly.
+  const double lowerReturn=1-.40*inferior*localBell;
+  for(unsigned a=0;a<3;a++)d[a]+=forward_[a]*(1.3*dilation*bell*weight*lowerReturn);
   // The lower ramp may grow down/out, never backward into the thighs.
   double backward=0;for(unsigned a=0;a<3;a++)backward+=d[a]*forward_[a];if(backward<0)for(unsigned a=0;a<3;a++)d[a]-=backward*forward_[a];return d;
  }

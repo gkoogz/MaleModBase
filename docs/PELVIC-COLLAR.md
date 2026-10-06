@@ -1,5 +1,51 @@
 # Shared pelvic recruitment and exact seam constraints
 
+## Local side/ventral root refinement (October 6)
+
+Keep the previous exterior support; do not widen it into the legs. A compact
+radial quintic adds .06*radius on the sides with sixth-power angular localization,
+and .14*radius below. It ends two neutral radii beyond the measured opening.
+Lower forward projection returns toward the pelvis by up to .40 in this same
+window. The original surface law is unchanged outside it and at neutral size.
+The native Geralt adapter opts into .10 orientationAreaTargetRatio; shared
+default .02 retains historical output. This projection target gives additional
+headroom without changing donor/boundary constraints. Full native-buffer tests
+pass, but no native gameplay or user visual acceptance is claimed. The final
+leg audit records up to .605 mm additional safety projection below .82 m; it
+is not exact unchanged geometry. See HANDOFF for paths and rejected trials.
+
+
+## Current preview: local continuous surface fairing
+
+This supersedes the historical forward-1.7 candidate described below. The
+current bell has section flare 1.12, width .81*r0 + 2.18*dilation, and forward
+projection 1.3*dilation. The aim is a modest wider transition across both sides,
+with the original pelvis outside its support preserved.
+
+GraftDomain offers optional surfaceFairingDistance/Strength, both default zero.
+It caches a local curvature metric on actual positions, in addition to the
+displacement metric, preserving exact original-edge donors and fixed exterior
+rows. The metric also enters the RHS for rest positions; smoothing displacement
+alone would preserve an existing crease. Adapter unit calibration is required.
+Shared lighting can align cooked frames to final geometric normals and diffuse
+a locally weighted normal field while preserving per-UV tangents/handedness.
+This shading operation cannot repair a gap or fold; orientation and positional
+gates remain separate. A flat normal fixture is not proof of native C1 shape.
+
+Current Geralt preview passes offline seam/orientation/body tests, not native
+acceptance. Stronger smoothing and explicit tangent-ring prescription were
+visually rejected. Extreme upward angles remain unresolved. Wolverine is not
+automatically modified; each spoke must pin the shared implementation and pass
+its own geometry, runtime and observed visual gates.
+
+
+Current uncommitted review candidate: support width is
+`0.8*openingRadius + 2.6*dilation`, and forward projection is `1.7*dilation`
+through the same smooth bell. Its outer boundary is unchanged. Shared tests
+check monotone forward falloff and independence from shaft rest angle. This
+candidate is not installed or visually accepted.
+
+
 ## Measured target attachment repair (October 6)
 
 `RootTransition` starts from the measured rest pelvis and opening. It caches
@@ -19,9 +65,11 @@ masters, preserving exact original-edge elimination and protected/prescribed
 rows; an infeasible field is rejected. Leave the list empty for the historical
 solver, including freely rotating anatomy triangles.
 
-Geralt adopts this through two coupled solves: recruit/fair the body against the
-stable root field, then prescribe those body masters while fitting independent
-anatomy motion back to the same sewn edge. The adapter supplies measured body
+Geralt uses a constraint-only projection for the measured body field, then
+prescribes those body masters while fitting independent anatomy motion back
+to the same sewn edge. The broader preview also preserves the anatomy target
+differential, so fairing displacement against fixed body rows does not create
+a collar lip. The adapter supplies measured body
 membership, opening and native edge/UV aliases. Shared geometry and constraints
 remain here. The first broad body prescription and an all-body orientation
 restriction were rejected; neither is a deployed solution.

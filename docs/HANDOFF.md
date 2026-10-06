@@ -1,5 +1,115 @@
 # Resume here: cross-repository handoff
 
+## October 6 localized side flare and deeper underside - preview only
+
+This supersedes the broad lateral/ventral trial, which the user rejected for
+expanding the legs. Keep the prior .81*r0 + 2.18*dilation support annulus and
+1.12 base section flare. New thickness is compact at the root: .06*radius for
+pure lateral sectors (sixth-power angular taper), .14*radius on the underside,
+with a quintic envelope ending two neutral radii beyond the measured opening.
+The underside also reduces forward projection locally by up to 40%, returning
+the lower root deeper into the pelvis. Neutral and outer field stay unchanged.
+Both body and sewn anatomy consume this shared field.
+
+An early local trial failed one packing-resolved upper-body orientation face at
+maximum Erect size. Narrowing the angular sector alone did not fix it. Shared
+GraftDomain now exposes orientationAreaTargetRatio, default .02 for historical
+replay; Geralt's native body guard requests .10 for more area headroom. Exact
+donors, prescribed waist and protected boundaries remain constrained. This is
+an area projection target, not a promised C1 surface or exact target area after
+all coupled constraints. The existing final positive-area rejection remains.
+
+Root/orientation tests and Base provenance pass. Twenty-two default displacement
+and weight fixtures replay byte-identically in build/compact-root-default-replay.
+Witcher compact-root-full exports 278 cases with maximum seam gap 1.164e-7 m,
+normal donor error 7.089e-8, zero local or packing-resolved body reversals. Its
+39-case body/render test passes both resources/LODs, 37 exact waist pairs,
+parallel bytes and four presentation phases. No native game run or install.
+
+The lower-leg audit compares original native Z below .82 m across both lower
+resource LODs, not all pelvic vertices or animated gameplay. The initial compact
+field with the old guard had zero extra displacement there. With strengthened
+native area projection the final maximum difference is .000604855 m versus
+the preceding smooth-bell candidate: submillimetre safety corrections, so an
+exact-zero leg comparison does NOT pass and must not be claimed. The rejected
+broad trial had centimetre-scale leg changes. User visual approval is pending.
+
+Final previews: Witcher build/collar-review-20261006/compact-root-approval and
+compact-root-close-comparison. The latter uses previous/native candidate output
+at the same camera and light. tools/preview_collar_pairs.py now supports
+--reference-candidate; review_collar_integrity.py supports --metrics-only for
+isolated cases. Earlier lateral-bell, ventral-bell, local-root-full and sector
+trials are diagnostics, not installation candidates. Extreme upward anatomy
+deformation remains unresolved. Current source is dirty over 19da882.
+
+Shared adoption remains by tested Base pin, observed adapter units/bindings and
+native visual gates. Default solver replay remains unchanged. Wolverine is
+untouched. Installed 40dfa86 remains unchanged, with revoked visual acceptance.
+
+
+## October 6 continuous surface and broader bell - review candidate
+
+This supersedes the earlier forward-1.7 preview direction below. The user
+clarified that the join needs smooth geometry and shading on both sides, with
+a modest bell flare, rather than extra pelvic projection. Current source is
+uncommitted over 19da882; no runtime was installed or launched.
+
+The root law uses section flare 1.12, width .81*r0 + 2.18*dilation, and forward
+projection 1.3*dilation. Original exterior and measured seam constraints stay
+fixed. Optional SDK-free actual-position curvature fairing is disabled by
+default; Geralt opts in locally (distance 7, strength 64, body freedom 4 source
+units). Local geometric-normal alignment and eight normal-field iterations
+retain each UV chart's handedness/tangent and leave weight-zero lighting exact.
+
+Shared root/orientation tests, target-lighting tests and provenance verification
+pass. Twenty-two default solver fixtures replay byte-identically with optional
+fairing disabled (build/bell-fair-default-replay/verification.json). Witcher
+exports 278 cases with maximum seam gap 1.125e-7 m, maximum normal donor error
+7.530e-8, zero local or packing-resolved body reversals. Its 39-case body/render
+test preserves all 37 waist pairs across both body resources/LODs and parallel
+output; four interpolation phases pass. This is offline output, not gameplay.
+
+Matched clay previews: Witcher build/collar-review-20261006/smooth-bell-approval.
+Maximum/medium/default views are softened, but extreme upward angle remains
+severely deformed. No visual acceptance or exact C1 continuity is claimed.
+Stronger fairing (256) raised a shield and explicit first-ring tangent projection
+folded the join; both trials were rejected and removed from current source.
+
+Adoption: retain default-off shared fairing for existing adapters; pin a tested
+Base revision before release and opt in using observed body/edge bindings and
+unit calibration. Wolverine and future spokes require their own native visual
+matrix before adoption. Wolverine source/runtime remains untouched.
+
+
+## October 6 more forward pelvic blend - approval pending
+
+Latest user feedback asks for more forward pelvic recruitment. The dirty draft
+uses `1.7*dilation` for the forward bell (previously 1.3), keeping the same
+radial annulus and exact original exterior boundary. Shared tests now also
+check monotone forward falloff and independence from shaft rest angle.
+Shared tests/provenance pass. Witcher exports 278 cases with zero local or
+packing-resolved body reversals; 39 body/render cases pass. Matched sheets
+are in its `forward17-approval-renders`, with `forward17-max-close` for the
+collar. Offline only; extreme upward anatomy distortion remains unresolved.
+HEAD stays `19da882`; diagnostic source is dirty. No install or Wolverine change.
+
+
+## October 6 broader bell preview — uncommitted candidate
+
+User requested a larger and smoother ramp, with updated matched renders before
+installation. HEAD remains `19da882`; the current shared header/test/provenance
+changes are diagnostic. The support annulus now uses `.8*r0 + 2.6*dilation`
+and the local forward bell `1.3*dilation`, preserving the half-spacing inner
+slope and C2 return to the original exterior. The test checks the near-exterior
+tail stays negligible inside the widened support, as well as exact unchanged
+exterior points and the analytical outer boundary. Shared tests/provenance pass.
+Geralt's adapter also opts into preserving the anatomy-side differential field.
+278 authored/native exports and 39 body/render cases pass; these do not grant
+visual/gameplay acceptance. Updated five-size/angle sheets and a collar close-up
+are recorded in the Witcher HANDOFF. No install, game launch, push or release.
+Wolverine remains unchanged; its future adoption requires a pin and native gate.
+
+
 ## October 6 attachment-integrity requirement and repair checkpoint
 
 The user rejected the installed 40dfa86 shape: exact welding and geometric

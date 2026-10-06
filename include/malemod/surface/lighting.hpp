@@ -16,6 +16,38 @@ inline LightingPoint LightingSub(LightingPoint a,LightingPoint b){for(unsigned i
 inline LightingPoint LightingCross(LightingPoint a,LightingPoint b){return {a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]};}
 inline double LightingDot(LightingPoint a,LightingPoint b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}
 inline LightingPoint LightingUnit(LightingPoint p,LightingPoint fallback){double s=LightingDot(p,p);if(s<1e-24){p=fallback;s=LightingDot(p,p);}if(!std::isfinite(s)||s<1e-24)throw std::invalid_argument("Degenerate lighting direction");for(auto& x:p)x/=std::sqrt(s);return p;}
+// A deformed attachment must not inherit a baked hard normal from the old
+// disconnected surface. Blend toward its actual geometric normal while
+// retaining each UV chart's tangent direction and handedness.
+inline LightingFrame AlignGeometricNormal(LightingFrame cooked,LightingFrame geometric,double weight){
+ if(!std::isfinite(weight)||weight<0||weight>1)throw std::invalid_argument("Invalid geometric normal blend");
+ if(weight==0)return cooked;
+ LightingPoint n{};for(unsigned a=0;a<3;a++)n[a]=(1-weight)*cooked.normal[a]+weight*geometric.normal[a];
+ cooked.normal=LightingUnit(n,geometric.normal);const double dot=LightingDot(cooked.tangent,cooked.normal);
+ for(unsigned a=0;a<3;a++)cooked.tangent[a]-=dot*cooked.normal[a];
+ auto fallback=geometric.tangent;const double fallbackDot=LightingDot(fallback,cooked.normal);
+ for(unsigned a=0;a<3;a++)fallback[a]-=fallbackDot*cooked.normal[a];
+ if(LightingDot(fallback,fallback)<1e-24)fallback=LightingCross(cooked.normal,std::abs(cooked.normal[2])<.9?LightingPoint{0,0,1}:LightingPoint{0,1,0});
+ cooked.tangent=LightingUnit(cooked.tangent,fallback);return cooked;
+}
+// Smooth the sampled normal field only within a measured attachment band.
+// The positional surface is checked separately; this cannot repair a gap or
+// fold. UV charts keep their own tangent and sign, including mirrored islands.
+inline void FairLightingNormals(std::vector<LightingFrame>& frames,const std::vector<std::uint32_t>& groups,
+ const std::vector<std::vector<unsigned>>& neighbors,const std::vector<double>& weights,unsigned iterations=8){
+ const auto n=frames.size();if(groups.size()!=n||neighbors.size()!=n||weights.size()!=n)throw std::invalid_argument("Normal fairing dimensions differ");
+ std::vector<LightingPoint> normal(n);std::vector<unsigned> count(n);std::vector<double> blend(n);
+ for(unsigned i=0;i<n;i++){if(groups[i]>=n||!std::isfinite(weights[i])||weights[i]<0||weights[i]>1)throw std::invalid_argument("Invalid normal fairing binding");for(unsigned a=0;a<3;a++)normal[groups[i]][a]+=frames[i].normal[a];count[groups[i]]++;blend[groups[i]]=std::max(blend[groups[i]],weights[i]);}
+ for(unsigned i=0;i<n;i++)if(count[i])normal[i]=LightingUnit(normal[i],frames[i].normal);
+ for(unsigned step=0;step<iterations;step++){auto next=normal;
+  for(unsigned i=0;i<n;i++)if(blend[i]>0&&!neighbors[i].empty()){
+   LightingPoint mean{};for(auto j:neighbors[i]){if(j>=n)throw std::invalid_argument("Normal neighbor outside topology");for(unsigned a=0;a<3;a++)mean[a]+=normal[j][a]/neighbors[i].size();}
+   const double t=.5*blend[i];for(unsigned a=0;a<3;a++)mean[a]=(1-t)*normal[i][a]+t*mean[a];next[i]=LightingUnit(mean,normal[i]);
+  }
+  normal.swap(next);
+ }
+ for(unsigned i=0;i<n;i++)if(weights[i]>0){auto geometric=frames[i];geometric.normal=normal[groups[i]];frames[i]=AlignGeometricNormal(frames[i],geometric,1);}
+}
 // Interpolated positional seams require the same donor normal field. Keep each
 // UV island's own tangent direction and handedness; do not average UV charts.
 inline void WeldEdgeLighting(std::vector<LightingFrame>& frames,const std::vector<LightingEdgeConstraint>& edges){

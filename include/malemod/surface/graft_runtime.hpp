@@ -29,11 +29,19 @@ struct GraftDomain {
  // character's rest frame. Empty retains the historical solve byte for byte.
  // Anatomy may rotate independently; the adapter identifies body topology.
  std::vector<std::uint32_t> orientationTriangles;
+ // Projection target for signed rest area. Adapters with native packing and
+ // subdivision can request more headroom than the historical two-percent
+ // target. Exact donors and fixed boundaries remain hard constraints.
+ double orientationAreaTargetRatio=.02;
  // Preserve an already smooth measured body target. Fair corrections to its
  // differential coordinates, rather than flattening the target displacement
  // against independently prescribed resource-boundary rows. Default false
  // preserves historical anatomy fitting and its numerical replay exactly.
  bool preserveTargetDifferential=false;
+ // Optional local fairing of the actual surface, rather than displacement.
+ // Distance uses the supplied calibrated source units; zero keeps historical
+ // replay. Exact seam donors and prescribed/protected boundaries still apply.
+ double surfaceFairingDistance=0,surfaceFairingStrength=0;
 };
 // The same support law used by the target collar matrix. Adapters can suppress
 // distant body-field inputs without maintaining another copy of that law.

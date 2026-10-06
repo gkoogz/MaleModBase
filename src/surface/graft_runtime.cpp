@@ -33,7 +33,7 @@ double GraftRecruitmentWeight(PrecisePoint point,const GraftFrame& frame){
 }
 struct GraftPlan::Impl {
  std::vector<double> seamDistance;
- double scale;
+ double scale,fairingDistance=0,orientationAreaTargetRatio=.02;
  std::size_t count;
  bool preserveTargetDifferential;
  bool projectionOnly;
@@ -44,11 +44,13 @@ struct GraftPlan::Impl {
  std::vector<std::vector<std::pair<unsigned,double>>> vertexMasters;
  std::vector<bool> orientationLocked;
  Eigen::VectorXd area;
- Sparse projection,boundary,attraction,baseMetric;
+ Sparse projection,boundary,attraction,baseMetric,surfaceMetric;
  std::vector<int> patternOuter,patternInner;
  Eigen::SimplicialLDLT<Sparse> factor;
  Impl(const GraftDomain& domain,const GraftFrame& frame,bool only=false):scale(frame.sourceLengthScale),count(domain.points.size()),preserveTargetDifferential(domain.preserveTargetDifferential),projectionOnly(only){
   if(!count||count>1000000||!Finite(frame.root)||!Finite(frame.axis)||!Finite(frame.up)||!std::isfinite(scale)||scale<=0||!std::isfinite(frame.radius)||frame.radius<=0||!std::isfinite(frame.length)||frame.length<=0)throw std::invalid_argument("Invalid graft frame/domain");
+  orientationAreaTargetRatio=domain.orientationAreaTargetRatio;
+  if(!std::isfinite(orientationAreaTargetRatio)||orientationAreaTargetRatio<=0||orientationAreaTargetRatio>1)throw std::invalid_argument("Invalid orientation area target ratio");
   const auto axis=V(frame.axis),up=V(frame.up);
   if(std::abs(axis.norm()-1)>1e-5||std::abs(up.norm()-1)>1e-5||std::abs(axis.dot(up))>1e-5)throw std::invalid_argument("Graft axis/up must be orthonormal");
   points.reserve(count);for(auto p:domain.points){if(!Finite(p))throw std::invalid_argument("Non-finite graft rest point");points.push_back(V(p)/scale);}
@@ -106,6 +108,15 @@ struct GraftPlan::Impl {
   Sparse inverse(count,count);inverse.setFromTriplets(inverseArea.begin(),inverseArea.end());
   Sparse cp=curvature*projection;
   baseMetric=cp.transpose()*inverse*cp*8+projection.transpose()*curvature*projection*2;
+  if(!std::isfinite(domain.surfaceFairingDistance)||domain.surfaceFairingDistance<0||!std::isfinite(domain.surfaceFairingStrength)||domain.surfaceFairingStrength<0)throw std::invalid_argument("Invalid local surface fairing");
+  surfaceMetric.resize(masters.size(),masters.size());
+  if(domain.surfaceFairingDistance>0&&domain.surfaceFairingStrength>0){
+   fairingDistance=domain.surfaceFairingDistance/scale;
+   std::vector<Entry> local;
+   for(unsigned i=0;i<count;i++)local.emplace_back(i,i,domain.surfaceFairingStrength*Smoother(1-seamDistance[i]/(domain.surfaceFairingDistance/scale))/area[i]);
+   Sparse weight(count,count);weight.setFromTriplets(local.begin(),local.end());
+   surfaceMetric=cp.transpose()*weight*cp;
+  }
   Update(frame);
  }
  void Update(const GraftFrame& frame){
@@ -118,11 +129,12 @@ struct GraftPlan::Impl {
    mask[i]=Recruitment(points[i],frame);
    if(frame.seamSupportRadius>0)
     mask[i]=std::max(mask[i],Smoother(1-seamDistance[i]/(frame.seamSupportRadius/scale)));
+   if(fairingDistance>0)mask[i]=std::max(mask[i],Smoother(1-seamDistance[i]/fairingDistance));
    screen[i]=area[i]*(2.5+2*std::pow(1-mask[i],4));
    screenEntries.emplace_back(i,i,screen[i]);
   }
   Sparse screenMatrix(count,count);screenMatrix.setFromTriplets(screenEntries.begin(),screenEntries.end());
-  Sparse metric=baseMetric+projection.transpose()*screenMatrix*projection;
+  Sparse metric=baseMetric+surfaceMetric+projection.transpose()*screenMatrix*projection;
   std::vector<bool> locked(count,false);for(auto id:protectedVertices)locked[id]=true;
   for(auto id:prescribedVertices)locked[id]=true;
   free.clear();fixed.clear();
@@ -158,6 +170,10 @@ struct GraftPlan::Impl {
   if(!project&&!free.empty()){
    Eigen::MatrixXd allRHS=attraction*target;
    if(preserveTargetDifferential)allRHS+=baseMetric*solved;
+   if(surfaceMetric.nonZeros()){
+    Eigen::MatrixXd rest(masters.size(),3);for(unsigned i=0;i<masters.size();i++)rest.row(i)=points[masters[i]].transpose();
+    allRHS-=surfaceMetric*rest;
+   }
    Eigen::MatrixXd rhs(free.size(),3);
    for(unsigned i=0;i<free.size();i++)rhs.row(i)=allRHS.row(free[i]);
    for(unsigned i=0;i<fixed.size();i++)fixedValues.row(i)=solved.row(fixed[i]);
@@ -174,7 +190,7 @@ struct GraftPlan::Impl {
     bool changed=false;
     for(const auto& constraint:orientations){
      const auto f=constraint.face;const Vector a=position(f[0]),b=position(f[1]),c=position(f[2]);
-     const double value=(b-a).cross(c-a).dot(constraint.normal),minimum=.02*constraint.area;
+     const double value=(b-a).cross(c-a).dot(constraint.normal),minimum=orientationAreaTargetRatio*constraint.area;
      if(value>=minimum-constraint.area*1e-8)continue;
      const Vector gb=(c-a).cross(constraint.normal),gc=constraint.normal.cross(b-a);const Vector gradient[3]={-gb-gc,gb,gc};
      std::vector<std::pair<unsigned,Vector>> accumulated;

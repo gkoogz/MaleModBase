@@ -23,6 +23,11 @@ int main(){try{
  for(unsigned a=0;a<3;a++)Check(native[3][a]==.5*(native[0][a]+native[1][a]),"Constraint-only projection opens original-edge donors");
  std::vector<PrecisePoint> valid(4);valid[2]={.3,0,.1};valid[3]={0,0,0};
  Check(nativeGuard.ProjectDisplacement(valid)==valid,"Valid cooked surface changed by constraint-only projection");
+ auto robustDomain=d;robustDomain.orientationAreaTargetRatio=.2;
+ GraftPlan robustGuard(robustDomain);auto robust=robustGuard.ProjectDisplacement(input);
+ Check(Area(positions(robust))>.199,"Native area headroom was not honored");
+ Check(robust[0]==PrecisePoint{}&&robust[1]==PrecisePoint{},"Area headroom moves protected donors");
+ for(unsigned a=0;a<3;a++)Check(robust[3][a]==.5*(robust[0][a]+robust[1][a]),"Area headroom opens the exact seam");
  // An infeasible fixed boundary must fail instead of emitting broken geometry.
  d.prescribedVertices={2};bool rejected=false;
  try{GraftPlan impossible(d,f);impossible.SolveDisplacement(input);}catch(const std::runtime_error&){rejected=true;}
@@ -35,5 +40,21 @@ int main(){try{
  std::vector<PrecisePoint> loft={{.1,0,0},{.2,0,0},{.1,0,0},{.2,0,0},{.4,0,0},{.2,0,0}};
  const auto fitted=preserve.SolveDisplacement(loft);
  for(unsigned i=0;i<loft.size();i++)for(unsigned a=0;a<3;a++)Check(std::abs(fitted[i][a]-loft[i][a])<1e-10,"Smooth measured body loft attenuated beside prescribed resource join");
+ // Fair actual positions across a creased rest surface, even when its input
+ // displacement is zero. Outer anchors and original-edge donors stay exact.
+ GraftDomain crease;
+ for(unsigned z=0;z<3;z++)for(unsigned y=0;y<5;y++)crease.points.push_back({.25*std::abs(double(y)-2),double(y)-2,double(z)-1});
+ for(unsigned z=0;z<2;z++)for(unsigned y=0;y<4;y++){unsigned i=z*5+y;crease.triangles.push_back({i,i+1,i+5});crease.triangles.push_back({i+1,i+6,i+5});}
+ crease.seams={{7,2,12,.5}};crease.protectedVertices={0,4,5,9,10,14};
+ crease.preserveTargetDifferential=true;crease.surfaceFairingDistance=3;crease.surfaceFairingStrength=64;
+ GraftPlan fair(crease,f);std::vector<PrecisePoint> zeros(15);auto rounded=fair.SolveDisplacement(zeros);
+ auto curvature=[&](const std::vector<PrecisePoint>& delta){double sum=0;for(unsigned z=0;z<3;z++){unsigned i=z*5;double a=crease.points[i+1][0]+delta[i+1][0],b=crease.points[i+2][0]+delta[i+2][0],c=crease.points[i+3][0]+delta[i+3][0];sum+=(a-2*b+c)*(a-2*b+c);}return sum;};
+ Check(curvature(rounded)<.8*curvature(zeros),"Actual collar crease was not reduced");
+ for(auto i:crease.protectedVertices)Check(rounded[i]==PrecisePoint{},"Surface fairing moves exterior anchors");
+ for(unsigned a=0;a<3;a++)Check(rounded[7][a]==.5*(rounded[2][a]+rounded[12][a]),"Surface fairing opens original-edge seam");
+ Check(fair.SolveDisplacement(zeros)==rounded,"Local surface fairing is not deterministic");
+ auto twiceCrease=crease;for(auto& p:twiceCrease.points)for(auto& x:p)x*=2;twiceCrease.surfaceFairingDistance*=2;
+ auto twiceFrame=f;twiceFrame.sourceLengthScale=2;twiceFrame.radius*=2;twiceFrame.length*=2;GraftPlan twiceFair(twiceCrease,twiceFrame);auto scaled=twiceFair.SolveDisplacement(zeros);
+ for(unsigned i=0;i<scaled.size();i++)for(unsigned a=0;a<3;a++)Check(std::abs(scaled[i][a]-2*rounded[i][a])<1e-10,"Surface fairing changes with calibrated units");
  std::cout<<"PASS body orientation, hard donors, seam elimination, repeatability and infeasible rejection\n";
 }catch(const std::exception& e){std::cerr<<e.what()<<'\n';return 1;}}
