@@ -5075,8 +5075,8 @@
     "behaviorRevision": 2,
     "workingTreeClean": false,
     "status": "DIRTY offline process source-consumption proof; no cloth/native/clean-pin acceptance",
-    "sourceConsumptionProofPath": "build/physical-reaction-source-proof-be2cceb-current/proof.json",
-    "sourceConsumptionProofSHA256": "3842973b19d9170b94cf7040d47f074466f16d9718e0fe0db59488aaca649df9",
+    "sourceConsumptionProofPath": "build/physical-reaction-source-proof-3f20bc2/proof.json",
+    "sourceConsumptionProofSHA256": "6ebfcb23dc7421381972f6f01edfa0ddf92d45634c1dabf7a317ffd2df69fc5c",
     "disabledReferenceGate": "currentSourceExtractionVerification.sourceConsumptionRecheck",
     "observedGameplay": false,
     "installed": false,
@@ -5089,7 +5089,8 @@
       "clothPhysicsOrNativeAcceptanceImplied": false
     },
     "freshBuildRecipe": "build/source-collar-process-20261006, Win32 process-isolated /fp:precise",
-    "sourcePhysicsBehaviorChanged": false
+    "sourcePhysicsBehaviorChanged": false,
+    "disabledLegacyNumericalPayloadExact": true
   },
   "historicalProcessRuntimeReceipts": [
     {

@@ -889,11 +889,11 @@
     "files": [
       {
         "path": "include/malemod/surface/root_transition.hpp",
-        "sha256": "fb0462bf3a0c93d9d830ea48ff8ce6e210632a4304d239c48605e55c4b6ad255"
+        "sha256": "7363726205d2b596cd9cf83129b9432fa8046551b3db3db869c111ad2d3dd75a"
       },
       {
         "path": "tests/root_transition_test.cpp",
-        "sha256": "8c83ace534f2dc294823940a297b94862c3f89918cae4258c501d20af6426962"
+        "sha256": "5e75904f5022aa60d026c6d9806149816bfc15e32d26f9a118ad74bf9e1570e0"
       }
     ],
     "sdkFree": true,
@@ -901,6 +901,7 @@
     "measuredSeamSupportDefaultZero": true,
     "unitAndRotationCovarianceTested": true,
     "observedGameplay": false,
-    "installed": false
+    "installed": false,
+    "completeMorphologyOutsideSewnNeighborhood": true
   }
 }

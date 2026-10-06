@@ -49,7 +49,10 @@ class RootTransition {
   auto out=completeDelta;const double reach=2*neutralRadius;
   for(unsigned i=0;i<out.size();i++){
    auto d=BodyDisplacement(i,frame,neutralRadius);
-   const double t=i<bodyCount_?0:Smooth(seamDistance_[i]/reach);
+   // Preserve the complete morphology field outside the sewn neighborhood,
+   // including recruitment that crosses existing torso/leg resource joins.
+   // Only the local opening replaces that field with the measured transition.
+   const double t=Smooth(seamDistance_[i]/reach);
    for(unsigned a=0;a<3;a++){if(!std::isfinite(out[i][a]))throw std::invalid_argument("Nonfinite transition input");out[i][a]=(1-t)*d[a]+t*out[i][a];}
   }
   return out;
