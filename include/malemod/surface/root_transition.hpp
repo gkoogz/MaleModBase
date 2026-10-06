@@ -41,6 +41,17 @@ class RootTransition {
   const double neutralBarrel=neutralRadius*(1.025+.06*profile);
   const double gap=std::max(0.,std::max(0.,barrel-rho)-std::max(0.,neutralBarrel-rho))*w;
   if(rho>1e-8*scale)for(unsigned a=0;a<3;a++)d[a]=(frame.up[a]*z+lateral[a]*y)*gap/rho;
+  // A recruited opening needs a shallow anterior shoulder outside the barrel.
+  // Pure radial growth lifts the upper ring into a plate; a copied character
+  // field can instead lift an unrelated waist. This measured C2 height field
+  // carries the upper pelvic surface forward and fades into the abdomen.
+  double anterior=0;for(unsigned a=0;a<3;a++)anterior+=q[a]*forward_[a];
+  const double upper=rho>1e-8*scale?std::clamp((z/rho+1)*.5,0.,1.):0.;
+  const double shoulder=.45*std::max(0.,frame.radius-neutralRadius)*growth*upper*upper
+      *(1-Smooth(rho/(2.2*frame.radius+neutralRadius)))
+      *(1-Smooth(std::abs(s)/(1.8*frame.radius+neutralRadius)))
+      *Smooth((anterior+neutralRadius)/(2*neutralRadius));
+  for(unsigned a=0;a<3;a++)d[a]+=forward_[a]*shoulder;
   // The lower ramp may grow down/out, never backward into the thighs.
   double backward=0;for(unsigned a=0;a<3;a++)backward+=d[a]*forward_[a];if(backward<0)for(unsigned a=0;a<3;a++)d[a]-=backward*forward_[a];return d;
  }

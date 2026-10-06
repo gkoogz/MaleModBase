@@ -885,15 +885,15 @@
     ]
   },
   "measuredTransitionCandidate": {
-    "version": 1,
+    "version": 2,
     "files": [
       {
         "path": "include/malemod/surface/root_transition.hpp",
-        "sha256": "8248770e035ddb76abda795b61690edf6536f33146b154e46e0be351e7e4909a"
+        "sha256": "c712db2fb4a219959b050ffcdf1e0570bf6fa9d06f01bae6ae69e466f5572f00"
       },
       {
         "path": "tests/root_transition_test.cpp",
-        "sha256": "5e75904f5022aa60d026c6d9806149816bfc15e32d26f9a118ad74bf9e1570e0"
+        "sha256": "adea7f070bf02d18f769bf294fb899b9be006d263866b46e37fa619abe52064b"
       }
     ],
     "sdkFree": true,
@@ -912,6 +912,9 @@
       "test": "tests/graft_orientation_test.cpp",
       "testSHA256": "5caa6a24316ef09f68aa3705fe3ad0450b687944e05c86e2c5e7c987d97679e6",
       "observedGameplay": false
-    }
+    },
+    "measuredAnteriorShoulder": true,
+    "expandingRadialSupport": true,
+    "characterBodyUsesMeasuredOpening": true
   }
 }

@@ -4,6 +4,11 @@
 
 `RootTransition` evaluates one stable C2 root field around the measured opening
 and preserves complete morphology outside its radius-dependent neighborhood.
+Its radial support expands with effective root radius. A shallow anterior
+shoulder carries the upper recruited annulus forward, fading into the abdomen;
+it does not lift the waist into a separate shield. Character body recruitment
+must use that character's measured opening, including both sides of existing
+body-resource joins. Geralt does not copy Wolverine's absolute pelvic field.
 `GraftDomain::orientationTriangles` optionally identifies pelvic triangles that
 must retain positive rest-frame projected area. Projection acts on independent
 masters, preserving exact original-edge elimination and protected/prescribed

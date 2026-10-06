@@ -11,6 +11,12 @@ int main(){try{
  std::vector<PrecisePoint> delta(rest.size(),{3,4,5});auto out=ramp.Evaluate(delta,f,2.9);
  for(unsigned i=0;i<4;i++)Check(out[i]==out[i+5],"Body/module sewn displacement differs");
  Check(out.back()==delta.back(),"Distant anatomy motion was overwritten");Check(out[4]==delta[4],"Distant body morphology was overwritten");
+ std::vector<PrecisePoint> shoulderRest={{2,0,9},{-10,0,9},{2,0,100},{0,-1,0}};
+ RootTransition shoulderRamp(shoulderRest,3,opening);
+ const auto shoulder=shoulderRamp.BodyDisplacement(0,f,2.9);
+ Check(shoulder[0]>0&&std::abs(shoulder[2])<1e-12,"Upper annulus is lifted into a shield instead of recruiting forward");
+ Check(shoulderRamp.BodyDisplacement(1,f,2.9)==PrecisePoint{},"Shoulder moves posterior pelvic tissue");
+ Check(shoulderRamp.BodyDisplacement(2,f,2.9)==PrecisePoint{},"Shoulder reaches distant abdomen");
  auto neutral=f;neutral.radius=2.9;auto base=ramp.Evaluate(delta,neutral,2.9);for(unsigned i=0;i<4;i++)Check(base[i]==PrecisePoint{},"Neutral opening altered");
  auto scaledRest=rest,scaledOpening=opening,scaledDelta=delta;for(auto* v:{&scaledRest,&scaledOpening,&scaledDelta})for(auto& p:*v)for(auto& x:p)x*=2;
  RootTransition scaled(scaledRest,5,scaledOpening);auto twice=f;twice.radius*=2;twice.length*=2;twice.sourceLengthScale=2;auto doubled=scaled.Evaluate(scaledDelta,twice,5.8);for(unsigned i=0;i<out.size();i++){auto expected=out[i];for(auto& x:expected)x*=2;Check(Error(doubled[i],expected)<1e-12,"Calibrated unit scaling changes ramp");}
