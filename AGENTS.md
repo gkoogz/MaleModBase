@@ -42,3 +42,22 @@ change must include an adoption path back to Wolverine and every other spoke.
 For new character attachments read docs/REST-GRAFT.md. Preserve existing body
 part boundaries; any deformation spanning two resources must drive both sides
 from shared boundary bindings. Record native round-trip and gameplay separately.
+
+## Grey sandbox development
+
+Read docs/ITERATION-SANDBOX.md before native character, clothing, physics,
+material or control work. Use the active game adapter's repository-owned grey
+sandbox workflow as the default native iteration environment; use ordinary
+campaign gameplay only for behavior the room cannot cover. Build the room from
+its checked-in recipe and the developer's licensed vanilla installation, not
+another person's save, capture bank or machine-specific output directory.
+
+Keep common scenario/evidence contracts in Base and engine scene, launch,
+collision, input and installation code in each adapter. Sandbox source and
+reproduction instructions belong in Git; generated stock-derived resources,
+private verification data and sandbox packages do not. Exclude the sandbox
+from normal mod release installer/payload and developer release assets. A room
+test is not proof of campaign transitions, every garment or performance parity.
+Preserve normal saves/settings/audio, and never drive the host's keyboard,
+mouse or focus during automated runs. Record exact package/runtime identities,
+cleanup and observed results independently from successful compilation.

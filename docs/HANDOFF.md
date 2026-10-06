@@ -1,5 +1,38 @@
 # Resume here: cross-repository handoff
 
+## October 5 repository sync and developer packaging
+
+Grey rooms are the default native development environment; read
+[ITERATION-SANDBOX.md](ITERATION-SANDBOX.md) and each adapter's repository-owned
+developer package before character, garment, material, physics or control work.
+Room tooling is tracked source, excluded from normal mod release downloads.
+Developers must regenerate it from their own licensed vanilla inputs and the
+documented mod baseline, without this machine's private saves/captures/receipts.
+
+The shared checkpoint's provenance and 96 Python tests pass. A fresh CMake
+Release build passes; 37 of 39 CTests pass. The two legacy garment fixtures
+reject multiple/unmatched anatomy root loops. See
+[DEVELOPMENT-STATUS.md](DEVELOPMENT-STATUS.md) for the precise source-versus-runtime
+boundary and remaining garment gates. The installed `99ff741` runtimes remain
+separate accepted baselines; this source sync does not deploy an upgrade.
+
+## October 5 Witcher grey studio correction
+
+The Witcher adapter's desktop grey studio shortcut is now backed by reviewed
+acceptance `build/probe/sealed-session-20261005-212614/platform-acceptance.json`.
+Complete native body output, owned floor collision and 7.609 metres of movement
+passed with clean start, mid-walk and end images. The black movement artifact was
+isolated to the engine particle pass; the studio disables it once its owned
+floor is ready. This engine scene setting belongs in the adapter, not Base.
+
+Installed Base `99ff741` runtime and Wolverine remain unchanged; no shared
+numerical or garment upgrade is implied. Private children are closed, 24 saves
+and 40 managed runtime files verified, scoped audio restored and original DX12
+preferences preserved. The room still runs over stock q002; simulation cadence
+remains 72.0192 ms. See the adapter's `docs/SANDBOX-FLOOR-REPAIR.md` for causal
+comparison and exact verification boundaries. Older checkpoints below remain
+historical evidence, not the current studio status.
+
 ## Active October 4 garment work
 
 Bounded attempt final result: no new garment candidate is accepted or installed.

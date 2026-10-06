@@ -63,6 +63,9 @@ python tools/import_wolverine.py --source C:/path/to/wolverine
 Read [architecture](docs/ARCHITECTURE.md), [migration status](docs/MIGRATION.md),
 [asset contract](docs/ASSET-CONTRACT.md), [clinical sequence](docs/CLINICAL-SEQUENCE.md)
 and [porting](docs/PORTING.md).
+For native character, garment, physics and material development, start in the
+respective adapter's [grey sandbox](docs/ITERATION-SANDBOX.md). Sandbox recipes
+are developer tools in Git, excluded from normal mod release payloads.
 The source-derived [pelvic collar](docs/PELVIC-COLLAR.md) now includes a portable
 metric kernel and offline coupled evaluator with hard body-edge seam constraints.
 The [rest graft fitter](docs/REST-GRAFT.md) adds reusable opening/seam fitting,

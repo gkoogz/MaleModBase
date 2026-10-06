@@ -1,5 +1,13 @@
 # Durable project context
 
+Latest development-workflow request (October 5): package the Wolverine and
+Witcher grey development rooms in their respective repositories, reproducible
+from each developer's licensed vanilla installation. Future agents should use
+these rooms for inexpensive native character/physics/clothing iteration.
+Keep sandbox tooling in Git and out of normal release downloads. Review and
+synchronize useful mod source separately from actual verified release payloads;
+unfinished garment work does not become accepted gameplay through publication.
+
 Latest user target (October 4): bring the mod into a playable state in a
 reasonable amount of time, after the prolonged garment development session.
 The requested persistent cloth and walking pouch remain the intended design;
