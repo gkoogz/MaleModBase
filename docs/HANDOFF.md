@@ -2,6 +2,17 @@
 
 ## October 6 attachment-integrity requirement and repair checkpoint
 
+Side-profile refinement: the user accepted the previous Geralt repair as much
+improved, but reports an abrupt upper/lateral shoulder. The current shared
+candidate rounds the barrel contact threshold and broadens the concentric
+anterior loft to the lateral and lower sectors. Radial slope, covariance and
+original-donor tests pass; the adapter's 46-case diagnostic native-buffer sweep
+passes both resources/LODs. A broader radial-displacement candidate was rejected
+offline for an abdominal bulge. The last accepted installed runtime remains
+Base 2ad61e3 until the adapter records a new native visual pass. Older checkpoint
+paragraphs below are historical; current installed proof lives in the Witcher
+HANDOFF and provenance/collar-repair.json. Wolverine remains untouched.
+
 Latest candidate: adaptive measured transition plus optional original-edge
 master-space orientation projection. Geralt uses stable body recruitment followed
 by a separately sewn moving-anatomy solve. 278 offline native-buffer cases have

@@ -4,8 +4,10 @@
 
 `RootTransition` evaluates one stable C2 root field around the measured opening
 and preserves complete morphology outside its radius-dependent neighborhood.
-Its radial support expands with effective root radius. A shallow anterior
-shoulder carries the upper recruited annulus forward, fading into the abdomen;
+Its radial support expands with effective root radius. The barrel contact
+threshold uses an integrated smoothstep with continuous first and second
+derivatives, rather than a hard positive-part kink. A concentric anterior
+loft recruits the upper, lateral and lower annulus, fading into the abdomen;
 it does not lift the waist into a separate shield. Character body recruitment
 must use that character's measured opening, including both sides of existing
 body-resource joins. Geralt does not copy Wolverine's absolute pelvic field.
@@ -23,7 +25,12 @@ remain here. The first broad body prescription and an all-body orientation
 restriction were rejected; neither is a deployed solution.
 
 Shared tests exercise folds, exact donors, repeatability, infeasible rejection
-and transition unit/rotation covariance. Geralt's 278 native-buffer exports pass
+and transition unit/rotation covariance. They also sample radial contact onset
+for abrupt slope changes and require lateral annulus participation. The user's
+October 6 side-profile correction requires reviewing the entire lower abdomen
+into the shaft and the lateral thigh junction, including meridian sections;
+absence of a dark seam alone does not establish a sufficiently progressive ramp.
+Geralt's prior 278 native-buffer exports pass
 the local collar orientation and seam checks, with separate waist/LOD tests.
 These are offline evidence; native grey-room and campaign visual acceptance
 must be recorded by the adapter before installation is accepted.

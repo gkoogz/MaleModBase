@@ -14,9 +14,24 @@ int main(){try{
  std::vector<PrecisePoint> shoulderRest={{2,0,9},{-10,0,9},{2,0,100},{0,-1,0}};
  RootTransition shoulderRamp(shoulderRest,3,opening);
  const auto shoulder=shoulderRamp.BodyDisplacement(0,f,2.9);
- Check(shoulder[0]>0&&std::abs(shoulder[2])<1e-12,"Upper annulus is lifted into a shield instead of recruiting forward");
+ Check(shoulder[0]>0&&shoulder[2]<shoulder[0]*.2,"Upper annulus is lifted into a shield instead of recruiting forward");
  Check(shoulderRamp.BodyDisplacement(1,f,2.9)==PrecisePoint{},"Shoulder moves posterior pelvic tissue");
  Check(shoulderRamp.BodyDisplacement(2,f,2.9)==PrecisePoint{},"Shoulder reaches distant abdomen");
+ // Sample the actual field across radial contact onset and the outer support.
+ // Adjacent rings must participate progressively with no hard contact kink;
+ // recruitment must wrap the sides as well as the upper sector.
+ std::vector<PrecisePoint> rings;for(unsigned i=0;i<=800;i++)rings.push_back({2,0,i*.05});
+ rings.push_back({2,9,0});RootTransition annulus(rings,unsigned(rings.size()-1),opening);
+ Check(annulus.BodyDisplacement(unsigned(rings.size()-1),f,2.9)[0]>0,"Lateral pelvic annulus excluded from anterior ramp");
+ double previousSlope=0;bool haveSlope=false;
+ for(unsigned i=1;i<=800;i++){
+  auto a=annulus.BodyDisplacement(i-1,f,2.9),b=annulus.BodyDisplacement(i,f,2.9);
+  // The origin has no radial direction and is inside the removed opening.
+  if(i<60)continue;
+  const double slope=(b[2]-a[2])/.05;
+  if(haveSlope)Check(std::abs(slope-previousSlope)<.045,"Radial contact produces an abrupt slope discontinuity");
+  previousSlope=slope;haveSlope=true;
+ }
  auto neutral=f;neutral.radius=2.9;auto base=ramp.Evaluate(delta,neutral,2.9);for(unsigned i=0;i<4;i++)Check(base[i]==PrecisePoint{},"Neutral opening altered");
  auto scaledRest=rest,scaledOpening=opening,scaledDelta=delta;for(auto* v:{&scaledRest,&scaledOpening,&scaledDelta})for(auto& p:*v)for(auto& x:p)x*=2;
  RootTransition scaled(scaledRest,5,scaledOpening);auto twice=f;twice.radius*=2;twice.length*=2;twice.sourceLengthScale=2;auto doubled=scaled.Evaluate(scaledDelta,twice,5.8);for(unsigned i=0;i<out.size();i++){auto expected=out[i];for(auto& x:expected)x*=2;Check(Error(doubled[i],expected)<1e-12,"Calibrated unit scaling changes ramp");}

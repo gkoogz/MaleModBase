@@ -14,6 +14,10 @@ class RootTransition {
  PrecisePoint root_{};
  PrecisePoint forward_;
  static double Smooth(double t){t=std::clamp(t,0.,1.);return t*t*t*(t*(t*6-15)+10);}
+ static double Positive(double x,double width){
+  if(x<=-width)return 0;if(x>=width)return x;
+  const double t=(x+width)/(2*width);return width*(2*t*t*t-t*t*t*t);
+ }
  public:
  RootTransition(std::vector<PrecisePoint> rest,unsigned bodyCount,const std::vector<PrecisePoint>& opening,PrecisePoint forward={1,0,0}):rest_(std::move(rest)),bodyCount_(bodyCount),forward_(forward){
   if(opening.size()<3||!bodyCount_||bodyCount_>=rest_.size())throw std::invalid_argument("Incomplete measured root transition");
@@ -27,29 +31,32 @@ class RootTransition {
   if(!std::isfinite(frame.sourceLengthScale)||frame.sourceLengthScale<=0||!std::isfinite(frame.length)||frame.length<=0)throw std::invalid_argument("Invalid root transition scale or length");
   PrecisePoint lateral={frame.up[1]*frame.axis[2]-frame.up[2]*frame.axis[1],frame.up[2]*frame.axis[0]-frame.up[0]*frame.axis[2],frame.up[0]*frame.axis[1]-frame.up[1]*frame.axis[0]};
   double aa=0,uu=0,au=0;for(unsigned a=0;a<3;a++){aa+=frame.axis[a]*frame.axis[a];uu+=frame.up[a]*frame.up[a];au+=frame.axis[a]*frame.up[a];}if(!std::isfinite(aa+uu+au)||std::abs(aa-1)>1e-5||std::abs(uu-1)>1e-5||std::abs(au)>1e-5)throw std::invalid_argument("Invalid transition frame");
-  PrecisePoint q{},d{};double s=0,z=0,y=0;
-  for(unsigned a=0;a<3;a++){q[a]=rest_[i][a]-root_[a];s+=q[a]*frame.axis[a];z+=q[a]*frame.up[a];y+=q[a]*lateral[a];}
+  PrecisePoint q{},d{};double s=0,z=0,y=0,anterior=0;
+  for(unsigned a=0;a<3;a++){q[a]=rest_[i][a]-root_[a];s+=q[a]*frame.axis[a];z+=q[a]*frame.up[a];y+=q[a]*lateral[a];anterior+=q[a]*forward_[a];}
   const double rho=std::hypot(y,z),scale=frame.sourceLengthScale;
-  const double envelope=frame.radius*1.55+2*scale,reach=frame.radius*1.25+3*scale;
-  const double w=(1-Smooth((rho-envelope)/(5*scale)))*(1-Smooth(std::abs(s)/reach));
-  // Recruit toward a bounded barrel, rather than scaling the whole pelvic
-  // cross-section. Multiplying distant radial coordinates by the shaft size
-  // creates an abdominal spike even when the attachment itself stays sewn.
+  const double reach=frame.radius*1.25+3*scale;
+  // Round the barrel's contact threshold instead of abruptly clamping it.
+  // Positive is the integral of a cubic smoothstep, with continuous first and
+  // second derivatives where contact starts and reaches the interior barrel.
   const double growth=Smooth((frame.radius-neutralRadius)/(4.72*scale));
   const double profile=1-Smooth((s/frame.length+.03)/.26);
   const double barrel=frame.radius*(1.025+(.06+.12*growth)*profile);
   const double neutralBarrel=neutralRadius*(1.025+.06*profile);
-  const double gap=std::max(0.,std::max(0.,barrel-rho)-std::max(0.,neutralBarrel-rho))*w;
+  const double dilation=std::max(0.,barrel-neutralBarrel);
+  const double radial=1-Smooth((rho-neutralBarrel)/(2*(dilation+neutralBarrel)));
+  const double depth=1-Smooth(std::abs(s)/reach);
+  const double envelope=frame.radius*1.55+2*scale;
+  const double gap=std::max(0.,Positive(barrel-rho,2*scale)-Positive(neutralBarrel-rho,2*scale))
+      *depth*(1-Smooth((rho-envelope)/(5*scale)))
+      *Smooth((anterior+2*neutralRadius)/(2*neutralRadius));
   if(rho>1e-8*scale)for(unsigned a=0;a<3;a++)d[a]=(frame.up[a]*z+lateral[a]*y)*gap/rho;
-  // A recruited opening needs a shallow anterior shoulder outside the barrel.
-  // Pure radial growth lifts the upper ring into a plate; a copied character
-  // field can instead lift an unrelated waist. This measured C2 height field
-  // carries the upper pelvic surface forward and fades into the abdomen.
-  double anterior=0;for(unsigned a=0;a<3;a++)anterior+=q[a]*forward_[a];
+  // The same annulus carries an anterior loft, rather than an independent
+  // upper-sector bump. Its sides and underside participate too, so the ramp
+  // wraps the attachment instead of forming a platform above it. Posterior
+  // tissue remains excluded by the measured anterior half-space.
   const double upper=rho>1e-8*scale?std::clamp((z/rho+1)*.5,0.,1.):0.;
-  const double shoulder=.45*std::max(0.,frame.radius-neutralRadius)*growth*upper*upper
-      *(1-Smooth(rho/(2.2*frame.radius+neutralRadius)))
-      *(1-Smooth(std::abs(s)/(1.8*frame.radius+neutralRadius)))
+  const double shoulder=1.6*std::max(0.,frame.radius-neutralRadius)*growth*(.35+.65*upper*upper)
+      *radial*(1-Smooth(std::abs(s)/(1.8*frame.radius+neutralRadius)))
       *Smooth((anterior+neutralRadius)/(2*neutralRadius));
   for(unsigned a=0;a<3;a++)d[a]+=forward_[a]*shoulder;
   // The lower ramp may grow down/out, never backward into the thighs.
