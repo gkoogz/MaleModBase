@@ -11,6 +11,7 @@
 #include <map>
 #include <set>
 #include <queue>
+#include <optional>
 #include "proximity_cache.hpp"
 namespace malemod::garments {
 using Point=std::array<double,3>;
@@ -212,15 +213,18 @@ private:
  void SearchRay(unsigned node,Point from,Point direction,unsigned& intersections,bool& ambiguous,bool& boundary)const;
 };
 }
+// Adapters that have already filtered pauses, rewinds and character changes
+// may coalesce a long span of active time without discarding fabric state.
+enum class TimeContinuity {Unverified,Continuous};
 class Session {
 public:
     explicit Session(Parameters p={});
-    const Output& Update(Style style,const Input& input);
+    const Output& Update(Style style,const Input& input,TimeContinuity time=TimeContinuity::Unverified);
     void Reset();
 private:
     const Output& Fit(Style style,const Input& input);
     const Output& FitSheet(Style style,const Input& input);
-    void Cloth(const Input& input,bool rebuild);
+    void Cloth(const Input& input,bool rebuild,double elapsed);
     void ClassifySurfaces(const Input& input,Point origin,double scale,bool rebuildCap=false);
     double ClassifiedDistance(detail::BodyCollider::Hit& hit,Point point,bool anatomy)const;
     double ClassifiedDistance(const detail::BodyCollider::Hit& hit,Point point,bool anatomy)const;

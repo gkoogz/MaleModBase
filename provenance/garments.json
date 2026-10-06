@@ -115,6 +115,66 @@
       "cadencePassed": false,
       "productionActivated": false,
       "replayExpansionStopped": true
+    },
+    "october6Resume": {
+      "primaryTestSubject": "Wolverine",
+      "sharedSource": "Base",
+      "installed": false,
+      "referenceCommit": "431e626cae6fb6720b552f8b20206727fe809c80",
+      "offlineReceiptSHA256": "64de9f6d57aa4267d07ea2232cca9d5927d6488efa986fe859a0143fc07dc4a7",
+      "sizes": [
+        25,
+        50,
+        75,
+        100
+      ],
+      "state": 2,
+      "angle": 50,
+      "framesPerSize": 5,
+      "byteIdenticalGeometryAndLayout": true,
+      "firstUpdateMillisecondsBefore": [
+        10251.6,
+        10086.4,
+        10622.4,
+        10771.4
+      ],
+      "firstUpdateMillisecondsAfter": [
+        2253.75,
+        2342.53,
+        2466.31,
+        2503.4
+      ],
+      "dynamicStepMillisecondsRange": [
+        54.9129,
+        70.8671
+      ],
+      "simulatedStepMilliseconds": 8.333333333333334,
+      "SDKPasses": [
+        "proximity_cache",
+        "body_surface",
+        "garment_lifecycle"
+      ],
+      "remaining": [
+        "sustained dynamics performance",
+        "large-size strap routing",
+        "self-contact",
+        "both pinned adapters",
+        "native materials",
+        "native attachment and motion matrix"
+      ]
+    },
+    "october6PlayableCandidate": {
+      "installed": false,
+      "acceptedGameplay": false,
+      "sharedContactOptimization": "exact render-donor evaluation cache, seed actual band closest-point queries, avoid deep lineage copies in virtual classification and substep interpolation",
+      "sourceGeometryAndLayoutsByteIdentical": true,
+      "offlineReceiptSHA256": "b01f87461d0953e5013fb53afa199fb4ebd736cca6cb65e73b8b2a75e192bb4f",
+      "referenceCommit": "431e626cae6fb6720b552f8b20206727fe809c80",
+      "dynamicStepMillisecondsRange": [
+        40.2528,
+        61.8625
+      ],
+      "remaining": "Native private room and sustained cloth performance/contacts/attachment acceptance"
     }
   },
   "fileHashes": {
@@ -125,12 +185,12 @@
     "docs/GARMENT-NUMERICAL-SUPPORT.md": "80e7cc520d149761f09ff625b21c0829ef066b885943c6083f44ff5b309a59c8",
     "docs/GARMENT-QUERY-PERFORMANCE.md": "16c78458963f7a465a1c0d33d28cbf8d1f2f504854ff8af91375c344d0fe5ce3",
     "docs/GARMENT-REACTIONS.md": "12fb1b7a8374bc419ac26b30f40527283c14ad9f144501d4cfa77580fca7bd08",
-    "docs/GARMENTS.md": "595e3968dc9bdc559723aa67e2d9a924bccede2795455484e7a3b555001bb346",
+    "docs/GARMENTS.md": "6b20011bd33939d1709240c9774e724bfce902db023b4af8a50b59fcbea94d66",
     "docs/WAISTBAND-CONTOURS.md": "a51e11379e3d6b896cc7328772a2b1f5d8545168b96a6ef2133d78979c9c0aae",
     "include/malemod/garments/band_material.hpp": "fae1214ae54029f731b79f2f56c51b717594df885b9fa9b817f2b58324c7a177",
     "include/malemod/garments/band_rest.hpp": "67126bb711edbf985c2b1c1a910c394d93ec29931f6fccf27b8588357fa1da93",
     "include/malemod/garments/body_surface.hpp": "f3e28a801f62374077edf54f28af2267587b787a9ffa2695e7adf17c1539ebc3",
-    "include/malemod/garments/cloth_detail.hpp": "1b0578de94fd512a581956ffaee71c8228f211526760cb753e7eb4c5f8be719d",
+    "include/malemod/garments/cloth_detail.hpp": "fe2dd1d2049b0f5b92fad9d6b38fb8e2a811b4d804f9df43b1d675c7d7dbc343",
     "include/malemod/garments/cloth_reaction.hpp": "3b7d38d47df5ac80bf576c9b8e61ef9faf82417e58809e6bf93cdb8cd2263050",
     "include/malemod/garments/cloth_stretch.hpp": "40fca9a3d45e782360afe4d3cff1c53dbdfe1a41151a56037dddaac7a1fc5e56",
     "include/malemod/garments/contact_velocity.hpp": "0b405f733b9ebce5f5f81dccd32ce6136f3a28c58de16416a55806826ebb2a07",
@@ -139,7 +199,7 @@
     "include/malemod/garments/drape_section.hpp": "88101664efca1435b0682dfbf7a1b8821801339ad4a1968e91b61f46611eacae",
     "include/malemod/garments/drape_sheet.hpp": "8da46939c04749ba207fdfa3eef74c1c21c92e54349f22071a01cbb1ecba9c1d",
     "include/malemod/garments/geometry_export.hpp": "8b214acffbed298b389254f67b3834e12dc6a6274d4131b0c377b2b31e6d229b",
-    "include/malemod/garments/jockstrap.hpp": "d8b91163dbc8dd7a08f254dc188dfaa9c081abbedc88b84dd917c1c2a721790b",
+    "include/malemod/garments/jockstrap.hpp": "2364a17af2c333b43a1c2fbb3d556ac29dacdb558143ddd603622c2abef15582",
     "include/malemod/garments/jockstrap_detail.hpp": "b7d73cc14351847c4ea9f4a707e880ad7bbcadd31b70f3ea10635e8c226ece39",
     "include/malemod/garments/material_grid.hpp": "9e51498d03e853cd708d1a6357eafba1fa60d49f7b42657d53eb651888785f57",
     "include/malemod/garments/natural_band.hpp": "101a595bb200997ee31bb41ddef568c46b6d46991a1d0fa5478a2a751b94d611",
@@ -149,9 +209,9 @@
     "include/malemod/garments/render_contact.hpp": "32e55250faa8b370e1e825ebc0576e4484646df5c3685d2bce86c68a2ced7fd3",
     "include/malemod/garments/root_closure.hpp": "ce6a85d74f68cc34a94c9b6294323ecd3459a35440309b217ad4ebb42922faaf",
     "include/malemod/garments/sewn_contact.hpp": "6919f6445f08f6022223a032dbfe06c78e11984d89e86d8859a885492d7a22eb",
-    "include/malemod/garments/sheet_fit.hpp": "39d07ab5d5392d11859cf310dff9011d8ba6bf3873a2acf7ea7d64b5ecb87b7a",
+    "include/malemod/garments/sheet_fit.hpp": "eb1f7fe6bd0856a183116de266ef8230a2a233f945d642cefa8e7f12835973b9",
     "include/malemod/garments/strap_route.hpp": "bc67d7d807897c392883c9b4cb2b4a55b71a4c345b5cbc42ff911c837d69e5e6",
-    "include/malemod/garments/surface_classification.hpp": "c1109f96d19b75b049f17d9c3a2130a9cf6cca9e4d4c47d13d40b897821a6c83",
+    "include/malemod/garments/surface_classification.hpp": "d15ac6c0a0daef31e12d0f020ac3c361e4f2495db0a2770a192b72b96726c2f9",
     "include/malemod/garments/waist_contours.hpp": "e741c81dc6082ac9e817a05daba9e7b877a793fb218b878fdc17b3db99566eaa",
     "include/malemod/garments/waist_graft.hpp": "1dd8880d3ab85ad88d9dc7da07e3c45efc6190ef59bc9721ed4661dcd77df314",
     "malemod_base/garment_coverage.py": "abaed32603d7e3a5c98c22ab655f9d39ceb695f7eaf26a249116e9bf29af050d",
@@ -167,7 +227,7 @@
     "tests/garment_cloth_test.cpp": "b4608a88f606dfb88a77b1f14cdce36d78b5ddfa16cd0e868e65352e5cd6636d",
     "tests/garment_hem_checks.hpp": "715e22776bb5c28f25a56b7a52cf4e032385bcf2400f3aa2517eb45710a32723",
     "tests/garment_hem_test.cpp": "0929859db58d421d7ecd0e7088f36fab6741f1dbc2444b98f02226e5b472b8a8",
-    "tests/garment_lifecycle_test.cpp": "0d9725b056d72b5306c4d7f8bf50bf4d8eecfa222ec024e2bc6172cc0dc39d76",
+    "tests/garment_lifecycle_test.cpp": "7cd83e6b88c0d8773e3386747fc1c70eef1c7217c424f32b9661b629d8d569ef",
     "tests/garment_reaction_test.cpp": "36309ee701dde35eafbaa140aba61cd2e70693f866721e6903b2868588affcea",
     "tests/garment_shape_checks.hpp": "e31387b30d1df68c74defd847ff1b7be5e414d7610f137720a9de70b5aa89e24",
     "tests/garment_support_runtime_cli.cpp": "a59721836c045ff452cd7c3c9864bf940dafcf5c240bf633e5a9c944caa245e0",

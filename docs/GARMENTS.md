@@ -7,6 +7,33 @@ ordered waistband/opening contours, two under-glute paths, donor identities,
 measured gravity and optional body capsules. No skeleton names, native vertex
 layouts, assumed meters, input hotkeys or material SDKs are shared here.
 
+## October 6 fitting and timing checkpoint
+
+Wolverine is now the primary development subject, with independent Geralt
+compatibility checks. Initial rest relaxation uses conservative closed-surface
+point certificates to avoid repeated distant projections. The 96 sweeps,
+smoothing schedule, finite-face contacts, margins, donors and final verification
+are unchanged. Four measured Wolverine sizes (Overall 25/50/75/100, State 2,
+Angle 50) replayed all five meshes and layouts byte-identically against Base
+431e626. First Update decreased from 10.1-10.8 s to 2.25-2.50 s. Geralt's rest
+Fit decreased from 15.7 s to 2.24 s with identical rest and first-three-step
+exports. These are offline measurements, not native gameplay acceptance.
+
+Session::Update optionally accepts TimeContinuity::Continuous. Use it only when
+the adapter producer has already excluded pauses and discontinuous engine time.
+A worker receiving over one second of coalesced active time retains material
+state. At most 120 fixed substeps run per call; remaining time stays accumulated.
+Default Unverified retains the historical greater-than-one-second reset.
+Character/topology changes still reset. This does not reconstruct dropped pose
+history or make a slow solver real time.
+
+Adoption must reach both spokes through a clean pinned Base revision. Witcher
+has a local worker-clock candidate; Wolverine still needs the same distinction.
+Neither candidate is installed. Current measured Wolverine dynamic steps remain
+55-71 ms per 8.33 ms simulated step. Sustained motion, self-contact and native
+white-fabric presentation remain unmet gates. Rest renders also show overly low
+inner-thigh strap returns at large sizes; clearance does not approve appearance.
+
 ## Current walking cloth candidate (October 4)
 
 The active revision-2 material is one continuous walked sheet. The approximately

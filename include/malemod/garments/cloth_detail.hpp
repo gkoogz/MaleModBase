@@ -36,7 +36,7 @@ struct Envelope {
  bool Project(Point& world)const{auto p=frame.Local(world);auto evaluation=ValueGradient(p);const double guard=C*1e-4;if(evaluation.first>=guard*Length(evaluation.second))return false;for(unsigned iteration=0;iteration<3;iteration++){double norm=Dot(evaluation.second,evaluation.second),f=evaluation.first-guard*std::sqrt(norm);if(f>=0)break;if(norm<1e-20)break;p=Add(p,Mul(evaluation.second,(-f+1e-10)/norm));evaluation=ValueGradient(p);}auto q=Sub(p,center),c=Coordinates(p);double minimum=Minimum(p)+guard*c[2]/(std::max)(Length(q),gap);if(c[2]<minimum&&c[2]>1e-14)p=Add(center,Mul(q,minimum/c[2]));world=frame.World(p);return true;}
 };
 }
-inline const Output& Session::Update(Style style,const Input& input){
+inline const Output& Session::Update(Style style,const Input& input,TimeContinuity time){
  if(!parameters_.simulate)return Fit(style,input);
  if(style==Style::Naked){Reset();output_.characterEpoch=input.characterEpoch;output_.topologyRevision=input.topologyRevision;return output_;}
  if(style!=Style::WhiteJockstrap)throw std::invalid_argument("Unknown garment style");
@@ -44,7 +44,8 @@ inline const Output& Session::Update(Style style,const Input& input){
  if(input.bodyContacts.size()>64||!Finite(input.gravity)||!std::isfinite(input.deltaTime)||input.deltaTime<0||!std::isfinite(input.anatomyMass)||input.anatomyMass<0)throw std::invalid_argument("Invalid cloth contact/timing/mass input");
  for(auto c:input.bodyContacts)if(!Finite(c.a)||!Finite(c.b)||!std::isfinite(c.radius)||c.radius<0)throw std::invalid_argument("Invalid cloth body volume");
  for(auto f:input.anatomyTriangles)for(auto id:f)if(id>=input.anatomy.size())throw std::invalid_argument("Cloth anatomy index outside surface");
- bool reset=positions_.empty()||input.characterEpoch!=restInput_.characterEpoch||input.topologyRevision!=restInput_.topologyRevision||input.deltaTime>1;
+ const bool discontinuity=input.deltaTime>1&&time!=TimeContinuity::Continuous;
+ bool reset=positions_.empty()||input.characterEpoch!=restInput_.characterEpoch||input.topologyRevision!=restInput_.topologyRevision||discontinuity;
  if(!reset&&(input.waist.size()!=restInput_.waist.size()||input.opening.size()!=restInput_.opening.size()||input.anatomy.size()!=restInput_.anatomy.size()||input.rearStraps[0].size()!=restInput_.rearStraps[0].size()||input.rearStraps[1].size()!=restInput_.rearStraps[1].size()))reset=true;
  if(!reset&&output_.measuredCircumference>0&&Length(Sub(input.waist.front().position,previousTargets_.front()))>2*output_.measuredCircumference)reset=true;
  if(reset)Reset();
@@ -58,12 +59,12 @@ inline const Output& Session::Update(Style style,const Input& input){
   // it after the fitter would invalidate its tested contacts and sewn aliases.
   restMesh_=output_.mesh;restInput_=input;}
  output_.physics={};output_.physics.reset=reset;output_.physics.resetCount=resetCount_;output_.style=style;output_.characterEpoch=input.characterEpoch;output_.topologyRevision=input.topologyRevision;output_.support.clear();output_.reactions.clear();output_.reaction={};output_.projectedContacts=0;output_.contactBudgetSatisfied=true;output_.mesh=restMesh_;
- Cloth(input,rebuild);
+ Cloth(input,rebuild,discontinuity?0:input.deltaTime);
  // Material refits preserve displacement and velocity where topology remains
  // compatible; this branch is handled inside Cloth before integration.
  return output_;
 }
-inline void Session::Cloth(const Input& input,bool rebuild){
+inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
  using namespace cloth_detail;
  auto begin=std::chrono::steady_clock::now();auto& mesh=output_.mesh;double C=output_.measuredCircumference;const bool sheetMesh=output_.layout.revision==2;const unsigned waist=sheetMesh?output_.layout.band.columns:output_.band.topAttachments?output_.band.topAttachments:unsigned(input.waist.size()),band=14*(waist+1),rings=parameters_.pouchRings,segments=parameters_.pouchSegments,pouchEnd=sheetMesh?output_.layout.sheet.start+(rings+1)*(segments+1):band+1+rings*(segments+1),hemEnd=sheetMesh?pouchEnd:pouchEnd+4*(segments+1),joinEnd=sheetMesh?pouchEnd:hemEnd+2*(segments+1),strap=sheetMesh?output_.layout.straps[0].start:joinEnd+9*25;
  if(rebuild){
@@ -222,12 +223,17 @@ inline void Session::Cloth(const Input& input,bool rebuild){
   memo.certificate.Remember(points,(std::min)(classification.distance,radius),outside,stamp);if(outside){hit.signedDistance=hit.distance;auto delta=Sub(hit.clothPoint,hit.point);if(hit.distance<clearance&&Length(delta)>1e-14)hit.normal=Unit(delta);}return hit;
  };
  auto residual=[&](Point local){return Mul(Sub(input.frame.World(local),origin),1/C);};
- auto rendered=[&](unsigned index){return render_contact::Evaluate(renderBindings_[index],x,input.frame,C);};
+ // Render donors are shared by many contact faces. Reuse their exact evaluated
+ // positions until a constraint changes particles; never reuse across a solve.
+ std::vector<Point> renderPositions(mesh.vertices.size());
+ std::vector<std::uint64_t> renderStamps(mesh.vertices.size());std::uint64_t renderRevision=1;
+ auto invalidateRendered=[&](){if(++renderRevision==0){std::fill(renderStamps.begin(),renderStamps.end(),0);renderRevision=1;}};
+ auto rendered=[&](unsigned index){if(renderStamps[index]!=renderRevision){renderPositions[index]=render_contact::Evaluate(renderBindings_[index],x,input.frame,C);renderStamps[index]=renderRevision;}return renderPositions[index];};
  struct ParticleApplication {Point point{};double weight=0;bool gradient=false;Point impulseCoefficient{},momentCoefficient{};};
  struct ContactProjection {double inverseMass=0;ParticleApplication particles;};
  auto projectContact=[&](const render_contact::Gradient& gradient,double distance,bool tissue){
   ContactProjection result;result.inverseMass=gradient.InverseMass(inverseMass_);
-  if(result.inverseMass>1e-20){auto applied=render_contact::Application(gradient,x,inverseMass_);result.particles.gradient=true;result.particles.impulseCoefficient=applied.impulse;result.particles.momentCoefficient=applied.moment;
+  if(result.inverseMass>1e-20){invalidateRendered();auto applied=render_contact::Application(gradient,x,inverseMass_);result.particles.gradient=true;result.particles.impulseCoefficient=applied.impulse;result.particles.momentCoefficient=applied.moment;
    for(unsigned k=0;k<gradient.count;k++)if(inverseMass_[gradient.nodes[k]]){auto change=Mul(gradient.values[k],distance*inverseMass_[gradient.nodes[k]]/result.inverseMass);auto node=gradient.nodes[k];x[node]=Add(x[node],change);contactImpulse[node]=Add(contactImpulse[node],change);if(tissue)tissueCorrection[node]=Add(tissueCorrection[node],change);}
   }return result;
  };
@@ -253,6 +259,7 @@ inline void Session::Cloth(const Input& input,bool rebuild){
   activeContacts.push_back({clothFace,hit.triangle,anatomical,hit.normal});
  };
  auto solveActiveContacts=[&](){
+  invalidateRendered();
   double maximumAppliedDepth=0;
   for(const auto& contact:activeContacts){const auto& face=mesh.triangles[contact.clothFace];const auto& physical=contact.anatomy?anatomyCollider_:bodyCollider_;
    const auto& source=contact.anatomy?contactGeometry->anatomy:contactGeometry->bodySurface;const auto& physicalFaces=contact.anatomy?input.anatomyTriangles:input.bodyTriangles;
@@ -275,7 +282,9 @@ inline void Session::Cloth(const Input& input,bool rebuild){
   return maximumAppliedDepth;
  };
  auto collision=[&](bool triangles){
+  invalidateRendered();
   for(unsigned i=0;i<x.size();i++)if(!pinned_[i]){auto before=x[i];if(covered[i]&&!measuredAnatomy){auto world=Add(origin,Mul(x[i],C));if(envelope.Project(world)){x[i]=Mul(Sub(world,origin),1/C);output_.projectedContacts++;}}for(auto volume:volumes)if(projectVolume(x[i],volume,covered[i]))output_.projectedContacts++;if(measuredAnatomy){auto hit=pointQuery(true,i,x[i],margin+5e-6);if(hit.signedDistance<margin+1e-5){auto correction=Mul(hit.normal,margin-hit.signedDistance+1e-5);x[i]=Add(x[i],correction);tissueCorrection[i]=Add(tissueCorrection[i],correction);recordReaction(hit,correction,inverseMass_[i],{x[i],1});output_.projectedContacts++;}}if(!bodyCollider_.Empty()){auto hit=pointQuery(false,i,x[i],margin+5e-6);if(hit.signedDistance<margin+1e-5){x[i]=Add(x[i],Mul(compatibleDirection(x[i],hit.normal,covered[i]),margin-hit.signedDistance+1e-5));output_.projectedContacts++;}}contactImpulse[i]=Add(contactImpulse[i],Sub(x[i],before));}
+  invalidateRendered(); // point/capsule projections above changed particles
   if(triangles&&!measuredAnatomy)for(unsigned pass=0;pass<2;pass++)for(unsigned i=band;i<pouchEnd;i++){auto point=rendered(i),world=Add(origin,Mul(point,C));if(envelope.Project(world)){projectBinding(i,Sub(Mul(Sub(world,origin),1/C),point));output_.projectedContacts++;}}
   if(triangles){
    for(unsigned i=band;i<mesh.vertices.size();i++)for(auto volume:volumes){auto point=rendered(i),projected=point;if(projectVolume(projected,volume,i>=band&&i<hemEnd)){projectBinding(i,Sub(projected,point));output_.projectedContacts++;}}
@@ -299,6 +308,7 @@ inline void Session::Cloth(const Input& input,bool rebuild){
  // pairs join the same unilateral manifold; no surface is omitted from this
  // convergence check and no new material rest state is generated.
  auto contactResidual=[&](){double maximum=0;
+  invalidateRendered();
   for(bool anatomical:{false,true}){auto& collider=anatomical?anatomyCollider_:bodyCollider_;if(collider.Empty())continue;
    for(unsigned i=0;i<mesh.vertices.size();i++){auto hit=pointQuery(anatomical,pointSlot(i),rendered(i),margin);maximum=(std::max)(maximum,margin-hit.signedDistance);}
    for(unsigned i=0;i<mesh.triangles.size();i++){const auto& face=mesh.triangles[i];std::array<Point,3> points{rendered(face.vertices[0]),rendered(face.vertices[1]),rendered(face.vertices[2])};auto hit=faceQuery(anatomical,i,points,margin);maximum=(std::max)(maximum,margin-hit.signedDistance);if(hit.signedDistance<margin-1e-8)rememberContact(anatomical,i,hit);}
@@ -307,12 +317,16 @@ inline void Session::Cloth(const Input& input,bool rebuild){
   return maximum;
  };
  auto seamResidual=[&](){double maximum=0;for(const auto& s:sewing_){auto error=residual(s.residual);for(unsigned k=0;k<s.count;k++)error=Add(error,Mul(x[s.nodes[k]],s.weights[k]));maximum=(std::max)(maximum,Length(error));}return maximum;};
- constexpr double step=1./120;double dt=input.deltaTime<=1?input.deltaTime:0;accumulator_+=dt;unsigned steps=(std::min)(120u,unsigned(std::floor((accumulator_+1e-12)/step)));telemetry.substeps=steps;
+ constexpr double step=1./120;accumulator_+=elapsed;if(!std::isfinite(accumulator_))throw std::invalid_argument("Cloth active time accumulator overflow");unsigned steps=unsigned((std::min)(120.,std::floor((accumulator_+1e-12)/step)));telemetry.substeps=steps;
+ // Preserve all geometry/donors but clone interpolation storage only once per
+ // call. A single final-pose substep can read the supplied immutable input.
+ std::optional<Input> interpolation;if(steps>1)interpolation=input;
  for(unsigned substep=0;substep<steps;substep++){
   reactionStep=step;
   std::fill(contactImpulse.begin(),contactImpulse.end(),Point{});std::fill(tissueCorrection.begin(),tissueCorrection.end(),Point{});activeContacts.clear();
   double fraction=double(substep+1)/steps;std::vector<Point> subTargets(targets.size());for(unsigned i=0;i<targets.size();i++)subTargets[i]=Add(Mul(oldTargets[i],1-fraction),Mul(targets[i],fraction));for(unsigned k=0;k<volumes.size();k++){volumes[k].a=Add(Mul(oldVolumes[k].a,1-fraction),Mul(finalVolumes[k].a,fraction));volumes[k].b=Add(Mul(oldVolumes[k].b,1-fraction),Mul(finalVolumes[k].b,fraction));volumes[k].radius=oldVolumes[k].radius*(1-fraction)+finalVolumes[k].radius*fraction;}
-  auto contactInput=input;for(unsigned i=0;i<contactInput.bodySurface.size();i++)contactInput.bodySurface[i].position=Add(Mul(previousBody[i].position,1-fraction),Mul(input.bodySurface[i].position,fraction));for(unsigned i=0;i<contactInput.anatomy.size();i++)contactInput.anatomy[i].position=Add(Mul(previousAnatomy[i].position,1-fraction),Mul(input.anatomy[i].position,fraction));
+  if(interpolation){for(unsigned i=0;i<interpolation->bodySurface.size();i++)interpolation->bodySurface[i].position=Add(Mul(previousBody[i].position,1-fraction),Mul(input.bodySurface[i].position,fraction));for(unsigned i=0;i<interpolation->anatomy.size();i++)interpolation->anatomy[i].position=Add(Mul(previousAnatomy[i].position,1-fraction),Mul(input.anatomy[i].position,fraction));}
+  const auto& contactInput=interpolation?*interpolation:input;
   reactionSurface=&contactInput.anatomy;
   contactGeometry=&contactInput;bodyCollider_.Update(contactInput.bodySurface,input.bodyTriangles,origin,C);if(measuredAnatomy)anatomyCollider_.Update(contactInput.anatomy,input.anatomyTriangles,origin,C);ClassifySurfaces(contactInput,origin,C);
   auto old=x;double damp=std::exp(-parameters_.mechanics.dampingRate*step);for(unsigned i=0;i<x.size();i++){if(pinned_[i])x[i]=subTargets[i];else{v[i]=Add(Mul(v[i],damp),Mul(input.gravity,step/C));x[i]=Add(x[i],Mul(v[i],step));}}
@@ -405,6 +419,7 @@ inline void Session::Cloth(const Input& input,bool rebuild){
  if(telemetry.maxStretchRatio>1.15){for(unsigned i=0;i<vertexNodes_.size();i++)if(vertexNodes_[i]==telemetry.worstStretchA||vertexNodes_[i]==telemetry.worstStretchB)std::fprintf(stderr,"Worst edge donor node %u vertex %u rest %g current %g\n",vertexNodes_[i],i,telemetry.worstStretchRestLength,telemetry.worstStretchCurrentLength);}
 #endif
  telemetry.materialBudgetSatisfied=telemetry.maxStretchRatio<=1.15&&telemetry.maxSeamGap<=C*parameters_.bandThickness*.25;
+ invalidateRendered();
  for(unsigned i=0;i<mesh.vertices.size();i++)mesh.vertices[i].position=Add(origin,Mul(rendered(i),C));
  if(sheetMesh)for(unsigned fi=output_.layout.sheetFaces.start;fi<output_.layout.sheetFaces.start+output_.layout.sheetFaces.count;fi++){const auto& f=mesh.triangles[fi];for(unsigned k=0;k<3;k++){unsigned a=f.vertices[k],b=f.vertices[(k+1)%3];double rest=Length(Sub(restMesh_.vertices[a].position,restMesh_.vertices[b].position));if(rest<C*1e-12)continue;double ratio=Length(Sub(mesh.vertices[a].position,mesh.vertices[b].position))/rest;if(ratio>telemetry.maxRenderStretchRatio){telemetry.maxRenderStretchRatio=ratio;telemetry.worstRenderA=a;telemetry.worstRenderB=b;}}}telemetry.materialBudgetSatisfied=telemetry.materialBudgetSatisfied&&telemetry.maxRenderStretchRatio<=1.15;
 #ifdef MALEMOD_GARMENT_DIAGNOSTIC
@@ -417,7 +432,7 @@ inline void Session::Cloth(const Input& input,bool rebuild){
   output_.band.minimumInnerClearance=1e100;output_.band.maximumInnerClearance=-1e100;
   // Band metadata is an exact measured clearance; publication contact reuse is
   // separately conservative and never relabelled as an exact minimum.
-  for(unsigned i=band/2;i<band;i++){double d=bodyCollider_.Closest(Mul(Sub(mesh.vertices[i].position,origin),1/C)).signedDistance*C;output_.band.minimumInnerClearance=(std::min)(output_.band.minimumInnerClearance,d);output_.band.maximumInnerClearance=(std::max)(output_.band.maximumInnerClearance,d);}
+  for(unsigned i=band/2;i<band;i++){auto& seed=pointMemos_[0][pointSlot(i)].physicalSeed;auto hit=bodyCollider_.Closest(Mul(Sub(mesh.vertices[i].position,origin),1/C),seed);seed=hit.triangle;double d=hit.signedDistance*C;output_.band.minimumInnerClearance=(std::min)(output_.band.minimumInnerClearance,d);output_.band.maximumInnerClearance=(std::max)(output_.band.maximumInnerClearance,d);}
   for(unsigned i=0;i<mesh.vertices.size();i++){auto p=Mul(Sub(mesh.vertices[i].position,origin),1/C);auto hit=pointQuery(false,pointSlot(i),p,margin);if(hit.signedDistance<margin-1e-8){output_.contactBudgetSatisfied=false;
 #ifdef MALEMOD_GARMENT_CONTACT_TRACE
    std::fprintf(stderr,"final-body point clock %.9g vertex %u triangle %u deficit %.9g band %d\n",clock_,i,hit.triangle,(hit.signedDistance-margin)*C,int(i<band));

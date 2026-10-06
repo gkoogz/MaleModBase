@@ -16,7 +16,9 @@ inline void Session::ClassifySurfaces(const Input& input,Point origin,double sca
   }
  }
  closedAnatomy_.Update(input.anatomy,closedAnatomyFaces_,origin,scale);
- if(input.bodySurface.empty())closedBody_.Clear();else {auto body=input.bodySurface;for(auto id:rootVertices_)body.push_back(input.anatomy[id]);closedBody_.Update(body,closedBodyFaces_,origin,scale);}
+ // Classification consumes positions only. Do not clone every native donor
+ // vector when appending the virtual root closure on each numerical substep.
+ if(input.bodySurface.empty())closedBody_.Clear();else {std::vector<Sample> body(input.bodySurface.size()+rootVertices_.size());for(unsigned i=0;i<input.bodySurface.size();i++)body[i].position=input.bodySurface[i].position;for(unsigned i=0;i<rootVertices_.size();i++)body[input.bodySurface.size()+i].position=input.anatomy[rootVertices_[i]].position;closedBody_.Update(body,closedBodyFaces_,origin,scale);}
 }
 inline double Session::ClassifiedDistance(detail::BodyCollider::Hit& hit,Point point,bool anatomy)const{
  const auto& closure=anatomy?closedAnatomy_:closedBody_;if(closure.Empty())return hit.signedDistance;

@@ -37,4 +37,26 @@ bool PersistentRest(){
  std::cout<<"PASS animated waist retains rest material, explicit morphology refit, epoch and clothing lifecycle; complete input anatomy retained\n";
  return true;
 }
-int main(){try{return PersistentRest()?0:1;}catch(const std::exception& e){std::cerr<<e.what()<<'\n';return 2;}}
+bool CoalescedActiveTime(){
+ auto in=Fixture();in.anatomyTriangles.clear();in.gravity={};in.deltaTime=0;
+ Session cloth;auto first=cloth.Update(Style::WhiteJockstrap,in);
+ const auto resetCount=first.physics.resetCount;
+ in.deltaTime=1.1;
+ auto late=cloth.Update(Style::WhiteJockstrap,in,TimeContinuity::Continuous);
+ REQUIRE(!late.physics.reset&&late.physics.resetCount==resetCount);
+ REQUIRE(late.physics.substeps==120&&std::abs(late.physics.accumulatedSeconds-1)<1e-10);
+ // Work is bounded to one second per call. The remainder stays owned by the
+ // material and drains even when the next display call adds no elapsed time.
+ in.deltaTime=0;
+ auto drained=cloth.Update(Style::WhiteJockstrap,in,TimeContinuity::Continuous);
+ REQUIRE(!drained.physics.reset&&drained.physics.substeps==12);
+ REQUIRE(std::abs(drained.physics.accumulatedSeconds-1.1)<1e-10);
+ auto idle=cloth.Update(Style::WhiteJockstrap,in,TimeContinuity::Continuous);
+ REQUIRE(idle.physics.substeps==0&&std::abs(idle.physics.accumulatedSeconds-1.1)<1e-10);
+ // Unverified long intervals retain the previous conservative behavior.
+ in.deltaTime=1.1;auto discontinuity=cloth.Update(Style::WhiteJockstrap,in);
+ REQUIRE(discontinuity.physics.reset&&discontinuity.physics.advancedSeconds==0);
+ std::cout<<"PASS continuous coalesced active time retains cloth, bounded catch-up drains without time loss, unverified discontinuity still resets\n";
+ return true;
+}
+int main(){try{return PersistentRest()&&CoalescedActiveTime()?0:1;}catch(const std::exception& e){std::cerr<<e.what()<<'\n';return 2;}}

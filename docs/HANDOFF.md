@@ -1,5 +1,75 @@
 # Resume here: cross-repository handoff
 
+## October 6 playable candidate source preparation
+
+The user requested a playable Wolverine build. Exact render-donor evaluations
+are now cached between particle corrections; classification no longer copies
+donor payloads, and multi-substep interpolation copies its input once per call.
+Actual band clearance still uses an exact seeded closest-point query. Rest,
+contacts, material constraints and numerical step rate are unchanged. Four
+Wolverine sizes remain byte-identical to the old meshes/layouts over five frames.
+Current dynamic timings are 40-62 ms per 8.33 ms simulated step, still too slow.
+The local source is being frozen for isolated native testing, not retail release.
+No acceptance of sustained motion, extreme collar states or white native fabric
+is implied. Preserve the installed baseline until native candidate verification.
+
+## October 6 jockstrap resumed with Wolverine as primary subject
+
+Local uninstalled shared source changes: faster initial rest point projection
+certificates and an explicit continuous-active-time API. Four actual Wolverine
+size inputs compare against clean Base 431e626; five meshes/layouts per size
+are byte-identical. First Update is 2.25-2.50 s versus 10.1-10.8 s. Geralt's
+same optimization preserves all five checked exports, with rest Fit 2.24 s
+versus 15.7 s. Dynamic Wolverine steps still cost 55-71 ms per 8.33 ms simulated
+step: the garment is NOT ready for real-time acceptance.
+
+Relevant SDK passes: proximity_cache, body_surface, garment_lifecycle and
+Witcher's garment_cadence. Lifecycle covers an explicit 1.1-second continuous
+span, bounded 120-step work and draining retained remainder. Witcher cadence
+covers 20 seconds of coalesced valid producer time. Worker latency alone must
+not recreate rest cloth. Wolverine has the same historical >1-second-reset bug
+and needs adoption after a clean Base pin. Do not deploy against dirty Base.
+
+Ignored evidence: build/jockstrap-resume-20261006/wolverine-comparison.json,
+walking-sheet-front-side.png and walking-sheet-rear-routes.png. These use real
+measured Wolverine geometry and offline matte colors. Large rear strap returns
+are too low along inner thighs. Sustained motion/self-contact/native material
+remain open. Source smoothing and contact certificates are not a full collar
+visual pass; no anatomy/collar geometry changed in this checkpoint.
+
+Private grey-room sessions were closed. Wolverine's room used its existing
+prototype DLL, not this shared cloth candidate. A separate Witcher private run
+exposed black/shiny cloth and worker refitting, with only one publication; its
+timed walking stage did not establish actual movement. Installed Geralt collar,
+retail Wolverine and their preferences remain unchanged. Witcher's local worker
+source uses the new unpinned Base API and must not be packaged until coherent
+clean dependency adoption. Wolverine has no tracked changes this turn.
+
+## October 6 reviewed localized collar installed
+
+The user approved installation with "install" after the compact-root previews.
+Installed Base pin: 431e626cae6fb6720b552f8b20206727fe809c80. Native DLL SHA256:
+1f6c00ae41f1fcbd9b1f30c378852398e3f3c2fc101e2e316a169ef24254477a.
+All 37 managed file hashes, five .31 fallback files and the previous build's
+rollback files verify. Preferences remain byte-identical. Rollback snapshot:
+local/native-backup-20261006-135151. Install proof:
+build/full-runtime/install-compact-431e626.json in the Witcher adapter.
+
+No geometry was changed after preview approval: all six reviewed source hashes
+match. Fresh binding/render exports differ only in the embedded Base pin and
+binding identity; the remaining payload bytes match the reviewed artifacts.
+The source is locally committed and pinned; the stale graft archive hash was
+corrected to the final rebuilt library before the clean deployment build.
+Clean source-load proof and 48-frame direct/worker replay pass. Native startup
+and FloatDraw SDK tests pass; prior 278-case geometry and 39-case body gates
+remain applicable to the identical reviewed implementation/payload.
+
+This is installed-file verification, not observed gameplay. Extreme upward
+angle deformation remains unresolved. User preview approval does not certify
+every native pose, lighting condition or motion. Wolverine is untouched.
+Earlier preview-only and installed-40dfa86 checkpoints below are historical.
+
+
 ## October 6 localized side flare and deeper underside - preview only
 
 This supersedes the broad lateral/ventral trial, which the user rejected for

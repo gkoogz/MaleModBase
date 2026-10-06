@@ -1,3 +1,18 @@
+## October 6 garment test subject
+
+The user selected Wolverine as the primary jockstrap test subject. Keep fitting,
+fabric mechanics and garment preference contracts shared in Base. Geralt and
+future characters supply measured body/anatomy surfaces, semantic frames, pose,
+rendering and lifecycle through adapters. A Wolverine pass does not waive
+Geralt's independent attachment, fit, material and native motion gates.
+
+## October 6 installation approval
+
+The user explicitly approved installing the localized side flare / deeper
+underside compact-root candidate after the matched renders. It is installed;
+see HANDOFF for hashes and rollback. No new gameplay observation was made.
+The extreme upward-angle deformation remains a known unresolved limitation.
+
 Latest localized attachment clarification (October 6): side flare belongs
 right beside the weld, not in a wider leg/hip recruitment annulus. The user
 rejected the trial that expanded the legs. At large sizes thicken the underside

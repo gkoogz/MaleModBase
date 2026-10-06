@@ -173,6 +173,11 @@ inline const Output& Session::FitSheet(Style style,const Input& input){
   id=hemNode(id);for(unsigned route=0;route<2;route++){const auto& ribbon=output_.layout.straps[route];if(id>=ribbon.start&&id<ribbon.start+ribbon.sections*4){unsigned first=ribbon.start+(id-ribbon.start)/4*4;if(first==ribbon.start+(ribbon.sections-1)*4){const auto& seam=output_.layout.bottomSeams[strapSide[route]];moveSheetVertex(seam.front(),delta);moveSheetVertex(seam.back(),delta);}else for(unsigned k=0;k<4;k++)mesh.vertices[first+k].position=Add(mesh.vertices[first+k].position,delta);return;}}
   moveSheetVertex(id,delta);
  };
+ // Only skip a repeated point projection while its closed measured tissue
+ // separation, minus the point's travel, still proves the complete margin.
+ // The face pass and final exact clearance checks remain unchanged.
+ std::array<std::vector<proximity::PointCertificate>,2> restPointClearance;
+ for(auto& memo:restPointClearance)memo.resize(mesh.vertices.size());
  for(unsigned sweep=0;sweep<96;sweep++){
   if(sweep<84){
    // Tension rounds rest corrugations instead of following every local hull
@@ -189,7 +194,16 @@ inline const Output& Session::FitSheet(Style style,const Input& input){
   if(sweep<84){for(const auto& ribbon:output_.layout.straps)drape::BendRibbonGroups(mesh,ribbon,moveVertex);for(const auto& ribbon:output_.layout.sideHems)drape::BendRibbonGroups(mesh,ribbon,moveVertex);}
   bool changed=false;
   for(unsigned id=bandCount;id<mesh.vertices.size();id++){
+   auto point=normalize(mesh.vertices[id].position);
+   auto& bodyClass=closedBody_.Empty()?bodyCollider_:closedBody_;
+   auto& anatomyClass=closedAnatomy_.Empty()?anatomyCollider_:closedAnatomy_;
+   if(restPointClearance[0][id].ProvesClear({point},margin+1e-5,bodyClass.MotionStamp())&&restPointClearance[1][id].ProvesClear({point},margin+1e-5,anatomyClass.MotionStamp()))continue;
    Sample sample{mesh.vertices[id].position,mesh.vertices[id].normal,mesh.vertices[id].lineage};project(sample);auto delta=Sub(sample.position,mesh.vertices[id].position);if(Length(delta)>1e-12){moveVertex(id,delta);changed=true;}
+   point=normalize(mesh.vertices[id].position);
+   for(auto* classifier:{&bodyClass,&anatomyClass}){
+    auto hit=classifier->Closest(point);const bool outside=classifier->Classify(point,true)==BodyCollider::Side::Outside;
+    restPointClearance[classifier==&anatomyClass][id].Remember({point},hit.distance,outside,classifier->MotionStamp());
+   }
   }
   for(unsigned fi=bandFaces;fi<mesh.triangles.size();fi++)for(auto* collider:{&bodyCollider_,&anatomyCollider_}){
    auto face=mesh.triangles[fi];std::array<Point,3> pts;for(unsigned k=0;k<3;k++)pts[k]=normalize(mesh.vertices[face.vertices[k]].position);auto hit=collider->ClosestFace(pts,margin+3e-5);if(hit.distance>=margin+2e-5)continue;
