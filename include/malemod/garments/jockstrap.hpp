@@ -152,6 +152,8 @@ struct Output {
     ReactionTelemetry reaction;
     double measuredCircumference=0,coverageMargin=0;
     unsigned projectedContacts=0;
+    unsigned bodyIntersectionCount=0,pouchPenetrationCount=0;
+    std::array<unsigned,4> bodyIntersectionsByPart{}; // band, pouch, straps, hems
     bool contactBudgetSatisfied=true;
     ClothTelemetry physics;
     BandTelemetry band;
@@ -206,6 +208,8 @@ public:
  Hit ClosestFace(const std::array<Point,3>& face,double margin,unsigned seedTriangle=unsigned(-1))const;
  Hit ClosestFaceCached(const std::array<Point,3>& face,double margin,FaceNeighborhood& neighborhood,unsigned seedTriangle=unsigned(-1))const;
  Hit Sweep(Point from,Point to)const;
+ // Weights in the exact (possibly interpolated) surface used for this hit.
+ Point ContactWeights(const Hit& hit)const;
  // Caller must prove closure (including positional aliases); open stock
  // surfaces do not define a volume. Physical contact faces remain separate.
  Side Classify(Point point,bool verifiedClosed=false)const;
@@ -259,7 +263,7 @@ private:
     double ClassifiedDistance(const detail::BodyCollider::Hit& hit,Point point,bool anatomy)const;
     struct Edge {unsigned a,b;double rest,compliance,lambda=0;bool bend=false,tether=false;};
     struct Binding {std::array<unsigned,4> nodes{};std::array<double,4> weights{};Point residual{};std::array<unsigned,3> materialFrame{};Point materialResidual{},restTangent{};bool transported=false,ribbon=false;};
-    struct Sew {std::array<unsigned,28> nodes{};std::array<double,28> weights{};unsigned count=0;Point residual{};};
+    struct Sew {std::array<unsigned,28> nodes{};std::array<double,28> weights{};unsigned count=0;Point residual{},separation{};std::vector<std::pair<unsigned,double>> vertices;};
     struct Anchor {unsigned family=0,index=0;Point residual{},referenceNormal{};std::array<unsigned,16> bodyIndices{};std::array<double,16> bodyWeights{};std::array<Surface,16> attachmentSurfaces{};bool bodyAttachment=false;};
     struct PointMemo {proximity::PointCertificate certificate;unsigned closedSeed=unsigned(-1),physicalSeed=unsigned(-1);detail::BodyCollider::PointNeighborhood physicalNeighborhood;};
     struct FaceMemo {proximity::FaceCertificate certificate;unsigned closedSeed=UINT32_MAX,physicalSeed=UINT32_MAX;detail::BodyCollider::FaceNeighborhood physicalNeighborhood,closedNeighborhood;};
@@ -291,6 +295,7 @@ private:
     double clock_=0,accumulator_=0;
     double restCircumference_=0;
     double clothMass_=0;
+    bool preparingPlacement_=false;
     unsigned resetCount_=0;
 };
 }

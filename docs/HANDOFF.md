@@ -1,3 +1,31 @@
+## October 7 contact repair and rejected CPU pouch experiment
+
+The playable jockstrap request remains **unfulfilled**. See
+[CPU-POUCH-DEVELOPMENT.md](CPU-POUCH-DEVELOPMENT.md) for commands, dependency
+identity, failed experiments and adoption requirements. No game was launched or
+modified. Retail and human Wolverine DLL hashes still match accepted identities;
+both game adapters retain their prior pins.
+
+The supported reference solver now takes contact barycentrics from the exact
+queried/interpolated collider, resolves complete constraints inside each time
+substep, and detects face-interior crossings in local follow-up queries.
+Its final coalesced capture replay passes all 7 requests, but takes 39.8901 s to
+advance 5.453 s. Nine targeted source/contact/attachment tests pass. This is not
+realtime or native visual acceptance.
+
+The optional NvCloth CPU wrapper and source-bound capsule fixtures pass on x86
+and x64. The separately opt-in pouch experiment FAILS actual body contact,
+rendered strain and runtime cost checks. It has no adapter adoption or measured
+reciprocal tissue coupling. Do not swap it into the worker based on the standalone
+solver test. Its final coalesced trial fails 7/7 requests; the final fine-edge
+stretch is 2.05319 with 75 intersecting body faces. Private evidence remains in
+build/nvcloth-cmake. The full native attachment/campaign matrix is untested.
+
+Unrelated pre-existing voice-pool notes and work/ were preserved. Wolverine's
+pre-existing worker edits and Witcher's pre-existing cadence/service edits were
+also preserved. Shared work remains in Base; tested pinned adoption is required
+independently in each spoke.
+
 ## October 7 supported trim candidate (not installed)
 
 Base adds opt-in `SupportedPouchParameters()`: body-fitted glute straps through

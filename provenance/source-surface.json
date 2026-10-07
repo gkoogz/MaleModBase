@@ -200,7 +200,7 @@
   "files": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "9013f295e8ddda5375b041e13b01d0d535cae3c6bf777d89a98622f8655af769"
+      "sha256": "cb84a2dab00bcb965db87deb4ba088408e968f11af1c7ac950c51b1f61ada229"
     },
     {
       "path": "include/malemod/surface/runtime.hpp",
@@ -5115,6 +5115,10 @@
     {
       "previousCMakeSHA256": "7d632f338f6ed92ab69a2a3d938c1e22d72b106ac0db57788400bfddf3f36ceb",
       "meaning": "Preserved prior build metadata hash; garment SDK-only test target registrations changed, no acceptance inferred for runtime source changes"
+    },
+    {
+      "previousCMakeSHA256": "9013f295e8ddda5375b041e13b01d0d535cae3c6bf777d89a98622f8655af769",
+      "meaning": "Added offline replay and opt-in CPU cloth targets. Existing source surface runtime unchanged; no new game acceptance."
     }
   ],
   "historicalSourceV2Wire5Checkpoint": {

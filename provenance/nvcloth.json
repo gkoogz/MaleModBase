@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "repository": "https://github.com/NVIDIAGameWorks/NvCloth",
+  "revision": "6e86b1838ae185c527744d475d34777ff69c1b8a",
+  "version": "1.1.6",
+  "backend": "CPU, CUDA=0, DX11=0",
+  "sourceModified": false,
+  "toolchainCompatibilityShim": "cmake/nvcloth-compat/typeinfo.h",
+  "fileHashNormalization": "LF",
+  "files": {
+    "cmake/NvClothCPU.cmake": "a4844c5ac033e9d915346f0a7467726da3b2ee5d8cfa033536c8908ba980dd51",
+    "cmake/nvcloth-compat/typeinfo.h": "cd89a9b6dd2088e07e94016908900f83bf148382f09c65fb127ae75cd47f4def",
+    "include/malemod/garments/cpu_cloth.hpp": "095eaaa3eac2aa9779be0559be4a48e6e4c043eba766050aa33258f10d4e75d3",
+    "include/malemod/garments/measured_capsules.hpp": "db697ced29054560cb08e408caefd87f590aa9ce5b3972e22cc34432b303cc75",
+    "src/garments/cpu_cloth.cpp": "fd6650e89e9fc6e55621ea620c9666857bc5684abd84ab2c6195aee4b83d41d7",
+    "tests/cpu_cloth_test.cpp": "886f9d12e157e4fa94b6ac87b3ffb64b73de711433c8a13954d7b6058d70971c",
+    "tests/measured_capsules_test.cpp": "e92e0695f3ac997702b2d4bc82ee3b06c934c991e2c8c9b68df5e431bbe3147e",
+    "third-party/licenses/NvCloth.txt": "b4fa2a357a4e50df2d3d514858bdbefc5b356f4a289523969daeea65d67b9004",
+    "third-party/licenses/PxShared.txt": "b4fa2a357a4e50df2d3d514858bdbefc5b356f4a289523969daeea65d67b9004"
+  },
+  "verification": {
+    "x86": "MSVC Release: cpu_cloth and measured_capsules fixtures passed",
+    "x64": "MSVC Release: cpu_cloth and measured_capsules fixtures passed",
+    "cpuClothFixture": {
+      "frames": 600,
+      "minVertexGap": -2.63875e-05,
+      "maxStretch": 1.00893
+    },
+    "pouchExperiment": "REJECTED; see docs/CPU-POUCH-DEVELOPMENT.md",
+    "nativeGameplay": "Not tested; no installed-game adoption",
+    "pouchFinalReplay": {
+      "requests": 7,
+      "failedRequests": 7,
+      "simulatedSeconds": 5.453,
+      "solverSeconds": 16.0879,
+      "lastBodyIntersections": 75,
+      "lastRenderedStretch": 2.053188468,
+      "status": "REJECTED - not installed"
+    }
+  }
+}

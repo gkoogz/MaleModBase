@@ -25,17 +25,29 @@ inline void Session::SupportedCloth(const Input& input,const std::vector<Point>&
  ClassifySurfaces(colliderInput,{},C);
  auto classificationUpdated=std::chrono::steady_clock::now();
  std::vector<Point> x(positions_.size()),velocity(x.size()),fixed(x.size());
- for(unsigned i=0;i<x.size();i++){x[i]=local(positions_[i]);velocity[i]=Mul(localVector(velocities_[i]),1/C);fixed[i]=local(targets[i]);if(pinned_[i])x[i]=fixed[i];}
+ for(unsigned i=0;i<x.size();i++){x[i]=local(positions_[i]);velocity[i]=Mul(localVector(velocities_[i]),1/C);fixed[i]=local(targets[i]);}
  std::vector<unsigned> bodySeed(x.size(),UINT32_MAX),anatomySeed(x.size(),UINT32_MAX);
  auto render=[&](unsigned i){return render_contact::Evaluate(renderBindings_[i],x,materialFrame,C);};
  auto seamOffset=[&](Point p){return local(input.frame.World(p));};
- auto sew=[&](){for(const auto& s:sewing_){Point error=seamOffset(s.residual);double weight=0;for(unsigned k=0;k<s.count;k++){error=Add(error,Mul(x[s.nodes[k]],s.weights[k]));weight+=inverseMass_[s.nodes[k]]*s.weights[k]*s.weights[k];}if(weight>1e-20)for(unsigned k=0;k<s.count;k++)if(inverseMass_[s.nodes[k]])x[s.nodes[k]]=Sub(x[s.nodes[k]],Mul(error,inverseMass_[s.nodes[k]]*s.weights[k]/weight));}};
+ auto updateSewing=[&](){for(auto& s:sewing_){Point rendered=Mul(s.separation,-1/C),linear{};for(auto term:s.vertices)rendered=Add(rendered,Mul(render(term.first),term.second));for(unsigned k=0;k<s.count;k++)linear=Add(linear,Mul(x[s.nodes[k]],s.weights[k]));s.residual=Mul(Sub(rendered,linear),C);}};
+ auto sew=[&](){updateSewing();for(const auto& s:sewing_){Point error=seamOffset(s.residual);double weight=0;for(unsigned k=0;k<s.count;k++){error=Add(error,Mul(x[s.nodes[k]],s.weights[k]));weight+=inverseMass_[s.nodes[k]]*s.weights[k]*s.weights[k];}if(weight>1e-20)for(unsigned k=0;k<s.count;k++)if(inverseMass_[s.nodes[k]])x[s.nodes[k]]=Sub(x[s.nodes[k]],Mul(error,inverseMass_[s.nodes[k]]*s.weights[k]/weight));}};
+ std::vector<unsigned char> pouchNode(x.size()),bandNode(x.size());
+ for(unsigned i=0;i<output_.layout.sheet.start;i++)bandNode[vertexNodes_[i]]=1;
+ for(unsigned i=output_.layout.sheet.start;i<output_.layout.sheet.start+(parameters_.pouchRings+1)*(parameters_.pouchSegments+1);i++)pouchNode[vertexNodes_[i]]=1;
+ auto pouchEdge=[&](const auto& e){return pouchNode[e.a]&&pouchNode[e.b];};
+ auto materialLimit=[&](const auto& e){return pouchEdge(e)?1.15:1.5;};
+ auto strainEdges=edges_;for(auto& e:strainEdges)if(!pouchEdge(e))e.rest*=1.4/1.10;
  ReactionCollector reactions(input.anatomy);
  std::vector<Point> contactDelta(x.size()),tissueDelta(x.size());
- constexpr double step=1./60;
+ // Substep both material and measured obstacles through each captured pose
+ // interval. Kinematic motion must advance with the cloth, not teleport ahead
+ // of several numerical steps.
+ if(!std::isfinite(elapsed)||elapsed<0)throw std::invalid_argument("Invalid supported cloth interval");
+ const unsigned steps=elapsed>0?unsigned(std::ceil(elapsed*60)):0;
+ const double step=steps?elapsed/steps:1./60;
  accumulator_+=elapsed;
- unsigned steps=unsigned((std::min)(60.,std::floor((accumulator_+1e-12)/step)));
- const unsigned passes=steps;
+ const unsigned passes=(std::max)(1u,steps);
+ const auto start=x,finalFixed=fixed;
  for(auto& memos:pointMemos_)memos.resize(x.size()+mesh.vertices.size());
  for(auto& memos:faceMemos_)memos.resize(mesh.triangles.size());
  auto pointSlot=[&](unsigned vertex){return unsigned(x.size())+vertex;};
@@ -91,34 +103,47 @@ inline void Session::SupportedCloth(const Input& input,const std::vector<Point>&
  auto movableFace=[&](const Triangle& f){return movable[f.vertices[0]]||movable[f.vertices[1]]||movable[f.vertices[2]];};
 
  auto project=[&](unsigned i,bool anatomy,bool record){
-  auto& collider=anatomy?anatomyCollider_:bodyCollider_;if(collider.Empty())return;
-  auto hit=pointQuery(anatomy,i,x[i],margin+2e-5);
+  auto& collider=anatomy?anatomyCollider_:bodyCollider_;if(collider.Empty())return false;
+  const double clearance=margin+(bandNode[i]?parameters_.bandThickness*.5:0);
+  auto hit=pointQuery(anatomy,i,x[i],clearance+3e-5);
   // A physical oriented surface supplies the contact normal. Closure faces
   // are not physical obstacles and must not push the supporting garment.
-  if(hit.signedDistance>=margin+2e-5)return;
-  double depth=margin+2e-5-hit.signedDistance;
+  if(hit.signedDistance>=clearance+1e-5)return false;
+  double depth=clearance+3e-5-hit.signedDistance;
   auto correction=Mul(hit.normal,depth);x[i]=Add(x[i],correction);contactDelta[i]=Add(contactDelta[i],correction);if(anatomy)tissueDelta[i]=Add(tissueDelta[i],correction);
   if(pinned_[i])fixed[i]=x[i];
   if(anatomy&&record&&inverseMass_[i]>0&&hit.triangle<input.anatomyTriangles.size()){
-   auto f=input.anatomyTriangles[hit.triangle];auto bary=Barycentric(hit.point,local(input.anatomy[f[0]].position),local(input.anatomy[f[1]].position),local(input.anatomy[f[2]].position));
+   // The contact point belongs to this substep's interpolated surface.
+   // Final-pose vertices can put its barycentrics outside the actual triangle.
+   auto f=input.anatomyTriangles[hit.triangle];auto bary=anatomyCollider_.ContactWeights(hit);
    reactions.Add(hit.triangle,bary,worldVector(Mul(correction,C/(step*inverseMass_[i]))),world(hit.point),hit.signedDistance*C,input.anatomyTriangles);
   }
-  output_.projectedContacts++;
+  output_.projectedContacts++;return true;
  };
+ unsigned finalPasses=0,visits=0;
+ auto faceBegan=std::chrono::steady_clock::now();
  for(unsigned sub=0;sub<passes;sub++){
+  std::fill(contactDelta.begin(),contactDelta.end(),Point{});
+  std::fill(tissueDelta.begin(),tissueDelta.end(),Point{});
+  const double fraction=double(sub+1)/passes;
+  for(unsigned i=0;i<x.size();i++)if(pinned_[i])fixed[i]=Add(Mul(start[i],1-fraction),Mul(finalFixed[i],fraction));
+  if(passes>1){
+   for(unsigned i=0;i<input.bodySurface.size();i++)colliderInput.bodySurface[i].position=input.frame.Local(Add(Mul(previousBodySurface_[i].position,1-fraction),Mul(input.bodySurface[i].position,fraction)));
+   for(unsigned i=0;i<input.anatomy.size();i++)colliderInput.anatomy[i].position=input.frame.Local(Add(Mul(previousAnatomySurface_[i].position,1-fraction),Mul(input.anatomy[i].position,fraction)));
+   bodyCollider_.Update(colliderInput.bodySurface,input.bodyTriangles,{},C);anatomyCollider_.Update(colliderInput.anatomy,input.anatomyTriangles,{},C);ClassifySurfaces(colliderInput,{},C);
+  }
   auto old=x;
   for(unsigned i=0;i<x.size();i++){
    if(pinned_[i])x[i]=fixed[i];
-   else if(steps){velocity[i]=Add(Mul(velocity[i],std::exp(-parameters_.mechanics.dampingRate*step)),Mul(localVector(input.gravity),step/C));x[i]=Add(x[i],Mul(velocity[i],step));}
+   else if(steps){const double damping=parameters_.mechanics.dampingRate,decay=std::exp(-damping*step),gravityTime=damping>1e-12?(1-decay)/damping:step;velocity[i]=Add(Mul(velocity[i],decay),Mul(localVector(input.gravity),gravityTime/C));x[i]=Add(x[i],Mul(velocity[i],step));}
   }
   for(auto& e:edges_)e.lambda=0;
   for(unsigned iteration=0;iteration<12;iteration++){
-   for(auto& e:edges_){auto d=Sub(x[e.a],x[e.b]);double length=Length(d),wa=inverseMass_[e.a],wb=inverseMass_[e.b],alpha=e.compliance/(step*step);if(length<1e-14||wa+wb==0||(e.tether&&length<=e.rest))continue;double dl=(-(length-e.rest)-alpha*e.lambda)/(wa+wb+alpha);e.lambda+=dl;auto delta=Mul(d,dl/length);if(wa)x[e.a]=Add(x[e.a],Mul(delta,wa));if(wb)x[e.b]=Sub(x[e.b],Mul(delta,wb));}
+   for(auto& e:edges_){auto d=Sub(x[e.a],x[e.b]);double length=Length(d),wa=inverseMass_[e.a],wb=inverseMass_[e.b],alpha=e.compliance*(pouchEdge(e)?1.:8.)/(step*step);if(length<1e-14||wa+wb==0||(e.tether&&length<=e.rest))continue;double dl=(-(length-e.rest)-alpha*e.lambda)/(wa+wb+alpha);e.lambda+=dl;auto delta=Mul(d,dl/length);if(wa)x[e.a]=Add(x[e.a],Mul(delta,wa));if(wb)x[e.b]=Sub(x[e.b],Mul(delta,wb));}
    sew();
-   if(iteration+1==12)for(unsigned i=0;i<x.size();i++)if(!pinned_[i]){project(i,false,false);project(i,true,steps>0);}
+   if(iteration%2==1)for(unsigned i=0;i<x.size();i++){project(i,false,false);project(i,true,steps>0);}
   }
   for(unsigned i=0;i<x.size();i++)if(!pinned_[i]&&steps){velocity[i]=Mul(Sub(x[i],old[i]),1/step);}
- }
  // Retain the finite contact pairs found by a complete surface sweep. Local
  // manifold iterations query those actual triangles, never infinite planes.
  struct Pair {unsigned cloth,physical;bool anatomy;Point normal;};
@@ -126,7 +151,8 @@ inline void Session::SupportedCloth(const Input& input,const std::vector<Point>&
  auto applyFace=[&](unsigned fi,bool anatomy,const detail::BodyCollider::Hit& hit){
   if(hit.signedDistance>=margin-1e-8)return false;
   const auto& face=mesh.triangles[fi];std::array<Point,3> corners{render(face.vertices[0]),render(face.vertices[1]),render(face.vertices[2])};
-  auto bary=Barycentric(hit.clothPoint,corners[0],corners[1],corners[2]);render_contact::Gradient gradient;
+  auto bary=Barycentric(hit.clothPoint,corners[0],corners[1],corners[2]);
+  render_contact::Gradient gradient;
   for(unsigned k=0;k<3;k++)render_contact::Merge(gradient,render_contact::Derivative(renderBindings_[face.vertices[k]],x,materialFrame,C,hit.normal),bary[k]);
   double denominator=gradient.InverseMass(inverseMass_);bool supported=denominator<1e-20;
   if(supported)for(unsigned k=0;k<gradient.count;k++)denominator+=Dot(gradient.values[k],gradient.values[k]);
@@ -134,7 +160,7 @@ inline void Session::SupportedCloth(const Input& input,const std::vector<Point>&
   const double depth=margin+5e-5-hit.signedDistance;
   auto application=render_contact::Application(gradient,x,inverseMass_);
   if(anatomy&&!supported&&steps&&input.anatomyMass>0){
-   const auto tri=input.anatomyTriangles[hit.triangle];auto weights=Barycentric(hit.point,local(input.anatomy[tri[0]].position),local(input.anatomy[tri[1]].position),local(input.anatomy[tri[2]].position));
+   const auto tri=input.anatomyTriangles[hit.triangle];auto weights=anatomyCollider_.ContactWeights(hit);
    auto impulse=worldVector(Mul(hit.normal,depth*C/(step*denominator)));auto particleImpulse=worldVector(Mul(application.impulse,depth*C/(step*denominator)));
    auto moment=Add(worldVector(Mul(application.moment,depth*C*C/(step*denominator))),Cross(origin,particleImpulse));
    reactions.Add(hit.triangle,weights,impulse,world(hit.point),hit.signedDistance*C,input.anatomyTriangles,particleImpulse,moment);
@@ -152,18 +178,18 @@ inline void Session::SupportedCloth(const Input& input,const std::vector<Point>&
   }return moved;
  };
  auto localContact=[&](){bool moved=false;for(const auto& pair:pairs){
-  const auto& f=mesh.triangles[pair.cloth];const auto& surface=pair.anatomy?input.anatomy:input.bodySurface;const auto tri=(pair.anatomy?input.anatomyTriangles:input.bodyTriangles)[pair.physical];
-  std::array<Point,3> cloth{render(f.vertices[0]),render(f.vertices[1]),render(f.vertices[2])},body{local(surface[tri[0]].position),local(surface[tri[1]].position),local(surface[tri[2]].position)};
-  Point a,b;double distance=detail::ClosestTriangles(cloth,body,a,b);if(distance>margin+6e-5)continue;
+  const auto& f=mesh.triangles[pair.cloth];const auto& surface=pair.anatomy?colliderInput.anatomy:colliderInput.bodySurface;const auto tri=(pair.anatomy?input.anatomyTriangles:input.bodyTriangles)[pair.physical];
+  std::array<Point,3> cloth{render(f.vertices[0]),render(f.vertices[1]),render(f.vertices[2])},body{Mul(surface[tri[0]].position,1/C),Mul(surface[tri[1]].position,1/C),Mul(surface[tri[2]].position,1/C)};
+  Point a,b;double distance=detail::SurfaceTriangleDistance(cloth,body,a,b);if(distance>margin+6e-5)continue;
   detail::BodyCollider::Hit hit{b,pair.normal,distance,Dot(Sub(a,b),pair.normal),pair.physical,a};moved=applyFace(pair.cloth,pair.anatomy,hit)||moved;
  }return moved;};
  auto beforeFinal=x;
- auto faceBegan=std::chrono::steady_clock::now();unsigned finalPasses=0,visits=0;
+
  for(unsigned discovery=0;discovery<8;discovery++){
   bool moved=discover();
-  for(unsigned pass=0;pass<24;pass++){finalPasses++;bool stretched=false;for(const auto& edge:edges_)if(!edge.bend&&!edge.tether&&Length(Sub(x[edge.a],x[edge.b]))>edge.rest*1.15){stretched=true;break;}
-   if(stretched){auto strain=cloth_stretch::ProjectCoupled(x,inverseMass_,edges_,stretchAdjacency_,sewing_,seamOffset,1.10);visits+=strain.visits;}else sew();
-   if(!localContact())break;
+  for(unsigned pass=0;pass<24;pass++){finalPasses++;bool stretched=false;for(const auto& edge:edges_)if(!edge.bend&&!edge.tether&&Length(Sub(x[edge.a],x[edge.b]))>edge.rest*materialLimit(edge)){stretched=true;break;}
+   if(stretched&&!preparingPlacement_){updateSewing();auto strain=cloth_stretch::ProjectCoupled(x,inverseMass_,strainEdges,stretchAdjacency_,sewing_,seamOffset,1.10);visits+=strain.visits;}else sew();
+   bool pointsMoved=false;for(unsigned i=0;i<x.size();i++){pointsMoved=project(i,false,false)||pointsMoved;pointsMoved=project(i,true,steps>0)||pointsMoved;}if(!localContact()&&!pointsMoved)break;
   }
   if(!moved)break;
  }
@@ -173,7 +199,7 @@ inline void Session::SupportedCloth(const Input& input,const std::vector<Point>&
   auto obstacleVelocity=[&](const detail::BodyCollider::Hit& hit,bool anatomy){
    const auto& faces=anatomy?input.anatomyTriangles:input.bodyTriangles;const auto& now=anatomy?input.anatomy:input.bodySurface;const auto& previous=anatomy?previousAnatomySurface_:previousBodySurface_;
    if(previous.size()!=now.size()||hit.triangle>=faces.size())return Point{};
-   auto f=faces[hit.triangle];auto bary=Barycentric(hit.point,local(now[f[0]].position),local(now[f[1]].position),local(now[f[2]].position));Point v{};
+   auto f=faces[hit.triangle];auto bary=(anatomy?anatomyCollider_:bodyCollider_).ContactWeights(hit);Point v{};
    for(unsigned k=0;k<3;k++)v=Add(v,Mul(localVector(Sub(now[f[k]].position,previous[f[k]].position)),bary[k]/(C*steps*step)));return v;
   };
   for(unsigned i=0;i<x.size();i++)if(!pinned_[i])for(bool anatomy:{false,true}){
@@ -181,15 +207,17 @@ inline void Session::SupportedCloth(const Input& input,const std::vector<Point>&
    auto hit=pointQuery(anatomy,i,x[i],margin+8e-5);const auto& faces=anatomy?input.anatomyTriangles:input.bodyTriangles;
    if(hit.triangle>=faces.size()||hit.signedDistance>margin+8e-5)continue;
    auto response=cloth_contact::Solve(velocity[i],obstacleVelocity(hit,anatomy),hit.normal,(std::max)(0.,Dot(correction,hit.normal)),inverseMass_[i],parameters_.mechanics.friction,step);
-   if(anatomy&&input.anatomyMass>0){auto f=faces[hit.triangle];auto bary=Barycentric(hit.point,local(input.anatomy[f[0]].position),local(input.anatomy[f[1]].position),local(input.anatomy[f[2]].position));reactions.Add(hit.triangle,bary,worldVector(Mul(Sub(response.velocity,velocity[i]),C/inverseMass_[i])),world(hit.point),hit.signedDistance*C,input.anatomyTriangles);}
+   if(anatomy&&input.anatomyMass>0){auto f=faces[hit.triangle];auto bary=anatomyCollider_.ContactWeights(hit);reactions.Add(hit.triangle,bary,worldVector(Mul(Sub(response.velocity,velocity[i]),C/inverseMass_[i])),world(hit.point),hit.signedDistance*C,input.anatomyTriangles);}
    velocity[i]=response.velocity;
   }
+ }
  }
  previousBodySurface_=input.bodySurface;previousAnatomySurface_=input.anatomy;
  accumulator_-=steps*step;clock_+=steps*step;
  t.substeps=steps;t.advancedSeconds=steps*step;t.accumulatedSeconds=clock_;
- t.maxStretchRatio=0;t.maxSeamGap=0;
- for(const auto& e:edges_)if(!e.bend&&!e.tether)t.maxStretchRatio=(std::max)(t.maxStretchRatio,Length(Sub(x[e.a],x[e.b]))/e.rest);
+ t.maxStretchRatio=0;t.maxSeamGap=0;updateSewing();
+ bool extensionAccepted=true;
+ for(const auto& e:edges_)if(!e.bend&&!e.tether){double ratio=Length(Sub(x[e.a],x[e.b]))/e.rest;if(ratio>t.maxStretchRatio){t.maxStretchRatio=ratio;t.worstStretchA=e.a;t.worstStretchB=e.b;}if(ratio>materialLimit(e))extensionAccepted=false;}
  for(const auto& s:sewing_){auto error=seamOffset(s.residual);for(unsigned k=0;k<s.count;k++)error=Add(error,Mul(x[s.nodes[k]],s.weights[k]));t.maxSeamGap=(std::max)(t.maxSeamGap,Length(error)*C);}
 
  for(unsigned i=0;i<x.size();i++){positions_[i]=world(x[i]);velocities_[i]=worldVector(Mul(velocity[i],C));t.maxSpeed=(std::max)(t.maxSpeed,Length(velocities_[i]));}
@@ -198,14 +226,27 @@ inline void Session::SupportedCloth(const Input& input,const std::vector<Point>&
  // does not turn missed triangle-interior contact into an accepted result.
  auto validationBegan=std::chrono::steady_clock::now();
  output_.coverageMargin=1e100;output_.contactBudgetSatisfied=true;
- for(unsigned fi=0;fi<mesh.triangles.size();fi++){const auto& face=mesh.triangles[fi];std::array<Point,3> corners;for(unsigned k=0;k<3;k++)corners[k]=local(mesh.vertices[face.vertices[k]].position);for(bool anatomical:{false,true}){auto hit=faceQuery(anatomical,fi,corners,margin);if(hit.signedDistance<margin-1e-8)output_.contactBudgetSatisfied=false;if(anatomical)output_.coverageMargin=(std::min)(output_.coverageMargin,(hit.signedDistance-margin)*C);}}
- for(unsigned i=0;i<mesh.vertices.size();i++)for(bool anatomical:{false,true})if(pointQuery(anatomical,pointSlot(i),local(mesh.vertices[i].position),margin).signedDistance<margin-1e-8)output_.contactBudgetSatisfied=false;
+ double worstGap=0;unsigned worstVertex=UINT32_MAX,worstFace=UINT32_MAX;bool worstAnatomy=false;
+ for(unsigned fi=0;fi<mesh.triangles.size();fi++){const auto& face=mesh.triangles[fi];std::array<Point,3> corners;for(unsigned k=0;k<3;k++)corners[k]=local(mesh.vertices[face.vertices[k]].position);for(bool anatomical:{false,true}){auto hit=faceQuery(anatomical,fi,corners,margin);if(hit.signedDistance<margin-1e-8){output_.contactBudgetSatisfied=false;if(hit.signedDistance-margin<worstGap){worstGap=hit.signedDistance-margin;worstFace=fi;worstVertex=UINT32_MAX;worstAnatomy=anatomical;}}if(anatomical)output_.coverageMargin=(std::min)(output_.coverageMargin,(hit.signedDistance-margin)*C);}}
+ for(unsigned i=0;i<mesh.vertices.size();i++)for(bool anatomical:{false,true}){auto hit=pointQuery(anatomical,pointSlot(i),local(mesh.vertices[i].position),margin);if(hit.signedDistance<margin-1e-8){output_.contactBudgetSatisfied=false;if(hit.signedDistance-margin<worstGap){worstGap=hit.signedDistance-margin;worstVertex=i;worstFace=UINT32_MAX;worstAnatomy=anatomical;}}}
 
  if(output_.layout.revision==2)for(unsigned fi=output_.layout.sheetFaces.start;fi<output_.layout.sheetFaces.start+output_.layout.sheetFaces.count;fi++){const auto& f=mesh.triangles[fi];for(unsigned k=0;k<3;k++){unsigned a=f.vertices[k],b=f.vertices[(k+1)%3];double rest=Length(Sub(restMesh_.vertices[a].position,restMesh_.vertices[b].position));if(rest>C*1e-12)t.maxRenderStretchRatio=(std::max)(t.maxRenderStretchRatio,Length(Sub(mesh.vertices[a].position,mesh.vertices[b].position))/rest);}}
- t.materialBudgetSatisfied=t.maxRenderStretchRatio<=1.15&&t.maxStretchRatio<=1.15&&t.maxSeamGap<=C*parameters_.bandThickness*.25;
- detail::Shading(mesh);if(input.anatomyMass>0)reactions.Publish(output_,steps*step,clothMass_);
+ t.materialBudgetSatisfied=t.maxRenderStretchRatio<=1.15&&extensionAccepted&&t.maxSeamGap<=C*parameters_.bandThickness*.25;
+ // Complete one-time material authoring only after the placed garment is
+ // outside both measured surfaces and its actual rendered stitches agree.
+ // This never runs during ordinary motion; only PlacePrepared enables it.
+ if(preparingPlacement_&&output_.contactBudgetSatisfied&&t.maxSeamGap<=C*parameters_.bandThickness*.25){
+  for(auto& e:edges_){double length=Length(Sub(x[e.a],x[e.b]));e.rest=e.tether?(std::max)(e.rest,length*1.02):length;e.lambda=0;}
+  for(auto& s:sewing_){Point separation{};for(auto term:s.vertices)separation=Add(separation,Mul(render(term.first),term.second));s.separation=Mul(separation,C);}
+  updateSewing();restMesh_=mesh;std::fill(velocities_.begin(),velocities_.end(),Point{});clock_=accumulator_=0;preparingPlacement_=false;
+  t.maxStretchRatio=t.maxRenderStretchRatio=1;t.maxSeamGap=t.maxSpeed=0;t.advancedSeconds=t.accumulatedSeconds=0;t.substeps=0;t.materialBudgetSatisfied=true;
+  output_.reactions.clear();output_.support.clear();output_.reaction={};
+ }else if(input.anatomyMass>0)reactions.Publish(output_,steps*step,clothMass_);
+ detail::Shading(mesh);
 #ifdef MALEMOD_SUPPORTED_PROFILE
- if(clock_<.06)std::fprintf(stderr,"PROFILE clock %.4f step %u physical %.3f classification %.3f pre %.3f final %.3f verify %.3f passes %u visits %u\n",clock_,steps,std::chrono::duration<double,std::milli>(physicalUpdated-began).count(),std::chrono::duration<double,std::milli>(classificationUpdated-physicalUpdated).count(),std::chrono::duration<double,std::milli>(faceBegan-classificationUpdated).count(),std::chrono::duration<double,std::milli>(validationBegan-faceBegan).count(),std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-validationBegan).count(),finalPasses,visits);
+ if(!t.materialBudgetSatisfied){for(auto node:{t.worstStretchA,t.worstStretchB}){unsigned v=0;while(v<vertexNodes_.size()&&vertexNodes_[v]!=node)v++;std::fprintf(stderr,"MATERIAL node %u vertex %u pinned %u pouch %u\n",node,v,unsigned(pinned_[node]),unsigned(pouchNode[node]));}}
+ if(!output_.contactBudgetSatisfied)std::fprintf(stderr,"CONTACT FAIL gap %.9f vertex %u face %u anatomy %u\n",worstGap*C,worstVertex,worstFace,unsigned(worstAnatomy));
+ if(true)std::fprintf(stderr,"PROFILE clock %.4f step %u physical %.3f classification %.3f pre %.3f final %.3f verify %.3f passes %u visits %u\n",clock_,steps,std::chrono::duration<double,std::milli>(physicalUpdated-began).count(),std::chrono::duration<double,std::milli>(classificationUpdated-physicalUpdated).count(),std::chrono::duration<double,std::milli>(faceBegan-classificationUpdated).count(),std::chrono::duration<double,std::milli>(validationBegan-faceBegan).count(),std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-validationBegan).count(),finalPasses,visits);
 #endif
  t.solverMilliseconds=std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-began).count();
 }

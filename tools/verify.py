@@ -91,6 +91,13 @@ def main():
         if hashlib.sha256(payload).hexdigest()!=expected:
             raise ValueError('Shared garment provenance differs: '+path)
     clinical=json.loads((ROOT/'provenance/clinical.json').read_text())
+    nvcloth=json.loads((ROOT/'provenance/nvcloth.json').read_text())
+    if nvcloth.get('fileHashNormalization')!='LF':
+        raise ValueError('Unknown CPU cloth hash normalization')
+    for path,expected in nvcloth['files'].items():
+        payload=(ROOT/path).read_bytes().replace(b'\r\n',b'\n')
+        if hashlib.sha256(payload).hexdigest()!=expected:
+            raise ValueError('CPU cloth provenance differs: '+path)
     for item in clinical['files']:
         if hashlib.sha256((ROOT/item['source']).read_bytes()).hexdigest()!=item['sourceSHA256']:
             raise ValueError('Clinical source provenance differs')

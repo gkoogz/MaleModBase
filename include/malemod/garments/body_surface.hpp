@@ -90,6 +90,16 @@ inline void BodyCollider::Consider(unsigned id,Point p,Hit& hit)const{
 inline void BodyCollider::Search(unsigned at,Point p,Hit& hit)const{const auto& node=nodes_[at];if(BoxDistance(p,node.lo,node.hi)>hit.distance*hit.distance)return;if(node.left){double a=BoxDistance(p,nodes_[node.left].lo,nodes_[node.left].hi),b=BoxDistance(p,nodes_[node.right].lo,nodes_[node.right].hi);Search(a<b?node.left:node.right,p,hit);Search(a<b?node.right:node.left,p,hit);return;}for(unsigned j=node.begin;j<node.end;j++)Consider(order_[j],p,hit);}
 inline BodyCollider::Hit BodyCollider::ClosestFace(const std::array<Point,3>& face,double margin,unsigned seedTriangle)const{MALEMOD_SURFACE_TIME(true) if(!std::isfinite(margin)||margin<=0||!Finite(face[0])||!Finite(face[1])||!Finite(face[2]))throw std::invalid_argument("Invalid triangle contact neighborhood");SurfaceFaceQuery query(face);Hit hit;hit.distance=hit.signedDistance=margin;hit.triangle=unsigned(-1);if(!Empty()){if(seedTriangle<triangles_.size())ConsiderFace(seedTriangle,query,hit);SearchFace(0,query,margin,hit);}return hit;}
 inline BodyCollider::Hit BodyCollider::Sweep(Point from,Point to)const{Hit hit;if(!Empty())SearchSweep(0,from,to,hit);return hit;}
+inline Point BodyCollider::ContactWeights(const Hit& hit)const{
+ if(hit.triangle>=triangles_.size()||!Finite(hit.point))throw std::invalid_argument("Contact has no physical triangle");
+ const auto f=triangles_[hit.triangle];auto a=points_[f[0]],v=Sub(points_[f[1]],a),w=Sub(points_[f[2]],a),r=Sub(hit.point,a);
+ const double vv=Dot(v,v),vw=Dot(v,w),ww=Dot(w,w),rv=Dot(r,v),rw=Dot(r,w),denominator=vv*ww-vw*vw;
+ if(!std::isfinite(denominator)||denominator<=0)throw std::invalid_argument("Degenerate physical contact triangle");
+ const double y=(ww*rv-vw*rw)/denominator,z=(vv*rw-vw*rv)/denominator;
+ Point weights{1-y-z,y,z};double sum=0;
+ for(auto& weight:weights){if(!std::isfinite(weight)||weight<-1e-7)throw std::invalid_argument("Contact point outside queried physical triangle");weight=(std::max)(0.,weight);sum+=weight;}
+ return Mul(weights,1/sum);
+}
 inline bool RayBox(Point from,Point direction,Point lo,Point hi){
  double nearDistance=0,farDistance=1e100;
  for(unsigned k=0;k<3;k++){if(std::abs(direction[k])<1e-30){if(from[k]<lo[k]||from[k]>hi[k])return false;}else{double a=(lo[k]-from[k])/direction[k],b=(hi[k]-from[k])/direction[k];if(a>b)std::swap(a,b);nearDistance=(std::max)(nearDistance,a);farDistance=(std::min)(farDistance,b);if(nearDistance>farDistance)return false;}}
@@ -185,4 +195,3 @@ inline BodyCollider::Hit BodyCollider::ClosestFaceCached(const std::array<Point,
  for(auto id:neighborhood.candidates_)ConsiderFace(id,query,hit);return hit;
 }
 }
-

@@ -3,6 +3,19 @@
 using namespace malemod::garments;
 static void Check(bool value,const char* text){if(!value)throw std::runtime_error(text);}
 int main(){try{
+ // A moving obstacle is queried at an intermediate pose, not at its future
+ // producer pose. Its hit must retain weights on the queried triangle.
+ {
+  std::vector<Sample> pose(3);pose[0].position={10,0,0};pose[1].position={12,0,0};pose[2].position={10,2,0};
+  detail::BodyCollider moving;moving.Update(pose,{{0,1,2}});
+  const auto hit=moving.Closest({10.6,1,.25});const auto weights=moving.ContactWeights(hit);
+  Check(Length(Sub(weights,{.2,.3,.5}))<1e-12,"Interpolated contact lost physical barycentrics");
+  Point reconstructed{};for(unsigned k=0;k<3;k++)reconstructed=Add(reconstructed,Mul(pose[k].position,weights[k]));
+  Check(Length(Sub(reconstructed,hit.point))<1e-12,"Contact weights do not reconstruct queried point");
+  bool rejected=false;auto miss=hit;miss.triangle=UINT32_MAX;
+  try{moving.ContactWeights(miss);}catch(const std::invalid_argument&){rejected=true;}
+  Check(rejected,"No-hit contact acquired tissue weights");
+ }
  std::vector<Sample> body(4);body[0].position={-2,-2,0};body[1].position={2,-2,0};body[2].position={2,2,0};body[3].position={-2,2,0};std::vector<std::array<std::uint32_t,3>> faces{{0,1,2},{0,2,3}};
  detail::BodyCollider collider;collider.Update(body,faces);Check(std::abs(collider.Closest({0,0,.3}).signedDistance-.3)<1e-12,"Outward surface clearance incorrect");Check(std::abs(collider.Closest({0,0,-.2}).signedDistance+.2)<1e-12,"Near-surface inside sign incorrect");
  // An edge pierces a face while neither edge endpoint lies on the face and

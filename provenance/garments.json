@@ -4,7 +4,7 @@
   "legacyChanged": false,
   "characterRecipe": "assets/garments/wolverine-jockstrap-donors.json",
   "verification": {
-    "status": "Uninstalled development: saved live-pose dressing contact/material replay passes; real-time performance and native attachment matrix fail or untested",
+    "status": "Uninstalled development. Corrected reference replay passes saved coalesced contact/material checks but is too slow. Optional NvCloth pouch experiment fails full body contact/material/performance gates and is disabled by default. Native attachment matrix and gameplay untested.",
     "workingTreeClean": false,
     "geometryBindingRevision": 2,
     "reactionWire": 6,
@@ -211,7 +211,7 @@
   },
   "fileHashes": {
     "assets/garments/wolverine-jockstrap-donors.json": "4394af216a7f955896063d453136a264d120f588e151954e64c820258d31c966",
-    "CMakeLists.txt": "7ca36054930485c566fed91570897ff0bc7c4d20a9f229a38b994bc0221ee611",
+    "CMakeLists.txt": "cb84a2dab00bcb965db87deb4ba088408e968f11af1c7ac950c51b1f61ada229",
     "docs/GARMENT-CONTACT-REPAIR.md": "fb747838d2c3fdf460a8fd0578a043720d31a55c50f817dc43587915bf4cfaaf",
     "docs/GARMENT-GEOMETRY-AUDIT.md": "3437079279f2d823e6f9110c7f7c8ba5878bae0a8f2f6e07aea8ee58d51f2bcc",
     "docs/GARMENT-NUMERICAL-SUPPORT.md": "80e7cc520d149761f09ff625b21c0829ef066b885943c6083f44ff5b309a59c8",
@@ -221,8 +221,8 @@
     "docs/WAISTBAND-CONTOURS.md": "a51e11379e3d6b896cc7328772a2b1f5d8545168b96a6ef2133d78979c9c0aae",
     "include/malemod/garments/band_material.hpp": "fae1214ae54029f731b79f2f56c51b717594df885b9fa9b817f2b58324c7a177",
     "include/malemod/garments/band_rest.hpp": "b235d42fff1a06f78d1eb350b470fc238c337c5f3d72a5346b7e33c2f2fa5e16",
-    "include/malemod/garments/body_surface.hpp": "f67dee88ed5325da61e2ad71a178773f9837b2910f1aa5505398dccec03411c8",
-    "include/malemod/garments/cloth_detail.hpp": "6bed57bc104401e9373ce3434f04e356030f7f1fe47bdf06dfcb8cf946b97045",
+    "include/malemod/garments/body_surface.hpp": "2f904edf16c4fba5e8b200c766876b6e0d61d17e009f9ff9926437d0b3454c5c",
+    "include/malemod/garments/cloth_detail.hpp": "59669fa04cbcdd15e4476d71e023cd05a2b31c269611ac5845d560a287f2f0e0",
     "include/malemod/garments/cloth_reaction.hpp": "3b7d38d47df5ac80bf576c9b8e61ef9faf82417e58809e6bf93cdb8cd2263050",
     "include/malemod/garments/cloth_stretch.hpp": "40fca9a3d45e782360afe4d3cff1c53dbdfe1a41151a56037dddaac7a1fc5e56",
     "include/malemod/garments/contact_velocity.hpp": "0b405f733b9ebce5f5f81dccd32ce6136f3a28c58de16416a55806826ebb2a07",
@@ -231,8 +231,8 @@
     "include/malemod/garments/drape_section.hpp": "5c1be4100c42af6fa0b558aa5e0983ffc3d86766259e90d040d50d4d93c11008",
     "include/malemod/garments/drape_sheet.hpp": "22c0c2b8a4320e7f4ee5964ba01c9ea87de58d9b6ad250a2e5492046fdec28c9",
     "include/malemod/garments/geometry_export.hpp": "8b214acffbed298b389254f67b3834e12dc6a6274d4131b0c377b2b31e6d229b",
-    "include/malemod/garments/jockstrap.hpp": "aea068a2290239e366b6fa6cc075bcf9105d9b38a2f8a13981a81b51e178ce9a",
-    "include/malemod/garments/jockstrap_detail.hpp": "427c74b06d8dc8828fad7676135d11b3170b00a87626e2471caa98e1cf3dceb0",
+    "include/malemod/garments/jockstrap.hpp": "4005d82c2a3a5702537fad7fae372f5f995d24a726747cafea33dd99537b1970",
+    "include/malemod/garments/jockstrap_detail.hpp": "18adb0a25bdaf495d4a6b945e461a5278abd40a35ece49dbf7f8182450de3bcf",
     "include/malemod/garments/material_grid.hpp": "359b621e3519ef0fc648c11aa83f17c9451679e305ae58e1ebf894b1510b0ab2",
     "include/malemod/garments/natural_band.hpp": "101a595bb200997ee31bb41ddef568c46b6d46991a1d0fa5478a2a751b94d611",
     "include/malemod/garments/numerical_support.hpp": "ae38ff5611947e4a87641f44014591d322da662a7f2c3a88ab6de17ec55ad082",
@@ -286,11 +286,21 @@
     "tools/verify_garment_source_reactions.py": "bbad2e2b8cfa8f6c75c984bd26260d69c17f3af3a32649835bef815f3d1d7f77",
     "tests/root_closure_test.cpp": "fe71712421c2837649843c9a1edd7d973130a540b3ef1a8b60eb0a95973b5588",
     "include/malemod/garments/anchor_transport.hpp": "7d9421798155f4f51f5bdd94ad939681f1540934623ed04e3799082b34e034bd",
-    "tests/body_surface_test.cpp": "fdb8ec009231506ea5d097bf3689c229e7211681bebfa24cccdb0d91b378102e",
+    "tests/body_surface_test.cpp": "6a89d2b821bdc98861f2dbac5765771711cfd117d3c6a7b8e622253ba4dec530",
     "include/malemod/garments/contact_query.hpp": "7208bf8cc20e9f7cbe9c8ff7cf2717db75d9141b1f1d3d2b0c0bee7580880cd7",
-    "include/malemod/garments/supported_cloth.hpp": "2e1050184de58b3897fbcdb8dfae447bc0f09dd81e021024966b85f8353a2f51",
+    "include/malemod/garments/supported_cloth.hpp": "5bdd4301f41ba2be684c3b1a29c9cc22cab3cdb41f3118251e6a728c0ed156ec",
     "include/malemod/garments/trim_support.hpp": "a81f81ad75f981aadfc4950563eb1c7cad697875b0632c20d738679884e83d87",
-    "include/malemod/garments/input_recording.hpp": "c9b20db930738fbea5114f8aa4182315dc245e35209107b4d6f33f4b4d1514e8"
+    "include/malemod/garments/input_recording.hpp": "c9b20db930738fbea5114f8aa4182315dc245e35209107b4d6f33f4b4d1514e8",
+    "include/malemod/garments/cpu_cloth.hpp": "095eaaa3eac2aa9779be0559be4a48e6e4c043eba766050aa33258f10d4e75d3",
+    "include/malemod/garments/measured_capsules.hpp": "db697ced29054560cb08e408caefd87f590aa9ce5b3972e22cc34432b303cc75",
+    "include/malemod/garments/pouch_session.hpp": "cb8f145618f580c71b6e4699b59c655b432553a78ba5879480ece80822bd9458",
+    "src/garments/cpu_cloth.cpp": "fd6650e89e9fc6e55621ea620c9666857bc5684abd84ab2c6195aee4b83d41d7",
+    "src/garments/pouch_session.cpp": "0f2cb2d8666bf67cea638422a8c7b7e1b50f3986b5c73eb7fc238347914c896a",
+    "tests/cpu_cloth_test.cpp": "886f9d12e157e4fa94b6ac87b3ffb64b73de711433c8a13954d7b6058d70971c",
+    "tests/measured_capsules_test.cpp": "e92e0695f3ac997702b2d4bc82ee3b06c934c991e2c8c9b68df5e431bbe3147e",
+    "tools/replay_supported_garment.cpp": "6005fdb7de71e9df5a046e830987fd69d221ad47cbe7a29e55416c66fee46bdd",
+    "cmake/NvClothCPU.cmake": "a4844c5ac033e9d915346f0a7467726da3b2ee5d8cfa033536c8908ba980dd51",
+    "cmake/nvcloth-compat/typeinfo.h": "cd89a9b6dd2088e07e94016908900f83bf148382f09c65fb127ae75cd47f4def"
   },
   "historicalVerification": {
     "v2ActualGeraltFit": {
@@ -529,5 +539,30 @@
     "offline": "Captured pose dressing and 12 stationary steps pass contact/material. Rear and side mesh renders reviewed; not native captures.",
     "native": "Pending corrected-route motion and complete attachment matrix. Human and retail runtimes unchanged.",
     "adoption": "Wolverine generated route header; pin this Base revision. Geralt and future spokes must regenerate from their measured crease landmarks and verify independently."
+  },
+  "supportedMotionRepair": {
+    "date": "2026-10-07",
+    "queriedColliderBarycentrics": true,
+    "completeConstraintsInsideSubsteps": true,
+    "exactTriangleInteriorCrossings": true,
+    "capturedReplay": {
+      "requests": 7,
+      "simulatedSeconds": 5.453,
+      "solverSeconds": 39.8901,
+      "failedUpdates": 0,
+      "scope": "Reference supported solver only; interpolation of private captures is not observed gameplay."
+    },
+    "native": "No game files changed; accepted retail/human identities rechecked."
+  },
+  "cpuPouchExperiment": {
+    "defaultEnabled": false,
+    "accepted": false,
+    "backend": "NvCloth CPU 1.1.6",
+    "dependencyProvenance": "provenance/nvcloth.json",
+    "handoff": "docs/CPU-POUCH-DEVELOPMENT.md",
+    "twoWayCoupling": false,
+    "nativeAdoption": false,
+    "wolverine": "Offline captured inputs only; adapter pin unchanged.",
+    "witcher": "Adapter pin and installed runtime unchanged."
   }
 }
