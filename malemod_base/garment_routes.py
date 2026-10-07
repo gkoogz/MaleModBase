@@ -1,14 +1,15 @@
 """Shared dimensionless classic jockstrap route steering.
 
 Adapters supply observed axes, waist samples and measured under-glute targets.
-This moves the side origin gently anterior and lowers the cup inside the glute
-crease; it does not invent a skeleton or convert source coordinates into SI.
+This moves the side origin gently anterior and preserves the measured glute
+crease. Dropping the route below that crease produces a thigh loop rather than
+a supporting glute strap. No skeleton or source-to-SI conversion is invented.
 """
 import numpy as np
 
-CLASSIC_ROUTE_VERSION = 2
+CLASSIC_ROUTE_VERSION = 3
 ANTERIOR_HIP_FRACTION = .12
-LOWER_GLUTE_FRACTION = .06
+LOWER_GLUTE_FRACTION = 0.
 
 
 def classic_route_targets(waist_candidates, start, crease, medial,
@@ -22,8 +23,9 @@ def classic_route_targets(waist_candidates, start, crease, medial,
     if not np.isfinite(forward).all() or not np.isfinite(superior).all() or abs(np.linalg.norm(forward)-1)>1e-7 or abs(np.linalg.norm(superior)-1)>1e-7 or abs(forward@superior)>1e-7:
         raise ValueError('Garment route axes must be observed orthonormal directions')
     shift = ANTERIOR_HIP_FRACTION * np.ptp(contour@forward)
-    drop = LOWER_GLUTE_FRACTION * ((targets[0]-targets[1])@superior)
-    if shift<=0 or drop<=0:
+    measured_descent = (targets[0]-targets[1])@superior
+    drop = LOWER_GLUTE_FRACTION * measured_descent
+    if shift<=0 or measured_descent<=0:
         raise ValueError('Measured garment route does not span waist/glute')
     targets[0] += forward*shift
     targets[1] -= superior*drop

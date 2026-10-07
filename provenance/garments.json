@@ -187,7 +187,7 @@
     "authoredWaistSubdivision": "PASS animated root edge ownership reaches actual joined waistband cuts; unchanged measured tissue; native validation pending"
   },
   "fileHashes": {
-    "assets/garments/wolverine-jockstrap-donors.json": "cff5232988888e03c7eb87883a0eb63fa9151e3eecbbbe5a26162e364384b8d0",
+    "assets/garments/wolverine-jockstrap-donors.json": "4394af216a7f955896063d453136a264d120f588e151954e64c820258d31c966",
     "CMakeLists.txt": "7ca36054930485c566fed91570897ff0bc7c4d20a9f229a38b994bc0221ee611",
     "docs/GARMENT-CONTACT-REPAIR.md": "fb747838d2c3fdf460a8fd0578a043720d31a55c50f817dc43587915bf4cfaaf",
     "docs/GARMENT-GEOMETRY-AUDIT.md": "3437079279f2d823e6f9110c7f7c8ba5878bae0a8f2f6e07aea8ee58d51f2bcc",
@@ -227,7 +227,7 @@
     "malemod_base/garment_geometry_audit.py": "e48671f5fb04b80e735d298378bd27286da4730c0c7a0fb4555a047dd0e43490",
     "malemod_base/garment_reactions.py": "6330f201697b75dbd9fed75b1aabc0a9784d4fb66762029a21a89626825618e0",
     "malemod_base/garment_regions.py": "5271c9ea84e376bde12743b792ac3938d2474c434368b508d0c97db8a500f0fc",
-    "malemod_base/garment_routes.py": "9976724faf93e28d668f92020f403d6584d6e701c9aafcbf255fc18909069be1",
+    "malemod_base/garment_routes.py": "e910739550735cb16b6875532c2b93522cf6c5326245adfdca570123a32cc86b",
     "tests/band_material_test.cpp": "62b7661dac4fded7e8e1738d5dfc1b26bcb66cbcd4f3d0b5cbfb71ea16356e8c",
     "tests/cloth_sewing_test.cpp": "203941608790636ec269a1790ed8c75c069da598eaa9f44649f45d2f61ed510f",
     "tests/drape_chart_test.cpp": "5120a06a8e4febe21b21aef29c53e0d5a2862f37e175ced692cf6667be5ac784",
@@ -251,7 +251,7 @@
     "tests/test_garment_geometry_audit.py": "a831b1659bb0e507f4ef3f8dc181a3800010705e956bfc45c81a49584a090cf9",
     "tests/test_garment_reactions.py": "283e0d23384f3d2017b66794c1575a781798e0a05b95fc2f7c0bbd55630fedeb",
     "tests/test_garment_regions.py": "cf5e3268556e2ec9ca238427b6068c091d4f19feddcc3342f62d683d19c175a1",
-    "tests/test_garment_routes.py": "5256b48b59b9b555891d13c319f161bcfdf4700f07bc9094eb68b90fe8575c36",
+    "tests/test_garment_routes.py": "1058cc071db308cc4510c9a611e6ac769a0d3b0e8f1009ff40fa62521c742228",
     "tests/waist_contours_test.cpp": "73874700be7caf9f6e4d5e591bd9182401d4a234784d918235812388c85262bd",
     "tests/waist_graft_test.cpp": "5394b21e298c18c4c17f1d9ee9501f65784ddd4cb0a06989483d906c1571467c",
     "tools/audit_garment_matrix.py": "723efde0b46b162ff85d6ce5e0252444694b33b88144358e2b30fcc4342d8695",
@@ -495,5 +495,13 @@
     "otherAdapters": "Adopt through independently tested Base pins; no automatic installed-game acceptance",
     "nativeGate": "Pending",
     "offline": "New captured pose: contact/material passed preparation and12stationary substeps; cost86-113ms per step, not realtime acceptance"
+  },
+  "gluteCreaseCorrection": {
+    "contractVersion": 3,
+    "change": "Remove inferior steering offset and regenerate measured native crease/medial donors; preserve forward hip origin.",
+    "source": "Shared route targets and measured Wolverine recipe; both complete body surfaces unchanged.",
+    "offline": "Captured pose dressing and 12 stationary steps pass contact/material. Rear and side mesh renders reviewed; not native captures.",
+    "native": "Pending corrected-route motion and complete attachment matrix. Human and retail runtimes unchanged.",
+    "adoption": "Wolverine generated route header; pin this Base revision. Geralt and future spokes must regenerate from their measured crease landmarks and verify independently."
   }
 }

@@ -1,3 +1,11 @@
+## October 7 glute strap fit correction
+
+The glute straps must closely cup the underside of the glutes, not sweep down
+the legs. Preserve the forward side-of-hip origin and smooth return to the pouch,
+but fit the supporting curve to the measured glute crease. Do not add an inferior
+offset below that crease. Check the full simulated ribbon in rear/side views and
+motion, rather than accepting the source guide alone.
+
 ## October 6 garment test subject
 
 The user selected Wolverine as the primary jockstrap test subject. Keep fitting,

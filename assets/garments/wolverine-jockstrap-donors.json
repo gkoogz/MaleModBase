@@ -2,7 +2,7 @@
   "schema": 3,
   "rootBoundaryVersion": 1,
   "rootBoundaryVertices": 54,
-  "routeRecipeVersion": 2,
+  "routeRecipeVersion": 3,
   "sourceCoordinates": {
     "forward": "+X",
     "lateral": "-Y",
@@ -419,9 +419,9 @@
   "rearStraps": [
     [
       {
-        "19558": 0.46548981908195175,
-        "32075": 0.252350353358005,
-        "32067": 0.2821598275600433
+        "19558": 0.5311965559100917,
+        "32071": 0.4530599064069768,
+        "32074": 0.015743537682931463
       },
       {
         "32075": 1.0
@@ -486,9 +486,12 @@
     ],
     [
       {
-        "44326": 0.28232073558747256,
-        "44324": 0.2524076882040193,
-        "42813": 0.4652715762085081
+        "21301": 0.531340030845807,
+        "23402": 0.015981648557386235,
+        "23401": 0.45267832059680674
+      },
+      {
+        "42813": 1.0
       },
       {
         "44324": 1.0
@@ -551,14 +554,22 @@
   ],
   "measuredStrapRoutes": [
     {
+      "routeSteering": {
+        "version": 3,
+        "anteriorHipFraction": 0.12,
+        "lowerGluteFraction": 0.0,
+        "measuredAnteriorShift": 1.5624009485818884,
+        "measuredCupDrop": 0.0,
+        "coordinateUnits": "caller measured units"
+      },
       "side": -1,
-      "waistSample": 0,
+      "waistSample": 1,
       "startPosition": [
-        0.0,
-        -13.688652038574219,
-        94.75
+        1.8179503299138509,
+        -13.808703357494053,
+        94.7499999959791
       ],
-      "lateralMidpointForward": 0.27547264099121094,
+      "lateralMidpointForward": 0.27048578660442324,
       "waypointVertexIds": [
         19558,
         21364,
@@ -588,27 +599,35 @@
           76.37185668945312
         ],
         [
-          0.6911547183990479,
-          -0.36339327692985535,
-          76.14877319335938
+          0.4079771041870117,
+          -0.39903244376182556,
+          76.17782592773438
         ]
       ],
       "samples": 21,
-      "edgeLength": 39.6578254699707,
+      "edgeLength": 39.376883387655404,
       "descendingMaximumForward": 0.5990312099456787,
       "returnMaximumLateral": 8.84762191772461
     },
     {
+      "routeSteering": {
+        "version": 3,
+        "anteriorHipFraction": 0.12,
+        "lowerGluteFraction": 0.0,
+        "measuredAnteriorShift": 1.5623997487109615,
+        "measuredCupDrop": 0.0,
+        "coordinateUnits": "caller measured units"
+      },
       "side": 1,
-      "waistSample": 24,
+      "waistSample": 23,
       "startPosition": [
-        -8.940696716308594e-08,
-        13.688382148742676,
-        94.75
+        1.817934508437543,
+        13.808582422701775,
+        94.74999999929966
       ],
-      "lateralMidpointForward": 0.2758982181549072,
+      "lateralMidpointForward": 0.2709053792755802,
       "waypointVertexIds": [
-        42813,
+        21301,
         42801,
         43669,
         44248,
@@ -636,13 +655,13 @@
           76.36476135253906
         ],
         [
-          0.7252718210220337,
-          0.4996618330478668,
-          76.14836120605469
+          0.40603286027908325,
+          0.5315680503845215,
+          76.1821517944336
         ]
       ],
-      "samples": 20,
-      "edgeLength": 39.63801574707031,
+      "samples": 21,
+      "edgeLength": 39.32252333280786,
       "descendingMaximumForward": 0.5995178818702698,
       "returnMaximumLateral": 8.839977264404297
     }
@@ -651,9 +670,10 @@
     "menu_retarget_body_data.h": "c4075718353b229faafa3c2a6b558d3a07c74785336b0b0f703f20bbfa818f25",
     "neck_render_data.h": "bc839e91e8a3707670e2be03c06d04b42df31f206d94b240587dfdf09e95ebd4",
     "prepare_garment_source.py": "2a6828795f4a9656acc39ce0422bfcc36274e03a1a260677b56742800fc3a59f",
-    "garment_source_routes.py": "6001a9a06f45e65006fd1558509322cb4a28436df993f663d426ffc2cac0c6ae",
+    "garment_source_routes.py": "b9712e67bd1a629c6bb64bf54b2b0033b6a9d15110176d20ac52255778ac647b",
     "geometry.npz": "435cb9b391e6bf1ee76a09524b075bfc356230920b30e523bac90448961b2f30",
-    "garment_regions.py": "5271c9ea84e376bde12743b792ac3938d2474c434368b508d0c97db8a500f0fc"
+    "garment_regions.py": "5271c9ea84e376bde12743b792ac3938d2474c434368b508d0c97db8a500f0fc",
+    "garment_routes.py": "e910739550735cb16b6875532c2b93522cf6c5326245adfdca570123a32cc86b"
   },
   "anatomySemantics": {
     "version": 1,
@@ -665,5 +685,6 @@
     },
     "fullAnatomyVertices": 17528,
     "nativeDrawIndicesChanged": false
-  }
+  },
+  "routeCorrection": "Keep measured glute crease and medial return; no inferior target offset. Waist/opening donors unchanged."
 }

@@ -1,3 +1,17 @@
+## October 7 glute straps - higher measured crease route, native checks pending
+
+User rejected straps sweeping down the legs. Shared classic route contract v3
+removes the extra inferior crease/medial offsets, retaining the forward hip
+attachment. Regenerated Wolverine donors move the crease about1.32source units
+higher and shorten the supporting route; waist, opening and anatomy unchanged.
+Captured pose dressing and12stationary substeps pass contact/material. Rear and
+side offline full-mesh renders show the higher return cupping the glutes; these
+are not native acceptance. Motion, all-size fitting and the mandatory native
+attachment matrix remain pending. Physics still costs105-142ms/step here.
+Keep accepted human/retail runtimes and exact rollback. Wolverine adopts the
+generated route header through its pinned Base; other spokes require independently
+measured crease targets and native checks. Do not copy a guessed source height.
+
 ## October 7 cloth contact and final-pose settling repair - not playable yet
 
 The bounded contact query previously searched less far than its correction
