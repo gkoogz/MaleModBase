@@ -248,6 +248,7 @@ public:
     // obstacles into the live pose before permitting physical feedback.
     const Output& InitializeDraped(const Input& reference,const Input& current);
     void Reset();
+    void PlacePrepared(const Input& prepared,const Input& current);
 private:
     const Output& Fit(Style style,const Input& input);
     const Output& FitSheet(Style style,const Input& input);

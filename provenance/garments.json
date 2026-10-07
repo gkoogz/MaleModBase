@@ -205,7 +205,8 @@
         "No human or retail installation of this mode"
       ],
       "nativeTrial": "Candidate K visible with fitted straps but REJECTED: intermittent contact/material failures and 0.2-0.4 s worker cadence. Human and retail unchanged.",
-      "followup": "Character-local collision coordinates preserve world-space dynamics; reusable classification storage. Saved pose replay 180/180 contact/material passes. New native trial pending."
+      "followup": "Character-local collision coordinates preserve world-space dynamics; reusable classification storage. Saved pose replay 180/180 contact/material passes. New native trial pending.",
+      "preparedPlacement": "24-stage dressing passes saved pose; first-use placement carries measured native donors into current pose before simulation. Translation replay 180 updates passes. Native trial M pending."
     }
   },
   "fileHashes": {
@@ -221,7 +222,7 @@
     "include/malemod/garments/band_material.hpp": "fae1214ae54029f731b79f2f56c51b717594df885b9fa9b817f2b58324c7a177",
     "include/malemod/garments/band_rest.hpp": "b235d42fff1a06f78d1eb350b470fc238c337c5f3d72a5346b7e33c2f2fa5e16",
     "include/malemod/garments/body_surface.hpp": "f67dee88ed5325da61e2ad71a178773f9837b2910f1aa5505398dccec03411c8",
-    "include/malemod/garments/cloth_detail.hpp": "9f3973a264caabf31488fbe2e80ba5284b3babba2eb00645028dae9011caa630",
+    "include/malemod/garments/cloth_detail.hpp": "6bed57bc104401e9373ce3434f04e356030f7f1fe47bdf06dfcb8cf946b97045",
     "include/malemod/garments/cloth_reaction.hpp": "3b7d38d47df5ac80bf576c9b8e61ef9faf82417e58809e6bf93cdb8cd2263050",
     "include/malemod/garments/cloth_stretch.hpp": "40fca9a3d45e782360afe4d3cff1c53dbdfe1a41151a56037dddaac7a1fc5e56",
     "include/malemod/garments/contact_velocity.hpp": "0b405f733b9ebce5f5f81dccd32ce6136f3a28c58de16416a55806826ebb2a07",
@@ -230,7 +231,7 @@
     "include/malemod/garments/drape_section.hpp": "5c1be4100c42af6fa0b558aa5e0983ffc3d86766259e90d040d50d4d93c11008",
     "include/malemod/garments/drape_sheet.hpp": "22c0c2b8a4320e7f4ee5964ba01c9ea87de58d9b6ad250a2e5492046fdec28c9",
     "include/malemod/garments/geometry_export.hpp": "8b214acffbed298b389254f67b3834e12dc6a6274d4131b0c377b2b31e6d229b",
-    "include/malemod/garments/jockstrap.hpp": "38aff6e328d7e4374b5a7e71de634f93859000812c79272ccc4cc01f36ff308b",
+    "include/malemod/garments/jockstrap.hpp": "aea068a2290239e366b6fa6cc075bcf9105d9b38a2f8a13981a81b51e178ce9a",
     "include/malemod/garments/jockstrap_detail.hpp": "427c74b06d8dc8828fad7676135d11b3170b00a87626e2471caa98e1cf3dceb0",
     "include/malemod/garments/material_grid.hpp": "359b621e3519ef0fc648c11aa83f17c9451679e305ae58e1ebf894b1510b0ab2",
     "include/malemod/garments/natural_band.hpp": "101a595bb200997ee31bb41ddef568c46b6d46991a1d0fa5478a2a751b94d611",

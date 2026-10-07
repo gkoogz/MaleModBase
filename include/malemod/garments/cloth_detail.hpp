@@ -5,6 +5,23 @@
 // Persistent world-space fabric. The measured fitter supplies rest material,
 // never a replacement for the advanced particle positions.
 namespace malemod::garments {
+// Carry newly prepared material onto the first displayed pose. This is a
+// placement operation before gameplay simulation, not recurrent skin attraction.
+inline void Session::PlacePrepared(const Input& prepared,const Input& current){
+ if(prepared.characterEpoch!=current.characterEpoch||prepared.restRevision!=current.restRevision||prepared.bodyTriangles!=current.bodyTriangles||prepared.anatomyTriangles!=current.anatomyTriangles)throw std::invalid_argument("Prepared cloth pose identity changed");
+ std::array<std::unordered_map<unsigned,unsigned>,2> indices;
+ for(unsigned kind=0;kind<2;kind++){const auto& a=kind?prepared.anatomy:prepared.bodySurface;const auto& b=kind?current.anatomy:current.bodySurface;if(a.size()!=b.size())throw std::invalid_argument("Prepared cloth source topology changed");for(unsigned i=0;i<a.size();i++)for(auto donor:a[i].lineage.donors)if(donor.weight>.999999)indices[unsigned(donor.surface)][donor.vertex]=i;}
+ for(unsigned i=0;i<positions_.size();i++){
+  Point before{},after{},from{},to{};double sum=0;
+  for(auto donor:referenceNodes_[i].lineage.donors)if(donor.weight>0){const unsigned kind=unsigned(donor.surface);auto found=indices[kind].find(donor.vertex);if(found==indices[kind].end())throw std::invalid_argument("Prepared cloth source donor absent");const auto& a=(kind?prepared.anatomy:prepared.bodySurface)[found->second];const auto& b=(kind?current.anatomy:current.bodySurface)[found->second];before=Add(before,Mul(a.position,donor.weight));after=Add(after,Mul(b.position,donor.weight));from=Add(from,Mul(a.normal,donor.weight));to=Add(to,Mul(b.normal,donor.weight));sum+=donor.weight;}
+  if(std::abs(sum-1)>1e-5)throw std::invalid_argument("Prepared cloth donor weights invalid");
+  positions_[i]=Add(after,anchor_transport::Offset(Sub(positions_[i],before),from,to,0));
+  previousTargets_[i]=Add(after,anchor_transport::Offset(Sub(previousTargets_[i],before),from,to,0));velocities_[i]={};
+ }
+ previousBodySurface_=current.bodySurface;previousAnatomySurface_=current.anatomy;
+ for(auto& memos:pointMemos_)for(auto& memo:memos)memo=PointMemo{};for(auto& memos:faceMemos_)for(auto& memo:memos)memo=FaceMemo{};
+ clock_=accumulator_=0;
+}
 inline const Output& Session::InitializeDraped(const Input& reference,const Input& current){
 
  if(reference.characterEpoch!=current.characterEpoch||reference.topologyRevision!=current.topologyRevision||reference.restRevision!=current.restRevision||reference.bodyTriangles!=current.bodyTriangles||reference.anatomyTriangles!=current.anatomyTriangles)
@@ -23,7 +40,7 @@ inline const Output& Session::InitializeDraped(const Input& reference,const Inpu
  aligned.bodyContacts.clear(); // measured triangles supersede legacy capsules
  try{
   Initialize(reference,aligned,place);
-  constexpr unsigned dressingSteps=90;
+  const unsigned dressingSteps=parameters_.supportedTrim?24:90;
   for(unsigned step=1;step<=dressingSteps;step++){
    auto pose=current;pose.gravity={};pose.deltaTime=1./120;pose.bodyContacts.clear();
    const double fraction=double(step)/dressingSteps;
