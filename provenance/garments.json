@@ -289,7 +289,8 @@
     "tests/body_surface_test.cpp": "fdb8ec009231506ea5d097bf3689c229e7211681bebfa24cccdb0d91b378102e",
     "include/malemod/garments/contact_query.hpp": "7208bf8cc20e9f7cbe9c8ff7cf2717db75d9141b1f1d3d2b0c0bee7580880cd7",
     "include/malemod/garments/supported_cloth.hpp": "2e1050184de58b3897fbcdb8dfae447bc0f09dd81e021024966b85f8353a2f51",
-    "include/malemod/garments/trim_support.hpp": "a81f81ad75f981aadfc4950563eb1c7cad697875b0632c20d738679884e83d87"
+    "include/malemod/garments/trim_support.hpp": "a81f81ad75f981aadfc4950563eb1c7cad697875b0632c20d738679884e83d87",
+    "include/malemod/garments/input_recording.hpp": "c9b20db930738fbea5114f8aa4182315dc245e35209107b4d6f33f4b4d1514e8"
   },
   "historicalVerification": {
     "v2ActualGeraltFit": {
