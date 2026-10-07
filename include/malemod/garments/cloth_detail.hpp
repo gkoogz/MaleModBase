@@ -39,6 +39,13 @@ inline const Output& Session::InitializeDraped(const Input& reference,const Inpu
    for(unsigned side=0;side<2;side++)blend(pose.rearStraps[side],aligned.rearStraps[side]);
    Update(Style::WhiteJockstrap,pose,TimeContinuity::Continuous);
   }
+  // Reaching the final pose is not equilibrium: its last contact correction
+  // can stretch a neighboring material edge. Settle the unchanged final pose
+  // with the same real constraints before evaluating publication budgets.
+  auto settle=current;settle.gravity={};settle.deltaTime=1./120;
+  settle.bodyContacts.clear();
+  for(unsigned relaxation=0;relaxation<32&&(!output_.contactBudgetSatisfied||!output_.physics.materialBudgetSatisfied);relaxation++)
+   Update(Style::WhiteJockstrap,settle,TimeContinuity::Continuous);
   if(!output_.contactBudgetSatisfied||!output_.physics.materialBudgetSatisfied)throw std::invalid_argument("Dressing did not reach contact/material equilibrium");
   // Dressing is preparation, not elapsed gameplay or a kick to the character.
   std::fill(velocities_.begin(),velocities_.end(),Point{});clock_=accumulator_=0;
@@ -288,6 +295,9 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
  // Certificates cover the closed classification surface, including its measured
  // root cap. The physical clearance oracle remains the uncapped native surface.
  auto pointQuery=[&](bool anatomical,unsigned slot,Point point,double clearance){
+  // Search also covers the numerical halo around the correction threshold;
+  // only the existing, smaller application guard may apply a force.
+  if(clearance>0)clearance=cloth_contact::SearchRadius(clearance,margin+2e-5);
   auto& physical=anatomical?anatomyCollider_:bodyCollider_;auto& closed=anatomical?closedAnatomy_:closedBody_;auto& classifier=closed.Empty()?physical:closed;auto& memo=pointMemos_[anatomical][slot];auto stamp=classifier.MotionStamp();
   detail::BodyCollider::Hit hit;if(memo.certificate.ProvesClear({point},clearance,stamp)){hit.distance=hit.signedDistance=memo.certificate.LowerBound({point},stamp);return hit;}
   // Exhausting a clearance certificate does not exhaust its separate
@@ -311,6 +321,7 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
   hit=physical.Closest(point,memo.physicalSeed);memo.physicalSeed=hit.triangle;if(!closed.Empty()&&side==detail::BodyCollider::Side::Indeterminate)throw std::invalid_argument("Verified cloth volume membership is indeterminate");if(outside){hit.signedDistance=hit.distance;auto delta=Sub(point,hit.point);if(Length(delta)>1e-14)hit.normal=Unit(delta);}else if(side==detail::BodyCollider::Side::Inside){hit.signedDistance=-hit.distance;auto delta=Sub(hit.point,point);if(Length(delta)>1e-14)hit.normal=Unit(delta);}else if(side==detail::BodyCollider::Side::Boundary)hit.signedDistance=0;return hit;
  };
  auto faceQuery=[&](bool anatomical,unsigned index,const std::array<Point,3>& points,double clearance){
+  clearance=cloth_contact::SearchRadius(clearance,margin+2e-5);
   auto& physical=anatomical?anatomyCollider_:bodyCollider_;auto& closed=anatomical?closedAnatomy_:closedBody_;auto& classifier=closed.Empty()?physical:closed;auto& memo=faceMemos_[anatomical][index];auto stamp=classifier.MotionStamp();detail::BodyCollider::Hit hit;
   if(memo.certificate.ProvesClear(points,clearance,stamp)){hit.distance=hit.signedDistance=memo.certificate.LowerBound(points,stamp);return hit;}
   hit=physical.ClosestFaceCached(points,clearance,memo.physicalNeighborhood,memo.physicalSeed);if(hit.triangle!=UINT32_MAX)memo.physicalSeed=hit.triangle;double radius=clearance+.01;auto classification=classifier.ClosestFaceCached(points,radius,memo.closedNeighborhood,memo.closedSeed);if(classification.triangle!=UINT32_MAX)memo.closedSeed=classification.triangle;bool outside=true;
@@ -415,6 +426,7 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
   for(const auto& face:mesh.triangles)for(const auto& volume:volumes){Point p,q;double distance=detail::TriangleCapsule(rendered(face.vertices[0]),rendered(face.vertices[1]),rendered(face.vertices[2]),volume,p,q,margin);maximum=(std::max)(maximum,margin-distance);}
   return maximum;
  };
+ auto extensionSatisfied=[&](){for(auto edge:edges_)if(!edge.bend&&!edge.tether&&Length(Sub(x[edge.a],x[edge.b]))>edge.rest*1.15)return false;return true;};
  auto seamResidual=[&](){double maximum=0;for(const auto& s:sewing_){auto error=residual(s.residual);for(unsigned k=0;k<s.count;k++)error=Add(error,Mul(x[s.nodes[k]],s.weights[k]));maximum=(std::max)(maximum,Length(error));}return maximum;};
  constexpr double step=1./120;accumulator_+=elapsed;if(!std::isfinite(accumulator_))throw std::invalid_argument("Cloth active time accumulator overflow");unsigned steps=unsigned((std::min)(120.,std::floor((accumulator_+1e-12)/step)));telemetry.substeps=steps;
  // Preserve all geometry/donors but clone interpolation storage only once per
@@ -476,7 +488,7 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
    // face was cleared. Revisit the retained physical manifold before velocity
    // reconstruction; these are integrated unilateral projections, not a new fit.
    for(unsigned pass=0;pass<(iteration+1==solveIterations?64u:1u);pass++)if(solveActiveContacts()<1e-10)break;
-   if(iteration+1==solveIterations)for(unsigned discovery=0;discovery<8;discovery++){if(contactResidual()<=1e-8&&seamResidual()<=1e-6)break;solveSewing();collision(true);for(unsigned pass=0;pass<64;pass++)if(solveActiveContacts()<1e-10)break;}
+   if(iteration+1==solveIterations)for(unsigned discovery=0;discovery<8;discovery++){if(contactResidual()<=1e-8&&seamResidual()<=1e-6&&extensionSatisfied())break;cloth_stretch::ProjectCoupled(x,inverseMass_,edges_,stretchAdjacency_,sewing_,residual,parameters_.mechanics.extensionLimit);collision(true);for(unsigned pass=0;pass<64;pass++)if(solveActiveContacts()<1e-10)break;}
    for(unsigned i=0;i<x.size();i++)if(pinned_[i])x[i]=subTargets[i];
 #ifdef MALEMOD_GARMENT_DIAGNOSTIC
    traceMaterial("contact",iteration);

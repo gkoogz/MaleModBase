@@ -199,7 +199,7 @@
     "include/malemod/garments/band_material.hpp": "fae1214ae54029f731b79f2f56c51b717594df885b9fa9b817f2b58324c7a177",
     "include/malemod/garments/band_rest.hpp": "249afec3cffa0573ad130e74155e0d23c74f39961adf4ba6674a711a93e1deb9",
     "include/malemod/garments/body_surface.hpp": "f67dee88ed5325da61e2ad71a178773f9837b2910f1aa5505398dccec03411c8",
-    "include/malemod/garments/cloth_detail.hpp": "0fb5eb3412f9131317e83f0ce00ddded88f65a1266d4b9cb540fc9190bef14cd",
+    "include/malemod/garments/cloth_detail.hpp": "196543909c1b9a0380d1f8eb265e15d6b153d7683944b19a69cfc467eb03851b",
     "include/malemod/garments/cloth_reaction.hpp": "3b7d38d47df5ac80bf576c9b8e61ef9faf82417e58809e6bf93cdb8cd2263050",
     "include/malemod/garments/cloth_stretch.hpp": "40fca9a3d45e782360afe4d3cff1c53dbdfe1a41151a56037dddaac7a1fc5e56",
     "include/malemod/garments/contact_velocity.hpp": "0b405f733b9ebce5f5f81dccd32ce6136f3a28c58de16416a55806826ebb2a07",
@@ -208,7 +208,7 @@
     "include/malemod/garments/drape_section.hpp": "5c1be4100c42af6fa0b558aa5e0983ffc3d86766259e90d040d50d4d93c11008",
     "include/malemod/garments/drape_sheet.hpp": "22c0c2b8a4320e7f4ee5964ba01c9ea87de58d9b6ad250a2e5492046fdec28c9",
     "include/malemod/garments/geometry_export.hpp": "8b214acffbed298b389254f67b3834e12dc6a6274d4131b0c377b2b31e6d229b",
-    "include/malemod/garments/jockstrap.hpp": "ddde1b0cc29946448eea66ae7d3a727255575a2263d6352999c3195c07a26d51",
+    "include/malemod/garments/jockstrap.hpp": "311b02a2bbf65a65a6bfca8f490d3be8c0d82f801f3792f991998b0abe2b7921",
     "include/malemod/garments/jockstrap_detail.hpp": "8adcfce7f1b5a794b4cfed18728647c3fffef4ca13ff3cd45af41274412e8ba7",
     "include/malemod/garments/material_grid.hpp": "359b621e3519ef0fc648c11aa83f17c9451679e305ae58e1ebf894b1510b0ab2",
     "include/malemod/garments/natural_band.hpp": "101a595bb200997ee31bb41ddef568c46b6d46991a1d0fa5478a2a751b94d611",
@@ -263,7 +263,8 @@
     "tools/verify_garment_source_reactions.py": "bbad2e2b8cfa8f6c75c984bd26260d69c17f3af3a32649835bef815f3d1d7f77",
     "tests/root_closure_test.cpp": "fe71712421c2837649843c9a1edd7d973130a540b3ef1a8b60eb0a95973b5588",
     "include/malemod/garments/anchor_transport.hpp": "7d9421798155f4f51f5bdd94ad939681f1540934623ed04e3799082b34e034bd",
-    "tests/body_surface_test.cpp": "f4c44a13f863bfb7b10326ab3322e1c6229ebca4304b2910034a5043fd18080f"
+    "tests/body_surface_test.cpp": "fdb8ec009231506ea5d097bf3689c229e7211681bebfa24cccdb0d91b378102e",
+    "include/malemod/garments/contact_query.hpp": "7208bf8cc20e9f7cbe9c8ff7cf2717db75d9141b1f1d3d2b0c0bee7580880cd7"
   },
   "historicalVerification": {
     "v2ActualGeraltFit": {
@@ -486,5 +487,13 @@
     "sourcePhysicsChanged": false,
     "sourceGarmentChanged": false
   },
-  "fileHashNormalization": "LF"
+  "fileHashNormalization": "LF",
+  "contactSearchRepair": {
+    "scope": "Shared numerical source; not an installed runtime",
+    "change": "Bounded search covers every contact application guard; final-pose dressing settles under unchanged contact and material budgets",
+    "wolverineAdoption": "Pin this Base source and omit legacy thigh capsules when complete measured body surfaces are provided",
+    "otherAdapters": "Adopt through independently tested Base pins; no automatic installed-game acceptance",
+    "nativeGate": "Pending",
+    "offline": "New captured pose: contact/material passed preparation and12stationary substeps; cost86-113ms per step, not realtime acceptance"
+  }
 }

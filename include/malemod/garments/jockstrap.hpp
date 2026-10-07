@@ -300,6 +300,7 @@ private:
 #include "sheet_fit.hpp"
 #include "cloth_reaction.hpp"
 #include "contact_velocity.hpp"
+#include "contact_query.hpp"
 #include "render_contact.hpp"
 #include "band_material.hpp"
 #include "cloth_stretch.hpp"

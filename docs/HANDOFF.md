@@ -1,3 +1,22 @@
+## October 7 cloth contact and final-pose settling repair - not playable yet
+
+The bounded contact query previously searched less far than its correction
+threshold, allowing no-hit/virtual closure records into physical correction.
+Shared query radii now cover the entire application guard and numerical halo.
+The final contact/sewing loop also checks material extension and solves coupled
+extension/stitches again when contact has stretched adjacent fabric. Dressing
+settles the unchanged final pose for up to32real substeps, retaining the original
+budgets and clearing preparation time/forces afterward.
+
+Exact new native pose replay passes contact/material after preparation and12
+stationary substeps (86-113ms/step; preparation29seconds). This is still too slow
+for realtime cloth. Direct live fitting and authored cap prototypes failed badly
+and remain ignored; neither is adopted. No anatomy/body geometry was altered.
+Native visibility/motion, all-size fitting and the full attachment visual matrix
+remain pending; keep the accepted human and retail runtimes. Wolverine adoption
+must clear legacy thigh capsules after supplying both complete measured body
+resources. Other spokes require independently tested pins.
+
 ## October 6 native garment verification and reproducible hashes
 
 Candidate E showed the striped jockstrap natively from the rear but lost it
