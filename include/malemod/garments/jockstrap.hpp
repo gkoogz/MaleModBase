@@ -267,6 +267,8 @@ private:
     detail::BodyCollider bodyCollider_,anatomyCollider_,closedBody_,closedAnatomy_;
     std::vector<std::array<std::uint32_t,3>> rootCap_,closedBodyFaces_,closedAnatomyFaces_;
     std::vector<unsigned> rootVertices_;
+    std::vector<Sample> classificationBody_;
+    Input supportedContactInput_;
     Parameters parameters_;
     Output output_;
     std::vector<Point> localAnatomy_;

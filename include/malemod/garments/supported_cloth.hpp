@@ -10,17 +10,24 @@ inline void Session::SupportedCloth(const Input& input,const std::vector<Point>&
  auto began=std::chrono::steady_clock::now();auto& mesh=output_.mesh;auto& t=output_.physics;
  const double C=output_.measuredCircumference,margin=parameters_.clearance*.3;
  const auto origin=input.frame.origin;
- auto local=[&](Point p){return Mul(Sub(p,origin),1/C);};
- auto world=[&](Point p){return Add(origin,Mul(p,C));};
- bodyCollider_.Update(input.bodySurface,input.bodyTriangles,origin,C);
- anatomyCollider_.Update(input.anatomy,input.anatomyTriangles,origin,C);
+ auto local=[&](Point p){return Mul(input.frame.Local(p),1/C);};
+ auto localVector=[&](Point p){return Point{Dot(p,input.frame.lateral),Dot(p,input.frame.forward),Dot(p,input.frame.up)};};
+ auto worldVector=[&](Point p){return render_contact::RestVector(input.frame,p);};
+ const Frame materialFrame{};
+ auto world=[&](Point p){return input.frame.World(Mul(p,C));};
+ auto& colliderInput=supportedContactInput_;if(colliderInput.bodyTriangles!=input.bodyTriangles)colliderInput.bodyTriangles=input.bodyTriangles;if(colliderInput.anatomyTriangles!=input.anatomyTriangles)colliderInput.anatomyTriangles=input.anatomyTriangles;
+ colliderInput.bodySurface.resize(input.bodySurface.size());colliderInput.anatomy.resize(input.anatomy.size());
+ for(unsigned i=0;i<input.bodySurface.size();i++)colliderInput.bodySurface[i].position=input.frame.Local(input.bodySurface[i].position);
+ for(unsigned i=0;i<input.anatomy.size();i++)colliderInput.anatomy[i].position=input.frame.Local(input.anatomy[i].position);
+ bodyCollider_.Update(colliderInput.bodySurface,input.bodyTriangles,{},C);
+ anatomyCollider_.Update(colliderInput.anatomy,input.anatomyTriangles,{},C);
  auto physicalUpdated=std::chrono::steady_clock::now();
- ClassifySurfaces(input,origin,C);
+ ClassifySurfaces(colliderInput,{},C);
  auto classificationUpdated=std::chrono::steady_clock::now();
  std::vector<Point> x(positions_.size()),velocity(x.size()),fixed(x.size());
- for(unsigned i=0;i<x.size();i++){x[i]=local(positions_[i]);velocity[i]=Mul(velocities_[i],1/C);fixed[i]=local(targets[i]);if(pinned_[i])x[i]=fixed[i];}
+ for(unsigned i=0;i<x.size();i++){x[i]=local(positions_[i]);velocity[i]=Mul(localVector(velocities_[i]),1/C);fixed[i]=local(targets[i]);if(pinned_[i])x[i]=fixed[i];}
  std::vector<unsigned> bodySeed(x.size(),UINT32_MAX),anatomySeed(x.size(),UINT32_MAX);
- auto render=[&](unsigned i){return render_contact::Evaluate(renderBindings_[i],x,input.frame,C);};
+ auto render=[&](unsigned i){return render_contact::Evaluate(renderBindings_[i],x,materialFrame,C);};
  auto seamOffset=[&](Point p){return local(input.frame.World(p));};
  auto sew=[&](){for(const auto& s:sewing_){Point error=seamOffset(s.residual);double weight=0;for(unsigned k=0;k<s.count;k++){error=Add(error,Mul(x[s.nodes[k]],s.weights[k]));weight+=inverseMass_[s.nodes[k]]*s.weights[k]*s.weights[k];}if(weight>1e-20)for(unsigned k=0;k<s.count;k++)if(inverseMass_[s.nodes[k]])x[s.nodes[k]]=Sub(x[s.nodes[k]],Mul(error,inverseMass_[s.nodes[k]]*s.weights[k]/weight));}};
  ReactionCollector reactions(input.anatomy);
@@ -94,7 +101,7 @@ inline void Session::SupportedCloth(const Input& input,const std::vector<Point>&
   if(pinned_[i])fixed[i]=x[i];
   if(anatomy&&record&&inverseMass_[i]>0&&hit.triangle<input.anatomyTriangles.size()){
    auto f=input.anatomyTriangles[hit.triangle];auto bary=Barycentric(hit.point,local(input.anatomy[f[0]].position),local(input.anatomy[f[1]].position),local(input.anatomy[f[2]].position));
-   reactions.Add(hit.triangle,bary,Mul(correction,C/(step*inverseMass_[i])),world(hit.point),hit.signedDistance*C,input.anatomyTriangles);
+   reactions.Add(hit.triangle,bary,worldVector(Mul(correction,C/(step*inverseMass_[i]))),world(hit.point),hit.signedDistance*C,input.anatomyTriangles);
   }
   output_.projectedContacts++;
  };
@@ -102,7 +109,7 @@ inline void Session::SupportedCloth(const Input& input,const std::vector<Point>&
   auto old=x;
   for(unsigned i=0;i<x.size();i++){
    if(pinned_[i])x[i]=fixed[i];
-   else if(steps){velocity[i]=Add(Mul(velocity[i],std::exp(-parameters_.mechanics.dampingRate*step)),Mul(input.gravity,step/C));x[i]=Add(x[i],Mul(velocity[i],step));}
+   else if(steps){velocity[i]=Add(Mul(velocity[i],std::exp(-parameters_.mechanics.dampingRate*step)),Mul(localVector(input.gravity),step/C));x[i]=Add(x[i],Mul(velocity[i],step));}
   }
   for(auto& e:edges_)e.lambda=0;
   for(unsigned iteration=0;iteration<12;iteration++){
@@ -120,7 +127,7 @@ inline void Session::SupportedCloth(const Input& input,const std::vector<Point>&
   if(hit.signedDistance>=margin-1e-8)return false;
   const auto& face=mesh.triangles[fi];std::array<Point,3> corners{render(face.vertices[0]),render(face.vertices[1]),render(face.vertices[2])};
   auto bary=Barycentric(hit.clothPoint,corners[0],corners[1],corners[2]);render_contact::Gradient gradient;
-  for(unsigned k=0;k<3;k++)render_contact::Merge(gradient,render_contact::Derivative(renderBindings_[face.vertices[k]],x,input.frame,C,hit.normal),bary[k]);
+  for(unsigned k=0;k<3;k++)render_contact::Merge(gradient,render_contact::Derivative(renderBindings_[face.vertices[k]],x,materialFrame,C,hit.normal),bary[k]);
   double denominator=gradient.InverseMass(inverseMass_);bool supported=denominator<1e-20;
   if(supported)for(unsigned k=0;k<gradient.count;k++)denominator+=Dot(gradient.values[k],gradient.values[k]);
   if(denominator<1e-20)return false;
@@ -128,8 +135,8 @@ inline void Session::SupportedCloth(const Input& input,const std::vector<Point>&
   auto application=render_contact::Application(gradient,x,inverseMass_);
   if(anatomy&&!supported&&steps&&input.anatomyMass>0){
    const auto tri=input.anatomyTriangles[hit.triangle];auto weights=Barycentric(hit.point,local(input.anatomy[tri[0]].position),local(input.anatomy[tri[1]].position),local(input.anatomy[tri[2]].position));
-   auto impulse=Mul(hit.normal,depth*C/(step*denominator));auto particleImpulse=Mul(application.impulse,depth*C/(step*denominator));
-   auto moment=Add(Mul(application.moment,depth*C*C/(step*denominator)),Cross(origin,particleImpulse));
+   auto impulse=worldVector(Mul(hit.normal,depth*C/(step*denominator)));auto particleImpulse=worldVector(Mul(application.impulse,depth*C/(step*denominator)));
+   auto moment=Add(worldVector(Mul(application.moment,depth*C*C/(step*denominator))),Cross(origin,particleImpulse));
    reactions.Add(hit.triangle,weights,impulse,world(hit.point),hit.signedDistance*C,input.anatomyTriangles,particleImpulse,moment);
   }
   for(unsigned k=0;k<gradient.count;k++){unsigned i=gradient.nodes[k];double w=supported?1:inverseMass_[i];if(w){auto delta=Mul(gradient.values[k],depth*w/denominator);x[i]=Add(x[i],delta);contactDelta[i]=Add(contactDelta[i],delta);if(anatomy)tissueDelta[i]=Add(tissueDelta[i],delta);if(pinned_[i])fixed[i]=x[i];}}
@@ -167,14 +174,14 @@ inline void Session::SupportedCloth(const Input& input,const std::vector<Point>&
    const auto& faces=anatomy?input.anatomyTriangles:input.bodyTriangles;const auto& now=anatomy?input.anatomy:input.bodySurface;const auto& previous=anatomy?previousAnatomySurface_:previousBodySurface_;
    if(previous.size()!=now.size()||hit.triangle>=faces.size())return Point{};
    auto f=faces[hit.triangle];auto bary=Barycentric(hit.point,local(now[f[0]].position),local(now[f[1]].position),local(now[f[2]].position));Point v{};
-   for(unsigned k=0;k<3;k++)v=Add(v,Mul(Sub(now[f[k]].position,previous[f[k]].position),bary[k]/(C*steps*step)));return v;
+   for(unsigned k=0;k<3;k++)v=Add(v,Mul(localVector(Sub(now[f[k]].position,previous[f[k]].position)),bary[k]/(C*steps*step)));return v;
   };
   for(unsigned i=0;i<x.size();i++)if(!pinned_[i])for(bool anatomy:{false,true}){
    auto correction=anatomy?tissueDelta[i]:Sub(contactDelta[i],tissueDelta[i]);if(Length(correction)<1e-14)continue;
    auto hit=pointQuery(anatomy,i,x[i],margin+8e-5);const auto& faces=anatomy?input.anatomyTriangles:input.bodyTriangles;
    if(hit.triangle>=faces.size()||hit.signedDistance>margin+8e-5)continue;
    auto response=cloth_contact::Solve(velocity[i],obstacleVelocity(hit,anatomy),hit.normal,(std::max)(0.,Dot(correction,hit.normal)),inverseMass_[i],parameters_.mechanics.friction,step);
-   if(anatomy&&input.anatomyMass>0){auto f=faces[hit.triangle];auto bary=Barycentric(hit.point,local(input.anatomy[f[0]].position),local(input.anatomy[f[1]].position),local(input.anatomy[f[2]].position));reactions.Add(hit.triangle,bary,Mul(Sub(response.velocity,velocity[i]),C/inverseMass_[i]),world(hit.point),hit.signedDistance*C,input.anatomyTriangles);}
+   if(anatomy&&input.anatomyMass>0){auto f=faces[hit.triangle];auto bary=Barycentric(hit.point,local(input.anatomy[f[0]].position),local(input.anatomy[f[1]].position),local(input.anatomy[f[2]].position));reactions.Add(hit.triangle,bary,worldVector(Mul(Sub(response.velocity,velocity[i]),C/inverseMass_[i])),world(hit.point),hit.signedDistance*C,input.anatomyTriangles);}
    velocity[i]=response.velocity;
   }
  }
@@ -185,7 +192,7 @@ inline void Session::SupportedCloth(const Input& input,const std::vector<Point>&
  for(const auto& e:edges_)if(!e.bend&&!e.tether)t.maxStretchRatio=(std::max)(t.maxStretchRatio,Length(Sub(x[e.a],x[e.b]))/e.rest);
  for(const auto& s:sewing_){auto error=seamOffset(s.residual);for(unsigned k=0;k<s.count;k++)error=Add(error,Mul(x[s.nodes[k]],s.weights[k]));t.maxSeamGap=(std::max)(t.maxSeamGap,Length(error)*C);}
 
- for(unsigned i=0;i<x.size();i++){positions_[i]=world(x[i]);velocities_[i]=Mul(velocity[i],C);t.maxSpeed=(std::max)(t.maxSpeed,Length(velocities_[i]));}
+ for(unsigned i=0;i<x.size();i++){positions_[i]=world(x[i]);velocities_[i]=worldVector(Mul(velocity[i],C));t.maxSpeed=(std::max)(t.maxSpeed,Length(velocities_[i]));}
  for(unsigned i=0;i<mesh.vertices.size();i++)mesh.vertices[i].position=world(render(i));
  // Complete rendered-surface contact is independently checked. A fast solve
  // does not turn missed triangle-interior contact into an accepted result.

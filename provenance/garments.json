@@ -203,7 +203,9 @@
         "Full live motion and morphology acceptance pending",
         "Coalesced collision surfaces use final captured pose in supported mode; moving-surface tunneling coverage pending",
         "No human or retail installation of this mode"
-      ]
+      ],
+      "nativeTrial": "Candidate K visible with fitted straps but REJECTED: intermittent contact/material failures and 0.2-0.4 s worker cadence. Human and retail unchanged.",
+      "followup": "Character-local collision coordinates preserve world-space dynamics; reusable classification storage. Saved pose replay 180/180 contact/material passes. New native trial pending."
     }
   },
   "fileHashes": {
@@ -228,8 +230,8 @@
     "include/malemod/garments/drape_section.hpp": "5c1be4100c42af6fa0b558aa5e0983ffc3d86766259e90d040d50d4d93c11008",
     "include/malemod/garments/drape_sheet.hpp": "22c0c2b8a4320e7f4ee5964ba01c9ea87de58d9b6ad250a2e5492046fdec28c9",
     "include/malemod/garments/geometry_export.hpp": "8b214acffbed298b389254f67b3834e12dc6a6274d4131b0c377b2b31e6d229b",
-    "include/malemod/garments/jockstrap.hpp": "5e475e6b37f3f5cee83320160cafcfc7af7570b0ef5371b2c3ae23d2af2896c8",
-    "include/malemod/garments/jockstrap_detail.hpp": "8adcfce7f1b5a794b4cfed18728647c3fffef4ca13ff3cd45af41274412e8ba7",
+    "include/malemod/garments/jockstrap.hpp": "38aff6e328d7e4374b5a7e71de634f93859000812c79272ccc4cc01f36ff308b",
+    "include/malemod/garments/jockstrap_detail.hpp": "427c74b06d8dc8828fad7676135d11b3170b00a87626e2471caa98e1cf3dceb0",
     "include/malemod/garments/material_grid.hpp": "359b621e3519ef0fc648c11aa83f17c9451679e305ae58e1ebf894b1510b0ab2",
     "include/malemod/garments/natural_band.hpp": "101a595bb200997ee31bb41ddef568c46b6d46991a1d0fa5478a2a751b94d611",
     "include/malemod/garments/numerical_support.hpp": "ae38ff5611947e4a87641f44014591d322da662a7f2c3a88ab6de17ec55ad082",
@@ -240,7 +242,7 @@
     "include/malemod/garments/sewn_contact.hpp": "b0c0431d4695c49f96ee4b0905310496a03ecc084ba1315815ee9c7294709a97",
     "include/malemod/garments/sheet_fit.hpp": "908015962b8f200726b764d642c2a49545176b42f67935c1ceb884c0a33fc571",
     "include/malemod/garments/strap_route.hpp": "bc67d7d807897c392883c9b4cb2b4a55b71a4c345b5cbc42ff911c837d69e5e6",
-    "include/malemod/garments/surface_classification.hpp": "78b8c3e6eebc30a727e4d012e9b9f267805b0a405e5905a7e259004510fca1f1",
+    "include/malemod/garments/surface_classification.hpp": "c3ab2d903eed1168b6e05a12ebc8ea726808789e7ee6b534c839183bff967b2e",
     "include/malemod/garments/waist_contours.hpp": "e741c81dc6082ac9e817a05daba9e7b877a793fb218b878fdc17b3db99566eaa",
     "include/malemod/garments/waist_graft.hpp": "eb9936186b2e5a9d127e96dcea4dee870e60e62e7abc17ff95609a423ac00227",
     "malemod_base/garment_coverage.py": "643b81e8f0f02723d9b373a9ec1981731e56b6f9dd7d6df40f0bd9b9a4499c18",
@@ -285,7 +287,7 @@
     "include/malemod/garments/anchor_transport.hpp": "7d9421798155f4f51f5bdd94ad939681f1540934623ed04e3799082b34e034bd",
     "tests/body_surface_test.cpp": "fdb8ec009231506ea5d097bf3689c229e7211681bebfa24cccdb0d91b378102e",
     "include/malemod/garments/contact_query.hpp": "7208bf8cc20e9f7cbe9c8ff7cf2717db75d9141b1f1d3d2b0c0bee7580880cd7",
-    "include/malemod/garments/supported_cloth.hpp": "ec65e8930dd6ce910f0ece455308bf9e629cee00ae7f83d441ee1bbe950d15b8",
+    "include/malemod/garments/supported_cloth.hpp": "2e1050184de58b3897fbcdb8dfae447bc0f09dd81e021024966b85f8353a2f51",
     "include/malemod/garments/trim_support.hpp": "a81f81ad75f981aadfc4950563eb1c7cad697875b0632c20d738679884e83d87"
   },
   "historicalVerification": {
