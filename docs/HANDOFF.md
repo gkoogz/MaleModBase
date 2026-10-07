@@ -1,3 +1,19 @@
+## October 6 native garment verification and reproducible hashes
+
+Candidate E showed the striped jockstrap natively from the rear but lost it
+following camera orbit. Candidate F changed adapter scene-target/matrix ownership
+and passed offscreen HAL tests, but rejected unpublished startup dressing in the
+captured pose. The sealed runs ended at bounded time limits, not observed CTDs.
+No native attachment/motion or real-time performance acceptance was established.
+The accepted human/retail runtime remains authoritative.
+
+A face-interior classification optimization produced no useful replay speedup
+and was not adopted. Existing cache/source output is retained. Garment provenance
+now explicitly hashes LF-normalized text, fixing verification after Git exports
+or checkout newline conversion; source content and runtime numerics are unchanged.
+Wolverine must pin this revision through its normal Base lock. Geralt still needs
+independent adoption and all visual/runtime gates; no new game install is implied.
+
 ## October 6 contact-cache checkpoint, uninstalled
 
 Conservative per-point triangle neighborhoods reduce the saved dressing replay

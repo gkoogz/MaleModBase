@@ -81,8 +81,14 @@ def main():
         if hashlib.sha256((ROOT/item['path']).read_bytes()).hexdigest()!=item['sha256']:
             raise ValueError('Radial/clinical support provenance differs: '+item['path'])
     garments=json.loads((ROOT/'provenance/garments.json').read_text())
+    normalization=garments.get('fileHashNormalization')
+    if normalization not in (None,'LF'):
+        raise ValueError('Unknown shared garment hash normalization')
     for path,expected in garments['fileHashes'].items():
-        if hashlib.sha256((ROOT/path).read_bytes()).hexdigest()!=expected:
+        payload=(ROOT/path).read_bytes()
+        if normalization=='LF':
+            payload=payload.replace(b'\r\n',b'\n')
+        if hashlib.sha256(payload).hexdigest()!=expected:
             raise ValueError('Shared garment provenance differs: '+path)
     clinical=json.loads((ROOT/'provenance/clinical.json').read_text())
     for item in clinical['files']:
