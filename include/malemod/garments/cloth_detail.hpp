@@ -6,6 +6,7 @@
 // never a replacement for the advanced particle positions.
 namespace malemod::garments {
 inline const Output& Session::InitializeDraped(const Input& reference,const Input& current){
+
  if(reference.characterEpoch!=current.characterEpoch||reference.topologyRevision!=current.topologyRevision||reference.restRevision!=current.restRevision||reference.bodyTriangles!=current.bodyTriangles||reference.anatomyTriangles!=current.anatomyTriangles)
   throw std::invalid_argument("Dressing reference and live pose have different material identities");
  auto place=[&](const Sample& source){
@@ -46,7 +47,7 @@ inline const Output& Session::InitializeDraped(const Input& reference,const Inpu
   settle.bodyContacts.clear();
   for(unsigned relaxation=0;relaxation<32&&(!output_.contactBudgetSatisfied||!output_.physics.materialBudgetSatisfied);relaxation++)
    Update(Style::WhiteJockstrap,settle,TimeContinuity::Continuous);
-  if(!output_.contactBudgetSatisfied||!output_.physics.materialBudgetSatisfied)throw std::invalid_argument("Dressing did not reach contact/material equilibrium");
+  if(!output_.contactBudgetSatisfied||!output_.physics.materialBudgetSatisfied)throw std::invalid_argument("Dressing did not reach equilibrium: contact="+std::to_string(output_.contactBudgetSatisfied)+" material="+std::to_string(output_.physics.materialBudgetSatisfied)+" stretch="+std::to_string(output_.physics.maxStretchRatio)+" renderStretch="+std::to_string(output_.physics.maxRenderStretchRatio)+" seam="+std::to_string(output_.physics.maxSeamGap)+" clearance="+std::to_string(output_.coverageMargin));
   // Dressing is preparation, not elapsed gameplay or a kick to the character.
   std::fill(velocities_.begin(),velocities_.end(),Point{});clock_=accumulator_=0;
   output_.reactions.clear();output_.support.clear();output_.reaction={};
@@ -72,7 +73,7 @@ inline const Output& Session::Initialize(const Input& reference,const Input& cur
   // Keep its rest metric fixed and run the real constraints/contact oracle;
   // never publish an unverified initial penetration or change rest lengths.
   for(unsigned relax=0;relax<32&&(!output_.contactBudgetSatisfied||!output_.physics.materialBudgetSatisfied);relax++){rest.deltaTime=1./120;Update(Style::WhiteJockstrap,rest,TimeContinuity::Continuous);}
-  if(!output_.contactBudgetSatisfied||!output_.physics.materialBudgetSatisfied)throw std::invalid_argument("Cloth reference material did not reach contact/material equilibrium");
+  if(!output_.contactBudgetSatisfied||!output_.physics.materialBudgetSatisfied)throw std::invalid_argument("Cloth reference equilibrium: contact="+std::to_string(output_.contactBudgetSatisfied)+" material="+std::to_string(output_.physics.materialBudgetSatisfied)+" stretch="+std::to_string(output_.physics.maxStretchRatio)+" seam="+std::to_string(output_.physics.maxSeamGap)+" clearance="+std::to_string(output_.coverageMargin));
   if(referenceNodes_.size()!=positions_.size())throw std::logic_error("Cloth reference particle ownership missing");
   for(unsigned i=0;i<positions_.size();i++){
    auto source=referenceNodes_[i];source.position=positions_[i];
@@ -86,7 +87,7 @@ inline const Output& Session::Initialize(const Input& reference,const Input& cur
   restInput_=current;previousBodySurface_=current.bodySurface;previousAnatomySurface_=current.anatomy;previousBodies_=current.bodyContacts;
   for(auto& memos:pointMemos_)for(auto& memo:memos)memo=PointMemo{};
   for(auto& memos:faceMemos_)for(auto& memo:memos)memo=FaceMemo{};
-  ClassifySurfaces(current,current.frame.origin,output_.measuredCircumference,true);
+  if(!parameters_.supportedTrim)ClassifySurfaces(current,current.frame.origin,output_.measuredCircumference,true);
   clock_=accumulator_=0;auto initial=current;initial.deltaTime=0;
   return Update(Style::WhiteJockstrap,initial,TimeContinuity::Continuous);
  }catch(...){Reset();throw;}
@@ -160,7 +161,7 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
   std::map<std::array<long long,3>,unsigned> aliases;
   std::map<unsigned,unsigned> anatomyDonors;for(unsigned i=0;i<input.anatomy.size();i++)for(auto d:input.anatomy[i].lineage.donors)if(d.weight>.99999&&d.surface==Surface::Anatomy)anatomyDonors[d.vertex]=i;
   std::map<unsigned,unsigned> bodyDonors;for(unsigned i=0;i<input.bodySurface.size();i++)for(auto donor:input.bodySurface[i].lineage.donors)if(donor.weight>.99999&&donor.surface==Surface::Body)bodyDonors[donor.vertex]=i;
-  auto pinVertex=[&](unsigned i){if(!sheetMesh&&i>=joinEnd&&i<joinEnd+25)return false;if(i>=band)return false;if(input.bodySurface.empty())return true;unsigned row=(i/(waist+1))%7;auto p=input.frame.Local(mesh.vertices[i].position);double front=p[1];return row==6||front<=0;};
+  auto pinVertex=[&](unsigned i){if(parameters_.supportedTrim&&sheetMesh&&i>=band)return trim_support::SupportedVertex(output_.layout,i);if(!sheetMesh&&i>=joinEnd&&i<joinEnd+25)return false;if(i>=band)return false;if(input.bodySurface.empty())return true;unsigned row=(i/(waist+1))%7;auto p=input.frame.Local(mesh.vertices[i].position);double front=p[1];return row==6||front<=0;};
   for(unsigned i=0;i<mesh.vertices.size();i++){
    if(!sheetMesh&&i>=pouchEnd&&i<hemEnd)continue; // reinforcement is sewn to the simulated rim
    if(!sheetMesh&&i>=hemEnd+segments+1&&i<joinEnd)continue; // opening's front row is the same sewn rim
@@ -171,12 +172,20 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
    if(sheetMesh&&i>=band&&i<pouchEnd){unsigned row=(i-band)/(segments+1),col=(i-band)%(segments+1);if(!cloth_detail::SheetParticle(row,col,rings))continue;}
    if(!sheetMesh&&i>band&&i<pouchEnd){unsigned row=(i-band-1)/(segments+1)+1,col=(i-band-1)%(segments+1);if(row<rings&&(row%2||col%2))continue;}
    Point world=mesh.vertices[i].position;if(i<band/2)world=band_material::Midsurface(world,mesh.vertices[i+band/2].position);if(i>=strap){world={};for(unsigned k=0;k<4;k++)world=Add(world,mesh.vertices[i+k].position);world=Mul(world,.25);}auto p=input.frame.Local(world);std::array<long long,3> key{std::llround(p[0]/C*1e9),std::llround(p[1]/C*1e9),std::llround(p[2]/C*1e9)};auto found=aliases.find(key);
-   if(found!=aliases.end()){vertexNodes_[i]=found->second;pinned_[found->second]=pinned_[found->second]||pinVertex(i);continue;}
+   if(found!=aliases.end()&&!(parameters_.supportedTrim&&sheetMesh&&(i==output_.layout.straps[0].start||i==output_.layout.straps[1].start))){vertexNodes_[i]=found->second;pinned_[found->second]=pinned_[found->second]||pinVertex(i);continue;}
    unsigned id=unsigned(positions_.size());aliases[key]=id;vertexNodes_[i]=id;positions_.push_back(world);referenceNodes_.push_back({world,mesh.vertices[i].normal,mesh.vertices[i].lineage});velocities_.push_back({});pinned_.push_back(pinVertex(i));
+   if(parameters_.supportedTrim&&i>=strap&&pinned_.back()){
+    auto hit=bodyCollider_.Closest(Mul(Sub(world,input.frame.origin),1/C));
+    if(hit.triangle>=input.bodyTriangles.size())throw std::invalid_argument("Supported strap body binding missing");
+    const auto face=input.bodyTriangles[hit.triangle];
+    auto bary=Barycentric(Add(input.frame.origin,Mul(hit.point,C)),input.bodySurface[face[0]].position,input.bodySurface[face[1]].position,input.bodySurface[face[2]].position);
+    Lineage lineage{};for(unsigned k=0;k<3;k++)for(auto donor:input.bodySurface[face[k]].lineage.donors)if(donor.weight>0){donor.weight*=bary[k];if(donor.weight>1e-12){unsigned slot=0;while(slot<lineage.donors.size()&&lineage.donors[slot].weight)slot++;if(slot==lineage.donors.size())throw std::invalid_argument("Supported strap donor overflow");lineage.donors[slot]=donor;}}
+    mesh.vertices[i].lineage=lineage;referenceNodes_.back().lineage=lineage;
+   }
    Anchor anchor;double best=1e100;bool anatomical=mesh.vertices[i].lineage.donors[0].surface==Surface::Anatomy;
    if(anatomical){auto dominant=mesh.vertices[i].lineage.donors[0];auto donor=anatomyDonors.find(dominant.vertex);if(donor!=anatomyDonors.end()){anchor.family=2;anchor.index=donor->second;best=0;}}
    if(best>0){for(unsigned family=0;family<5;family++){if(family==2)continue;const auto& samples=family==0?input.waist:family==1?input.opening:input.rearStraps[family-3];for(unsigned k=0;k<samples.size();k++){double d=Length(Sub(mesh.vertices[i].position,samples[k].position));if(d<best){best=d;anchor.family=family;anchor.index=k;}}}}
-   if(i<band&&!input.bodySurface.empty()){Point attached{};double sum=0;for(unsigned k=0;k<16;k++){auto donor=mesh.vertices[i].lineage.donors[k];if(donor.weight==0)continue;const auto& map=donor.surface==Surface::Body?bodyDonors:anatomyDonors;auto found=map.find(donor.vertex);if(found==map.end())throw std::invalid_argument("Band measured body/anatomy attachment missing");anchor.bodyIndices[k]=found->second;anchor.bodyWeights[k]=donor.weight;anchor.attachmentSurfaces[k]=donor.surface;const auto& surface=donor.surface==Surface::Body?input.bodySurface:input.anatomy;attached=Add(attached,Mul(surface[found->second].position,donor.weight));sum+=donor.weight;}if(std::abs(sum-1)>1e-5)throw std::invalid_argument("Band attachment weights invalid");Point normal{};for(unsigned k=0;k<16;k++)if(anchor.bodyWeights[k]){const auto& surface=anchor.attachmentSurfaces[k]==Surface::Body?input.bodySurface:input.anatomy;normal=Add(normal,Mul(surface[anchor.bodyIndices[k]].normal,anchor.bodyWeights[k]));}anchor.referenceNormal=Unit(input.frame.Local(Add(input.frame.origin,normal)));anchor.bodyAttachment=true;anchor.residual=Sub(p,input.frame.Local(attached));}else anchor.residual=Sub(p,input.frame.Local(SampleAt(input,anchor.family,anchor.index).position));anchors_.push_back(anchor);
+   if((i<band||(parameters_.supportedTrim&&pinned_.back()))&&!input.bodySurface.empty()){Point attached{};double sum=0;for(unsigned k=0;k<16;k++){auto donor=mesh.vertices[i].lineage.donors[k];if(donor.weight==0)continue;const auto& map=donor.surface==Surface::Body?bodyDonors:anatomyDonors;auto found=map.find(donor.vertex);if(found==map.end())throw std::invalid_argument("Band measured body/anatomy attachment missing");anchor.bodyIndices[k]=found->second;anchor.bodyWeights[k]=donor.weight;anchor.attachmentSurfaces[k]=donor.surface;const auto& surface=donor.surface==Surface::Body?input.bodySurface:input.anatomy;attached=Add(attached,Mul(surface[found->second].position,donor.weight));sum+=donor.weight;}if(std::abs(sum-1)>1e-5)throw std::invalid_argument("Band attachment weights invalid");Point normal{};for(unsigned k=0;k<16;k++)if(anchor.bodyWeights[k]){const auto& surface=anchor.attachmentSurfaces[k]==Surface::Body?input.bodySurface:input.anatomy;normal=Add(normal,Mul(surface[anchor.bodyIndices[k]].normal,anchor.bodyWeights[k]));}anchor.referenceNormal=Unit(input.frame.Local(Add(input.frame.origin,normal)));anchor.bodyAttachment=true;anchor.residual=Sub(p,input.frame.Local(attached));}else anchor.residual=Sub(p,input.frame.Local(SampleAt(input,anchor.family,anchor.index).position));anchors_.push_back(anchor);
   }
   auto sheetMaterialFaces=sheetMesh?cloth_detail::SheetTriangles(band,rings,segments):std::vector<std::array<unsigned,3>>{};
   for(unsigned i=0;i<mesh.vertices.size();i++){
@@ -213,7 +222,7 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
   std::set<std::pair<unsigned,unsigned>> bendPairs;
   for(const auto& row:adjacency){auto a=row.first.first,b=row.first.second;double distance=Length(Sub(positions_[a],positions_[b]))/C;if(distance>1e-9&&(!pinned_[a]||!pinned_[b]))edges_.push_back({a,b,distance,parameters_.mechanics.stretchCompliance*distance*distance*(elasticSides.count(row.first)?parameters_.mechanics.hemComplianceMultiplier:1.),0,false});if(row.second.size()==2){a=row.second[0];b=row.second[1];if(a>b)std::swap(a,b);if(a!=b&&(!pinned_[a]||!pinned_[b])&&bendPairs.insert({a,b}).second){distance=Length(Sub(positions_[a],positions_[b]))/C;if(distance>1e-9)edges_.push_back({a,b,distance,parameters_.mechanics.bendCompliance*distance*distance,0,true});}}}
   if(sheetMesh)for(const auto& side:output_.layout.sideBoundary)for(unsigned k=2;k<side.size();k++){unsigned a=vertexNodes_[side[k-2]],b=vertexNodes_[side[k]];if(a>b)std::swap(a,b);if(a!=b&&(!pinned_[a]||!pinned_[b])&&bendPairs.insert({a,b}).second){double distance=Length(Sub(positions_[a],positions_[b]))/C;if(distance>1e-9)edges_.push_back({a,b,distance,parameters_.mechanics.bendCompliance*parameters_.mechanics.hemComplianceMultiplier*distance*distance,0,true});}}
-  for(unsigned offset=strap,route=0;route<2;route++){unsigned count=(std::max)(33u,unsigned(input.rearStraps[route].size())*4+1);for(unsigned k=1;k<count;k++){unsigned a=vertexNodes_[offset+4*(k-1)],b=vertexNodes_[offset+4*k];double d=Length(Sub(positions_[a],positions_[b]))/C;edges_.push_back({a,b,d,parameters_.mechanics.stretchCompliance*d*d,0,false});if(k>1){a=vertexNodes_[offset+4*(k-2)];d=Length(Sub(positions_[a],positions_[b]))/C;edges_.push_back({a,b,d,parameters_.mechanics.bendCompliance*d*d,0,true});}}offset+=4*count;}
+  for(unsigned offset=strap,route=0;route<2;route++){unsigned count=(std::max)(33u,unsigned(input.rearStraps[route].size())*4+1);for(unsigned k=1;k<count;k++){unsigned a=vertexNodes_[offset+4*(k-1)],b=vertexNodes_[offset+4*k];double d=Length(Sub(positions_[a],positions_[b]))/C;if(!pinned_[a]||!pinned_[b])edges_.push_back({a,b,d,parameters_.mechanics.stretchCompliance*d*d,0,false});if(k>1){a=vertexNodes_[offset+4*(k-2)];d=Length(Sub(positions_[a],positions_[b]))/C;if(!pinned_[a]||!pinned_[b])edges_.push_back({a,b,d,parameters_.mechanics.bendCompliance*d*d,0,true});}}offset+=4*count;}
   // Long-range attachment constraints bound material extension without forcing
   // free fabric onto a skin-shaped target. They still permit tangential motion.
   std::vector<std::vector<std::pair<unsigned,double>>> materialGraph(positions_.size());for(auto e:edges_)if(!e.bend){materialGraph[e.a].push_back({e.b,e.rest});materialGraph[e.b].push_back({e.a,e.rest});}std::vector<double> geodesic(positions_.size(),1e100);std::vector<unsigned> anchor(positions_.size());using Route=std::pair<double,unsigned>;std::priority_queue<Route,std::vector<Route>,std::greater<Route>> queue;for(unsigned i=0;i<positions_.size();i++)if(pinned_[i]){geodesic[i]=0;anchor[i]=i;queue.push({0,i});}while(!queue.empty()){auto current=queue.top();queue.pop();if(current.first>geodesic[current.second])continue;for(auto link:materialGraph[current.second]){double distance=current.first+link.second;if(distance<geodesic[link.first]){geodesic[link.first]=distance;anchor[link.first]=anchor[current.second];queue.push({distance,link.first});}}}for(unsigned i=0;i<positions_.size();i++)if(!pinned_[i]&&geodesic[i]<1e100)edges_.push_back({i,anchor[i],geodesic[i]*1.02,0,0,false,true});
@@ -240,6 +249,13 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
    for(unsigned j=targetStart;j<targetFinish;j++)for(auto corners:{std::array<unsigned,3>{0,1,2},std::array<unsigned,3>{0,2,3}}){std::array<Point,3> a,b;for(unsigned k=0;k<3;k++){a[k]=mesh.vertices[cap+corners[k]].position;b[k]=mesh.vertices[mesh.triangles[j].vertices[k]].position;}Point pa,pb;double d=detail::ClosestTriangles(a,b,pa,pb);if(d<best){best=d;source={cap+corners[0],cap+corners[1],cap+corners[2]};target=mesh.triangles[j].vertices;weightsA=Barycentric(pa,a[0],a[1],a[2]);weightsB=Barycentric(pb,b[0],b[1],b[2]);}}
    Sew s;for(unsigned k=0;k<3;k++){term(s,source[k],weightsA[k]);term(s,target[k],-weightsB[k]);}appendSew(s);
   }offset+=count*4;}
+  if(parameters_.supportedTrim&&sheetMesh){
+   // The band end of a prescribed strap follows its sewn band attachment.
+   // A rest-length constraint to the next body-driven section would impose
+   // an incompatible second skin transform on that tiny elastic connection.
+   unsigned first[2]={vertexNodes_[output_.layout.straps[0].start],vertexNodes_[output_.layout.straps[1].start]};
+   edges_.erase(std::remove_if(edges_.begin(),edges_.end(),[&](const auto& e){return e.a==first[0]||e.b==first[0]||e.a==first[1]||e.b==first[1];}),edges_.end());
+  }
   // Weak bending modes are solved before structural modes. Within each
   // family, solve longer material spans before shorter, stiffer features;
   // otherwise the final long edge can undo the tiny-edge extension bound.
@@ -270,9 +286,14 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
   }else sample=SampleAt(input,a.family,a.index).position;
   targets[i]=input.frame.World(Add(input.frame.Local(sample),offset));
  }
- if(input.deltaTime==0){for(unsigned i=0;i<positions_.size();i++)if(pinned_[i])positions_[i]=targets[i];}
+ if(input.deltaTime==0&&!parameters_.supportedTrim){for(unsigned i=0;i<positions_.size();i++)if(pinned_[i])positions_[i]=targets[i];}
  auto oldTargets=previousTargets_;previousTargets_=targets;
  auto& telemetry=output_.physics;telemetry.active=true;telemetry.stateReady=true;telemetry.nodes=unsigned(positions_.size());telemetry.constraints=unsigned(edges_.size()+sewing_.size());
+ if(parameters_.supportedTrim){
+  auto supportTargets=targets;
+  for(unsigned i=0;i<targets.size();i++)if(pinned_[i]&&oldTargets[i]==targets[i])supportTargets[i]=positions_[i];
+  SupportedCloth(input,supportTargets,elapsed);return;
+ }
  Envelope envelope(input,C,parameters_);
  const bool measuredAnatomy=!input.anatomyTriangles.empty();
  const Point origin=input.frame.origin;
@@ -324,11 +345,27 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
   clearance=cloth_contact::SearchRadius(clearance,margin+2e-5);
   auto& physical=anatomical?anatomyCollider_:bodyCollider_;auto& closed=anatomical?closedAnatomy_:closedBody_;auto& classifier=closed.Empty()?physical:closed;auto& memo=faceMemos_[anatomical][index];auto stamp=classifier.MotionStamp();detail::BodyCollider::Hit hit;
   if(memo.certificate.ProvesClear(points,clearance,stamp)){hit.distance=hit.signedDistance=memo.certificate.LowerBound(points,stamp);return hit;}
-  hit=physical.ClosestFaceCached(points,clearance,memo.physicalNeighborhood,memo.physicalSeed);if(hit.triangle!=UINT32_MAX)memo.physicalSeed=hit.triangle;double radius=clearance+.01;auto classification=classifier.ClosestFaceCached(points,radius,memo.closedNeighborhood,memo.closedSeed);if(classification.triangle!=UINT32_MAX)memo.closedSeed=classification.triangle;bool outside=true;
+  hit=physical.ClosestFaceCached(points,clearance,memo.physicalNeighborhood,memo.physicalSeed);if(hit.triangle!=UINT32_MAX)memo.physicalSeed=hit.triangle;
+  // A positive closed-surface separation still certifies membership even
+  // when its clearance reserve is exhausted. Query the physical neighborhood
+  // above, but do not reclassify the same nearby face until that proof expires.
+  if(memo.certificate.ProvesClear(points,0,stamp)){hit.signedDistance=hit.distance;auto delta=Sub(hit.clothPoint,hit.point);if(hit.distance<clearance&&Length(delta)>1e-14)hit.normal=Unit(delta);return hit;}
+  double radius=clearance+.01;auto classification=classifier.ClosestFaceCached(points,radius,memo.closedNeighborhood,memo.closedSeed);if(classification.triangle!=UINT32_MAX)memo.closedSeed=classification.triangle;bool outside=true;
   for(unsigned k=0;k<3;k++)if(pointQuery(anatomical,pointSlot(mesh.triangles[index].vertices[k]),points[k],0).signedDistance<0)outside=false;
   memo.certificate.Remember(points,(std::min)(classification.distance,radius),outside,stamp);if(outside){hit.signedDistance=hit.distance;auto delta=Sub(hit.clothPoint,hit.point);if(hit.distance<clearance&&Length(delta)>1e-14)hit.normal=Unit(delta);}return hit;
  };
  auto residual=[&](Point local){return Mul(Sub(input.frame.World(local),origin),1/C);};
+ // Kinematic trim has no cloth degrees of freedom. Build a vertex support
+ // mask once, including transported ribbon/director dependencies.
+ std::vector<unsigned char> movable(mesh.vertices.size(),1);
+ if(parameters_.supportedTrim)for(unsigned i=0;i<mesh.vertices.size();i++){
+  const auto& b=renderBindings_[i];bool free=false;
+  for(unsigned k=0;k<4;k++)if(b.weights[k]&&!pinned_[b.nodes[k]])free=true;
+  if(b.ribbon||b.transported)for(unsigned k=0;k<(b.ribbon?2u:3u);k++)if(!pinned_[b.materialFrame[k]])free=true;
+  movable[i]=free;
+ }
+ auto movableFace=[&](const Triangle& f){return movable[f.vertices[0]]||movable[f.vertices[1]]||movable[f.vertices[2]];};
+
  // Render donors are shared by many contact faces. Reuse their exact evaluated
  // positions until a constraint changes particles; never reuse across a solve.
  std::vector<Point> renderPositions(mesh.vertices.size());
@@ -400,9 +437,9 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
    for(unsigned i=band;i<mesh.vertices.size();i++)for(auto volume:volumes){auto point=rendered(i),projected=point;if(projectVolume(projected,volume,i>=band&&i<hemEnd)){projectBinding(i,Sub(projected,point));output_.projectedContacts++;}}
    for(auto* collider:{&bodyCollider_,&anatomyCollider_})if(!collider->Empty()){
     const bool openAnatomy=collider==&anatomyCollider_;
-    for(unsigned i=0;i<mesh.vertices.size();i++){auto point=rendered(i);auto hit=pointQuery(openAnatomy,pointSlot(i),point,margin+5e-6);if(hit.signedDistance<margin+1e-5){auto correction=Mul(compatibleDirection(point,hit.normal,i>=band&&i<hemEnd),margin-hit.signedDistance+1e-5);auto applied=projectBinding(i,correction,openAnatomy);if(openAnatomy)recordReaction(hit,correction,applied.inverseMass,applied.particles);output_.projectedContacts++;}}
+    for(unsigned i=0;i<mesh.vertices.size();i++){if(!movable[i])continue;auto point=rendered(i);auto hit=pointQuery(openAnatomy,pointSlot(i),point,margin+5e-6);if(hit.signedDistance<margin+1e-5){auto correction=Mul(compatibleDirection(point,hit.normal,i>=band&&i<hemEnd),margin-hit.signedDistance+1e-5);auto applied=projectBinding(i,correction,openAnatomy);if(openAnatomy)recordReaction(hit,correction,applied.inverseMass,applied.particles);output_.projectedContacts++;}}
     for(unsigned faceIndex=0;faceIndex<mesh.triangles.size();faceIndex++){
-     const auto& face=mesh.triangles[faceIndex];std::array<Point,3> corners{rendered(face.vertices[0]),rendered(face.vertices[1]),rendered(face.vertices[2])};auto hit=faceQuery(openAnatomy,faceIndex,corners,margin+5e-6);if(hit.signedDistance>=margin+1e-5)continue;rememberContact(openAnatomy,faceIndex,hit);
+     const auto& face=mesh.triangles[faceIndex];if(!movableFace(face))continue;std::array<Point,3> corners{rendered(face.vertices[0]),rendered(face.vertices[1]),rendered(face.vertices[2])};auto hit=faceQuery(openAnatomy,faceIndex,corners,margin+5e-6);if(hit.signedDistance>=margin+1e-5)continue;rememberContact(openAnatomy,faceIndex,hit);
      auto bary=Barycentric(hit.clothPoint,corners[0],corners[1],corners[2]);auto direction=compatibleDirection(hit.clothPoint,hit.normal,face.vertices[0]>=band&&face.vertices[0]<hemEnd);double length=Length(direction);if(length<1e-20)continue;const double depth=(margin-hit.signedDistance+1e-5)*length;direction=Mul(direction,1/length);
      auto applied=projectContact(faceGradient(face,bary,direction),depth,openAnatomy);if(openAnatomy)recordReaction(hit,Mul(direction,depth),applied.inverseMass,applied.particles);if(applied.inverseMass>1e-20)output_.projectedContacts++;
     }
@@ -420,14 +457,33 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
  auto contactResidual=[&](){double maximum=0;
   invalidateRendered();
   for(bool anatomical:{false,true}){auto& collider=anatomical?anatomyCollider_:bodyCollider_;if(collider.Empty())continue;
-   for(unsigned i=0;i<mesh.vertices.size();i++){auto hit=pointQuery(anatomical,pointSlot(i),rendered(i),margin);maximum=(std::max)(maximum,margin-hit.signedDistance);}
-   for(unsigned i=0;i<mesh.triangles.size();i++){const auto& face=mesh.triangles[i];std::array<Point,3> points{rendered(face.vertices[0]),rendered(face.vertices[1]),rendered(face.vertices[2])};auto hit=faceQuery(anatomical,i,points,margin);maximum=(std::max)(maximum,margin-hit.signedDistance);if(hit.signedDistance<margin-1e-8)rememberContact(anatomical,i,hit);}
+   for(unsigned i=0;i<mesh.vertices.size();i++){if(!movable[i])continue;auto hit=pointQuery(anatomical,pointSlot(i),rendered(i),margin);maximum=(std::max)(maximum,margin-hit.signedDistance);}
+   for(unsigned i=0;i<mesh.triangles.size();i++){const auto& face=mesh.triangles[i];if(!movableFace(face))continue;std::array<Point,3> points{rendered(face.vertices[0]),rendered(face.vertices[1]),rendered(face.vertices[2])};auto hit=faceQuery(anatomical,i,points,margin);maximum=(std::max)(maximum,margin-hit.signedDistance);if(hit.signedDistance<margin-1e-8)rememberContact(anatomical,i,hit);}
   }
   for(const auto& face:mesh.triangles)for(const auto& volume:volumes){Point p,q;double distance=detail::TriangleCapsule(rendered(face.vertices[0]),rendered(face.vertices[1]),rendered(face.vertices[2]),volume,p,q,margin);maximum=(std::max)(maximum,margin-distance);}
   return maximum;
  };
  auto extensionSatisfied=[&](){for(auto edge:edges_)if(!edge.bend&&!edge.tether&&Length(Sub(x[edge.a],x[edge.b]))>edge.rest*1.15)return false;return true;};
  auto seamResidual=[&](){double maximum=0;for(const auto& s:sewing_){auto error=residual(s.residual);for(unsigned k=0;k<s.count;k++)error=Add(error,Mul(x[s.nodes[k]],s.weights[k]));maximum=(std::max)(maximum,Length(error));}return maximum;};
+ auto fitSupportedTrim=[&](std::vector<Point>& prescribed){
+  if(!parameters_.supportedTrim)return;
+  // Geometric skin fitting, separate from cloth impulses. Moving prescribed
+  // trim cannot be resolved by applying forces to zero-mass support nodes.
+  auto moveFixed=[&](const render_contact::Gradient& gradient,double distance){
+   double denominator=0;for(unsigned k=0;k<gradient.count;k++)if(pinned_[gradient.nodes[k]])denominator+=Dot(gradient.values[k],gradient.values[k]);
+   if(denominator<=1e-20)return;
+   for(unsigned k=0;k<gradient.count;k++)if(pinned_[gradient.nodes[k]]){auto node=gradient.nodes[k];x[node]=Add(x[node],Mul(gradient.values[k],distance/denominator));prescribed[node]=x[node];}invalidateRendered();
+  };
+  for(unsigned pass=0;pass<6;pass++){
+   bool changed=false;
+   for(bool anatomical:{false,true}){
+    auto& physical=anatomical?anatomyCollider_:bodyCollider_;if(physical.Empty())continue;
+    for(unsigned i=0;i<mesh.vertices.size();i++)if(!movable[i]){auto point=rendered(i);auto hit=pointQuery(anatomical,pointSlot(i),point,margin+2e-5);if(hit.signedDistance<margin+1e-5){moveFixed(render_contact::Derivative(renderBindings_[i],x,input.frame,C,hit.normal),margin+2e-5-hit.signedDistance);changed=true;}}
+    for(unsigned i=0;i<mesh.triangles.size();i++){const auto& face=mesh.triangles[i];if(movableFace(face))continue;std::array<Point,3> corners{rendered(face.vertices[0]),rendered(face.vertices[1]),rendered(face.vertices[2])};auto hit=faceQuery(anatomical,i,corners,margin+2e-5);if(hit.signedDistance<margin+1e-5){auto bary=Barycentric(hit.clothPoint,corners[0],corners[1],corners[2]);moveFixed(faceGradient(face,bary,hit.normal),margin+2e-5-hit.signedDistance);changed=true;}}
+   }
+   if(!changed)break;
+  }
+ };
  constexpr double step=1./120;accumulator_+=elapsed;if(!std::isfinite(accumulator_))throw std::invalid_argument("Cloth active time accumulator overflow");unsigned steps=unsigned((std::min)(120.,std::floor((accumulator_+1e-12)/step)));telemetry.substeps=steps;
  // Preserve all geometry/donors but clone interpolation storage only once per
  // call. A single final-pose substep can read the supplied immutable input.
@@ -441,6 +497,7 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
   reactionSurface=&contactInput.anatomy;
   contactGeometry=&contactInput;bodyCollider_.Update(contactInput.bodySurface,input.bodyTriangles,origin,C);if(measuredAnatomy)anatomyCollider_.Update(contactInput.anatomy,input.anatomyTriangles,origin,C);ClassifySurfaces(contactInput,origin,C);
   auto old=x;double damp=std::exp(-parameters_.mechanics.dampingRate*step);for(unsigned i=0;i<x.size();i++){if(pinned_[i])x[i]=subTargets[i];else{v[i]=Add(Mul(v[i],damp),Mul(input.gravity,step/C));x[i]=Add(x[i],Mul(v[i],step));}}
+  fitSupportedTrim(subTargets);
   if(measuredAnatomy)for(unsigned i=0;i<x.size();i++)if(!pinned_[i]){auto hit=anatomyCollider_.Sweep(old[i],x[i]);if(hit.distance<1e99){auto before=x[i];x[i]=Add(hit.point,Mul(hit.normal,margin+1e-5));recordReaction(hit,Sub(x[i],before),inverseMass_[i],{x[i],1});tissueCorrection[i]=Add(tissueCorrection[i],Sub(x[i],before));contactImpulse[i]=Add(contactImpulse[i],Sub(x[i],old[i]));output_.projectedContacts++;}}
   for(auto& e:edges_)e.lambda=0;
   // XPBD lambda is local to a substep. Triangle diagonals provide shear;
@@ -522,7 +579,7 @@ inline void Session::Cloth(const Input& input,bool rebuild,double elapsed){
  // Final alternating sewing/contact projection does not overwrite particles
  // with fitted target geometry. Any unresolved physical conflict is reported.
  reactionStep=0;reactionSurface=&input.anatomy;
- if(!steps)for(unsigned iteration=0;iteration<4;iteration++){solveSewing();collision(true);}
+ if(!steps){fitSupportedTrim(targets);for(unsigned iteration=0;iteration<4;iteration++){solveSewing();collision(true);}}
  accumulator_-=steps*step;clock_+=steps*step;telemetry.advancedSeconds=steps*step;telemetry.accumulatedSeconds=clock_;
  double speed2=0;for(unsigned i=0;i<x.size();i++){positions_[i]=Add(origin,Mul(x[i],C));velocities_[i]=Mul(v[i],C);double speed=Length(velocities_[i]);speed2+=speed*speed;telemetry.maxSpeed=(std::max)(telemetry.maxSpeed,speed);telemetry.maxDisplacement=(std::max)(telemetry.maxDisplacement,Length(Sub(positions_[i],Add(origin,Mul(targets[i],C)))));}
  telemetry.rmsSpeed=std::sqrt(speed2/x.size());

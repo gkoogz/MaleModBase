@@ -10,7 +10,7 @@ inline const Output& Session::FitSheet(Style style,const Input& input){
  const unsigned rows=parameters_.pouchRings,columns=parameters_.pouchSegments;const double gap=parameters_.clearance*C,margin=parameters_.clearance*.3,thick=parameters_.bandThickness*C;auto& mesh=output_.mesh;const auto& frame=input.frame;
  auto band=BuildBand(input,parameters_,output_);const unsigned waist=unsigned(band.measured.front().size()),bandCount=unsigned(mesh.vertices.size()),bandFaces=unsigned(mesh.triangles.size());output_.layout.revision=2;output_.layout.upperArcRadians=2*parameters_.panelHalfAngle;output_.layout.sideCoverageExtra=parameters_.sideCoverageExtra;output_.layout.band={0,6,waist};output_.layout.bandLayers=2;output_.layout.jointRevision=1;output_.layout.measuredCircumference=C;output_.layout.bandThicknessNormalized=parameters_.bandThickness;
  auto normalize=[&](Point p){return Mul(Sub(p,frame.origin),1/C);};auto world=[&](Point p){return Add(frame.origin,Mul(p,C));};
- bodyCollider_.Update(input.bodySurface,input.bodyTriangles,frame.origin,C);anatomyCollider_.Update(input.anatomy,input.anatomyTriangles,frame.origin,C);ClassifySurfaces(input,frame.origin,C,true);
+ bodyCollider_.Update(input.bodySurface,input.bodyTriangles,frame.origin,C);anatomyCollider_.Update(input.anatomy,input.anatomyTriangles,frame.origin,C);ClassifySurfaces(input,frame.origin,C,!parameters_.supportedTrim||rootCap_.empty());
  // Tilt the finite band into the ACTUAL recruited pelvic ramp. The measured
  // contours retain skin lineage; only a local complete-contact shortfall may
  // add clearance. Moving the entire belt radially discards the ramp's vertical
@@ -111,8 +111,20 @@ inline const Output& Session::FitSheet(Style style,const Input& input){
  std::array<unsigned,2> strapSide{};
  for(unsigned route=0;route<2;route++){
   double side=frame.Local(input.rearStraps[route].front().position)[0];unsigned end=side<waistCenter[0]?0:1;strapSide[route]=end;const auto& seam=output_.layout.bottomSeams[end];auto path=input.rearStraps[route];const auto& a=mesh.vertices[seam.front()];const auto& b=mesh.vertices[seam.back()];Sample sewn{Mul(Add(a.position,b.position),.5),bottom[end].normal,Blend(a.lineage,b.lineage,.5)};path.push_back(sewn);
-  path=drape::SmoothRoute(std::move(path),24,project);
-  unsigned count=(std::max)(33u,unsigned(input.rearStraps[route].size())*4+1);std::vector<Sample> refined;for(unsigned k=0;k<count;k++){auto s=drape::Resample(path,double(k)/(count-1));project(s);refined.push_back(s);}refined=drape::SmoothRoute(std::move(refined),12,project);unsigned start=unsigned(mesh.vertices.size());Tube(mesh,refined,parameters_.strapWidth*C,thick*.5,false,frame,MaterialSlot::WhiteElastic);output_.layout.straps[route]={start,count,4};
+  unsigned count=(std::max)(33u,unsigned(input.rearStraps[route].size())*4+1);std::vector<Sample> refined;
+  if(parameters_.supportedTrim){
+   path.pop_back();path=drape::SmoothRoute(std::move(path),24,project);
+   const unsigned supported=trim_support::LastSupportedSection(count);
+   for(unsigned k=0;k<count;k++){
+    auto s=k<=supported?drape::Resample(path,double(k)/supported):drape::Resample(std::vector<Sample>{path.back(),sewn},double(k-supported)/(count-1-supported));
+    project(s);refined.push_back(s);
+   }
+  }else{
+   path=drape::SmoothRoute(std::move(path),24,project);
+   for(unsigned k=0;k<count;k++){auto s=drape::Resample(path,double(k)/(count-1));project(s);refined.push_back(s);}
+   refined=drape::SmoothRoute(std::move(refined),12,project);
+  }
+  unsigned start=unsigned(mesh.vertices.size());Tube(mesh,refined,parameters_.strapWidth*C,thick*.5,false,frame,MaterialSlot::WhiteElastic);output_.layout.straps[route]={start,count,4};
  }
  // Two continuous elastic side hems share the walked sheet's actual edge.
  // They are not additional skin pins, nor a closed top/bottom trim.
@@ -137,7 +149,7 @@ inline const Output& Session::FitSheet(Style style,const Input& input){
    // Rest contact must preserve the injective angular material chart. A
    // positive radial scaling cannot reverse its spherical triangles. This is
    // only initial fitting: physical cloth remains free in all three axes.
-   auto radial=Unit(Sub(mesh.vertices[id].position,chart.center));unsigned at=id-sheetStart,row=at/(columns+1),col=at%(columns+1);bool freeEdge=row>0&&row<rows&&(col==0||col==columns),accepted=false;
+   auto radial=Unit(Sub(mesh.vertices[id].position,chart.center));unsigned at=id-sheetStart,row=at/(columns+1),col=at%(columns+1);bool freeEdge=parameters_.supportedTrim||(row>0&&row<rows&&(col==0||col==columns)),accepted=false;
    if(freeEdge){
     // A soft side guide cannot forbid the tangential body-contact direction.
     // Permit full spatial hem motion, retaining a positive, conditioned
@@ -161,7 +173,7 @@ inline const Output& Session::FitSheet(Style style,const Input& input){
     }
    }
    if(!accepted){double advance=Dot(radial,delta),square=Dot(delta,delta);
-    if(std::abs(advance)>Length(delta)*1e-6){double scalar=square/advance;scalar=std::clamp(scalar,-C*.02,C*.02);double radius=Length(Sub(mesh.vertices[id].position,chart.center));if(radius+scalar<=C*1e-8)throw std::invalid_argument("Rest contact would collapse its material chart radius");delta=Mul(radial,scalar);}
+    if(std::abs(advance)>Length(delta)*1e-6){double scalar=square/advance;scalar=std::clamp(scalar,-C*.02,C*.02);double radius=Length(Sub(mesh.vertices[id].position,chart.center));if(radius+scalar<=C*1e-8){if(parameters_.supportedTrim)scalar=0;else throw std::invalid_argument("Rest contact would collapse its material chart radius");}delta=Mul(radial,scalar);}
     else delta=Point{};
    }
   }
@@ -191,7 +203,7 @@ inline const Output& Session::FitSheet(Style style,const Input& input){
     double difference=Dot(radial,Sub(Mul(average,1./count),previous[at]));moveSheetVertex(sheetStart+at,Mul(radial,std::clamp(difference*.25,-C*.002,C*.002)));
    }
   }
-  if(sweep<84){for(const auto& ribbon:output_.layout.straps)drape::BendRibbonGroups(mesh,ribbon,moveVertex);for(const auto& ribbon:output_.layout.sideHems)drape::BendRibbonGroups(mesh,ribbon,moveVertex);}
+  if(sweep<84){if(!parameters_.supportedTrim)for(const auto& ribbon:output_.layout.straps)drape::BendRibbonGroups(mesh,ribbon,moveVertex);for(const auto& ribbon:output_.layout.sideHems)drape::BendRibbonGroups(mesh,ribbon,moveVertex);}
   bool changed=false;
   for(unsigned id=bandCount;id<mesh.vertices.size();id++){
    auto point=normalize(mesh.vertices[id].position);

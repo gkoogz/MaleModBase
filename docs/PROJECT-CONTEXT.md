@@ -1,3 +1,18 @@
+## October 7 playable supported-trim jockstrap
+
+The user explicitly simplified the garment mechanics: fit the waistband and
+most of each glute strap snugly to the measured character, without free cloth
+simulation there. Simulate the front pouch and, if useful, only short underside
+strap ends. The pouch must remain soft, move with the contained anatomy, scale
+with morphology and accommodate outward animation motion. This supersedes the
+older expectation that all garment components must be freely simulated.
+
+Wolverine is the development and first playable target; Base owns this shared
+mechanical mode and character-independent fit. Preserve the existing anatomy
+inside the additive modesty garment. Native adapters remain responsible for
+measured body geometry and pose transport. Playable means observed controls,
+visibility, stable movement and usable cadence, not only a successful build.
+
 ## October 7 glute strap fit correction
 
 The glute straps must closely cup the underside of the glutes, not sweep down

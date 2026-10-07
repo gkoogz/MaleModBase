@@ -6,7 +6,7 @@ inline BandRest BuildBand(const Input& input,const Parameters& parameters,Output
  // Native route samples identify the body; they are not a limit on elastic
  // silhouette quality. Densify the exact cut itself, retaining native donors,
  // and let consumers use the exported band layout for material indices.
- auto& m=output.mesh;const auto& frame=input.frame;const unsigned waist=input.bodySurface.empty()?unsigned(input.waist.size()):(std::max)(96u,unsigned(input.waist.size()));
+ auto& m=output.mesh;const auto& frame=input.frame;const unsigned waist=input.bodySurface.empty()?unsigned(input.waist.size()):(std::max)(parameters.supportedTrim?48u:96u,unsigned(input.waist.size()));
     // A closed thick waistband with separate thin stripe bands, not a flat
     // image decal. Duplicate seams retain equal positions and original donors.
     double waistHeight=0;for(auto sample:input.waist)waistHeight+=frame.Local(sample.position)[2];waistHeight/=input.waist.size();

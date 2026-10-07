@@ -67,6 +67,9 @@ struct ClothMechanics {
 };
 struct Parameters {
     ClothMechanics mechanics;
+    // Body-following trim with a short free underside connector. The pouch
+    // remains persistent cloth. Adapters opt into this shared support contract.
+    bool supportedTrim=false;
     // All dimensions are fractions of the measured waist circumference.
     double bandWidth=.065,bandThickness=.003,strapWidth=.025,hemWidth=.012,hemThickness=.0025,clearance=.008,supportFraction=.055;
     double panelHalfAngle=.6981317007977318; // measured front waistband span in radians
@@ -74,6 +77,8 @@ struct Parameters {
     unsigned pouchRings=32,pouchSegments=64; // material grid resolution, <=64 rows/128 columns
     bool simulate=true; // false is the explicit, offline fitted-geometry reference
 };
+// Shared supported-trim development profile. Body adapters supply measured geometry only.
+inline Parameters SupportedPouchParameters(){Parameters p;p.supportedTrim=true;p.pouchRings=12;p.pouchSegments=24;return p;}
 enum class AnatomyRegion:unsigned {Shaft=0,Glans=1,LeftLobe=2,RightLobe=3};
 using AnatomyRegions=std::array<std::vector<std::uint32_t>,4>;
 struct VertexRange {unsigned start=0,count=0;};
@@ -248,6 +253,7 @@ private:
     const Output& FitSheet(Style style,const Input& input);
     void Cloth(const Input& input,bool rebuild,double elapsed);
     void ClassifySurfaces(const Input& input,Point origin,double scale,bool rebuildCap=false);
+    void SupportedCloth(const Input& input,const std::vector<Point>& targets,double elapsed);
     double ClassifiedDistance(detail::BodyCollider::Hit& hit,Point point,bool anatomy)const;
     double ClassifiedDistance(const detail::BodyCollider::Hit& hit,Point point,bool anatomy)const;
     struct Edge {unsigned a,b;double rest,compliance,lambda=0;bool bend=false,tether=false;};
@@ -289,6 +295,7 @@ private:
 #include "root_closure.hpp"
 #include "waist_graft.hpp"
 #include "natural_band.hpp"
+#include "trim_support.hpp"
 #include "jockstrap_detail.hpp"
 #include "body_surface.hpp"
 #include "surface_classification.hpp"
@@ -306,3 +313,4 @@ private:
 #include "cloth_stretch.hpp"
 #include "anchor_transport.hpp"
 #include "cloth_detail.hpp"
+#include "supported_cloth.hpp"

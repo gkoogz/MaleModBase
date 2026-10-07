@@ -8,6 +8,7 @@
 namespace malemod::garments {
 struct Sample;
 struct RootSubdivision;
+inline std::vector<std::uint32_t> RootBoundary(const std::vector<Sample>&,const std::vector<std::array<std::uint32_t,3>>&,const std::vector<Sample>&,double);
 inline std::vector<std::array<std::uint32_t,3>> RootCap(const std::vector<Sample>&,const std::vector<std::array<std::uint32_t,3>>&,const std::vector<Sample>&,double);
 inline std::vector<std::array<std::uint32_t,3>> SurfaceCaps(const std::vector<Sample>&,const std::vector<std::array<std::uint32_t,3>>&,double);
 inline std::vector<std::array<std::uint32_t,3>> RefineClassificationBoundary(const std::vector<Sample>&,const std::vector<std::array<std::uint32_t,3>>&,const std::vector<std::uint32_t>&,double,const std::vector<RootSubdivision>& = {});
@@ -153,7 +154,7 @@ inline std::vector<std::array<std::uint32_t,3>> SurfaceCaps(const std::vector<Sa
  for(const auto& loop:boundary.loops){auto cap=closure_detail::EarClip(boundary.points,loop);result.insert(result.end(),cap.begin(),cap.end());}
  return result;
 }
-inline std::vector<std::array<std::uint32_t,3>> RootCap(const std::vector<Sample>& anatomy,const std::vector<std::array<std::uint32_t,3>>& triangles,const std::vector<Sample>& opening,double scale){
+inline std::vector<std::uint32_t> RootBoundary(const std::vector<Sample>& anatomy,const std::vector<std::array<std::uint32_t,3>>& triangles,const std::vector<Sample>& opening,double scale){
  if(opening.size()>1024)throw std::invalid_argument("Invalid measured root opening budget");
  auto boundary=closure_detail::Extract(anatomy,triangles,scale);if(boundary.loops.empty())return {};
  if(boundary.loops.size()!=1||opening.empty())throw std::invalid_argument("Measured anatomy has multiple or unmatched open loops");
@@ -161,6 +162,11 @@ inline std::vector<std::array<std::uint32_t,3>> RootCap(const std::vector<Sample
  std::vector<bool> matched(loop.size());
  for(const auto& sample:opening){auto p=Mul(Sub(sample.position,origin),1/scale);if(!Finite(p))throw std::invalid_argument("Nonfinite measured opening");double best=1e100;unsigned at=0;for(unsigned k=0;k<loop.size();k++){double d=Length(Sub(p,points[loop[k]]));if(d<best){best=d;at=k;}}if(best>1e-6)throw std::invalid_argument("Measured opening differs from anatomy boundary");matched[at]=true;}
  for(bool value:matched)if(!value)throw std::invalid_argument("Measured opening omits an anatomy boundary vertex");
+ return loop;
+}
+inline std::vector<std::array<std::uint32_t,3>> RootCap(const std::vector<Sample>& anatomy,const std::vector<std::array<std::uint32_t,3>>& triangles,const std::vector<Sample>& opening,double scale){
+ auto loop=RootBoundary(anatomy,triangles,opening,scale);if(loop.empty())return {};
+ auto boundary=closure_detail::Extract(anatomy,triangles,scale);const auto& points=boundary.points;
  try{return closure_detail::EarClip(points,loop);}catch(const std::invalid_argument& e){throw std::invalid_argument(std::string("Anatomical root cap: ")+e.what());}
 }
 }

@@ -1,3 +1,18 @@
+## October 7 supported trim candidate (not installed)
+
+Base adds opt-in `SupportedPouchParameters()`: body-fitted glute straps through
+seven eighths of their route, persistent front pouch, short mobile strap ends,
+and compliance at the lower front waistband. Full native physical surfaces and
+rendered triangle contact checks remain; anatomy geometry is not replaced.
+The saved crouched Wolverine pose passed 180 updates at 1/30 s input intervals
+with contact/material budgets, approximately 26-31 ms steady solve on this host.
+Rear/side offline renders show the straps following the glute crease.
+This is not native playable acceptance. Full movement, size changes, feedback,
+performance and attachment/campaign matrix remain pending. No human or retail
+DLL was replaced. Private evidence is under build/jockstrap-supported-20261007.
+The source snapshot is being adopted by Wolverine for an owned-room trial.
+Geralt remains on its prior pin until its own adapter adoption and tests.
+
 ## October 7 glute straps - higher measured crease route, native checks pending
 
 User rejected straps sweeping down the legs. Shared classic route contract v3
