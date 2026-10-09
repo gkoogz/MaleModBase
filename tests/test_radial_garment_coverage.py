@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from malemod_base.garment_coverage import radial_coverage
+from malemod_base.radial_garment_coverage import radial_coverage
 
 class Coverage(unittest.TestCase):
     def test_cut_height_radius_and_seam(self):
