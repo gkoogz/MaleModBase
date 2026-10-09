@@ -94,3 +94,26 @@ anatomy support is not a walking gameplay sandbox.
 These were discovery results at that checkpoint, preceding the observed
 Witcher room above. Consult each adapter's current reproduction package for
 its later implementation and verification.
+
+## October 8 repository persistence and performance audit
+
+Both adapters retain their grey-room recipes and fresh-machine reproduction
+instructions in `dev/sandbox/README.md`. Their source inventories were refreshed
+for current launcher/lighting changes and pass their source-only checks:
+Wolverine `python tools/iteration/verify_recipe.py`; Witcher `python tools/sandbox.py
+check-delta`. The Wolverine inventory now includes the private Meridian tools
+and CPU phase profiler. This is repository-source validation, not a new native
+acceptance or an installation. Local pending files must be committed/pushed
+explicitly before a remote clone can inherit them.
+
+Wolverine's current candidate recorded Update mean 4.1958 ms and Draw mean
+14.7202 ms in its last native sweep. Exact-build post-skinning CPU replay across
+24 historical poses/240 measured calls isolates full triangle clearance at
+10.1974 ms of 11.771 ms total. These are not campaign/human FPS measurements.
+Prioritize shared collision/display resolution separation, validated temporal
+chart reuse and bounded full-solve cadence; adapter donor deduplication is a
+secondary target. Read the Wolverine `docs/MERIDIAN-PERFORMANCE.md` for the
+reproducible profiler, phase table, limits and adoption gates. Numerical
+optimizations belong in Base with tested pinned adoption by each spoke.
+The user reports the prototype mostly good; this audit leaves that runtime and
+settings in place. No new anatomy/garment/lighting runtime edit or installation.

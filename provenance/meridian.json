@@ -1,0 +1,36 @@
+{
+  "schema": "malemod.meridian/1",
+  "geometryBindingRevision": 5,
+  "modules": [
+    "include/malemod/garments/meridian_runtime.hpp",
+    "include/malemod/garments/meridian_rig.hpp",
+    "include/malemod/garments/meridian_clearance.hpp",
+    "include/malemod/garments/meridian_continuity.hpp",
+    "include/malemod/garments/meridian_follow.hpp",
+    "include/malemod/garments/meridian_material.hpp",
+    "include/malemod/physics/anterior_envelope.hpp"
+  ],
+  "hashNormalization": "LF",
+  "files": {
+    "include/malemod/garments/meridian_runtime.hpp": "01c72a1d77c1e6555f70e01079dd38ff81f6ee8ecd3713cdb49d145c75fd7768",
+    "include/malemod/garments/meridian_rig.hpp": "4bcff62ffb5670212039fac4e1e3651bc4605065b7775ebc068e1ae3b248a41a",
+    "include/malemod/garments/meridian_clearance.hpp": "3e7a19fbedfb1ae16c80722da9d0027d97c99d6c4586b9db67e423de9eb8a5d4",
+    "include/malemod/garments/meridian_continuity.hpp": "8c2a3ea0e6b2bcaa0e4f3dd322f7e1535ffa30fd5526f6b60fb6b2a912a03b23",
+    "include/malemod/garments/meridian_follow.hpp": "20b41f044c7a866b0482fc646a1efff76e101bcc39967e5c6b097a8e585e36f7",
+    "include/malemod/garments/meridian_material.hpp": "2c1ffaef07b86c11ba7baee32db904c6f4d354d99ae89ba7f0cc281c122829e2",
+    "include/malemod/physics/anterior_envelope.hpp": "b745e44ef9d708e5c2dc7190f350d064735065452b72f668ec80301d7e70437b"
+  },
+  "adoption": "Wolverine consumes committed Base revision through dependencies/base.lock.json and measured binding revision5. Witcher and future adapters must supply coherent frames, palettes and independently verified bindings.",
+  "verification": {
+    "sourceTests": "meridian_runtime,meridian_clearance,meridian_continuity,meridian_follow",
+    "sampledNativePrototype": true,
+    "fullAttachmentGatePassed": false,
+    "campaignVerified": false,
+    "allLODsVerified": false,
+    "knownLimitations": [
+      "Faceting at extreme sizes",
+      "Uncertified continuity fallback when full wrapping is rejected",
+      "Tank/campaign visual acceptance incomplete"
+    ]
+  }
+}

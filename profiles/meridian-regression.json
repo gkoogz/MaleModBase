@@ -1,0 +1,28 @@
+{
+  "schema": "malemod.meridian-regression/1",
+  "controlScale": "Public 1..100 controls; neutral is 50",
+  "cases": [
+    {"id":"default", "overall":50, "width":50, "restAngle":50},
+    {"id":"overall-min", "overall":1, "width":50, "restAngle":50},
+    {"id":"overall-25", "overall":25, "width":50, "restAngle":50},
+    {"id":"overall-75", "overall":75, "width":50, "restAngle":50},
+    {"id":"overall-max", "overall":100, "width":50, "restAngle":50},
+    {"id":"width-min", "overall":50, "width":1, "restAngle":50},
+    {"id":"width-25", "overall":50, "width":25, "restAngle":50},
+    {"id":"width-75", "overall":50, "width":75, "restAngle":50},
+    {"id":"width-max", "overall":50, "width":100, "restAngle":50},
+    {"id":"combined-min", "overall":1, "width":1, "restAngle":50},
+    {"id":"combined-max", "overall":100, "width":100, "restAngle":50},
+    {"id":"angle-min", "overall":50, "width":50, "restAngle":1},
+    {"id":"angle-max", "overall":50, "width":50, "restAngle":100},
+    {"id":"return-default", "overall":50, "width":50, "restAngle":50}
+  ],
+  "additionalRequiredEvidence": {
+    "mechanicalStates": "Every adapter-supported state",
+    "views": ["front", "side", "oblique"],
+    "motion": ["idle", "walk", "run", "turn"],
+    "attachment": "Naked and clothed, both body resources and supported LODs",
+    "campaign": "Separate campaign transition check",
+    "acceptance": "A capture or a numerical support certificate does not constitute visual acceptance"
+  }
+}
