@@ -1,3 +1,74 @@
+## October 9 - measured native root/contact diagnostics; replacement still rejected
+
+Request-gated Wolverine source a3febd67/Base2c15479 compiled from clean Git
+archives, excluding unrelated dirty source, with all eight original stock maps
+hash-validated. Private runtime3007ae84 ran as20261009-171654-f8354c in the
+owned native room. Seven default/extreme/state inputs exported actual CPU solver
+stations, velocities, fixed root, returned bone-transformed thigh capsules and
+interpolated solver contacts beside same-frame9002-point cloth donor buffers.
+All input/hash/frame/finite checks passed. Twelve shaft stations were captured;
+the first link matches restLength/11 within3e-6. The bone-transform branch was
+accepted for these samples; readiness alone is not its proof. Actual collar
+skin radius remains unknown, and CPU buffers are not native skinned-surface
+certificates. The exact child closed gracefully with exit0. Retail7095f630
+remains unchanged. Evidence lives in the ignored run/root-trace directory.
+
+Shared calibrated root-joint candidate103829d is committed on the clean
+codex/witcher-root-contact Base worktree. It retains the fixed root and rest
+command, supplies contact reactions through the first link, and defaults off.
+Its enabled attachment ridge remains rejected. Review identified double-counted
+driven angular rates/clinical yaw; a successor and Wolverine adoption are under
+development. Do not install or relabel the candidate as an accepted port.
+
+Menu sourcec65fb9a/Base2c native title720 run172413-e8f03a now keeps stock
+Continue selected while the panel adjusts and resets; after collapse the stock
+Down navigation moves to Replay Mission. All rows/footer were reviewed. Native
+room1440 input QA is still pending; earlier6158957 font captures remain separate.
+No retail installation or full attachment gate pass is implied by menu QA.
+
+## October 9 - rejected finite-grid garment candidate and coordinated menus
+
+Continuing the user's FIX EVERYTHING request, with explicitly delegated Witcher
+appearance/physics/fit/functionality and shared menu harmonization. Shared
+geometry/contracts stay in Base; measured assets, native input/rendering and
+installation stay in pinned spokes. Both delegated tasks remain in progress.
+
+Base2c15479 and Wolverine31f94fa produced private runtime7ecd5a11, run
+20261009-162842-f20d7b in the owned posterior-final-room-20261008 workflow.
+The 64x40 revision6 contact candidate is REJECTED: native poses can leave the
+pouch absent when a whole-triangle certificate fails. Actual9002-point contact
+exports reproduced four failed constructions out of five captured cases.
+The previously passing interpolated64-ray replay did not establish native
+acceptance. Do not weaken the safety check or install this candidate.
+
+Private full-normal/cell-metric/primitive-union experiments clear these five
+inputs numerically, but substantial sharp folds remain in mesh review. They
+are confined to ignored build directories and are not accepted shared source
+or native repairs. Later smoothing/seam/chart trials are likewise rejected.
+Render.bin can be stale when a pose is rejected; Contact.bin stores the actual
+prepared current donor inputs. Do not equate a frozen mesh dump with the rejected
+frame's drawn garment. Guide exports distinguish analytical cloth controls from
+solver stations and explicitly mark missing live thigh/root/collar measurements.
+
+Menu theme Basee514bf8 is included in2c15479; Wolverine6158957 has the final
+native font scale. Both1440p room and720p title captures show readable complete
+panels, one/five-step adjustment, reset and collapse. Title arrows also move the
+underlying stock menu while the panel is open; the menu agent is repairing that
+input leakage. These are font/control observations, not garment/attachment
+acceptance. Witcher is testing a shared opt-in coupled angular root joint;
+early actual mesh improvement remains offline and the attachment is unaccepted.
+
+No new retail installation, push or release. Wolverine retail hash remains
+7095f63042e60295b7316b7a3fe457956fafefbe4f8e88b24dee3df51145cee3,
+with the prior4f4900a5 accepted runtime and exact rollback preserved. The owned
+162842 child exited0; no audio sessions were muted in that run, so there is no
+per-session restoration HRESULT to assert. Full attachment acceptance is FALSE,
+including unsupported/unobserved coupled-resource/LOD/campaign coverage.
+
+Private evidence: Base build/wardrobe-defects-20261009 and
+build/menu-refresh-20261009; these are not committed capture banks. Preserve
+unrelated dirty CPU-cloth/worker/audio-source work and exclude it from builds.
+
 ## October 9 - outer pec / armhole clipping repair and matched cotton (tank20)
 
 The user supplied a native side crop showing exposed skin through the front

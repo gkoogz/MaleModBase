@@ -30,3 +30,11 @@ anchors, unchanged clear surfaces, physical sampling and transactional rejection
 Five private native contact inputs were interpolated into the denser candidate
 for diagnosis; that synthetic replay passed but is not observed native evidence.
 Native full-matrix acceptance and performance remain required before deployment.
+
+Actual native revision6 inputs subsequently rejected four of five captured
+constructions and left the pouch absent in observed poses. The common-cover
+and longitude-constrained correction is therefore unaccepted. Passing synthetic
+interpolation was insufficient. Five actual9002-point private controls were
+replayed; later full-normal/cell-metric/union trials pass numerical separation
+but retain sharp folds, and remain ignored experiments rather than adopted
+source. Do not install the current candidate or claim native/visual acceptance.
