@@ -36,6 +36,14 @@ other adapters choose their own measured spacing and native fit validation.
 The localized-envelope regression checks that a remote cut is not inflated
 by a central support peak. This is not a full-volume collision certificate.
 
+`radial_triangle_coverage` keeps original body faces at concave cut openings.
+It checks edge/interior witnesses instead of only the corners and protects an
+adapter-measured band around welded cut edges. UV aliases are not cuts. The
+adapter still reviews the posed boundary: reference masking alone cannot prove
+the neckline is covered during head/shoulder motion. Wolverine adopts this
+for the tank with a 2.5-source-unit protective band; other spokes supply their
+own measured frame and inset. No anatomy/body positions are changed.
+
 Independent vertex projection can erase stock ease and overturn fine folds.
 Wolverine's previous tank revision8 had 509 faces whose normals rotated beyond
 90 degrees relative to stock. Revision9's measured offline candidate has none;
