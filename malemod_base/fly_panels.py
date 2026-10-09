@@ -7,6 +7,26 @@ Fold hinges remain attached. No game, graphics, skeleton or units assumptions.
 import numpy as np
 
 
+def fold_rigid_attachment(positions, *, front_axis, side_axis, height_axis,
+                          lower, upper, half_width, angle, side=1):
+    """Carry an accessory with a flap without shearing its original shape.
+
+    The accessory centroid follows the panel envelope at its measured height.
+    All vertices receive the same proper rotation about that centroid's hinge.
+    """
+    p=np.asarray(positions,dtype=float)
+    if p.ndim!=2 or p.shape[1]!=3 or not len(p) or not np.isfinite(p).all():
+        raise ValueError('Expected a finite nonempty rigid accessory')
+    if len({front_axis,side_axis,height_axis})!=3 or set((front_axis,side_axis,height_axis))!={0,1,2} or upper<=lower or half_width<=0 or side not in (-1,1) or not np.isfinite(angle) or not 0<angle<np.pi:
+        raise ValueError('Invalid attachment hinge')
+    pivot=p.mean(axis=0)
+    pivot[side_axis]=side*half_width*(pivot[height_axis]-lower)/(upper-lower)
+    q=p-pivot;out=q.copy();c=np.cos(angle);s=side*np.sin(angle)
+    out[:,front_axis]=q[:,front_axis]*c-q[:,side_axis]*s
+    out[:,side_axis]=q[:,front_axis]*s+q[:,side_axis]*c
+    return out+pivot
+
+
 def folded_fly(positions, triangles, *, front_axis, side_axis, height_axis,
                front_plane, lower, upper, half_width, angle):
     p=np.asarray(positions,dtype=float);tri=np.asarray(triangles,dtype=int)

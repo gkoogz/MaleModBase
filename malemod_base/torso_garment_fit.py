@@ -65,21 +65,33 @@ def refine_triangles(positions, triangles):
     return np.array(out),np.array(faces),np.array(donors)
 
 
-def expand_projected_sections(positions, triangles, supports, clearance, spacing=2., side_threshold=.05):
-    """Expand a common positive X scale field instead of flattening folds.
+def expand_projected_sections(positions, triangles, supports, clearance, spacing=2., side_threshold=.05, *, offset_width=None, outward_cosine=None):
+    """Expand a common smooth X field instead of flattening folds.
 
     Y/Z and source cut boundaries remain ordered. Every vertex at the same
     height/sign shares the same scale, including UV aliases. Solving measured
     face support constraints on this field preserves the depth of neighboring
     source folds which independent nearest-surface projection would collapse.
+    With offset_width, use a smooth signed translation that vanishes at X=0
+    instead of multiplying fold depth. outward_cosine restricts support tests
+    to outward facing surfaces: grazing and turned-back folds are not front
+    envelope constraints and require separate full-surface clearance review.
     """
     out=np.array(positions,dtype=float,copy=True);supports=np.asarray(supports,dtype=float)
     if clearance<=0 or spacing<=0 or not np.isfinite(out).all():raise ValueError("Invalid section fit")
+    if offset_width is not None and (not np.isfinite(offset_width) or offset_width<=0):raise ValueError("Invalid offset width")
+    if outward_cosine is not None and (not np.isfinite(outward_cosine) or not 0<=outward_cosine<=1):raise ValueError("Invalid outward support cosine")
     knots=np.arange(out[:,2].min()-spacing,out[:,2].max()+2*spacing,spacing)
     fraction=(out[:,2]-knots[0])/spacing;left=np.floor(fraction).astype(int);blend=fraction-left
     basis=np.zeros((len(out),len(knots)))
     basis[np.arange(len(out)),left]=1-blend;basis[np.arange(len(out)),left+1]=blend
-    scales=np.ones((2,len(knots)));constraints=[]
+    scales=np.ones((2,len(knots))) if offset_width is None else np.zeros((2,len(knots)))
+    direction=out[:,0] if offset_width is None else np.tanh(out[:,0]/offset_width)
+    constraints=[]
+    faces=np.asarray(triangles,dtype=np.int64)
+    ns=np.cross(out[faces[:,1]]-out[faces[:,0]],out[faces[:,2]]-out[faces[:,0]])
+    radial=out[faces].mean(axis=1);radial[:,2]=0
+    winding=1 if np.median(np.sum(ns*radial,axis=1))>=0 else -1
     for face in np.asarray(triangles,dtype=np.int64):
         a,b,c=out[face];sign=1 if np.all(out[face,0]>side_threshold) else (-1 if np.all(out[face,0]<-side_threshold) else 0)
         if not sign:continue
@@ -87,13 +99,16 @@ def expand_projected_sections(positions, triangles, supports, clearance, spacing
         if abs(det)<1e-9:continue
         normal=np.cross(b-a,c-a)
         if abs(normal[0])<.25*np.linalg.norm(normal):continue
+        if outward_cosine is not None and winding*sign*normal[0]<outward_cosine*np.linalg.norm(normal):continue
         q=supports[(supports[:,0]*sign>0)&np.all(supports[:,1:]>=out[face,1:].min(0)-1e-6,axis=1)&np.all(supports[:,1:]<=out[face,1:].max(0)+1e-6,axis=1)]
         u=((q[:,1]-a[1])*(c[2]-a[2])-(q[:,2]-a[2])*(c[1]-a[1]))/det
         v=((b[1]-a[1])*(q[:,2]-a[2])-(b[2]-a[2])*(q[:,1]-a[1]))/det
         weights=np.column_stack((1-u-v,u,v));valid=np.all(weights>=-1e-6,axis=1)
         for w,x in zip(weights[valid],q[valid,0]):
-            coefficient=(w*sign*out[face,0])@basis[face]
-            constraints.append((int(sign<0),coefficient,float(sign*x+clearance)))
+            coefficient=(w*sign*direction[face])@basis[face]
+            target=sign*x+clearance
+            if offset_width is not None:target-=sign*np.dot(w,out[face,0])
+            constraints.append((int(sign<0),coefficient,float(target)))
     for _ in range(8):
         # Only raise valleys; this preserves every previously satisfied support.
         for side in range(2):
@@ -105,7 +120,8 @@ def expand_projected_sections(positions, triangles, supports, clearance, spacing
     for side,c,target in constraints:
         if target-np.dot(c,scales[side])>1e-5:raise ValueError("Section clearance did not converge")
     factors=np.sum(basis*scales[(out[:,0]<0).astype(int)],axis=1)
-    out[:,0]*=factors
+    if offset_width is None:out[:,0]*=factors
+    else:out[:,0]+=direction*factors
     return out
 
 
