@@ -215,7 +215,7 @@
     "docs/GARMENT-CONTACT-REPAIR.md": "fb747838d2c3fdf460a8fd0578a043720d31a55c50f817dc43587915bf4cfaaf",
     "docs/GARMENT-GEOMETRY-AUDIT.md": "3437079279f2d823e6f9110c7f7c8ba5878bae0a8f2f6e07aea8ee58d51f2bcc",
     "docs/GARMENT-NUMERICAL-SUPPORT.md": "80e7cc520d149761f09ff625b21c0829ef066b885943c6083f44ff5b309a59c8",
-    "docs/GARMENT-QUERY-PERFORMANCE.md": "78c9c073157174adca3d6c1bad8fb36b368bb478533000cb94ad886f3ae08993",
+    "docs/GARMENT-QUERY-PERFORMANCE.md": "38dd566ba50a4993f1c6cbc77c61407b15ed53e7dbb7007efd3d6897cb9d68d6",
     "docs/GARMENT-REACTIONS.md": "12fb1b7a8374bc419ac26b30f40527283c14ad9f144501d4cfa77580fca7bd08",
     "docs/GARMENTS.md": "1edfb038439d91616693dadd5c014f3128dbf9604860b2a6145274d60374c738",
     "docs/WAISTBAND-CONTOURS.md": "a51e11379e3d6b896cc7328772a2b1f5d8545168b96a6ef2133d78979c9c0aae",
@@ -582,6 +582,11 @@
       "path": "tests/test_garment_regions.py",
       "previousSHA256": "68d1eb7c8641ac432b9d7e823ffecda3f47dcea0505d0193386b44bf1bf109db",
       "reason": "Git LF normalization only; working source and committed bytes compared exactly after CRLF replacement"
+    },
+    {
+      "path": "docs/GARMENT-QUERY-PERFORMANCE.md",
+      "previousSHA256": "78c9c073157174adca3d6c1bad8fb36b368bb478533000cb94ad886f3ae08993",
+      "reason": "One extra CR from historical CRCRLF input removed by Git checkout; normalized text compared"
     }
   ]
 }
