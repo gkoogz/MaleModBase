@@ -54,11 +54,11 @@
     },
     {
       "path": "tests/root_contact_windows_test.cpp",
-      "sha256": "16216b11eb3e22db60c3f7ba27aad581a37b6335bd13d6f10fee349daa27cf8e"
+      "sha256": "fe87afaacefb0e8dae3c5f466d4ee20765365bf53d27d8d445d8bed91e36099b"
     },
     {
       "path": "include/malemod/surface/tangent_root.hpp",
-      "sha256": "be8e6cfaea8dfcafc2890d717955718f9d78e772e06f58fa6bc928783491fccf"
+      "sha256": "a69ecf75a689de7aa8bac345cac60d11cfd739e53f3f06b3e0c06159f86c1669"
     },
     {
       "path": "tools/angular_root_kernel.py",
@@ -66,7 +66,7 @@
     },
     {
       "path": "tests/tangent_root_test.cpp",
-      "sha256": "a6cdff9036d34edb78d06dd1a9aae86dfcf8201590f8264d7ae18f6efd3f3b01"
+      "sha256": "82681b0f8e861708befb050194e9aa6f5ca944167b929effdb9636e7ef31eb3a"
     },
     {
       "path": "tests/root_joint_motion_replay.cpp",
@@ -74,7 +74,7 @@
     },
     {
       "path": "docs/TANGENT-ROOT-ADOPTION.md",
-      "sha256": "371dc624d0d9104ab389c613b1bb07bae338c9f2a10c70b197106630ff2f1006"
+      "sha256": "95d641741fc2f2c9fbddeb56f6d21d3496d0a0c82a8a3fef5c37a16b580593de"
     }
   ],
   "processKernelSHA256": "5dc09166a557e96dd7067f3dd96a25e33fe979d28471da102438476555c0a3c0",
@@ -179,5 +179,15 @@
     "sha256": "5cbae96add44385e5abb98d704a3ae26a0c1769f3f942ca38acd92dbc944e405",
     "visualAcceptance": false,
     "lowerBridgeAndSkinFoldsRemain": true
+  },
+  "drivenVelocityAPI": {
+    "independentDerivativeAndAngularRecoveryTest": true,
+    "growingAndShrinkingLink": true,
+    "rootTranslation": true,
+    "zeroDriveReturnsOriginalExactly": true,
+    "checkedExtractorConsumesIt": false,
+    "adapterAdoptionAccepted": false,
+    "priorFullSourceProofRevision": "4d5ef52859365b88628db0e8cc798bd5209c1964",
+    "native": false
   }
 }

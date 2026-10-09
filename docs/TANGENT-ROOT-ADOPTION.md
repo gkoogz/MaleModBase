@@ -35,6 +35,24 @@ The checked extractor transform is an integration reference, not a new fork.
    velocity response, `EffectiveMass` supplies the scalar gradient mass, and
    `Mobility` supplies the full 3x3 matrix. Other stations keep source masses.
 
+3a. The independently tested `DrivenVelocity(basis,pitchRate,yawRate,direction,
+    prescribedLengthRate,rootTranslationVelocity)` adds imposed radial growth and
+    root translation to the angular contact velocity. Its zero-drive path
+    returns the original `Velocity` exactly. Physical impulse response remains
+    tangent; `Rates` recovers angular rates independently of the radial term.
+    Keep the exact prior accepted **source segment value** in solver history,
+    seed it only on an actual solver reset, and use
+    `(newSegment-priorAcceptedSegment)/dt`. Recomputing it from rounded point
+    coordinates creates false growth during stationary steps. Angular drive and
+    clinical yaw still require the existing per-step relative recovery.
+
+    This helper is **not yet consumed by the checked extractor or any accepted
+    adapter**. The4d position/contact integration omits prescribed radial growth
+    during its angular velocity reconstruction; that defect remains open until
+    a coupled moving candidate is verified. Private rod-velocity diagnostics
+    exercise growth bookkeeping but have not passed convergence or settling.
+    Do not relabel the earlier4d full source proofs as proof of this adoption.
+
 4. Replace every active-root scalar/direct-mass path, including distance,
    scalar contact, interpolated rod/body contact, static friction, contact
    velocity/friction impulses and proximal suspension reactions. For a rod

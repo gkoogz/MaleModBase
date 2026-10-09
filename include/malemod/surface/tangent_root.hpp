@@ -36,6 +36,15 @@ inline Point Velocity(Basis j,double pitchRate,double yawRate){
  if(!std::isfinite(pitchRate)||!std::isfinite(yawRate))throw std::invalid_argument("Nonfinite root rate");Finite(j.pitch);Finite(j.yaw);
  auto v=Scale(j.pitch,pitchRate);for(unsigned k=0;k<3;k++)v[k]+=j.yaw[k]*yawRate;return v;
 }
+// Contact velocity contains prescribed growth/root translation as well as the
+// physical angular DOFs. The angular impulse mobility above remains tangent.
+inline Point DrivenVelocity(Basis j,double pitchRate,double yawRate,Point direction,double lengthRate,Point rootVelocity={}){
+ Finite(direction);Finite(rootVelocity);if(!std::isfinite(lengthRate))throw std::invalid_argument("Nonfinite prescribed length rate");
+ if(std::abs(Dot(direction,direction)-1)>1e-5)throw std::invalid_argument("Invalid prescribed link direction");
+ auto value=Velocity(j,pitchRate,yawRate);
+ if(lengthRate==0&&rootVelocity==Point{})return value;
+ for(unsigned k=0;k<3;k++)value[k]+=direction[k]*lengthRate+rootVelocity[k];return value;
+}
 inline State Rates(State state,Basis j,Point velocity){
  Check(state);Finite(velocity);Finite(j.pitch);Finite(j.yaw);const double p=Dot(j.pitch,j.pitch),y=Dot(j.yaw,j.yaw);
  if(p<1e-10||y<1e-10)throw std::invalid_argument("Singular angular root chart");
