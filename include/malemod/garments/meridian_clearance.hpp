@@ -29,6 +29,57 @@ inline void SeedMeridians(std::vector<Vec>& points,unsigned columns,unsigned row
  }
 }
 inline float Signed(const Plane& p,Vec v){return Dot(p.normal,v)-p.offset;}
+// Remove isolated reversals left by independent triangle depenetration. Each
+// accepted move shortens its longitude and retains a separating plane for
+// every incident triangle and solid. Never smooth through a collision guide.
+inline unsigned FairMeridianReversals(std::vector<Vec>& points,unsigned columns,unsigned rows,const Face* faces,unsigned faceCount,const std::vector<Hull>& hulls,unsigned sweeps=8){
+ if(columns<3||rows<3||points.size()<=std::size_t(columns)*rows||(!faces&&faceCount))throw std::runtime_error("Invalid meridian fairing inputs");
+ if(!faceCount)return 0; // Without triangles there is no collision certificate.
+ const unsigned pole=columns*rows;std::vector<std::vector<unsigned>> incident(pole+1);
+ for(unsigned f=0;f<faceCount;f++)for(unsigned id:faces[f]){if(id>pole)throw std::runtime_error("Invalid fairing face");incident[id].push_back(f);}
+ unsigned moves=0;
+ for(unsigned sweep=0;sweep<sweeps;sweep++){
+  unsigned changed=0;
+  for(unsigned row=1;row<rows;row++)for(unsigned col=0;col<columns;col++){
+   unsigned id=row*columns+col,next=row+1==rows?pole:id+columns;
+   Vec a=Sub(points[id],points[id-columns]),b=Sub(points[id],points[next]);
+   // An ordinary rounded contact has opposing edges. An acute return along
+   // a path is a spike, regardless of source-unit scale.
+   if(Dot(a,b)<=0)continue;
+   Vec original=points[id],target=Mul(Add(points[id-columns],points[next]),.5f);
+   for(float fraction:{1.f,.5f,.25f,.125f,.0625f}){
+    Vec candidate=Add(original,Mul(Sub(target,original),fraction));bool clear=true;
+    for(unsigned f:incident[id]){
+     auto ids=faces[f];Vec tri[3],old[3];for(unsigned k=0;k<3;k++){old[k]=points[ids[k]];tri[k]=ids[k]==id?candidate:old[k];}
+     Vec normal=Cross(Sub(tri[1],tri[0]),Sub(tri[2],tri[0]));
+     if(Dot(normal,normal)<1e-14f||Dot(normal,Cross(Sub(old[1],old[0]),Sub(old[2],old[0])))<=0){clear=false;break;}
+     for(const auto& hull:hulls){bool separated=false;for(const auto& plane:hull)if(Signed(plane,tri[0])>=-1e-5f&&Signed(plane,tri[1])>=-1e-5f&&Signed(plane,tri[2])>=-1e-5f){separated=true;break;}if(!separated){clear=false;break;}}
+     if(!clear)break;
+    }
+    if(clear){points[id]=candidate;++changed;break;}
+   }
+  }
+  moves+=changed;if(!changed)break;
+ }
+ return moves;
+}
+inline void TautenCorrectedMeridians(std::vector<Vec>& points,unsigned columns,unsigned rows,Vec axis){
+ const Vec pole=points[columns*rows];
+ struct Station {float h,r;unsigned id;};
+ for(unsigned col=0;col<columns;col++){
+  Vec anchor=Sub(points[col],pole);float end=Dot(anchor,axis);if(std::abs(end)<1e-6f)continue;
+  Vec radial=Unit(Sub(anchor,Mul(axis,end)));std::vector<Station> nodes;nodes.reserve(rows+1);
+  for(unsigned row=0;row<=rows;row++){unsigned id=row==rows?columns*rows:row*columns+col;Vec d=Sub(points[id],pole);nodes.push_back({Dot(d,axis)/end,Dot(d,radial),id});}
+  bool monotone=true;for(unsigned row=1;row<=rows;row++)if(nodes[row].h>=nodes[row-1].h)monotone=false;if(!monotone)continue;
+  std::vector<Station> hull;
+  for(int row=int(rows);row>=0;row--){auto n=nodes[row];while(hull.size()>1){auto a=hull[hull.size()-2],b=hull.back();if((b.h-a.h)*(n.r-a.r)-(b.r-a.r)*(n.h-a.h)<0)break;hull.pop_back();}hull.push_back(n);}
+  for(unsigned row=1;row<rows;row++){
+   auto n=nodes[row];unsigned k=1;while(k+1<hull.size()&&hull[k].h<n.h)++k;auto a=hull[k-1],b=hull[k];
+   float radius=a.r+(b.r-a.r)*(n.h-a.h)/(b.h-a.h);
+   if(radius>n.r)points[n.id]=Add(points[n.id],Mul(radial,radius-n.r));
+  }
+ }
+}
 // Kinematic trim fitting, separate from the sewn cloth solve. The adapter must
 // apply these same deltas to the hem ribbon, keeping cloth and trim coincident.
 inline std::vector<Vec> FitSeam(std::vector<Vec>& points,unsigned columns,Vec pole,Vec axis,const std::vector<Hull>& hulls,float clearance=.12f,float limit=2.f){
@@ -185,6 +236,7 @@ inline WrapReceipt ClearMeridians(std::vector<Vec>& points,unsigned columns,unsi
  }
  // Pull each provisional meridian taut on its outward convex envelope.
  // Full triangle clearance below is still authoritative after resampling.
+ std::vector<std::vector<Node>> tautPaths(columns);
  for(unsigned col=0;col<columns;col++){
   std::vector<Node> nodes=std::move(walkNodes[col]);Vec direction=directions[columns+col];
   // The true attachment is the start; virtual nodes have no anchor identity.
@@ -205,7 +257,7 @@ inline WrapReceipt ClearMeridians(std::vector<Vec>& points,unsigned columns,unsi
    int index=firstIndex,step=route? -1:1;
    for(unsigned i=0;i<=hull.size();i++){Node n=hull[index];paths[route].push_back(n);scores[route]+=(-start.h)*(n.r-start.r)+start.r*(n.h-start.h);if(index==lastIndex)break;index=(index+step+int(hull.size()))%int(hull.size());}
   }
-  auto& path=paths[scores[1]>scores[0]?1:0];std::vector<float> lengths(path.size(),0);
+  auto& path=paths[scores[1]>scores[0]?1:0];tautPaths[col]=path;std::vector<float> lengths(path.size(),0);
   for(unsigned i=1;i<path.size();i++){float dh=path[i].h-path[i-1].h,dr=path[i].r-path[i-1].r;lengths[i]=lengths[i-1]+std::sqrt(dh*dh+dr*dr);}
   // Spend more of the existing surface budget around bends. Spread each
   // turn's weight across its neighboring segments for continuous placement;
@@ -221,6 +273,26 @@ inline WrapReceipt ClearMeridians(std::vector<Vec>& points,unsigned columns,unsi
   for(unsigned row=1;row<rows;row++){
    float distance=(.5f-.5f*std::cos(3.14159265f*row/rows))*weights.back();unsigned i=1;while(i+1<path.size()&&weights[i]<distance)++i;
    float t=(distance-weights[i-1])/(std::max)(1e-9f,weights[i]-weights[i-1]);float h=path[i-1].h+(path[i].h-path[i-1].h)*t,r=path[i-1].r+(path[i].r-path[i-1].r)*t;
+   work[row*columns+col]=Add(pole,Add(Mul(axis,h),Mul(direction,r)));
+  }
+ }
+ // Independent arc-length sampling puts neighboring rows on opposite sides
+ // of a contact bend. Share the curvature-derived axial fractions across
+ // longitudes, then evaluate each original taut envelope at that station.
+ // Origins, longitude planes, anchors and polygon count stay unchanged.
+ std::vector<float> stations(rows,0.f);unsigned stationCount=0;
+ for(unsigned col=0;col<columns;col++){
+  const auto& path=tautPaths[col];if(path.empty())continue;if(std::abs(path.front().h)<1e-6f){tautPaths[col].clear();continue;}
+  bool monotone=true;for(unsigned i=1;i<path.size();i++)if((path[i].h-path[i-1].h)*path.front().h>1e-6f)monotone=false;
+  if(!monotone){tautPaths[col].clear();continue;}
+  ++stationCount;for(unsigned row=1;row<rows;row++)stations[row]+=Dot(Sub(work[row*columns+col],pole),axis)/path.front().h;
+ }
+ if(stationCount)for(unsigned row=1;row<rows;row++)stations[row]/=stationCount;
+ for(unsigned col=0;col<columns;col++){
+  const auto& path=tautPaths[col];if(path.empty())continue;Vec direction=directions[columns+col];
+  for(unsigned row=1;row<rows;row++){
+   float h=path.front().h*stations[row];unsigned i=1;while(i+1<path.size()&&(h-path[i].h)*path.front().h<0)++i;
+   float t=(h-path[i-1].h)/(path[i].h-path[i-1].h),r=path[i-1].r+(path[i].r-path[i-1].r)*t;
    work[row*columns+col]=Add(pole,Add(Mul(axis,h),Mul(direction,r)));
   }
  }
@@ -269,9 +341,13 @@ inline WrapReceipt ClearMeridians(std::vector<Vec>& points,unsigned columns,unsi
   if(minimum>=-1e-5f){
    for(unsigned i=0;i<count;i++){Vec d=Sub(work[i],points[i]);receipt.maximumDisplacement=(std::max)(receipt.maximumDisplacement,std::sqrt(Dot(d,d)));}
    for(unsigned f=0;f<faceCount;f++){auto ids=faces[f];Vec n=Cross(Sub(work[ids[1]],work[ids[0]]),Sub(work[ids[2]],work[ids[0]]));if(Dot(n,n)<1e-14f)throw std::runtime_error("Collapsed live cloth face="+std::to_string(f)+" vertices="+std::to_string(ids[0])+","+std::to_string(ids[1])+","+std::to_string(ids[2])+" edge2="+std::to_string(Dot(Sub(work[ids[1]],work[ids[0]]),Sub(work[ids[1]],work[ids[0]])))+","+std::to_string(Dot(Sub(work[ids[2]],work[ids[0]]),Sub(work[ids[2]],work[ids[0]]))));}
+   FairMeridianReversals(work,columns,rows,faces,faceCount,hulls);
    points.swap(work);return receipt;
   }
   for(unsigned i=columns;i<poleIndex;i++){if(!std::isfinite(increments[i])||increments[i]>100)throw std::runtime_error("Unbounded live wrap correction");work[i]=Add(work[i],Mul(directions[i],increments[i]));}
+  // Collision correction must not leave local dents between raised vertices.
+  // Re-tauten before the next authoritative full-triangle certificate pass.
+  TautenCorrectedMeridians(work,columns,rows,axis);
  }
  throw std::runtime_error("Live wrap exhausted correction budget");
 }

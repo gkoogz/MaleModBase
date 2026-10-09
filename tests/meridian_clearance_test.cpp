@@ -32,6 +32,15 @@ int main(){try{
    Require(clear,"Fitted sewn edge still crosses the cap");}
  }
  std::vector<unsigned> cache;
+ // Triangle correction used to leave a local return along one ray. Fairing
+ // must remove it without moving the outline/pole or cutting through a solid.
+ {auto points=reference;unsigned id=4*cols;points[id]={8,0,points[id][2]};const auto seam=points.front(),pole=points.back();
+  auto before=Dot(Sub(points[id],points[id-cols]),Sub(points[id],points[id+cols]));
+  Require(before>0,"Spike fixture did not reproduce a path reversal");
+  Require(FairMeridianReversals(points,cols,rows,faces.data(),unsigned(faces.size()),{})>0,"Spike was not faired");
+  Require(Dot(Sub(points[id],points[id-cols]),Sub(points[id],points[id+cols]))<=0,"Isolated spike survived");
+  Require(points.front()==seam&&points.back()==pole,"Fairing moved fixed attachments");
+ }
  for(float size:{.6f,1.f,1.3f,.8f}){
   const Vec corners[]={{-size,-size,-1},{size,size,1}};
   std::vector<Hull> hulls={SupportHull(corners,2,normals,6,0)};auto points=reference;

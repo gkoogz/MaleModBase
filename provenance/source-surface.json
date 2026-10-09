@@ -200,7 +200,7 @@
   "files": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "1a2f179404fab047b1c4a999082f287929b1b9e8bfb3c6f431301ef8fd86833f"
+      "sha256": "229cbae32182a1f05c55be02ecb0581c638d81443257aea543fef2df97f65bc2"
     },
     {
       "path": "include/malemod/surface/runtime.hpp",
@@ -5131,7 +5131,7 @@
     "files": [
       {
         "path": "CMakeLists.txt",
-        "sha256": "2b8e86b265162d59d7acd2f38c8fbdbfb16ffa19db4dc55b3c727dba47ea870a"
+        "sha256": "229cbae32182a1f05c55be02ecb0581c638d81443257aea543fef2df97f65bc2"
       },
       {
         "path": "include/malemod/surface/runtime.hpp",
