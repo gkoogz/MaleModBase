@@ -53,6 +53,8 @@ def expand_projected_sections(positions, triangles, supports, clearance, spacing
         if not sign:continue
         det=(b[1]-a[1])*(c[2]-a[2])-(b[2]-a[2])*(c[1]-a[1])
         if abs(det)<1e-9:continue
+        normal=np.cross(b-a,c-a)
+        if abs(normal[0])<.25*np.linalg.norm(normal):continue
         q=supports[(supports[:,0]*sign>0)&np.all(supports[:,1:]>=out[face,1:].min(0)-1e-6,axis=1)&np.all(supports[:,1:]<=out[face,1:].max(0)+1e-6,axis=1)]
         u=((q[:,1]-a[1])*(c[2]-a[2])-(q[:,2]-a[2])*(c[1]-a[1]))/det
         v=((b[1]-a[1])*(q[:,2]-a[2])-(b[2]-a[2])*(q[:,1]-a[1]))/det
