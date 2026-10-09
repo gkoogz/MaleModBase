@@ -1,3 +1,69 @@
+## October 8 - pouch spike and all-max posterior recovery development update
+
+User reported pouch spikes around the testicles and suspended contents trapped
+behind the glutes after crouch/stand with Overall/Width/Length/Scrotum all100.
+Base supplies shared axial row alignment, coupled neighboring correction lifts,
+re-tautening, conservative reversal fairing and one-sided anterior capsule math.
+Wolverine consumes tested Base2909474bfe838c5c298abcef23f484e0229938a9.
+Its measured thigh/pelvis adapter relinquishes rear contact/friction to bounded
+recovery, shifts history with projection and removes only inward relative normal
+velocity. Suspension, rod/pair/orientation mechanics continue.32rays,24rows,
+revision5 binding, fixed trim, UV aliases and240Hz/24iterations are unchanged.
+See Base docs/MERIDIAN-SPIKE-AND-POSTERIOR-REPAIR.md and Wolverine
+docs/NATIVE-POUCH-AND-POSTERIOR-REPAIR.md. Witcher remains deferred.
+
+Clean production source:2b5e829b84b68669f3250dfba53c4a8f173bdf9c.
+Installed retail DLL:41c5c2a74c7f9b3421b0711c4ecbeb73ae186c9d72a24d741e5b2c51084b82e5.
+Previous development DLL:5df442488816ab89b161c69574b22140e35b7e21a4723f7248882de2e9299518.
+Final exact rollback:C:/Games/X-Men Origins Wolverine/WGame/ModBackups/Meridian-development-20261008-221608-a6091a/Restore.ps1.
+First update was actually restored to the previous SHA and reinstalled; final
+rollback validation passed. 397 protected settings/save/audio hashes are unchanged.
+Accepted Beta2 DLL4f4900a5 remains retained in the previous204636 backup;
+restore this update first, then that original update to return to Beta2. Its
+release manifest, three cooked packages and material textures remain unchanged.
+No private input/factory/origin/capture/grey package was installed. This is a
+user-requested development update, not an accepted or published release.
+
+Source/offline: five assertion-enabled source tests, eight clean MSVC x86 CTest
+cases,22Python guide/surface tests and import/provenance516files/185arrays passed.
+Sixteen discontinuous private pose samples reduce worst local-return measure
+4.04348->0.99914(75.3percent); formerly worst transported pose4.04348->0.35568.
+This is not complete spike elimination or FPS parity. A full-solver synthetic
+crouch/stand plus forced-trap fixture remains rearward with recovery disabled
+and recovers forward with it enabled. Native folding evidence is separate.
+
+Final sealed derivative:cb89e23acb2d75e53c528f218118ea749f86782d5335d7639a94e36ef8fe3359.
+Owned run20261008-220244-45b849 completed20sampled cases and24motion captures,
+with zero reported live-pose/draw rejection, normal audio enabled and exit0.
+All four controls100: two naked and two clothed jumps, visible deep landing
+crouches and subsequent rest; reviewed rest supports remained anterior. Front,
+side and oblique maximal naked/clothed attachment was inspected. Block alias
+showed standing here; it is not a dedicated observed crouch action. No new
+obvious attachment discontinuity in these sampled views; full gate is FALSE.
+Last reviewed cumulative sample:4081attempts,1277wraps,2691followed,113transported,
+111uncertified; Draw mean5.6233ms/max21.7786ms. Mixed-case CPU submission, not FPS.
+
+Failures retained: three preliminary8a291e7 sealed launches exited3 at legacy
+XAudio2_2+0x2521c before gameplay (including-nosound); old baseline started,
+same candidate retry and final candidate started successfully. Cause unresolved.
+One room DLL copy was refused because close.request is asynchronous; hash stayed
+4cec. Subsequent mutations waited for exit0/no child. Initial matrix omitted
+Length as1 because PowerShell gives scalar objects intrinsic Length=1; explicit
+authored-property checks corrected it and the matrix was rerun. Initial motion
+capture helper checked before completion; bounded receipt wait fixed it and all
+24frames were recaptured. A too-long production export path failed before build;
+final clean production output uses canonical build/post2-20261008.
+
+Private proof: Base build/posterior-final-native-20261008/{provenance.json,
+native-evidence.json,install-receipt.json}, build/spikes-20261008 and
+build/posterior-20261008. Source recipes persist in Git; generated rooms, poses,
+captures, dumps, packages, settings and audio are excluded. Owned children are
+stopped; input/focus stayed in the owned station and scoped audio was restored.
+Uncertified continuity fallback/extreme faceting, complete coupled control/body
+resource/LOD/campaign and tank coverage remain unaccepted. No campaign check,
+full attachment acceptance or new release is claimed. Unrelated dirty CPU-cloth
+and worker development was preserved and excluded from compiled source.
+
 ## October 8 - main integration and requested retail development installation
 
 User requested pushing the current work to main and installing in the actual
