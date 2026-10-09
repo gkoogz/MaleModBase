@@ -48,3 +48,15 @@ chart, then tests radial containment. Wolverine uses this only to mask covered
 bare torso draw faces, avoiding later native body passes overwriting its cloth.
 The historical orthographic garment_coverage.py API and provenance are unchanged.
 This authoring sample is not a universal whole-fragment containment certificate.
+
+The October9 stock wardrobe review proposes one user-facing refit factor for
+multiple garments. It is a design candidate, not an implemented universal fit.
+Blend body-relative donor displacement with garment-specific ease/protected
+regions; whole-model scaling would also enlarge boots, buckles and masks.
+Enforce clearance independently, since partial fitting can otherwise intersect
+an enlarged body. Full suit pieces need authored coupled waist boundaries and
+coverage masks before independent Top/Bottom mixing. Cache bindings offline and
+follow current body/skeleton pose at runtime. Shared math belongs here; native
+asset segmentation, observed palettes and materials remain in each adapter.
+Wolverine's docs/STOCK-WARDROBE-CANDIDATES.md records the first source review.
+No runtime change or Witcher adoption is claimed by these reference renders.
