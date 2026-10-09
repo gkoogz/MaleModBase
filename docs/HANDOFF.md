@@ -1,3 +1,29 @@
+## October 9 - partial active release rejected
+
+The private Witcher correlated release/contact-reprojection trial preserves
+original disabled CSV SHAa9a1d0e4 exactly and recomputes143 released rows with
+force bias and correlated configuration increments. It remains REJECTED:
+541 relative angular-limit diagnostics, peak44.9817rad/s, final firm pitch
+-1.96488 and11 unresolved partial solves. Fixed-root/link/finite checks pass;
+reduced peak versus the preceding222rad/s spike is not acceptance. Active hard
+row release/cycle handling and complete restoring residual/momentum convergence
+remain unresolved. Evidence: D:/MaleModDiagnostics/witcher-parity-20261009/
+implicit-active-release/proof.json. No numerical adoption or new native run.
+
+The actual earliest failed source state(default3/pass0/contact4) also has a
+frozen release oracle with49 source terms and two tension rows. Releasing the
+second row with its retained force bias gives tensions[-.145601523,0] instead
+of the infeasible second+.005220240, momentum residual1.03e-13, and a lower
+local objective. That proof is fixed-impulse sensitivity only; pressure
+reprojection and nonlinear acceptance are false. Snapshot attribution:
+implicit-release-snapshot/response-proof.json beside the private trials.
+
+Clinical imposed-yaw history is already retained correctly: the prior value
+is updated only at the end of each solver substep, and root rate recovery
+subtracts the actual imposed-yaw increment. Inspection found no overwritten
+history requiring a fix. Existing clinical fixtures exercise moving yaw and
+its inactive transition; excursion/native acceptance remain unresolved.
+
 ## October 9 - frozen suspension response oracle
 
 The subsequent private Witcher full44DOF configuration-increment trial is also
