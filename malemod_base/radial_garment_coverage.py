@@ -1,7 +1,7 @@
 """Measured radial garment coverage; retains cuts and caller topology."""
 import numpy as np
 
-def radial_coverage(surface, triangles, queries, *, radial_axes, height_axis, tolerance=1e-7, cut_inset=0.):
+def radial_coverage(surface, triangles, queries, *, radial_axes, height_axis, tolerance=1e-7, cut_inset=0., check_depth=True):
     p=np.asarray(surface,float);t=np.asarray(triangles,int);q=np.asarray(queries,float)
     if len(set((*radial_axes,height_axis)))!=3:raise ValueError('Distinct frame axes required')
     x,y=radial_axes;angles=np.arctan2(p[:,y],p[:,x]);radii=np.hypot(p[:,x],p[:,y])
@@ -15,7 +15,8 @@ def radial_coverage(surface, triangles, queries, *, radial_axes, height_axis, to
         m=np.array([[a[1]-a[0],a[2]-a[0]],[z[1]-z[0],z[2]-z[0]]])
         if abs(np.linalg.det(m))<1e-12:continue
         w=np.linalg.solve(m,np.array([h[ids]-a[0],q[ids,height_axis]-z[0]]));b=np.vstack((1-w.sum(axis=0),w))
-        inside=np.all(b>=-tolerance,axis=0)&(radius[ids]<=radii[face]@b+tolerance)
+        inside=np.all(b>=-tolerance,axis=0)
+        if check_depth:inside &= radius[ids]<=radii[face]@b+tolerance
         covered[ids[inside]]=True
     if not np.isfinite(cut_inset) or cut_inset<0:raise ValueError('Invalid cut inset')
     if cut_inset:
@@ -39,7 +40,7 @@ def radial_coverage(surface, triangles, queries, *, radial_axes, height_axis, to
     return covered
 
 
-def radial_triangle_coverage(surface, triangles, body, body_triangles, *, radial_axes, height_axis, cut_inset):
+def radial_triangle_coverage(surface, triangles, body, body_triangles, *, radial_axes, height_axis, cut_inset, check_depth=True):
     """Conservative whole-face mask with cut support and interior witnesses.
 
     Removing a body face because its corners are covered can leave a hole at a
@@ -47,9 +48,12 @@ def radial_triangle_coverage(surface, triangles, body, body_triangles, *, radial
     original body face if any witness enters an opening or the protected cut.
     The inset is an adapter-measured reference-frame distance, not a posed
     clearance claim. This changes only visibility, never the body surface.
+    check_depth=False authorizes masking the body beneath the garment's chart
+    footprint even where stock cloth folds lie slightly inside the skin. This
+    is a clothing visibility mask, not collision or containment evidence.
     """
     p=np.asarray(body,float);t=np.asarray(body_triangles,int)
-    args=dict(radial_axes=radial_axes,height_axis=height_axis,cut_inset=cut_inset)
+    args=dict(radial_axes=radial_axes,height_axis=height_axis,cut_inset=cut_inset,check_depth=check_depth)
     vertices=radial_coverage(surface,triangles,p,**args)
     mask=np.all(vertices[t],axis=1);ids=np.flatnonzero(mask)
     witnesses=np.array([[.5,.5,0],[.5,0,.5],[0,.5,.5],[1/3,1/3,1/3],[.5,.25,.25],[.25,.5,.25],[.25,.25,.5]])

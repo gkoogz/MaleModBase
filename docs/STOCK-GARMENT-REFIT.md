@@ -15,6 +15,12 @@ cut visibility and motion. Wolverine adopts this after the expanded offset
 recipes were rejected for raised pec pockets. Other spokes need complete
 measured body patches and pinned adoption; Witcher remains paused.
 
+The explicit `check_depth=False` coverage option supplies a garment visibility
+footprint rather than radial containment. Adapters can omit skin wholly beneath
+the stock garment chart, including where stock folds slightly overlap the body,
+while retaining open cuts, a measured cut band and all interior witnesses.
+This never changes body positions and does not certify clothing collision.
+
 `garment_shell.clip_scalar_band` clips an adapter-measured material strip with
 source-face barycentric lineage. `thin_shell` adds a shallow inner face and cut
 walls, welding positional aliases only for topology and offset directions.
