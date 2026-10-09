@@ -1,3 +1,78 @@
+## October 9 - bounded pouch spike repair installed for development testing
+
+The user identified severe spikes around the testicles after rejecting the
+41c5c2a7 update. Retail was restored exactly to5df44248 first. The old contact
+projection could divide by a near-tangent slope, miss an oblique separating
+plane, and publish a partially changed failed repair. A longitudinal metric
+also missed transverse spikes (fresh all-max replay reached45.42 source units).
+
+Shared Base now supplies exact triangle support directions, a common convex
+cover, bounded sampling corrections, transactional repair, immutable current
+pole, and longitudinal/transverse fairing. An anchored affine chart preserves
+the current tip's transverse location while avoiding the folded-tip polar
+chart. Cloth and collision support transform together; corrections and complete
+certificates are checked in physical render space after inverse mapping.
+The adapter supplies current skin/pressure extents. The bounded posterior guard
+was isolated from cloth first, then re-enabled for combined native checks.
+
+Wolverine production source:f838a9d8dfed717d9308d9bf3efe30623f7d24e9.
+Tested Base pin:e31b222723aa942d3e15fd648689f9987d3ca9fb.
+Installed production SHA256:
+c8d61924b1fb334b175c684fb267e083b42e390a96544e07417d4f4b23f3dc35.
+Destination:C:/Games/X-Men Origins Wolverine/Binaries/d3d9.dll.
+Clean build:canonical Wolverine build/cover9-20261009. Dirty worker/CPU cloth
+work and private factory/world-origin/input code were excluded.32rays,24rows,
+bindingrevision5, fixed trim, UV lineage, materials and physics cadence remain.
+Other spokes adopt shared headers through tested pins; Witcher remains deferred.
+
+Native sealed derivative from the same source/pin:
+be045a15e93906cbe3f7274993c7c683339f81fd45dfba525c78f7c39c79968b.
+Base build/posterior-final-room-20261008/run20261009-003149-1222c2 completed20
+sampled matrix cases with zero reported draw rejection,38 unpaused default/max
+jump/landing/run captures including camera-facing runs, and24 sampled maximum
+naked/clothed recovery captures. Reviewed front/side/oblique and motion images
+show no long needle branches; the side envelope is rounded instead of the
+centered-pole candidates' box flare. Block is an alias, not a dedicated crouch;
+actual crouch-like landing poses were sampled. Child exited0; host input/focus
+were untouched and owned audio sessions restored. Evidence, review hashes and
+installation receipt:Base build/cover9-native-20261009. Source-only room recipe
+now inventories43 files; Test-PouchMotion.ps1 reproduces the unpaused cases.
+
+Source/offline:five assertion-enabled MSVC x86 tests and eight clean CTest
+cases passed, including original collar/root/motion regressions. Clean Base
+provenance passed516 imported files and185 arrays; measured binding revision5
+and the source-only recipe passed. Earlier22 Python guide tests passed before
+the anchored C++ change; those tests are not a native geometry acceptance claim.
+
+Rejected iterations remain private: first convex candidate had two native draw
+rejections/undersized guides; centered-pole candidates had a box flare. Removing
+only pinned contact faces did not solve repeated rebuilding. Uncertified display
+reuse now has relative-pose and movable-face stretch/orientation budgets; it
+moves with the current physics every frame and rebuilds on larger changes.
+Uncertified reuse is never relabeled a collision pass. A stale startup log caused
+one input-ack abort before cases; final checks waited for a fresh gameplay receipt.
+One earlier diagnostic run reached its900-second bound (exit124), not a native
+crash. Final combined run exited0.
+
+Last cumulative mixed-room sample:2521attempts,78full wraps,1474followed,
+969transported,2335uncertified. Draw mean8.1692ms/max58.7812ms; last inclusive
+physics window20.801ms/peak42.552ms. Phases overlap and this is not FPS or an
+A/B performance pass. Meaningful CPU cost/hitches remain. Extreme pouch
+faceting/broad envelopes remain, and one default front stride shows thigh
+occlusion/clipped cloth. Prescribed-edge/body contact remains uncertified.
+Full attachment gate is FALSE: every coupled shape/body-resource/LOD, campaign
+transition and continuous human gameplay is not observed. Do not claim complete
+spike elimination or release acceptance from these sampled images alone.
+
+The user-requested development install preserved397 checked settings/save/audio
+files and managed packages/materials. Actually installed, restored to5df44248,
+then reinstalled; final DLL hash and exact rollback validated. Final rollback:
+C:/Games/X-Men Origins Wolverine/WGame/ModBackups/Meridian-development-20261009-003927-86b339/Restore.ps1.
+That restores5df44248; the retained204636-da2311 transaction then restores the
+accepted Beta2 DLL4f4900a5. Neither backup is discarded. manifest.json and the
+published Beta2 release remain unchanged; restore development updates before
+using the Beta2 uninstaller. No game was launched over the human host.
+
 ## October 8 - retail update rejected by user; exact rollback performed
 
 The user reports the 41c5c2a7 runtime is "unplayably bad now". This supersedes
@@ -1110,7 +1185,7 @@ collar. Offline only; extreme upward anatomy distortion remains unresolved.
 HEAD stays `19da882`; diagnostic source is dirty. No install or Wolverine change.
 
 
-## October 6 broader bell preview � uncommitted candidate
+## October 6 broader bell preview — uncommitted candidate
 
 User requested a larger and smoother ramp, with updated matched renders before
 installation. HEAD remains `19da882`; the current shared header/test/provenance
@@ -1325,18 +1400,18 @@ all actual authored seam residuals still pass. Bending endpoint preservation
 does not imply byte-identical final contact-adjusted vertices.
 
 The independent full-cloth audit now distinguishes all component pairs.
-Candidate23 has no same-component self-crossings, but617â€“944 cross-component
+Candidate23 has no same-component self-crossings, but617Ã¢â‚¬â€œ944 cross-component
 pairs, predominantly sewn hem/sheet, strap/band and underside attachments.
 Their material adjacency and finite-width construction must be certified;
 they are not covered by the passing sheet-only intersection gate. Candidate26
-adds4â€“29 actual same-hem self-crossings per hem. Preserve the complete-pair
+adds4Ã¢â‚¬â€œ29 actual same-hem self-crossings per hem. Preserve the complete-pair
 classification receipts; no blanket neighboring-face exclusion or complete
 garment self-consistency claim is permitted from these source checkpoints.
 
 The stereographic rest chart constrains spherical triangle orientation and
 angular quality before radial casting, with consistent alternate diagonals at
 the two reflex corners. The SDK cube test checks every face, unchanged top
-donors and translated/rotated 100x covariance. Candidates15â€“17 failed actual
+donors and translated/rotated 100x covariance. Candidates15Ã¢â‚¬â€œ17 failed actual
 geometry despite SDK passes; preserve their rejected receipts. Source renders
 use complete native anatomy/body, neutral material and actual cloth faces;
 there is no anatomy visibility mask. Source opacity is not native 95% proof.
@@ -1355,8 +1430,8 @@ These certify rest geometry, not movement or gameplay.
 Frozen candidate16 raw sheets were injective but near singular (aspect up to
 3.59e6); subsequent contact fitting introduced crossings. Candidate17 adds a
 spherical determinant/longest-edge quality constraint, reducing raw aspect to
-107â€“201 with zero raw crossings across eight actual inputs, but full rest
-still fails crossings and upper hem turns (52â€“143 degrees in seven cases).
+107Ã¢â‚¬â€œ201 with zero raw crossings across eight actual inputs, but full rest
+still fails crossings and upper hem turns (52Ã¢â‚¬â€œ143 degrees in seven cases).
 Candidate19 smooths the native-seam radial transition and restricts REST
 contact fitting to chart rays. Its eight actual rest cases pass contact and
 intersection gates but fail hem turns. Candidate22 fixes those hem turns;
@@ -1385,7 +1460,7 @@ and gravity step 70.17 ms versus the required live cadence. Numerical receipt
 is `build/cloth-dynamics-debug/candidate19-dynamics/numerical-conservation-summary.json`.
 Private parallel native point-query batching preserves all eight actual frame
 bytes and physical fields, including 54 stale tickets recomputed after source
-corrections. Its 3â€“8% total improvement is insufficient and is not promoted.
+corrections. Its 3Ã¢â‚¬â€œ8% total improvement is insufficient and is not promoted.
 No new garment build has been installed or observed in gameplay.
 
 Latest requirement includes tilt into the recruited pelvic root ramp. Actual
@@ -1756,7 +1831,7 @@ Read `AUTHORED-SHAPE.md` for the new source-derived early coarse-shape evaluator
 1,300 original-code fixture samples, coupled graft collar domain and protected
 native part boundaries. The checked correction preserves both sides of the
 seam and prevents inverted triangles. An actual-Geralt synthetic stress probe
-passes those invariants in both LODs but accepts only 17Ã¢â‚¬â€œ36% of its requested
+passes those invariants in both LODs but accepts only 17ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“36% of its requested
 correction: the full-range deformation envelope is NOT established. Actual
 guide/rest-stage completion and native output remain required. The spoke has a
 native-cooked isolated scale graph; pose/dangle compatibility is not verified.
