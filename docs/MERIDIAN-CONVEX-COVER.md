@@ -22,8 +22,9 @@ certified and is not automatically a collision pass.
 
 Wolverine supplies exact analytic link/dome/ovoid support from current measured
 frames. It seeds the full walk from the common convex cover and uses a fresh
-current-pose cover on failure. The rejected posterior-body guard is disabled
-for this repair, retaining the previously installed physics.32rays,24rows,
+current-pose cover on failure. The posterior-body guard was disabled for the
+cloth-only native isolation pass, then restored for combined motion checks.
+32rays,24rows,
 bindingrevision5 and fixed trim/UV lineage remain. Other spokes adopt through
 a tested Base pin and their own measured primitive support mappings; Witcher
 adoption is deferred.
@@ -35,3 +36,9 @@ are kept outside Git. Static/offline checks are not an observed gameplay pass;
 continuous native movement, attachment inspection and campaign checks remain
 required. Uncertified display envelopes and extreme-seam facets must be
 reported separately from successful triangle certificates.
+
+The movable interior certificate is separate from prescribed sewn-edge and
+terminal-pole contact. A clear movable interior may reuse its anatomy-follow
+bindings even if the fixed edge fails its whole-surface certificate. The failed
+whole-surface result remains reported as uncertified; it is not relabeled clear.
+This prevents an immovable contact from forcing full walking every frame.

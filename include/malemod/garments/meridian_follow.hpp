@@ -4,6 +4,17 @@ namespace malemod::garments::meridian {
 // Kinematic skinning of a successful wrap. Frames come from the already posed
 // anatomy, not another simulation. No integration, lag or accumulated offsets.
 struct FollowFrame {Vec center,x,y,z;};
+// The sewn outline and terminal support are prescribed, not movable cloth
+// contacts. Keep their whole-surface certificate separate from the deformable
+// interior certificate; an immovable seam overlap must not defeat chart reuse.
+inline void MovableClothFaces(const Face* faces,unsigned faceCount,unsigned columns,unsigned count,std::vector<Face>& interior){
+ if(!faces||!columns||count<=columns)throw std::runtime_error("Invalid movable cloth topology");
+ interior.clear();interior.reserve(faceCount);
+ for(unsigned f=0;f<faceCount;f++){
+  bool pinned=false;for(unsigned id:faces[f]){if(id>=count)throw std::runtime_error("Invalid movable cloth face");pinned|=id<columns||id==count-1;}
+  if(!pinned)interior.push_back(faces[f]);
+ }
+}
 inline Vec FollowGlobal(Vec p,const FollowFrame& f){return Add(f.center,Add(Mul(f.x,p[0]),Add(Mul(f.y,p[1]),Mul(f.z,p[2]))));}
 struct FollowDualFrame {Vec center,row[3];};
 inline FollowDualFrame FollowDual(const FollowFrame& f){

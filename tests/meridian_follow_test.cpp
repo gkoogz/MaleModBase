@@ -39,6 +39,13 @@ int main(){
  assert(CertifyFollowedSurface(current,&contactFace,1,hulls,hints));
  current=prior;current[4][0]=.5f;auto failed=current;assert(!RefitFollowedSurface(current,4,9,&contactFace,1,hulls,hints));for(unsigned i=0;i<9;i++)Near(current[i],failed[i]);
  current=prior;current[0]=current[4];contactFace={0,5,6};failed=current;assert(!RefitFollowedSurface(current,4,9,&contactFace,1,hulls,hints));for(unsigned i=0;i<9;i++)Near(current[i],failed[i]);
+ // A prescribed seam is reported independently, not silently declared clear
+ // and not allowed to disable reuse of a certified movable interior.
+ {current=prior;Face topology[]={{0,5,6},{4,5,6},{5,6,8}};std::vector<Face> interior;
+  MovableClothFaces(topology,3,4,9,interior);assert(interior.size()==1&&interior[0]==topology[1]);
+  auto pinned=current[0],pole=current[8];assert(RefitFollowedSurface(current,4,9,interior.data(),unsigned(interior.size()),hulls,hints));Near(current[0],pinned);Near(current[8],pole);
+  current[0]=current[4];assert(!CertifyFollowedSurface(current,topology,3,hulls,hints));
+ }
  follower.Reset();assert(!follower.Ready());
  std::puts("meridian anatomy-follow tests passed");
 }
