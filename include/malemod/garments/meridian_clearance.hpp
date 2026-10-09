@@ -243,7 +243,7 @@ inline Hull SupportHull(const Vec* points,unsigned count,const Vec* normals,unsi
 // support plane for EVERY solid; testing vertices alone misses edge penetration.
 // Work is transactional and bounded. A failed pose must not hide the anatomy.
 inline WrapReceipt ClearMeridians(std::vector<Vec>& points,unsigned columns,unsigned rows,
- const Face* faces,unsigned faceCount,const std::vector<Hull>& hulls,Vec axis,float margin=.04f,unsigned budget=12,std::vector<unsigned>* certificates=nullptr,unsigned detailedHullFirst=0){
+ const Face* faces,unsigned faceCount,const std::vector<Hull>& hulls,Vec axis,float margin=.04f,unsigned budget=12,std::vector<unsigned>* certificates=nullptr,unsigned detailedHullFirst=0,bool retainTautSeed=false){
  const unsigned count=columns*rows+1,poleIndex=count-1;
  if(columns<3||rows<2||points.size()<count||margin<0||detailedHullFirst>hulls.size())throw std::runtime_error("Invalid meridian grid");
  axis=Unit(axis);const Vec pole=points[poleIndex];auto work=points;
@@ -276,6 +276,9 @@ inline WrapReceipt ClearMeridians(std::vector<Vec>& points,unsigned columns,unsi
   }
  }
  directions[poleIndex]=axis;
+ // A caller may already have walked a common support envelope. Correct its
+ // tessellated triangles without redistributing that established surface.
+ if(!retainTautSeed){
  // Exit the complete intersection interval, including an obstacle on the far
  // side of the polar axis. A parallel miss is not an infinite exit distance.
  struct RayPlane {float intercept,slope,constant,axial;int sign;};
@@ -385,6 +388,7 @@ inline WrapReceipt ClearMeridians(std::vector<Vec>& points,unsigned columns,unsi
  // A contact certificate may refine a taut path, but must not reshape it into
  // a distant spike. Bound correction by its local sampling spacing, measured
  // before correction. Failed solves remain transactional for the caller.
+ }
  const auto taut=work;std::vector<float> correctionLimits(count,0.f);
  std::vector<float> averageSpacing(columns,0.f);
  for(unsigned col=0;col<columns;col++)for(unsigned row=1;row<=rows;row++){
@@ -448,7 +452,7 @@ inline WrapReceipt ClearMeridians(std::vector<Vec>& points,unsigned columns,unsi
   if(minimum>=-1e-5f){
    for(unsigned i=0;i<count;i++){Vec d=Sub(work[i],points[i]);receipt.maximumDisplacement=(std::max)(receipt.maximumDisplacement,std::sqrt(Dot(d,d)));}
    for(unsigned f=0;f<faceCount;f++){auto ids=faces[f];Vec n=Cross(Sub(work[ids[1]],work[ids[0]]),Sub(work[ids[2]],work[ids[0]]));if(Dot(n,n)<1e-14f)throw std::runtime_error("Collapsed live cloth face="+std::to_string(f)+" vertices="+std::to_string(ids[0])+","+std::to_string(ids[1])+","+std::to_string(ids[2])+" edge2="+std::to_string(Dot(Sub(work[ids[1]],work[ids[0]]),Sub(work[ids[1]],work[ids[0]])))+","+std::to_string(Dot(Sub(work[ids[2]],work[ids[0]]),Sub(work[ids[2]],work[ids[0]]))));}
-   if(FairMeridianReversals(work,columns,rows,faces,faceCount,hulls))receipt.minimumSeparation=(std::min)(receipt.minimumSeparation,-1e-5f);
+   if(!retainTautSeed&&FairMeridianReversals(work,columns,rows,faces,faceCount,hulls))receipt.minimumSeparation=(std::min)(receipt.minimumSeparation,-1e-5f);
    // Fairing can change the location of the largest displacement. The
    // separation above is now a conservative bound, not the pre-fair value.
    receipt.maximumDisplacement=0;for(unsigned i=0;i<count;i++){Vec d=Sub(work[i],points[i]);receipt.maximumDisplacement=(std::max)(receipt.maximumDisplacement,std::sqrt(Dot(d,d)));}

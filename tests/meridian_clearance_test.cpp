@@ -52,6 +52,16 @@ int main(){try{
  }
  for(unsigned col=0;col<cols;col++)faces.push_back({std::uint16_t((rows-1)*cols+col),std::uint16_t((rows-1)*cols+(col+1)%cols),std::uint16_t(cols*rows)});
  const Vec normals[]={{1,0,0},{-1,0,0},{0,1,0},{0,-1,0},{0,0,1},{0,0,-1}};
+ // A previously walked surface must keep its stations when its triangles
+ // already clear. The old second walk redistributed them and could fail the
+ // caller's physical sampling budget despite needing no contact correction.
+ {auto seed=reference;for(unsigned row=1;row<rows;row++)for(unsigned col=0;col<cols;col++)
+   seed[row*cols+col][2]+= .1f*std::sin(float(col));
+  auto solved=seed;
+  ClearMeridians(solved,cols,rows,faces.data(),unsigned(faces.size()),{},{0,0,1},.04f,12,nullptr,0,true);
+  for(unsigned i=0;i<seed.size();i++)Require(Dot(Sub(solved[i],seed[i]),Sub(solved[i],seed[i]))<1e-10f,"Clear seed was redistributed");
+  Require(WithinMeridianSampling(solved,seed,cols,rows),"Unneeded second walk spent the physical budget");
+ }
  // A hem close to a collider cap should escape locally, rather than being
  // dragged all the way around the side by a purely radial fitting rule.
  {std::vector<Vec> seam;for(unsigned col=0;col<cols;col++){float a=6.28318531f*col/cols;seam.push_back({.8f*std::cos(a),.8f*std::sin(a),-.98f});}
