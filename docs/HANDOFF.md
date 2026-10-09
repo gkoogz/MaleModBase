@@ -1,3 +1,72 @@
+## October 9 - outer pec / armhole clipping repair and matched cotton (tank20)
+
+The user supplied a native side crop showing exposed skin through the front
+armhole edge. The earlier tank18 visual review missed this local defect; its
+capture count did not prove cut clearance. Preserve its rounded pec contour,
+original maps, topology, UV aliases, source pairs and stock skin weights.
+
+Base clear_body_cut_band applies a uniform measured-contact translation to
+selected connected cut segments, a two-ring plateau and four-ring harmonic
+taper. Wolverine supplies the measured lower/front armhole mask. Only 399 of
+the original 2341 vertices change, by at most 1.3494201 measured source units; the pec apex
+and remote chart are unchanged. Selected rest cut vertices meet 0.30 clearance.
+There are zero overturned source faces; maximum source-normal rotation remains
+72.852783 degrees. Face interiors and animated clearance are not certified by
+this numerical cut check. Geometry and bindings are versioned together.
+
+The user subsequently requested a bottom hem. A folded strip follows the
+original lower cut around the complete waist: measured width 1.15, thickness
+0.12 and outward fold 0.16. It adds 2102 vertices / 872 triangles with exact
+interpolation donors from the retained 2341-vertex / 4364-face original sheet.
+Original sheet topology/UVs/skin/source pairs remain as an unchanged prefix;
+new hem corners carry three source-sheet donors and barycentric weights.
+The maximum angular sampling gap is 9.6773 degrees. Native hem appearance
+was inspected from front/side/rear and in movement. No new pixel texture is
+introduced. New hem interpolation discards at most 0.007844 skin weight after
+retaining four influences; sums are 255. Shirt rendering work increases with
+the added geometry; runtime performance parity has not been certified.
+
+The user also requested matching the jockstrap to the tank. The Wolverine
+adapter measures the original cloth UV footprint (312231 diffuse texels),
+uses its robust per-channel median sRGB (192,187,181), and decodes to linear
+RGB (0.527115126,0.496932995,0.462077000) to match the stock sampler. The
+existing shared FabricStyle contract supplies ribbing and red/blue trim;
+only its cotton color is calibrated. Pouch, waistband and straps all use it.
+Original stock texture bytes and tank20/jeans6 geometry remain unchanged.
+Other adapters adopt the shared palette contract with their own measured
+material samples; Wolverine texture calibration remains in this spoke.
+Deterministic authoring replay and unchanged geometry/UV headers pass.
+
+Runtime source: 601f8934c0978b3bc34f1dec11d3ba071922e707.
+Exact Base pin: cbe542f979c52233524bd2fed18bd795e6b68361.
+Clean production DLL SHA256: 28f4a950ac1fc735fb442dc097d053268d4943b4f8ea43c82b105c921e1d2f83.
+Sealed native derivative SHA256: 53b8150543c49e2afcacbbcf213935b8b0c22d4c4087ccabb374f28b57e2f287.
+Unrelated dirty development is excluded. Jeans6, eight original maps, shader
+constant restoration, neck visibility protections and stock skin weights remain.
+Other spokes adopt the shared helper through their own pins and measured masks;
+Witcher remains paused.
+
+Offline: 36 Python garment tests, five targeted C++ attachment/hinge tests and
+provenance verification (516 files / 185 arrays) pass. Lineage comparison with
+tank18 confirms the retained original sheet topology, UVs, aliases, source
+pairs and skin weights. The title harness initially hit a transient log-file
+sharing lock before any capture; bounded log-read retries then completed
+all 17 cases. The harness change does not alter the runtime binary.
+Native: 61 reviewed images (15 wardrobe/pose, 5 tank close-ups, 4 matching
+front/side/rear/oblique views, 20 sampled attachment and 17 WStart tank images). Both owned runs exit 0 with owned audio restored, no
+host keyboard/mouse/focus use, and zero recorded draw/state failures. The side
+and moving oblique armhole views were inspected against tank18.
+
+The full attachment gate remains FALSE. All coupled shapes, both body
+resources/LODs, face collision, native damage/shadow parity and campaign
+transitions remain unqualified. Pouch faceting and native shadow patches remain in sampled rest/extreme states; the
+jump capture clips the head/upper collar at the owned camera boundary.
+Candidate not installed, pushed or published. Retail DLL remains
+7095f63042e60295b7316b7a3fe457956fafefbe4f8e88b24dee3df51145cee3.
+Exact rollback: C:/Games/X-Men Origins Wolverine/WGame/ModBackups/Meridian-development-20261009-083934-46918e/Restore.ps1.
+Private review/evidence: MaleMod/build/pec-edge-20261009/review.html and
+native-evidence.json. Licensed geometry and captures remain ignored.
+
 ## October 9 - tank follows the actual pec surface (recipe18)
 
 The user rejected raised mountains over the pecs and the attempt to reduce

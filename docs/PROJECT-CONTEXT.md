@@ -1,3 +1,12 @@
+## October 9 - preserve outer pec clearance at the armhole
+
+The user identified a small skin patch clipping through the fitted tank's
+outer pec edge in a native side view. Add a visible folded lower hem and repair that local cut while retaining
+the rounded pec fit, original cloth, UVs and skin lineage. Match the jockstrap cotton to the original
+tank fabric while preserving ribbing and trim. See HANDOFF for
+shared cut-band correction, exact adapter pin and observed evidence. Tank18's
+review missed this edge defect; native samples are not full acceptance.
+
 ## October 9 - match the actual pec shape
 
 The user rejected mountains over the chest in the tank and the subsequent
