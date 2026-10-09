@@ -8,6 +8,38 @@ Only outward movement is allowed; existing ease and folds remain intact.
 import numpy as np
 
 
+def smooth_tubular_chart(positions, triangles, passes=30):
+    """Relax internal angle/height backtracking while preserving cut edges.
+
+    A wrinkled stock surface can fold over itself when projected directly onto
+    a larger body. Smooth its cylinder chart first, with periodic angles and
+    welded position aliases, then refit. UVs and original donor lineage remain
+    adapter data; this does not weld render seams.
+    """
+    p=np.array(positions,dtype=float);ids={};groups=[];mapping=[]
+    for i,q in enumerate(p):
+        key=tuple(np.round(q,5))
+        if key not in ids:ids[key]=len(groups);groups.append([])
+        groups[ids[key]].append(i);mapping.append(ids[key])
+    mapping=np.array(mapping);faces=mapping[np.asarray(triangles,dtype=np.int64)]
+    edges={};neighbors=[set() for _ in groups]
+    for a,b,c in faces:
+        for x,y in ((a,b),(b,c),(c,a)):
+            if x==y:continue
+            edge=tuple(sorted((x,y)));edges[edge]=edges.get(edge,0)+1;neighbors[x].add(y);neighbors[y].add(x)
+    boundary=set(x for edge,count in edges.items() if count==1 for x in edge)
+    q=np.array([p[g].mean(0) for g in groups]);angle=np.arctan2(q[:,1],q[:,0]);height=q[:,2].copy();radius=np.linalg.norm(q[:,:2],axis=1)
+    for _ in range(passes):
+        da=np.zeros(len(q));dz=np.zeros(len(q))
+        for i,ns in enumerate(neighbors):
+            if i in boundary or not ns:continue
+            ns=list(ns);diff=(angle[ns]-angle[i]+np.pi)%(2*np.pi)-np.pi
+            da[i]=diff.mean()*.5;dz[i]=(height[ns].mean()-height[i])*.5
+        angle+=da;height+=dz
+    q=np.column_stack((radius*np.cos(angle),radius*np.sin(angle),height))
+    return q[mapping]
+
+
 def refine_triangles(positions, triangles):
     """One edge subdivision with explicit interpolation donors.
 

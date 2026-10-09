@@ -1,8 +1,18 @@
 import unittest
 import numpy as np
-from malemod_base.torso_garment_fit import refit_radially,clear_projected_faces,refine_triangles,expand_projected_sections
+from malemod_base.torso_garment_fit import refit_radially,clear_projected_faces,refine_triangles,expand_projected_sections,smooth_tubular_chart
 
 class FitTest(unittest.TestCase):
+ def test_chart_relaxation_keeps_cuts_and_aliases(self):
+  angle=np.array([-.4,0,.4]*3,float);height=np.repeat([0.,1.,2.],3);height[4]=1.8
+  p=np.column_stack((2*np.cos(angle),2*np.sin(angle),height))
+  faces=[]
+  for row in range(2):
+   for col in range(2):
+    a=row*3+col;faces.extend(([a,a+1,a+3],[a+1,a+4,a+3]))
+  q=smooth_tubular_chart(p,faces)
+  np.testing.assert_allclose(q[[0,1,2,3,5,6,7,8]],p[[0,1,2,3,5,6,7,8]])
+  self.assertAlmostEqual(q[4,2],1.,places=6)
  def test_section_expansion_preserves_fold_depth_and_aliases(self):
   p=np.array([[2,-1,0],[2,1,0],[2,0,2],[2,-1,0],[2.1,-1,0]],float)
   q=expand_projected_sections(p,[[0,1,2]],[[3,0,1]],.2)
