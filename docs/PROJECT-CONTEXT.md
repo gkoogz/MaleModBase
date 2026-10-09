@@ -1,3 +1,16 @@
+## October 9 - explicitly resumed Witcher parity and delegated menu harmonization
+
+The user asked for another agent to improve Witcher appearance, physics, fit and
+functionality relative to Wolverine, explicitly resuming that spoke's work.
+The earlier pause is historical. A third agent was requested to harmonize and
+improve in-game menus with a better font and masculine, minimal presentation.
+Shared geometry, numerical physics, theme and control contracts belong in Base;
+measured character assets, native font/input/rendering and cooker/installation
+belong in each pinned spoke. Keep menu evidence separate from attachment and
+garment acceptance. The continuing FIX EVERYTHING request retains the wardrobe,
+motion, material and mandatory native attachment gates; delegation does not
+imply either game's installed runtime was upgraded or the replacement passed.
+
 ## October 9 - preserve outer pec clearance at the armhole
 
 The user identified a small skin patch clipping through the fitted tank's
