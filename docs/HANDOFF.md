@@ -21,6 +21,17 @@ check cannot certify the nonlinear solve. Evidence: implicit-response-trace/
 analysis.json beside the private trial. Branch/residual acceptance remains in
 progress; no native or installation acceptance.
 
+An independent frozen linear release oracle samples100000 random44DOF cases;
+236 meet the candidate-release and released-strain feasibility conditions.
+Removing the released tension response row, retaining its multiplier force
+bias and recomputing unilateral normal projection gives momentum residual
+2.42e-14 and normal complementarity error6.84e-14. Clamp-only correction has
+median momentum residual0.471457. The initial harness incorrectly demanded
+1000 eligible cases; the fixed sample set and mathematical tolerances were
+retained, and that count failure is recorded. This certifies only the frozen
+release algebra, not nonlinear source convergence or native motion. Recipe and
+proof: D:/MaleModBuilds/wolverine-released-tension-oracle-20261009/proof.json.
+
 A second snapshot-only replay preserved the prior CSV byte-for-byte while
 exporting the actual source shear/tension gradients, alpha/gamma and multipliers.
 Both tension rows and hard suspension stops are inactive at the failing step.
