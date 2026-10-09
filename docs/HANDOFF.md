@@ -18,7 +18,10 @@ gamma and contact impulse. A44DOF frozen response reproduces the135.6214rad/s
 bare root pitch increment. The same equivalent source spring/damping reduces
 the identical impulse to1.91166; adding source distance compliance gives2.32977,
 and source bending gives1.35559. Positive-definite solves have residual below
-4.6e-13. This is only a frozen Gauss-Newton response diagnostic, omitting
+4.6e-13. Recomputing the unilateral normal impulse with each response yields
+root pitch increments135.621/5.78787/7.22752/4.67179 respectively; the smaller
+same-impulse values above are sensitivity measurements, not that projection's
+output. Friction is omitted. This is only a frozen Gauss-Newton diagnostic, omitting
 suspension, geometric Hessians and contact active-set reevaluation. It is not
 a runtime repair or attachment acceptance. Evidence and hashed reproduction
 recipes: D:/MaleModBuilds/wolverine-frozen-response-20261009/response-proof.json.
