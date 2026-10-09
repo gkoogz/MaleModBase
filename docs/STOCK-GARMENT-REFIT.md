@@ -36,6 +36,20 @@ other adapters choose their own measured spacing and native fit validation.
 The localized-envelope regression checks that a remote cut is not inflated
 by a central support peak. This is not a full-volume collision certificate.
 
+Optional `field_regularization` replaces the raise-only offset filter with a
+bounded smooth least-energy iterate. Dual updates can remove excess expansion;
+each knot is capped by 1.05 times a uniformly feasible support witness. A
+minimal convex mix with that witness repairs residual inequalities after the
+capped solve, and the original measured clearance constraints are rechecked.
+Canonical constraint ordering and strongest duplicate supports keep UV/source
+ordering from changing the field. Source Y/Z, cuts, folds and donor lineage
+remain. This is an offline fit, not new per-frame cloth work or a full-volume
+collision certificate. Wolverine uses regularization64 for the measured tank
+grid after the user rejected raised pockets over the pecs in revision12.
+Other spokes choose smoothing and knot spacing for their own measured inputs;
+Witcher remains paused. Tests cover bounded peaks, clearance, ordering, original
+folds/UV aliases and the side join. Native review still determines the fit.
+
 `radial_triangle_coverage` keeps original body faces at concave cut openings.
 It checks edge/interior witnesses instead of only the corners and protects an
 adapter-measured band around welded cut edges. UV aliases are not cuts. The

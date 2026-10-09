@@ -65,7 +65,51 @@ def refine_triangles(positions, triangles):
     return np.array(out),np.array(faces),np.array(donors)
 
 
-def expand_projected_sections(positions, triangles, supports, clearance, spacing=2., side_threshold=.05, *, offset_width=None, outward_cosine=None, lateral_spacing=None):
+def _bounded_smooth_field(coefficients, targets, shape, regularization):
+    """Smooth least-energy iterate with a feasible bounded-field certificate.
+
+    Unlike repeated raise-only filtering, dual updates can remove excess
+    expansion. The uniformly feasible field bounds every knot. If the capped
+    dual solve has residual error, a minimal convex mix with that witness
+    restores all inequalities; no post-clamp clearance is assumed.
+    """
+    a=np.asarray(coefficients,float);b=np.asarray(targets,float);n=int(np.prod(shape))
+    if not len(a):return np.zeros(n)
+    # Canonical constraint order and strongest duplicate make source face/UV
+    # alias ordering irrelevant to the capped iterative solve.
+    unique,inverse=np.unique(a,axis=0,return_inverse=True)
+    strongest=np.full(len(unique),-np.inf);np.maximum.at(strongest,inverse,b)
+    a=unique;b=strongest
+    total=a.sum(axis=1)
+    if np.any(total<=0):raise ValueError('Invalid offset support coefficients')
+    upper=float(np.max(np.maximum(b,0)/total))*1.05+1e-6
+    if np.all(b<=0):return np.zeros(n)
+    grid=np.arange(n).reshape(shape);energy=np.eye(n)
+    for axis in range(len(shape)):
+        left=np.take(grid,np.arange(shape[axis]-1),axis=axis).ravel()
+        right=np.take(grid,np.arange(1,shape[axis]),axis=axis).ravel()
+        energy[left,left]+=regularization;energy[right,right]+=regularization
+        energy[left,right]-=regularization;energy[right,left]-=regularization
+    a=np.vstack((a,np.eye(n),-np.eye(n)));b=np.r_[b,np.zeros(n),np.full(n,-upper)]
+    directions=np.linalg.solve(energy,a.T).T
+    diagonal=np.einsum('ij,ij->i',a,directions)
+    alpha=np.zeros(len(a));field=np.zeros(n)
+    for _ in range(600):
+        for i in range(len(a)):
+            delta=max(-alpha[i],(b[i]-a[i]@field)/diagonal[i])
+            if abs(delta)>1e-12:alpha[i]+=delta;field+=directions[i]*delta
+        violation=b-a@field
+        if np.max(np.where(alpha>1e-9,np.abs(violation),np.maximum(violation,0)))<1e-5:break
+    field=np.clip(field,0,upper);witness=np.full(n,upper)
+    value=a@field;margin=a@witness-value;missing=b-value
+    mix=float(np.max(np.divide(missing,margin,out=np.zeros_like(missing),where=(missing>0)&(margin>0))))
+    field=(1-mix)*field+mix*witness
+    if mix>1+1e-9 or not np.isfinite(field).all() or np.max(b-a@field)>1e-5:
+        raise ValueError('Bounded field clearance certificate failed')
+    return field
+
+
+def expand_projected_sections(positions, triangles, supports, clearance, spacing=2., side_threshold=.05, *, offset_width=None, outward_cosine=None, lateral_spacing=None, field_regularization=None):
     """Expand a common smooth X field instead of flattening folds.
 
     Y/Z and source cut boundaries remain ordered. Every vertex at the same
@@ -76,11 +120,15 @@ def expand_projected_sections(positions, triangles, supports, clearance, spacing
     instead of multiplying fold depth. outward_cosine restricts support tests
     to outward facing surfaces: grazing and turned-back folds are not front
     envelope constraints and require separate full-surface clearance review.
+    field_regularization replaces raise-only filtering with a bounded smooth
+    offset solve; it needs offset_width and preserves the same measured face
+    inequalities. The global field cap is 1.05 times a uniform feasible witness.
     """
     out=np.array(positions,dtype=float,copy=True);supports=np.asarray(supports,dtype=float)
     if clearance<=0 or spacing<=0 or not np.isfinite(out).all():raise ValueError("Invalid section fit")
     if offset_width is not None and (not np.isfinite(offset_width) or offset_width<=0):raise ValueError("Invalid offset width")
     if outward_cosine is not None and (not np.isfinite(outward_cosine) or not 0<=outward_cosine<=1):raise ValueError("Invalid outward support cosine")
+    if field_regularization is not None and (offset_width is None or not np.isfinite(field_regularization) or field_regularization<=0):raise ValueError('Invalid offset field regularization')
     knots=np.arange(out[:,2].min()-spacing,out[:,2].max()+2*spacing,spacing)
     fraction=(out[:,2]-knots[0])/spacing;left=np.floor(fraction).astype(int);blend=fraction-left
     basis=np.zeros((len(out),len(knots)))
@@ -116,7 +164,11 @@ def expand_projected_sections(positions, triangles, supports, clearance, spacing
             target=sign*x+clearance
             if offset_width is not None:target-=sign*np.dot(w,out[face,0])
             constraints.append((int(sign<0),coefficient,float(target)))
-    for _ in range(8):
+    if field_regularization is not None:
+        for side in range(2):
+            selected=[(c,target) for s,c,target in constraints if s==side]
+            scales[side]=_bounded_smooth_field([c for c,target in selected],[target for c,target in selected],field_shape,field_regularization)
+    for _ in range(0 if field_regularization is not None else 8):
         # Only raise valleys; this preserves every previously satisfied support.
         for side in range(2):
             grid=scales[side].reshape(field_shape)

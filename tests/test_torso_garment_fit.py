@@ -1,9 +1,29 @@
 import unittest
 import numpy as np
 from malemod_base.torso_garment_fit import refit_between_bodies,refit_radially,clear_projected_faces,refine_triangles,expand_projected_sections,smooth_tubular_chart
-from malemod_base.torso_garment_fit import curved_boundary_midpoints
+from malemod_base.torso_garment_fit import curved_boundary_midpoints,_bounded_smooth_field
 
 class FitTest(unittest.TestCase):
+ def test_smooth_field_bounds_peaks_and_certifies_all_clearances(self):
+  a=np.array([[.1,.9,0,0],[0,.3,.7,0],[0,0,.05,.95],[.5,.5,0,0]])
+  b=np.array([4.,3.,1.,4.])
+  field=_bounded_smooth_field(a,b,(2,2),64.)
+  self.assertGreaterEqual(field.min(),0.)
+  self.assertLessEqual(field.max(),4.*1.05+1.1e-6)
+  self.assertTrue(np.all(a@field>=b-1e-5))
+  # Reordering source faces must not create a new raised pocket.
+  np.testing.assert_allclose(field,_bounded_smooth_field(a[::-1],b[::-1],(2,2),64.),atol=1e-4)
+ def test_bounded_fit_preserves_aliases_folds_side_join_and_support(self):
+  p=np.array([[10,-1,0],[10,1,0],[10,0,2],[11,-1,0],[10,-1,0],[0,0,1]],float)
+  args=dict(offset_width=2,lateral_spacing=2,field_regularization=64)
+  q=expand_projected_sections(p,[[0,1,2]],[[14,0,1]],.2,**args)
+  np.testing.assert_array_equal(q[:,1:],p[:,1:]);np.testing.assert_array_equal(q[0],q[4]);np.testing.assert_array_equal(q[5],p[5])
+  self.assertAlmostEqual(q[3,0]-q[0,0],1.,places=3)
+  self.assertGreaterEqual(np.dot([.25,.25,.5],q[:3,0]),14.2-1e-5)
+  self.assertLess(np.max(q[:,0]-p[:,0]),4.42)
+  for value in (0,-1,float('nan')):
+   with self.assertRaises(ValueError):expand_projected_sections(p,[[0,1,2]],[],.2,offset_width=2,field_regularization=value)
+  np.testing.assert_array_equal(_bounded_smooth_field([[1,0]],[-1],(2,),64),[0,0])
  def test_lateral_field_does_not_inflate_remote_cut_to_center_peak(self):
   p=np.array([[2,-1,0],[2,1,0],[2,0,2],[2,20,0],[2,22,0],[2,21,2]],float)
   t=[[0,1,2],[3,4,5]]
