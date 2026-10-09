@@ -1,8 +1,26 @@
 import unittest
 import numpy as np
-from malemod_base.torso_garment_fit import refit_radially,clear_projected_faces,refine_triangles,expand_projected_sections,smooth_tubular_chart
+from malemod_base.torso_garment_fit import refit_between_bodies,refit_radially,clear_projected_faces,refine_triangles,expand_projected_sections,smooth_tubular_chart
 
 class FitTest(unittest.TestCase):
+ def test_reference_identity_retains_folds_cuts_and_aliases(self):
+  b=np.array([[2,-2,0],[2,2,0],[2,2,3],[2,-2,3]],float);t=np.array([[0,1,2],[0,2,3]])
+  p=np.array([[2.4,0,1],[2.8,0,1],[2.4,0,1]],float)
+  q,_=refit_between_bodies(p,b,t,b,t,.2)
+  np.testing.assert_allclose(q,p,atol=1e-12)
+ def test_body_displacement_keeps_fold_depth_and_target_bindings(self):
+  b=np.array([[2,-2,0],[2,2,0],[2,2,3],[2,-2,3]],float);t=np.array([[0,1,2],[0,2,3]])
+  target=b.copy();target[:,0]=3
+  p=np.array([[2.4,0,1],[2.8,0,1],[2.4,0,1]],float)
+  q,bindings=refit_between_bodies(p,b,t,target,t,.2)
+  np.testing.assert_allclose(q,p+[1,0,0],atol=1e-12)
+  for point,(face,w,gap) in zip(q,bindings):
+   self.assertAlmostEqual(np.linalg.norm(point-np.asarray(w)@target[t[face]]),gap)
+ def test_body_displacement_enforces_clearance_without_erasing_deeper_folds(self):
+  b=np.array([[2,-2,0],[2,2,0],[2,2,3],[2,-2,3]],float);t=np.array([[0,1,2],[0,2,3]])
+  target=b.copy();target[:,0]=3
+  q,_=refit_between_bodies([[2.1,0,1],[2.8,0,1]],b,t,target,t,.2)
+  np.testing.assert_allclose(q[:,0],[3.2,3.8])
  def test_chart_relaxation_keeps_cuts_and_aliases(self):
   angle=np.array([-.4,0,.4]*3,float);height=np.repeat([0.,1.,2.],3);height[4]=1.8
   p=np.column_stack((2*np.cos(angle),2*np.sin(angle),height))

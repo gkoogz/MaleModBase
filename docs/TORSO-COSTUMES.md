@@ -1,5 +1,14 @@
 # Independent torso and pelvic costumes
 
+The October 9 correction adds `refit_between_bodies`: bind measured stock and
+target body surfaces in the same adapter frame, transport their displacement
+to the original garment, and preserve its ease/fold offset. Clearance remains
+a separate lower bound. Do not relax the source garment chart or replace its
+normals with body normals for this path. Eleven torso-fitting regressions cover
+identity, fold-depth retention, target bindings and minimum clearance. Native
+adoption and installation evidence belongs to Wolverine; other spokes supply
+their own observed source/target surfaces and consume a tested Base pin.
+
 `controls/costume.hpp` defines Top (Naked/Tank Top) and Bottom
 (Naked/Jockstrap/Jeans/Jeans open). Missing bottom keys migrate the legacy Style value; the
 legacy setting never selects a top. Adapters persist both selections separately.
@@ -10,7 +19,7 @@ Open armhole patches use explicitly bounded closest-triangle bindings. Adapters
 retain the original skinning and source vertex IDs, and transport fitted seams
 with their current body donors. Numerical units are supplied by each export.
 
-For enlarged torso fits, refine measured edges with explicit source-pair
+The previous enlarged torso fit refined measured edges with explicit source-pair
 lineage, relax internal angle/height backtracking in the tubular chart while
 pinning true cut edges, then project and clear dense measured face supports.
 Position aliases move together while UV aliases remain separate. Independent
@@ -19,7 +28,7 @@ and winding as well as a flat-color silhouette. The common-section expansion
 alternative is not Wolverine's active fit: it inflated the stock shirt in native
 testing and was rejected.
 
-Wolverine's active authoring pin is 45ca775a2a4fe2e748ec98966727c1702864928b.
+Wolverine's previous authoring pin was 45ca775a2a4fe2e748ec98966727c1702864928b.
 Its adapter keeps the stock winding sign, current body normals, material passes
 and dog-tag surface contact. Eight fitting regressions and independent wardrobe
 preference tests pass offline; native acceptance is recorded separately in the

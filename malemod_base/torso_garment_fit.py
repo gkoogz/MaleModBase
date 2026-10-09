@@ -160,6 +160,32 @@ def refit_radially(positions, body, triangles, clearance, center=(0., 0.), fallb
     return result,contacts
 
 
+def refit_between_bodies(positions, source_body, source_triangles, target_body,
+                        target_triangles, clearance, *, fallback_distance=0.):
+    """Transport measured garment ease with the body's radial displacement.
+
+    Bind both reference bodies in the same adapter-supplied frame. Retain the
+    garment-to-source offset, including fold depth and cut locations, instead
+    of projecting all folds onto the target shell. Clearance is a lower bound.
+    Returned bindings refer exclusively to the target for runtime transport.
+    """
+    p=np.asarray(positions,dtype=float)
+    _,old=refit_radially(p,source_body,source_triangles,clearance,
+                         fallback_distance=fallback_distance)
+    _,new=refit_radially(p,target_body,target_triangles,clearance,
+                         fallback_distance=fallback_distance)
+    source_body=np.asarray(source_body,dtype=float);source_triangles=np.asarray(source_triangles)
+    target_body=np.asarray(target_body,dtype=float);target_triangles=np.asarray(target_triangles)
+    result=p.copy()
+    for i,((sf,sw,_),(tf,tw,_)) in enumerate(zip(old,new)):
+        a=np.asarray(sw)@source_body[source_triangles[sf]]
+        b=np.asarray(tw)@target_body[target_triangles[tf]]
+        result[i]+=b-a
+    result,bindings=refit_radially(result,target_body,target_triangles,clearance,
+                                  fallback_distance=fallback_distance)
+    return result,bindings
+
+
 def clear_projected_faces(positions, triangles, supports, clearance, passes=8, aliases=None):
     """Cover dense measured torso supports under each coarse front/back face.
 
