@@ -74,6 +74,7 @@ inline bool CertifyFollowedSurface(const std::vector<Vec>& p,const Face* faces,u
   const auto& hull=hulls[h];auto& cached=certificates[f*unsigned(hulls.size())+h];
   auto clear=[&](unsigned k){const auto& plane=hull[k];return Signed(plane,p[ids[0]])>=-1e-5f&&Signed(plane,p[ids[1]])>=-1e-5f&&Signed(plane,p[ids[2]])>=-1e-5f;};
   if(cached<hull.size()&&clear(cached))continue;
+  if(ExactTriangleSeparated(hull,p[ids[0]],p[ids[1]],p[ids[2]])){cached=unsigned(hull.size());continue;}
   unsigned k=0;while(k<hull.size()&&!clear(k))++k;if(k==hull.size())return false;cached=k;
  }}return true;
 }
@@ -90,6 +91,7 @@ inline bool RefitFollowedSurface(std::vector<Vec>& p,unsigned columns,unsigned c
    const auto ids=faces[f];const auto& hull=hulls[h];auto& cached=certificates[f*unsigned(hulls.size())+h];
    auto score=[&](unsigned k){const auto& plane=hull[k];return (std::min)({Signed(plane,work[ids[0]]),Signed(plane,work[ids[1]]),Signed(plane,work[ids[2]])});};
    float best=cached<hull.size()?score(cached):-std::numeric_limits<float>::infinity();if(best>=-1e-5f)continue;
+   if(ExactTriangleSeparated(hull,work[ids[0]],work[ids[1]],work[ids[2]]))continue;
    for(unsigned k=0;k<hull.size();k++){float separation=score(k);if(separation>best){best=separation;cached=k;}if(best>=-1e-5f)break;}
    if(best>=-1e-5f)continue;if(best< -limit||cached>=hull.size())return false;
    const auto& plane=hull[cached];

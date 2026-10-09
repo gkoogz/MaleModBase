@@ -4,6 +4,18 @@
 using namespace malemod::garments::meridian;
 static void Require(bool value,const char* message){if(!value)throw std::runtime_error(message);}
 int main(){try{
+ // A triangle can clear a convex primitive along its own face normal while
+ // spanning all preselected plane directions. Do not force it to a distant
+ // axis plane. The exact support test still rejects an intersecting chord.
+ {Hull sphere={{{1,0,0},1},{{-1,0,0},1},{{0,1,0},1},{{0,-1,0},1},{{0,0,1},1},{{0,0,-1},1}};
+  sphere.support=[](Vec n){return std::sqrt(Dot(n,n));};
+  Vec a={1.9f,-.4f,0},b={-.4f,1.9f,0},c={.75f,.75f,1};
+  Require(ExactTriangleSeparated(sphere,a,b,c),"Exact separating direction missed");
+  Require(!ExactTriangleSeparated(sphere,{-2,0,0},{2,0,0},{0,2,0}),"Exact support accepted chord penetration");
+  Hull shifted=sphere;shifted.support=[](Vec n){return 2*n[0]+std::sqrt(Dot(n,n));};
+  auto cover=ConvexCover({sphere,shifted},{0,0,1});
+  for(auto plane:cover){Require(plane.offset>=sphere.support(plane.normal),"Common envelope cuts first support");Require(plane.offset>=shifted.support(plane.normal),"Common envelope cuts second support");}
+ }
  auto ring=FitCircularSection({2,0,0},{0,2,0},{-2,0,0},{0,-2,0});Vec dome[8*32+2];AlignDomeRim(ring,{0,0,3});WriteDome(dome,ring,{0,0,3},8,32);
  for(unsigned i=0;i<32;i++)Require(std::abs(Dot(dome[i],dome[i])-4)<1e-5f,"Dome rim lost its exact circle");Require(dome[256]==Vec{0,0,3},"Dome apex moved");
  Vec lobe[9*32+2];WriteOvoid(lobe,{0,0,3},{0,0,-3},{2,0,0},{-2,0,0},{0,1,0},{0,-1,0},8,32);

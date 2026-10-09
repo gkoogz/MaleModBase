@@ -40,7 +40,7 @@ public:
   Frame now=MakeFrame(current,columns);std::vector<Vec> delta(anchors.size());
   for(unsigned i=0;i<anchors.size();i++)delta[i]=Sub(Local(anchors[i],now),controls[i]);
   auto raw=current;
-  for(unsigned i=0;i<surface.size();i++){
+  for(unsigned i=0;i+1<surface.size();i++){
    Vec correction{};
    if(i<columns)correction=Sub(Local(raw[i],now),boundary[i]);else{
     for(unsigned k=0;k<controls.size();k++)correction=Add(correction,Mul(delta[k],weights[i*controls.size()+k]));
@@ -54,6 +54,7 @@ public:
 // doesn't rebuild longitude coordinates, so it can bridge a temporary chart
 // singularity. Return the actual triangle certificate status separately.
 inline bool RepairTransportedSurface(std::vector<Vec>& p,unsigned columns,unsigned count,const Face* faces,unsigned faceCount,const std::vector<Hull>& hulls,unsigned budget=4,std::vector<unsigned>* certificates=nullptr){
+ auto original=p;auto work=p;
  std::vector<Vec> corrections(count);std::vector<unsigned> hits(count);
  // A cached index is only a hint. Re-evaluate its plane against all three
  // CURRENT vertices every pass. Changed pose, plane order or hull count cannot
@@ -67,16 +68,18 @@ inline bool RepairTransportedSurface(std::vector<Vec>& p,unsigned columns,unsign
    const unsigned key=f*unsigned(hulls.size())+unsigned(&hull-hulls.data());
    if(certificates&&(*certificates)[key]<hull.size()){
     const auto& plane=hull[(*certificates)[key]];
-    if((std::min)({Signed(plane,p[ids[0]]),Signed(plane,p[ids[1]]),Signed(plane,p[ids[2]])})>=0)continue;
+    if((std::min)({Signed(plane,work[ids[0]]),Signed(plane,work[ids[1]]),Signed(plane,work[ids[2]])})>=0)continue;
    }
-   for(const auto& plane:hull){float separation=(std::min)({Signed(plane,p[ids[0]]),Signed(plane,p[ids[1]]),Signed(plane,p[ids[2]])});if(separation>score){score=separation;best=&plane;}if(score>=0)break;}
+   if(ExactTriangleSeparated(hull,work[ids[0]],work[ids[1]],work[ids[2]]))continue;
+   for(const auto& plane:hull){float separation=(std::min)({Signed(plane,work[ids[0]]),Signed(plane,work[ids[1]]),Signed(plane,work[ids[2]])});if(separation>score){score=separation;best=&plane;}if(score>=0)break;}
    if(certificates&&best)(*certificates)[key]=unsigned(best-hull.data());
    if(score>=0)continue;clear=false;
    if(!best)continue;
-   for(unsigned id:ids)if(id>=columns){float gap=Signed(*best,p[id]);if(gap<.04f){corrections[id]=Add(corrections[id],Mul(best->normal,(std::min)(.5f,.04f-gap)));hits[id]++;}}
+   for(unsigned id:ids){float gap=Signed(*best,work[id]);if(gap<.04f){if(id<columns||id==count-1)return false;corrections[id]=Add(corrections[id],Mul(best->normal,(std::min)(.12f,.04f-gap)));hits[id]++;}}
   }
-  if(clear)return true;
-  for(unsigned i=columns;i<count;i++)if(hits[i])p[i]=Add(p[i],Mul(corrections[i],1.f/hits[i]));
+  if(clear){p.swap(work);return true;}
+  for(unsigned i=columns;i+1<count;i++)if(hits[i]){work[i]=Add(work[i],Mul(corrections[i],1.f/hits[i]));Vec d=Sub(work[i],original[i]);if(Dot(d,d)>.12f*.12f)return false;}
+  for(unsigned f=0;f<faceCount;f++){auto ids=faces[f];Vec before=Cross(Sub(original[ids[1]],original[ids[0]]),Sub(original[ids[2]],original[ids[0]])),after=Cross(Sub(work[ids[1]],work[ids[0]]),Sub(work[ids[2]],work[ids[0]]));if(Dot(after,after)<1e-14f||Dot(before,after)<=0)return false;}
  }return false;
 }
 }

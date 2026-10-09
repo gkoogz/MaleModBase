@@ -29,7 +29,8 @@ int main(){
  auto rigid=[](Vec p){return Vec{10-p[1],20+p[0],30+p[2]};};
  auto current=raw;auto movedAnchors=anchors;for(auto& p:current)p=rigid(p);for(auto& p:movedAnchors)p=rigid(p);
  assert(history.Transport(current,movedAnchors,4));
- for(unsigned i=0;i<5;i++){Vec d=Sub(current[i],rigid(solved[i]));assert(Dot(d,d)<1e-9f);}
+ for(unsigned i=0;i<4;i++){Vec d=Sub(current[i],rigid(solved[i]));assert(Dot(d,d)<1e-9f);}
+ {Vec d=Sub(current.back(),rigid(raw.back()));assert(Dot(d,d)<1e-9f);}
  // Boundary motion is exact, including nonrigid deformation; no world-space
  // freeze and no accumulating one-frame lag across repeated rejected wraps.
  auto deformed=raw;deformed[0][2]=.4f;anchors=deformed;
@@ -42,18 +43,25 @@ int main(){
  std::vector<unsigned> certificates;unsigned clearCases=0,blockedCases=0;
  std::vector<Face> faces={{0,1,3},{1,2,3},{2,0,3}};
  for(unsigned frame=0;frame<300;frame++){
-  float shift=2.5f*std::sin(frame*.17f);
+  float shift=4.5f*std::sin(frame*.17f);
   Hull box={{{1,0,0},1+shift},{{-1,0,0},1-shift},{{0,1,0},1},{{0,-1,0},1},{{0,0,1},1},{{0,0,-1},1}};
   std::rotate(box.begin(),box.begin()+frame%box.size(),box.end());
   std::vector<Hull> hulls={box};if(frame%5==0)hulls.push_back(box);
   auto topology=faces;if(frame%7==0)topology.pop_back();
-  std::vector<Vec> reference={{-2,-2,0},{2,-2,0},{0,2,0},{shift*.5f,0,.7f}};
+  std::vector<Vec> reference={{-2,-2,0},{2,-2,0},{0,2,0},{shift*.5f,0,.7f},{0,0,4}};
   auto cached=reference;
-  bool expected=RepairTransportedSurface(reference,3,4,topology.data(),unsigned(topology.size()),hulls);
-  bool actual=RepairTransportedSurface(cached,3,4,topology.data(),unsigned(topology.size()),hulls,4,&certificates);
+  bool expected=RepairTransportedSurface(reference,3,5,topology.data(),unsigned(topology.size()),hulls);
+  bool actual=RepairTransportedSurface(cached,3,5,topology.data(),unsigned(topology.size()),hulls,4,&certificates);
   assert(expected==actual);assert(std::memcmp(reference.data(),cached.data(),reference.size()*sizeof(Vec))==0);
   if(actual)++clearCases;else ++blockedCases;
  }
  assert(clearCases&&blockedCases);
+ // Failed contact repair used to publish a partially displaced spike and
+ // even move the current tip pole. Both failures must leave the mesh exact.
+ {std::vector<Vec> p={{2,0,0},{2,1,0},{2,0,1},{.8f,.2f,.2f},{.8f,.3f,.2f},{.8f,.2f,.3f},{0,0,4}};
+  auto before=p;Face f{3,4,5};Hull box={{{1,0,0},1},{{-1,0,0},1},{{0,1,0},1},{{0,-1,0},1},{{0,0,1},1},{{0,0,-1},1}};
+  assert(!RepairTransportedSurface(p,3,7,&f,1,{box},1));assert(p==before);
+  f={3,4,6};assert(!RepairTransportedSurface(p,3,7,&f,1,{box},4));assert(p==before);
+ }
  std::puts("anterior envelope and posed garment continuity passed");
 }
