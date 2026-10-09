@@ -35,9 +35,11 @@ class SurfaceFollower {
  std::vector<Binding> bindings;
  std::vector<Vec> seamOffsets;
  std::vector<Vec> frameScales;
+ std::vector<Vec> display;
+ std::vector<FollowFrame> referenceRig;
  unsigned columns_=0;
 public:
- void Reset(){bindings.clear();seamOffsets.clear();frameScales.clear();columns_=0;}
+ void Reset(){bindings.clear();seamOffsets.clear();frameScales.clear();display.clear();referenceRig.clear();columns_=0;}
  bool Ready()const{return !bindings.empty();}
  void Remember(const std::vector<Vec>& solved,const std::vector<Vec>& raw,const std::vector<FollowFrame>& rig,unsigned columns,unsigned count){
   if(rig.empty()||count>solved.size()||count>raw.size()||columns<3||count<columns*2+1||(count-1)%columns)throw std::runtime_error("Invalid follow binding");
@@ -56,7 +58,31 @@ public:
    for(unsigned k=0;k<4;k++){b.rig[k]=choices[k];b.rig[k].weight*= (1-b.bodyWeight)/sum;}
   }
   frameScales.clear();for(const auto& f:rig)frameScales.push_back({Dot(f.x,f.x),Dot(f.y,f.y),Dot(f.z,f.z)});
+  display.clear();for(unsigned i=0;i<count;i++)display.push_back(FollowCoordinates(solved[i],body));
+  referenceRig.clear();for(const auto& f:rig){auto center=FollowCoordinates(f.center,body);referenceRig.push_back({center,Sub(FollowCoordinates(Add(f.center,f.x),body),center),Sub(FollowCoordinates(Add(f.center,f.y),body),center),Sub(FollowCoordinates(Add(f.center,f.z),body),center)});}
   bindings.swap(next);seamOffsets.swap(offsets);columns_=columns;
+ }
+ // A display envelope can have unresolved prescribed-edge contact. Reusing it
+ // is not a collision certificate. Limit deformation from its original wrap,
+ // reject stretched/inverted faces, and rebuild on larger relative rig motion.
+ // Common actor translation/rotation does not consume the pose budget.
+ bool DisplayWithinBudget(const std::vector<Vec>& current,const std::vector<Vec>& raw,const std::vector<FollowFrame>& rig,unsigned columns,const Face* faces,unsigned faceCount,float fraction=.35f)const{
+  if(!Ready()||columns!=columns_||current.size()<display.size()||rig.size()!=referenceRig.size()||!faces||!std::isfinite(fraction)||fraction<=0)return false;
+  auto boundary=FollowBoundary(raw,columns);auto dual=FollowDual(boundary);
+  for(unsigned k=0;k<rig.size();k++){
+   auto c=FollowCoordinates(rig[k].center,dual);const auto& f=referenceRig[k];
+   float radius2=(std::min)({Dot(f.x,f.x),Dot(f.y,f.y),Dot(f.z,f.z)});
+   if(Dot(Sub(c,f.center),Sub(c,f.center))>radius2*fraction*fraction)return false;
+   Vec axes[]{rig[k].x,rig[k].y,rig[k].z},old[]{f.x,f.y,f.z};
+   for(unsigned j=0;j<3;j++){Vec v=Sub(FollowCoordinates(Add(rig[k].center,axes[j]),dual),c),d=Sub(v,old[j]);if(Dot(d,d)>Dot(old[j],old[j])*fraction*fraction)return false;}
+  }
+  for(unsigned f=0;f<faceCount;f++){
+   auto ids=faces[f];Vec before[3],after[3];
+   for(unsigned j=0;j<3;j++){if(ids[j]>=display.size())return false;before[j]=FollowGlobal(display[ids[j]],boundary);after[j]=current[ids[j]];for(float v:after[j])if(!std::isfinite(v))return false;}
+   for(unsigned j=0;j<3;j++){auto a=Sub(before[j],before[(j+1)%3]),b=Sub(after[j],after[(j+1)%3]);float aa=Dot(a,a),bb=Dot(b,b);if(bb>aa*2.25f+1e-8f||bb<aa*.444444f-1e-8f)return false;}
+   Vec a=Cross(Sub(before[1],before[0]),Sub(before[2],before[0])),b=Cross(Sub(after[1],after[0]),Sub(after[2],after[0]));float aa=Dot(a,a),bb=Dot(b,b);
+   if(aa>1e-14f&&(bb<1e-14f||Dot(a,b)<.2f*std::sqrt(aa*bb)))return false;
+  }return true;
  }
  bool Move(std::vector<Vec>& current,const std::vector<FollowFrame>& rig,unsigned columns)const{
   if(!Ready()||columns!=columns_||current.size()<bindings.size()||rig.size()!=frameScales.size())return false;

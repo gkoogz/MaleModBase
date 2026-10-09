@@ -42,3 +42,12 @@ terminal-pole contact. A clear movable interior may reuse its anatomy-follow
 bindings even if the fixed edge fails its whole-surface certificate. The failed
 whole-surface result remains reported as uncertified; it is not relabeled clear.
 This prevents an immovable contact from forcing full walking every frame.
+
+Native checking showed that excluding the pinned faces alone was insufficient:
+some display envelopes also fail movable-interior contact. Those envelopes may
+follow only within a separate geometric budget measured from their original
+wrap. Relative rig translation/rotation is limited to35percent of each measured
+axis; every face rejects inversion and edge stretch outside2/3 to1.5 of its
+original length. Common actor motion is factored out. Larger shape changes
+rebuild a current-pose envelope. Uncertified reuse stays explicitly uncertified;
+this bounds display deformation and does not assert collision clearance.

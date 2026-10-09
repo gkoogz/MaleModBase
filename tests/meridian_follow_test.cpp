@@ -8,12 +8,16 @@ int main(){
  auto solved=raw;solved[0][2]=.1f;solved[4][2]=2.2f;
  std::vector<FollowFrame> rig{{{0,0,2},{1,0,0},{0,1,0},{0,0,1}}};
  SurfaceFollower follower;follower.Remember(solved,raw,rig,4,9);
+ Face displayFaces[]={{0,1,4},{1,5,4},{4,5,8}};
+ assert(follower.DisplayWithinBudget(solved,raw,rig,4,displayFaces,3));
  auto current=raw;assert(follower.Move(current,rig,4));for(unsigned i=0;i<9;i++)Near(current[i],solved[i]);
  auto transform=[](Vec p){return Vec{10-p[1],20+p[0],30+p[2]};};
  auto vector=[](Vec p){return Vec{-p[1],p[0],p[2]};};
  current=raw;for(auto& p:current)p=transform(p);auto moved=rig;
  for(auto& f:moved){f.center=transform(f.center);f.x=vector(f.x);f.y=vector(f.y);f.z=vector(f.z);}
  assert(follower.Move(current,moved,4));for(unsigned i=0;i<9;i++)Near(current[i],transform(solved[i]));
+ {auto transformedRaw=raw;for(auto& p:transformedRaw)p=transform(p);assert(follower.DisplayWithinBudget(current,transformedRaw,moved,4,displayFaces,3));auto spike=current;spike[4][0]+=10;assert(!follower.DisplayWithinBudget(spike,transformedRaw,moved,4,displayFaces,3));}
+ {auto small=rig;small[0].center[0]+=.15f;auto shape=raw;assert(follower.Move(shape,small,4));assert(follower.DisplayWithinBudget(shape,raw,small,4,displayFaces,3));small[0].center[0]+=1;assert(!follower.DisplayWithinBudget(shape,raw,small,4,displayFaces,3));}
  // Follow the existing rig in this frame, without a timestep or history lag.
  current=raw;moved=rig;moved[0].center[0]+=.4f;assert(follower.Move(current,moved,4));
  Near(current[0],solved[0]);Near(current[8],raw[8]);
