@@ -71,6 +71,35 @@ inline Vec PrepareEnvelopePole(std::vector<Vec>& points,unsigned columns,unsigne
  for(unsigned i=collisionFirst;i<collisionEnd;i++)reach=(std::max)(reach,Dot(Sub(points[i],center),axis));
  points[poleIndex]=Add(center,Mul(axis,reach+thickness));return axis;
 }
+// An invertible shear preserves convexity and separating planes while keeping
+// the polar chart centered over the sewn outline. The render pole retains the
+// current tip's transverse coordinates instead of flaring at boundary height.
+struct EnvelopeChart {
+ Vec center{},axis{},shift{};float height=1;
+ Vec Forward(Vec p)const{return Sub(p,Mul(shift,Dot(Sub(p,center),axis)/height));}
+ Vec Inverse(Vec p)const{return Add(p,Mul(shift,Dot(Sub(p,center),axis)/height));}
+ Hull Transform(const Hull& original)const{
+  Hull hull;Vec translation=Mul(shift,Dot(center,axis)/height);
+  for(auto plane:original){Vec n=Add(plane.normal,Mul(axis,Dot(shift,plane.normal)/height));float length=std::sqrt(Dot(n,n));n=Mul(n,1/length);hull.push_back({n,plane.offset/length+Dot(n,translation)});}
+  if(original.support){auto support=original.support;auto a=axis,s=shift;auto h=height;
+   hull.support=[support,a,s,h,translation](Vec n){Vec q=Sub(n,Mul(a,Dot(s,n)/h));float length=std::sqrt(Dot(q,q));return length*support(Mul(q,1/length))+Dot(n,translation);};
+  }return hull;
+ }
+};
+inline EnvelopeChart PrepareAnchoredEnvelope(std::vector<Vec>& points,unsigned columns,unsigned poleIndex,unsigned collisionFirst,unsigned collisionEnd,Vec tip,float thickness=.12f){
+ Vec axis=PrepareEnvelopePole(points,columns,poleIndex,collisionFirst,collisionEnd,thickness),center=AttachmentCentroid(points,columns);
+ Vec offset=Sub(tip,center),shift=Sub(offset,Mul(axis,Dot(offset,axis)));float height=Dot(Sub(points[poleIndex],center),axis);
+ if(!std::isfinite(height)||height<1e-6f)throw std::runtime_error("Collapsed envelope chart height");
+ for(float value:shift)if(!std::isfinite(value))throw std::runtime_error("Nonfinite envelope chart shift");
+ points[poleIndex]=Add(points[poleIndex],shift);return {center,axis,shift,height};
+}
+inline bool WithinMeridianSampling(const std::vector<Vec>& solved,const std::vector<Vec>& taut,unsigned columns,unsigned rows,float margin=.04f){
+ unsigned count=columns*rows+1;if(columns<3||rows<2||count>solved.size()||count>taut.size())throw std::runtime_error("Invalid sampling budget");
+ for(unsigned col=0;col<columns;col++){
+  float average=0;for(unsigned row=1;row<=rows;row++){unsigned i=row==rows?count-1:row*columns+col;Vec d=Sub(taut[i],taut[(row-1)*columns+col]);average+=std::sqrt(Dot(d,d))/rows;}
+  for(unsigned row=1;row<rows;row++){unsigned i=row*columns+col,j=row+1==rows?count-1:i+columns;Vec a=Sub(taut[i],taut[i-columns]),b=Sub(taut[i],taut[j]);float limit=(std::max)({2*margin,.75f*average,.5f*std::sqrt((std::min)(Dot(a,a),Dot(b,b)))});Vec d=Sub(solved[i],taut[i]);if(!std::isfinite(Dot(d,d))||Dot(d,d)>limit*limit)return false;}
+ }return true;
+}
 inline void SeedMeridians(std::vector<Vec>& points,unsigned columns,unsigned rows,const float* heightFractions,Vec axis){
  if(!heightFractions||columns<3||rows<2||std::size_t(columns)*rows>=points.size())throw std::runtime_error("Invalid live meridian seed");
  Vec pole=points[columns*rows];axis=Unit(axis);

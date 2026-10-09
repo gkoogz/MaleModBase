@@ -51,3 +51,12 @@ axis; every face rejects inversion and edge stretch outside2/3 to1.5 of its
 original length. Common actor motion is factored out. Larger shape changes
 rebuild a current-pose envelope. Uncertified reuse stays explicitly uncertified;
 this bounds display deformation and does not assert collision clearance.
+
+Side renders rejected the centered-pole envelope as a box-like flare. The
+anchored chart retains the current tip's transverse position and uses an
+invertible affine shear only during walking. Collision planes and exact support
+functions undergo the same transform; convexity and triangle separation are
+preserved. After inverse mapping, physical-space sampling and sewn-edge budgets
+are checked again. This avoids the folded-tip angular chart without moving the
+render pole up to the sewn-outline centroid. Native appearance still requires
+inspection independently of round-trip/support tests.

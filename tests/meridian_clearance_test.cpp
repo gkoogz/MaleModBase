@@ -21,7 +21,16 @@ int main(){try{
  {std::vector<Vec> p={{0,-2,-2},{0,2,-2},{0,2,2},{0,-2,2},{-5,0,0},{2,0,0},{3,1,1},{3,-1,-1}};auto before=p;
   auto axis=PrepareEnvelopePole(p,4,4,5,8);
   Require(axis[0]>.999f&&p[4][0]>3,"Folded tip collapsed the sewn-boundary chart");
-  for(unsigned i:{0u,1u,2u,3u,5u,6u,7u})Require(p[i]==before[i],"Envelope pole moved boundary or primitive");
+ for(unsigned i:{0u,1u,2u,3u,5u,6u,7u})Require(p[i]==before[i],"Envelope pole moved boundary or primitive");
+ }
+ {std::vector<Vec> p={{0,-2,-2},{0,2,-2},{0,2,2},{0,-2,2},{-5,0,-8},{2,0,0},{3,1,1},{3,-1,-1}};auto before=p;
+  auto chart=PrepareAnchoredEnvelope(p,4,4,5,8,{-5,0,-8});Require(std::abs(p[4][2]+8)<1e-6f,"Chart lifted the render tip away from the anatomy");
+  for(Vec q:before)Require(Dot(Sub(chart.Inverse(chart.Forward(q)),q),Sub(chart.Inverse(chart.Forward(q)),q))<1e-8f,"Envelope shear failed round trip");
+  Hull sphere; sphere.support=[](Vec n){return std::sqrt(Dot(n,n));};auto transformed=chart.Transform(sphere);
+  for(unsigned k=0;k<100;k++){float a=k*2.39996323f,z=1-2*(k+.5f)/100,r=std::sqrt(1-z*z);Vec n={r*std::cos(a),r*std::sin(a),z};
+   for(Vec q:std::vector<Vec>{{1,0,0},{-1,0,0},{0,1,0},{0,-1,0},{0,0,1},{0,0,-1}})Require(Dot(n,chart.Forward(q))<=transformed.support(n)+1e-5f,"Sheared support cuts the current collider");
+  }
+  for(unsigned i:{0u,1u,2u,3u,5u,6u,7u})Require(p[i]==before[i],"Anchored chart moved a sewn point or collider");
  }
  auto ring=FitCircularSection({2,0,0},{0,2,0},{-2,0,0},{0,-2,0});Vec dome[8*32+2];AlignDomeRim(ring,{0,0,3});WriteDome(dome,ring,{0,0,3},8,32);
  for(unsigned i=0;i<32;i++)Require(std::abs(Dot(dome[i],dome[i])-4)<1e-5f,"Dome rim lost its exact circle");Require(dome[256]==Vec{0,0,3},"Dome apex moved");
@@ -35,6 +44,8 @@ int main(){try{
   reference.push_back({r*std::cos(a),r*std::sin(a),-3+7.f*row/rows});
  }
  reference.push_back({0,0,4});
+ Require(WithinMeridianSampling(reference,reference,cols,rows),"Unchanged envelope failed physical budget");
+ {auto spike=reference;spike[cols*4][0]+=100;Require(!WithinMeridianSampling(spike,reference,cols,rows),"Physical budget accepted a transformed spike");}
  for(unsigned row=0;row+1<rows;row++)for(unsigned col=0;col<cols;col++){
   unsigned x=row*cols+col,y=row*cols+(col+1)%cols;
   faces.push_back({std::uint16_t(x),std::uint16_t(y),std::uint16_t(y+cols)});faces.push_back({std::uint16_t(x),std::uint16_t(y+cols),std::uint16_t(x+cols)});
