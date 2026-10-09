@@ -65,7 +65,7 @@ def refine_triangles(positions, triangles):
     return np.array(out),np.array(faces),np.array(donors)
 
 
-def expand_projected_sections(positions, triangles, supports, clearance, spacing=2., side_threshold=.05, *, offset_width=None, outward_cosine=None):
+def expand_projected_sections(positions, triangles, supports, clearance, spacing=2., side_threshold=.05, *, offset_width=None, outward_cosine=None, lateral_spacing=None):
     """Expand a common smooth X field instead of flattening folds.
 
     Y/Z and source cut boundaries remain ordered. Every vertex at the same
@@ -85,7 +85,14 @@ def expand_projected_sections(positions, triangles, supports, clearance, spacing
     fraction=(out[:,2]-knots[0])/spacing;left=np.floor(fraction).astype(int);blend=fraction-left
     basis=np.zeros((len(out),len(knots)))
     basis[np.arange(len(out)),left]=1-blend;basis[np.arange(len(out)),left+1]=blend
-    scales=np.ones((2,len(knots))) if offset_width is None else np.zeros((2,len(knots)))
+    field_shape=(len(knots),)
+    if lateral_spacing is not None:
+        if not np.isfinite(lateral_spacing) or lateral_spacing<=0:raise ValueError('Invalid lateral field spacing')
+        lateral=np.arange(out[:,1].min()-lateral_spacing,out[:,1].max()+2*lateral_spacing,lateral_spacing)
+        fraction=(out[:,1]-lateral[0])/lateral_spacing;left=np.floor(fraction).astype(int);blend=fraction-left
+        by=np.zeros((len(out),len(lateral)));by[np.arange(len(out)),left]=1-blend;by[np.arange(len(out)),left+1]=blend
+        basis=(basis[:,:,None]*by[:,None,:]).reshape(len(out),-1);field_shape=(len(knots),len(lateral))
+    scales=np.ones((2,basis.shape[1])) if offset_width is None else np.zeros((2,basis.shape[1]))
     direction=out[:,0] if offset_width is None else np.tanh(out[:,0]/offset_width)
     constraints=[]
     faces=np.asarray(triangles,dtype=np.int64)
@@ -112,7 +119,11 @@ def expand_projected_sections(positions, triangles, supports, clearance, spacing
     for _ in range(8):
         # Only raise valleys; this preserves every previously satisfied support.
         for side in range(2):
-            smooth=np.convolve(np.pad(scales[side],(2,2),mode='edge'),[1/16,4/16,6/16,4/16,1/16],mode='valid')
+            grid=scales[side].reshape(field_shape)
+            if lateral_spacing is None:smooth=np.convolve(np.pad(grid,(2,2),mode='edge'),[1/16,4/16,6/16,4/16,1/16],mode='valid')
+            else:
+                smooth=np.apply_along_axis(lambda v:np.convolve(np.pad(v,(2,2),mode='edge'),[1/16,4/16,6/16,4/16,1/16],mode='valid'),0,grid)
+                smooth=np.apply_along_axis(lambda v:np.convolve(np.pad(v,(1,1),mode='edge'),[.25,.5,.25],mode='valid'),1,smooth).ravel()
             scales[side]=np.maximum(scales[side],smooth)
         for side,c,target in constraints:
             missing=target-np.dot(c,scales[side])

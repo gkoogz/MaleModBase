@@ -4,6 +4,13 @@ from malemod_base.torso_garment_fit import refit_between_bodies,refit_radially,c
 from malemod_base.torso_garment_fit import curved_boundary_midpoints
 
 class FitTest(unittest.TestCase):
+ def test_lateral_field_does_not_inflate_remote_cut_to_center_peak(self):
+  p=np.array([[2,-1,0],[2,1,0],[2,0,2],[2,20,0],[2,22,0],[2,21,2]],float)
+  t=[[0,1,2],[3,4,5]]
+  q=expand_projected_sections(p,t,[[4,0,1]],.2,offset_width=2,lateral_spacing=2)
+  self.assertGreaterEqual(np.dot([.25,.25,.5],q[:3,0]),4.2-1e-5)
+  self.assertLess(q[5,0],2.05)
+  np.testing.assert_array_equal(q[:,1:],p[:,1:])
  def test_cut_rounding_keeps_original_corners_and_limits_new_offsets(self):
   p=np.array([[1,0,0],[0,1,0],[-1,0,0],[0,-1,0],[0,0,0]],float)
   t=np.array([[0,1,4],[1,2,4],[2,3,4],[3,0,4]])

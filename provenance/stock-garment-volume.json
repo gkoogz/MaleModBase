@@ -3,9 +3,9 @@
   "sourceSpokeCommit": "4f6f137b94484ca70e20009f1307f384bd34cb25",
   "modules": {
     "malemod_base/garment_shell.py": "fe788e8437003193edad96cd828460a431eb9f4700f4bf68dc5f41b7beb0e711",
-    "malemod_base/torso_garment_fit.py": "c3a3988b839677c7c80129781818ab4db60e13d378212c9905aeed5172e6a577",
+    "malemod_base/torso_garment_fit.py": "9316b27b24dee61e97ead48427061fa5129b7e4ed142f2bfc00683a56b266f94",
     "tests/test_garment_shell.py": "625b8975bd6e6df0d19153a66ab3805a9b183f650f6a9ebbd6834d18a8268bae",
-    "tests/test_torso_garment_fit.py": "4ad3e03f0946138be9c37b049e05e54cf5b31d0c4b147d0ccd753072152491df"
+    "tests/test_torso_garment_fit.py": "668872a7378faad72dd0b28e1f65a3e2926ff2756ec402b81d07c8ed203b7d93"
   },
   "hashEncoding": "LF source bytes",
   "sourceVertexLineage": true,

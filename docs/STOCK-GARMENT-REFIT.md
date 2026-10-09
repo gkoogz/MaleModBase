@@ -28,6 +28,14 @@ body supports and may restrict front/back envelope constraints to outward
 faces. This restriction does not certify grazing-face or full-volume clearance.
 Review those surfaces, clothing cutouts and animation in the native room.
 
+The optional `lateral_spacing` extends this to a smooth height/lateral tensor
+field. Expansion needed at the center of the chest no longer translates every
+point on a height section by that maximum. Original Y/Z, folds, source donors
+and UV aliases remain intact. Wolverine supplies measured 3-unit lateral knots;
+other adapters choose their own measured spacing and native fit validation.
+The localized-envelope regression checks that a remote cut is not inflated
+by a central support peak. This is not a full-volume collision certificate.
+
 Independent vertex projection can erase stock ease and overturn fine folds.
 Wolverine's previous tank revision8 had 509 faces whose normals rotated beyond
 90 degrees relative to stock. Revision9's measured offline candidate has none;
