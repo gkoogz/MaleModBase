@@ -1,4 +1,5 @@
 #include <malemod/garments/meridian_clearance.hpp>
+#include <malemod/garments/taut_contact.hpp>
 #include <cstdio>
 #include <malemod/garments/meridian_rig.hpp>
 using namespace malemod::garments::meridian;
@@ -89,11 +90,23 @@ int main(){try{
   for(unsigned i=0;i<cols;i++)Require(points[i]==reference[i],"Sewn boundary moved");Require(points.back()==reference.back(),"Pole moved");
   // Independently test full affine triangles against all six cube supports.
   for(Face face:faces){bool clear=false;for(const Plane& plane:hulls[0])if(Signed(plane,points[face[0]])>=-1e-5f&&Signed(plane,points[face[1]])>=-1e-5f&&Signed(plane,points[face[2]])>=-1e-5f)clear=true;Require(clear,"Edge or face crosses the solid");}
+  hulls[0].support=[size](Vec n){return size*(std::abs(n[0])+std::abs(n[1]))+std::abs(n[2]);};
+  std::vector<float> heights(cols*rows);for(unsigned i=0;i<heights.size();i++)heights[i]=1.f-float(i/cols)/rows;
+  points=reference;std::vector<Vec> seed;float padding=0;
+  WalkCertifiedTautEnvelope(points,cols,rows,heights.data(),faces.data(),unsigned(faces.size()),hulls,{0,0,1},.04f,&padding,&seed);
+  Require(TautTriangleClearance(points,faces.data(),unsigned(faces.size()),hulls)>=-1e-5f,"Certified cover left a triangle penetration");
+  Require(WithinMeridianSampling(points,seed,cols,rows),"Normal refinement exceeded seed sampling");
+  for(unsigned i=0;i<cols;i++)Require(points[i]==reference[i],"Certified cover moved sewn anchors");Require(points.back()==reference.back(),"Certified cover moved terminal anchor");
+  auto unchanged=points;RefineTautContacts(points,cols,rows,faces.data(),unsigned(faces.size()),hulls,{0,0,1});Require(points==unchanged,"Clear surface received unnecessary correction");
  }
  // An invalid anchored pose must leave the caller's last geometry untouched.
  const Vec enclosing[]={{-10,-10,-10},{10,10,10}};auto bad=reference;bool rejected=false;
  try{ClearMeridians(bad,cols,rows,faces.data(),unsigned(faces.size()),{SupportHull(enclosing,2,normals,6,0)},{0,0,1});}catch(const std::exception&){rejected=true;}
  Require(rejected&&bad==reference,"Failed wrapping was published");
+ {auto enclosed=SupportHull(enclosing,2,normals,6,0);enclosed.support=[](Vec n){return 10*(std::abs(n[0])+std::abs(n[1])+std::abs(n[2]));};bad=reference;rejected=false;
+  try{RefineTautContacts(bad,cols,rows,faces.data(),unsigned(faces.size()),{enclosed},{0,0,1});}catch(const std::exception&){rejected=true;}
+  Require(rejected&&bad==reference,"Rejected normal contact was published");
+ }
  // A narrow oblate support between the render rows used to be missed by the
  // coarse walk. Its contact bulge must survive the virtual walk and adaptive
  // resampling, without adding rows or moving either sewn anchor.

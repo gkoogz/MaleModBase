@@ -377,10 +377,22 @@ inline WrapReceipt ClearMeridians(std::vector<Vec>& points,unsigned columns,unsi
   ++stationCount;for(unsigned row=1;row<rows;row++)stations[row]+=Dot(Sub(work[row*columns+col],pole),axis)/path.front().h;
  }
  if(stationCount)for(unsigned row=1;row<rows;row++)stations[row]/=stationCount;
+ float commonHeight=0,closestDifference=0;
+ if(stationCount){
+  for(const auto& path:tautPaths)if(!path.empty())commonHeight+=path.front().h/stationCount;
+  for(const auto& path:tautPaths)if(!path.empty())closestDifference=(std::max)(closestDifference,std::abs(commonHeight)-std::abs(path.front().h));
+ }
+ // Fractions alone do not synchronize a nonplanar sewn outline: multiplying
+ // them by each anchor height puts adjacent rows on opposite sides of a bend.
+ // Fade the anchor-height difference toward common absolute stations. Bound
+ // the exponent so every longitude remains monotone from its exact anchor.
+ const float heightExponent=closestDifference>1e-6f?(std::max)(1.f,(std::min)(3.f,.99f*std::abs(commonHeight)/closestDifference)):3.f;
  for(unsigned col=0;col<columns;col++){
   const auto& path=tautPaths[col];if(path.empty())continue;Vec direction=directions[columns+col];
   for(unsigned row=1;row<rows;row++){
-   float h=path.front().h*stations[row];unsigned i=1;while(i+1<path.size()&&(h-path[i].h)*path.front().h<0)++i;
+   float fraction=stations[row];
+   float h=commonHeight*fraction+(path.front().h-commonHeight)*std::pow(fraction,heightExponent);
+   unsigned i=1;while(i+1<path.size()&&(h-path[i].h)*path.front().h<0)++i;
    float t=(h-path[i-1].h)/(path[i].h-path[i-1].h),r=path[i-1].r+(path[i].r-path[i-1].r)*t;
    work[row*columns+col]=Add(pole,Add(Mul(axis,h),Mul(direction,r)));
   }

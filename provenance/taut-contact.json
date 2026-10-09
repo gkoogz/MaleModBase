@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "contract": "finite-grid-taut-contact",
+  "SDKFree": true,
+  "inputSHA256": {
+    "include/malemod/garments/taut_contact.hpp": "8658ec93ca1b72550d4a6c0dcad4b8eb79fad1149f9fbfbbdc4ee68166dc0371",
+    "include/malemod/garments/meridian_clearance.hpp": "3763f126988930a459c6e741bde52604483a0cc4b55e450a62784c20ce57d2d0",
+    "tests/meridian_clearance_test.cpp": "719d0feab997dde4886a2db1ac6267ce2c367ec424186834c51c1aedc6561b2f"
+  },
+  "hashNormalization": "LF",
+  "tests": [
+    "meridian_clearance",
+    "meridian_follow",
+    "meridian_continuity"
+  ],
+  "privateInputsCommitted": false,
+  "nativeAcceptancePassed": false,
+  "adoption": "Exact tested Base pin; measured topology/binding revision and physical-space certificate required per adapter"
+}
