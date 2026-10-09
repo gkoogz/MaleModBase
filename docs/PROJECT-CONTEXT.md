@@ -1,3 +1,57 @@
+## October 8 - main integration and requested retail development installation
+
+User requested pushing the current work to main and installing in the actual
+game. Shared meridian following/contact/analytic rig/material and anterior
+envelope math are committed in Base. Wolverine consumes exact tested Base
+6d6f113387f6a46bb69461a2708dd4f30a09d538 through its lock; measured binding
+revision5 is tracked with donor IDs, frame offsets, UV aliases, support controls,
+topology, source hashes and private-input omissions. The normal runtime enables
+the32-ray garment for clothing style1 without an environment opt-in. It uses
+the existing current physics pose every frame; walking rebuilds invalid wraps.
+
+Runtime source commit: 61fab4314709278d95cd3ac5412709f8a3929125.
+Installed DLL SHA256: 5df442488816ab89b161c69574b22140e35b7e21a4723f7248882de2e9299518.
+Destination: C:/Games/X-Men Origins Wolverine/Binaries/d3d9.dll.
+Retained accepted DLL: 4f4900a5e70ce9bb127b46c3d7fe57ef74ffeace8a5ae704d3da1eff6e2ba9a3.
+Final exact rollback: C:/Games/X-Men Origins Wolverine/WGame/ModBackups/Meridian-development-20261008-204636-da2311/Restore.ps1.
+The first installation was actually rolled back to the accepted hash and then
+reinstalled; final rollback validation passed. Saved settings, saves, audio,
+textures and cooked packages were verified/preserved. No sandbox package,
+private factory, room-origin override or automatic input hook was installed.
+This is an explicitly selected development installation, not a new published
+release or full attachment acceptance. manifest.json remains the Beta2 release
+identity; restore this development update before using the Beta2 uninstaller.
+
+Clean committed production build and provenance are retained under canonical
+Wolverine build/meridian-production-20261008. It excludes the unrelated dirty
+jockstrap_worker.h edits and all dirty overlays. Later installer/documentation
+commits do not change this runtime source identity. Base provenance verification
+passed from a clean pinned worktree:516 imported files and185 source arrays.
+Seven MSVC x86 tests passed (four meridian tests, collar, root transition and
+original motion filter). Twenty-two Python guide/surface regressions passed.
+Anterior recovery fixture reproduced the posterior trap with recovery disabled
+and recovered with it enabled; this is numerical evidence, not native approval.
+
+Native sealed derivative from that exact source/pin:
+4cec86c54ad317183af7fb8ebd2d90c8cde214a89246eb8e69295b59989b1af9.
+Base build/production-room-20261008/run20261008-203807-10d843 completed18 sampled
+cases with zero reported draw rejection/state mismatch and exited0. Default,
+minimum/maximum and front/side/oblique naked/clothed views were inspected; a
+rear jump/landing sample was captured. The first nonpaused moving capture was
+not labeled by the existing helper; paused motion was recaptured successfully.
+Title run20261008-204408-433b58 exited0 and captured the upper body, with the
+pouch outside the frame. All automated input/focus stayed in the owned station.
+Private evidence: Base build/production-native-20261008/{provenance.json,
+native-evidence.json,install-receipt.json}; numerical fixture in
+Base build/production-anterior-20261008. These are not committed capture banks.
+
+Full attachment gate remains FALSE. Every coupled shape/body-resource/LOD and
+campaign transition is not covered. Extreme cloth faceting and uncertified
+continuity fallback remain; front moving attachment and full tank garment
+appearance are not certified. No retail gameplay/FPS parity claim is made.
+Retain the accepted DLL and exact rollback. Unrelated legacy CPU-cloth/worker
+development was preserved separately, not included in this runtime build.
+
 ## October 8 - anatomy-follow prototype installed and launched for human test
 
 User requested launch of the current-frame anatomy-follow build. The prior
