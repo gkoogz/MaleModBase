@@ -18,6 +18,12 @@ from extract_root_profile import outputs as root_profile_outputs
 ROOT = Path(__file__).resolve().parents[1]
 
 def main():
+    meridian=json.loads((ROOT/'provenance/meridian.json').read_text())
+    if meridian['geometryBindingRevision']!=5 or meridian['hashNormalization']!='LF':
+        raise ValueError('Unsupported meridian geometry/binding contract')
+    for path,digest in meridian['files'].items():
+        if hashlib.sha256((ROOT/path).read_bytes().replace(b'\r\n',b'\n')).hexdigest()!=digest:
+            raise ValueError('Meridian implementation/provenance differs: '+path)
     boundary=json.loads((ROOT/'provenance/part-boundary-presentation.json').read_text())
     for item in boundary['files']:
         if hashlib.sha256((ROOT/item['path']).read_bytes()).hexdigest()!=item['sha256']:

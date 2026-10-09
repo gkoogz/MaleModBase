@@ -200,7 +200,7 @@
   "files": [
     {
       "path": "CMakeLists.txt",
-      "sha256": "cb84a2dab00bcb965db87deb4ba088408e968f11af1c7ac950c51b1f61ada229"
+      "sha256": "1a2f179404fab047b1c4a999082f287929b1b9e8bfb3c6f431301ef8fd86833f"
     },
     {
       "path": "include/malemod/surface/runtime.hpp",
@@ -5119,6 +5119,10 @@
     {
       "previousCMakeSHA256": "9013f295e8ddda5375b041e13b01d0d535cae3c6bf777d89a98622f8655af769",
       "meaning": "Added offline replay and opt-in CPU cloth targets. Existing source surface runtime unchanged; no new game acceptance."
+    },
+    {
+      "previousCMakeSHA256": "cb84a2dab00bcb965db87deb4ba088408e968f11af1c7ac950c51b1f61ada229",
+      "reason": "Register SDK-free meridian regressions; no legacy/source numerical changes"
     }
   ],
   "historicalSourceV2Wire5Checkpoint": {

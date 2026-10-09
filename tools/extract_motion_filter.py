@@ -73,7 +73,9 @@ inline bool Equal(const malemod::motion::Tracker::State& a,const malemod::motion
 '''+ '&&\n'.join(f'!std::memcmp(&a.{name},&b.{name},sizeof(a.{name}))' for name in names)+''';}
 }
 '''
-    return raw,function,header.encode(),oracle.encode()
+    # Git checks out generated shared headers with LF. Keep immutable source
+    # bytes for provenance while making generated outputs checkout-stable.
+    return raw,function,header.encode().replace(b'\r\n',b'\n'),oracle.encode().replace(b'\r\n',b'\n')
 
 
 def run(write=False):

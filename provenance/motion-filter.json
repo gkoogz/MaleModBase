@@ -4,9 +4,9 @@
   "sourcePath": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
   "sourceSHA256": "20779d89b389ca315a27f77d7e804d9fa290129fe7b2137e896149c344467e30",
   "sourceFunctionSHA256": "a2bfdc5aea824a45394974dab3b617025f7a6befee78b02d2cbc11e51e7bdd3d",
-  "headerSHA256": "180955a83eed09fb550c1bf6543b7f545c2889b400ed452370d0223276d13368",
-  "recipeSHA256": "904f23b1cc23a904e56684d34887beac85b58cae80d3dd4fc6eabeb903fae422",
-  "oracleSHA256": "994a6a7bdda9e60a3b402254fd633545852aa0109dc7bfe9b73d9d1004bee70e",
+  "headerSHA256": "e60999a6badcd05f17d59f519ef638849bdca0844ac2edf1bcfb3736a7521da9",
+  "recipeSHA256": "540dcc4fc58eda594286527a6efd058cf2712dd3cf4534e9f6a44adc6148e60f",
+  "oracleSHA256": "d719329e430354214a639f1b8f58138a284898e88eadef25160afa10819d8583",
   "changes": [
     "Clock supplied as uint32 milliseconds",
     "Diagnostics removed",
@@ -52,7 +52,7 @@
     },
     {
       "path": "CMakeLists.txt",
-      "sha256": "cb84a2dab00bcb965db87deb4ba088408e968f11af1c7ac950c51b1f61ada229"
+      "sha256": "1a2f179404fab047b1c4a999082f287929b1b9e8bfb3c6f431301ef8fd86833f"
     },
     {
       "path": "docs/FRAME-CALIBRATION.md",
@@ -64,11 +64,16 @@
     {
       "previousCMakeSHA256": "7d632f338f6ed92ab69a2a3d938c1e22d72b106ac0db57788400bfddf3f36ceb",
       "meaning": "Preserved prior build metadata hash; garment SDK-only test target registrations changed, no acceptance inferred for runtime source changes"
+    },
+    {
+      "previousCMakeSHA256": "cb84a2dab00bcb965db87deb4ba088408e968f11af1c7ac950c51b1f61ada229",
+      "reason": "Register SDK-free meridian regressions; no legacy/source numerical changes"
     }
   ],
   "attachmentTestRegistration": {
     "change": "Added standalone SDK-free root transition test only",
     "sourcePhysicsChanged": false,
     "sourceGarmentChanged": false
-  }
+  },
+  "generatedOutputNormalization": "LF"
 }
