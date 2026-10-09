@@ -24,6 +24,12 @@ after acceptance. `root_contact::FromJoint` recovers continuous pitch/yaw and
 angular velocities from the actual accepted link and its velocity; the pitch
 is stored relative to the unchanged rest drive.
 
+`root_contact::Relative(total, imposedDrive)` subtracts both imposed angles and
+angular rates. Recovery subtracts the actual rest-drive velocity and the sampled
+clinical yaw change per fixed substep, including its inactive transition. The
+prior imposed yaw resets with the source compliant state. Driven motion must
+not be integrated again as contact suspension motion.
+
 No new pelvis/rod proxy constraint is added. Neutral body capsule overlap at
 the recruited welded root is expected and must not be treated as detached
 surface penetration. The actual root/collar ownership, curved rod tube and
@@ -38,6 +44,10 @@ shared waist boundaries are unchanged.
 
 The SDK-free joint test covers angle/velocity round trips across angle wrap,
 radial velocity removal, link inertia scaling and invalid-state rejection.
+It also verifies separation of nonzero imposed pitch/yaw and their velocities.
+An enabled process-kernel regression exercises moving rest pitch, nonzero
+clinical yaw and clinical deactivation; accepted guide/root direction agrees
+within 2.98e-7. This numerical fixture is not a game capture.
 The wire test covers exact serialization and uncalibrated opt-in rejection.
 The process-isolated Win32 kernel compiles and regenerates byte exactly from
 the checked source spans.
@@ -45,10 +55,19 @@ the checked source spans.
 The disabled final worker replay compares 46 measured Geralt bind-contact cases
 against the old wire6 worker: 138 complete buffers for both target LODs and
 composed native vertices remain byte-identical. Artifact:
-`TheWitcher3MaleMod/build/witcher-parity-root-joint-sealed-disabled-proof.json`.
+`TheWitcher3MaleMod/build/witcher-parity-root-relative-disabled-proof.json`.
 That covers neutral, three states with extreme angles at maximum width/size,
 coupled maxima/reported shapes and 30 moving-force frames. It is not the full
 native/campaign acceptance matrix or proof of all unused source outputs.
+
+`build/root-contact-source-consumption-current/proof.json` compares 70 original
+control/physics inputs with the preserved exact pre-root source library. All
+560 complete geometry, both-body, normals, tangents, UV, topology and mechanics
+artifacts are byte-identical. All three states also preserve complete numerical
+payloads across six CDF modes, including impulse consumption, retry, zero-substep
+queueing and coalescing. The oldest original oracle correctly rejects the
+pre-existing stable-collar revision (default maximum displacement 0.39728987);
+the current proof does not relabel that older receipt as passing.
 
 The opt-in maximum Semi/Overall/Width/Angle mesh has substantially fewer shaft
 creases than the measured baseline. Its attachment ridge/lower bridge still

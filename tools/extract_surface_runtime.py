@@ -138,6 +138,8 @@ for d in sorted(decl,key=position):
   raw=(root/d['file']).read_bytes();start=raw.rfind(b'\n',0,d['start'])+1;prefix=raw[start:d['start']].decode()
   if prefix.startswith('template<'):s=prefix+s
  if d['name']=='teachingTimeline':s='static teaching::ProjectedTimeline teachingTimeline'
+ if d['name']=='ResetCompliantDynamics':
+  s=s.replace('{','{surfaceClinicalLateralYaw=0;',1)
 
  if d['name']=='PDInput':
   storage='static ' if args.process_isolated else 'static thread_local '
@@ -183,14 +185,17 @@ for d in sorted(decl,key=position):
   s=s.replace(root_mass,root_mass+'if(i==1&&surfaceRootContactEnabled){float segment=constraintRestLength/(shaftNodeCount-1);pdInvMass[i]=float(::malemod::surface::root_contact::PointInverseMass(segment,(1.f+physValues[1]*.016f)*max(.65f,sqrtf(constraintRestLength/24.f))));}')
   at=' PDSolveContactVelocities(dt);'
   if s.count(at)!=1:raise ValueError('Source contact velocity pass changed')
-  s=s.replace(at,at+"""if(surfaceRootContactEnabled){
+  s=s.replace(at,at+"""const float imposedYaw=teachingTimeline.active?teachingFluid.MainLateralYaw(teachingTimeline.time):0.f;
+  if(surfaceRootContactEnabled){
    namespace contact=::malemod::surface::root_contact;auto cp=[](V3 p){return contact::Point{p.x,p.y,p.z};};
    V3 first=Unit(pdPosition[1]-root)*segment;pdPosition[1]=root+first;
    const double drive=rootDriveAngle*3.1415926535/180.;
    const auto state=contact::FromJoint(cp(root),cp(pdPosition[1]),cp(pdVelocity[1]),drive+shaftSpring.pitch);
-   shaftSpring.pitch=float(state.pitch-drive);shaftSpring.yaw=float(state.yaw);
-   shaftSpring.pitchVelocity=float(state.pitchVelocity);shaftSpring.yawVelocity=float(state.yawVelocity);
-  }""")
+   const auto relative=contact::Relative(state,{drive,imposedYaw,rootDriveVelocity*3.1415926535/180.,(imposedYaw-surfaceClinicalLateralYaw)/dt});
+   shaftSpring.pitch=float(relative.pitch);shaftSpring.yaw=float(relative.yaw);
+   shaftSpring.pitchVelocity=float(relative.pitchVelocity);shaftSpring.yawVelocity=float(relative.yawVelocity);
+  }
+  surfaceClinicalLateralYaw=imposedYaw;""")
   old='V3 acceleration{0.f,side*86.f*response,gait*86.f*response-gravity};float drag=i<pdBody0?shaftDrag:bodyDrag;'
   new='''V3 acceleration{0.f,side*86.f*response,gait*86.f*response-gravity};
   if(surfaceGarmentEnabled&&!surfaceGarmentContactReaction){auto a=i<pdBody0?surfaceGarmentShaft:surfaceGarmentLobes[i-pdBody0];auto bounded=::malemod::surface::BoundGarmentAcceleration({a.x,a.y,a.z},gravity);acceleration=acceleration+V3{bounded.x,bounded.y,bounded.z};}

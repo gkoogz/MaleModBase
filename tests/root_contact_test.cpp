@@ -16,6 +16,9 @@ int main(){
  }
  // Effective point inverse mass follows J M^-1 J^T: tangent Jacobian length.
  if(PointInverseMass(4,2)!=8||PointInverseMass(2,2)!=2)return 2;
+ State suspended{.2,-.3,.4,-.5},drive{1.3,.1,2.1,-.8};
+ auto relative=Relative({suspended.pitch+drive.pitch,suspended.yaw+drive.yaw,suspended.pitchVelocity+drive.pitchVelocity,suspended.yawVelocity+drive.yawVelocity},drive);
+ if(std::abs(relative.pitch-suspended.pitch)>1e-12||std::abs(relative.yaw-suspended.yaw)>1e-12||std::abs(relative.pitchVelocity-suspended.pitchVelocity)>1e-12||std::abs(relative.yawVelocity-suspended.yawVelocity)>1e-12)return 6;
  bool rejected=false;try{FromJoint(root,root,{},0);}catch(const std::invalid_argument&){rejected=true;}if(!rejected)return 3;
  rejected=false;try{PointInverseMass(0,2);}catch(const std::invalid_argument&){rejected=true;}if(!rejected)return 4;
  rejected=false;try{FromJoint(root,{9,0,85},{},std::numeric_limits<double>::quiet_NaN());}catch(const std::invalid_argument&){rejected=true;}if(!rejected)return 5;

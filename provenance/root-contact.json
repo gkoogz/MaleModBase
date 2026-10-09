@@ -6,7 +6,7 @@
   "sourceFiles": [
     {
       "path": "include/malemod/surface/root_contact.hpp",
-      "sha256": "528214c7b6e15b28df7de47b3e414c0204043cd42c464a5bd2f553185bd5a44c"
+      "sha256": "9f21afa10fab48c74c5b30545fe52e4306034828d75ce35a5d566a2df67f057a"
     },
     {
       "path": "include/malemod/surface/runtime.hpp",
@@ -22,34 +22,42 @@
     },
     {
       "path": "tools/extract_surface_runtime.py",
-      "sha256": "5222b0919f67e6455cd5df1a9a3e58777213aded18981e8b45605f15695b63ed"
+      "sha256": "b03eb184405a78257a1d21826c9a5be0670dc23cfc5cc7d906ead30b05904660"
     },
     {
       "path": "tools/verify_root_contact.py",
       "sha256": "504818f7817a317aa70f1a455881fe83154bf1f22a7cbd9e1243b85e876828da"
     },
     {
+      "path": "tools/verify_root_source.py",
+      "sha256": "d4fc2f02d4d06bb1334477054bb476f7591bf288c9c28f824eeb641df8c41e30"
+    },
+    {
       "path": "tests/root_contact_test.cpp",
-      "sha256": "9233bbe48195899be6b648edfc2954fa0caac35938866a216c5eb571e206a744"
+      "sha256": "d73f877f181e9ba6f80df886c0b84879144c75fc96fba5e472617578e5ad59c8"
     },
     {
       "path": "tests/surface_wire_test.cpp",
       "sha256": "f22688ef5601d284a737277a3c541c7ab6a1bac28968cae44d595cdb26910381"
     },
     {
+      "path": "tests/surface_root_clinical_test.cpp",
+      "sha256": "71d2fe48c41d7ccbe38a498cba76c22f0ae95f00f4da0762ec6e49f3fac55f12"
+    },
+    {
       "path": "CMakeLists.txt",
-      "sha256": "43ec09525e60ebe12ef87e0421dba88cc521777886d5827eca6047a96b88e124"
+      "sha256": "41a2d091a1b3e0be802fb7e030d9000852a7ae270734f8d0e202de0bce51f5a0"
     },
     {
       "path": "docs/ROOT-CONTACT.md",
-      "sha256": "52f564bdd5f8c6a9de260b891f720aafcc1cb8e41fa8622332dae15e0d1a2127"
+      "sha256": "4b587efe6c967ae3e5e5481767be388fab8a12945d55aa69f598b3777dd3f7e2"
     }
   ],
-  "processKernelSHA256": "f866c5acd90f76e4815a08ba0f899bc472469e38b36cc2f6ffaf8b0df5ee67f9",
-  "processLibrarySHA256": "389d188f24d7337044fa0bd69c67faadaef874a81bfb707d2ec7a6f8ea9a7032",
+  "processKernelSHA256": "635caeb0be8d4fbc03bd63eaf708f8d9751e62d0a0253108d9048ccba8e582ba",
+  "processLibrarySHA256": "008231b110d39cbc1e7a98120bac043141fb27d8b2061b404ffd85293805186a",
   "disabledReplay": {
-    "path": "TheWitcher3MaleMod/build/witcher-parity-root-joint-sealed-disabled-proof.json",
-    "sha256": "4791a7d810cc354a0632c2dba5854380ac80f0f0019d6783da1f1e3df8cfc06a",
+    "path": "TheWitcher3MaleMod/build/witcher-parity-root-relative-disabled-proof.json",
+    "sha256": "6bcfec45a43f83b0d2116b2e737b3c08979f4476f299d980a0f365adb14eda19",
     "cases": 46,
     "completeNativeBuffers": 138,
     "byteIdentical": true,
@@ -59,5 +67,21 @@
   "observedCandidateGameplay": false,
   "fullAttachmentGate": false,
   "nativeAdoptionAccepted": false,
-  "installed": false
+  "installed": false,
+  "sourceConsumptionReplay": {
+    "path": "build/root-contact-source-consumption-current/proof.json",
+    "sha256": "0ce1e3f0a00538e9236acf47b0d5053bcb1440f6252afe35fa1066f1afb5c362",
+    "cases": 70,
+    "completeArtifacts": 560,
+    "reactionModes": 18,
+    "byteIdentical": true,
+    "rootContactsEnabled": false
+  },
+  "enabledClinicalRootRegression": {
+    "movingRestPitch": true,
+    "nonzeroClinicalYaw": true,
+    "inactiveTransition": true,
+    "maximumGuideDirectionError": 2.98023224e-07,
+    "nativeGameplay": false
+  }
 }

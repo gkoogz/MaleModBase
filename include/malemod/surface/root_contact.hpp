@@ -11,6 +11,12 @@ inline Point Scale(Point a,double s){for(auto& x:a)x*=s;return a;}
 inline double Dot(Point a,Point b){double d=0;for(unsigned k=0;k<3;k++)d+=a[k]*b[k];return d;}
 inline void Finite(Point p){for(auto x:p)if(!std::isfinite(x))throw std::invalid_argument("Nonfinite angular root joint");}
 struct State {double pitch=0,yaw=0,pitchVelocity=0,yawVelocity=0;};
+// A driven orientation and its rate belong to the imposed command, not to the
+// contact suspension. Recover only the relative state to prevent double drive.
+inline State Relative(State total,State drive){
+ for(double v:{total.pitch,total.yaw,total.pitchVelocity,total.yawVelocity,drive.pitch,drive.yaw,drive.pitchVelocity,drive.yawVelocity})if(!std::isfinite(v))throw std::invalid_argument("Nonfinite angular root drive");
+ return {total.pitch-drive.pitch,total.yaw-drive.yaw,total.pitchVelocity-drive.pitchVelocity,total.yawVelocity-drive.yawVelocity};
+}
 // Source-calibrated pitch/yaw convention: forward X, side Y, up Z.
 // This is a numerical frame, never an inferred game skeleton or game unit.
 inline Point Direction(const State& s){return {std::cos(s.pitch)*std::cos(s.yaw),std::sin(s.yaw),-std::sin(s.pitch)*std::cos(s.yaw)};}
