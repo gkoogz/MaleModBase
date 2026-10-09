@@ -107,6 +107,15 @@ XY radial frame used by `wrap_body_surface`, with adapter-supplied units.
 Wolverine adopts it through its exact Base pin and a measured anterior armhole
 mask; every other spoke supplies its own body, cut mask and native verification.
 
+`garment_shell.boundary_band` selects a strip by graph distance from measured
+true boundary edges. It welds coincident UV aliases only for distance/topology
+and returns face barycentric donors for every clipped corner. Adapters can
+thicken that strip with `thin_shell` to form a folded hem using original fabric,
+UVs and interpolated skin. Wolverine uses its measured lower tank boundary;
+other spokes select their own cuts and widths through their pinned Base version.
+The strip width is a graph-distance approximation, not an exact geodesic or a
+runtime cloth simulation.
+
 The SDK-free `physics/bounded_hinge.hpp` adds damped angular secondary motion.
 It integrates constant measured torque analytically, limits travel, dissipates
 outward stop velocity and resets invalid samples/stalls. The adapter advances

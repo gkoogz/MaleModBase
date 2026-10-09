@@ -1,9 +1,23 @@
 import unittest
 import numpy as np
-from malemod_base.garment_shell import thin_shell,clip_scalar_band
+from malemod_base.garment_shell import thin_shell,clip_scalar_band,boundary_band
 
 
 class ShellTests(unittest.TestCase):
+    def test_hem_band_follows_selected_cut_and_keeps_interpolation_lineage(self):
+        p=np.array([[0,0,0],[2,0,0],[2,3,0],[0,0,0],[2,3,0],[0,3,0]],float)
+        r=boundary_band(p,[[0,1,2],[3,4,5]],p[:,1]<.1,.5)
+        self.assertGreater(len(r['triangles']),0)
+        self.assertTrue(np.all(r['positions'][:,1]<=.5+1e-10))
+        np.testing.assert_allclose(r['positions'],np.einsum('ij,ijk->ik',r['weights'],p[r['donors']]))
+        shell=thin_shell(r['positions'],r['triangles'],np.tile([0,0,1.],(len(r['positions']),1)),.12,offset=.16)
+        self.assertGreater(shell['boundary_edges'],0)
+        np.testing.assert_allclose(shell['positions'][:len(r['positions']),2],.16)
+    def test_boundary_band_does_not_treat_an_interior_diagonal_as_a_hem(self):
+        p=np.array([[0,0,0],[1,0,0],[1,1,0],[0,1,0]],float)
+        r=boundary_band(p,[[0,1,2],[0,2,3]],[1,0,1,0],.2)
+        self.assertEqual(len(r['triangles']),0)
+        with self.assertRaises(ValueError):boundary_band(p,[[0,1,2]],[1]*4,0)
     def test_two_cuts_preserve_corner_lineage(self):
         p=np.array([[0,0,0],[2,0,0],[0,2,0]],float)
         r=clip_scalar_band(p,[[0,1,2]],p[:,0]-.3,1.1-p[:,0])

@@ -2,9 +2,9 @@
   "schema": "malemod.stock-garment-volume/1",
   "sourceSpokeCommit": "4f6f137b94484ca70e20009f1307f384bd34cb25",
   "modules": {
-    "malemod_base/garment_shell.py": "fe788e8437003193edad96cd828460a431eb9f4700f4bf68dc5f41b7beb0e711",
+    "malemod_base/garment_shell.py": "df1c5ae0be323fee41548e5f4be0ada6d9e10190a48650e6841d5d45ae993f01",
     "malemod_base/torso_garment_fit.py": "7e06788e21f7a20d4152300b99b6ce47696a1a5a80874cfcb7339dc81e3b5c52",
-    "tests/test_garment_shell.py": "625b8975bd6e6df0d19153a66ab3805a9b183f650f6a9ebbd6834d18a8268bae",
+    "tests/test_garment_shell.py": "46a33e1458a285a237f00461bd4359a1fddc6eccf1215592b6b3c80708217a51",
     "tests/test_torso_garment_fit.py": "0274d628c3d6a8afdee050b81aee99954a8a6e27b676873ceaf9162968a02637",
     "malemod_base/radial_garment_coverage.py": "53389bf782db958974168fd289206aa73c69b09b17f8cde1efb35fb5356ee103",
     "tests/test_radial_garment_coverage.py": "2c491ef743d3eb05a2dfa6264cd2fa16c1e69f37eb3a9134b1b1a899e8b1197c"

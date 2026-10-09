@@ -4,6 +4,41 @@ Adapters supply measured thickness and outward normals in their own rest units.
 Coincident UV aliases weld for boundary detection, never for texture interpolation.
 """
 import numpy as np
+import heapq
+
+
+def boundary_band(positions, triangles, enabled, width):
+    """A measured-width strip along selected true cuts, with face barycentrics.
+
+    Distance travels along the alias-welded garment graph. The strip is clipped
+    within original faces, so its new corners retain exact texture/skin donors.
+    Adapters select their measured hem/cut and supply width in source units.
+    """
+    p=np.asarray(positions,float);t=np.asarray(triangles,int);enabled=np.asarray(enabled,bool)
+    if p.ndim!=2 or p.shape[1]!=3 or not np.isfinite(p).all() or enabled.shape!=(len(p),):
+        raise ValueError('Invalid boundary band positions or mask')
+    if t.ndim!=2 or t.shape[1]!=3 or not len(t) or t.min()<0 or t.max()>=len(p):
+        raise ValueError('Invalid boundary band topology')
+    if not np.isfinite(width) or width<=0:raise ValueError('Positive boundary band width required')
+    _,alias=np.unique(np.round(p,6),axis=0,return_inverse=True)
+    nodes=np.array([p[alias==i].mean(0) for i in range(alias.max()+1)])
+    adjacent=[{} for _ in nodes];edges={}
+    selected=np.array([np.any(enabled[alias==i]) for i in range(len(nodes))])
+    for face in alias[t]:
+        for a,b in zip(face,np.roll(face,-1)):
+            a,b=int(a),int(b);key=tuple(sorted((a,b)));edges[key]=edges.get(key,0)+1
+            distance=float(np.linalg.norm(nodes[a]-nodes[b]));adjacent[a][b]=distance;adjacent[b][a]=distance
+    seeds={i for (a,b),count in edges.items() if count==1 and selected[a] and selected[b] for i in (a,b)}
+    distance=np.full(len(nodes),np.inf);queue=[]
+    for i in seeds:distance[i]=0;heapq.heappush(queue,(0.,i))
+    while queue:
+        value,i=heapq.heappop(queue)
+        if value!=distance[i]:continue
+        for j,length in adjacent[i].items():
+            candidate=value+length
+            if candidate<distance[j]:distance[j]=candidate;heapq.heappush(queue,(candidate,j))
+    distance[~np.isfinite(distance)]=width*2
+    return clip_scalar_band(p,t,np.ones(len(p)),width-distance[alias])
 
 
 def clip_scalar_band(positions, triangles, lower_distance, upper_distance):
