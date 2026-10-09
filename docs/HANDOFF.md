@@ -1,3 +1,27 @@
+## October 9 - user-requested installation of revised stock jeans
+
+The user requested install after reviewing the narrower revision5 fly, original
+open belt/buckle/textures and restrained flap/belt physics. Installed the clean
+production runtime, with the full attachment gate explicitly still FALSE.
+This selected development update does not mark it accepted or publish a release.
+
+Runtime source: 4f6f137b94484ca70e20009f1307f384bd34cb25.
+Base pin: 8553909f0b9b4adc9712747f791622aa82173682.
+Installed: C:\Games\X-Men Origins Wolverine\Binaries\d3d9.dll.
+DLL SHA256: 7095f63042e60295b7316b7a3fe457956fafefbe4f8e88b24dee3df51145cee3.
+Exact prior DLL: 483a555e6dba3d87ee4be33cf063a083090fe50c22d0eb064fdfd98699922f69.
+Rollback: C:\Games\X-Men Origins Wolverine\WGame\ModBackups\Meridian-development-20261009-083934-46918e\Restore.ps1.
+The previous chain to accepted baseline4f4900a5 was independently verified.
+Installer preflight checked the native sampled20-case receipt and65 reviewed
+captures, source/pin identities, production-only build flags, cooked packages
+and managed materials. Atomic replacement, installed checksum, rollback source
+and 397 settings/save/audio files passed verification. Game was closed.
+Retail gameplay after this install has not been observed; the prior sealed
+native run remains the recorded motion/garment evidence. manifest.json and
+published Beta2 remain unchanged. Restore development updates before using the
+Beta2 uninstaller. All backups are retained. No source push or release requested.
+Private installation receipt: Base build/jeans-motion-20261009/installation.json.
+
 ## October 9 - tighter open jeans and restrained secondary motion
 
 User requested bringing the open fly flaps inward, keeping the original belt

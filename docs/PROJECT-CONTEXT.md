@@ -1,3 +1,10 @@
+## October 9 selected development installation
+
+The user subsequently requested installing the reviewed revised jeans candidate.
+Use the clean production DLL and preserve the accepted baseline/rollback chain,
+settings, saves and audio. This is an explicit development installation while
+full attachment acceptance remains incomplete; see HANDOFF for verified identity.
+
 ## October 9 open-jeans refinement
 
 The user requested a smaller, neater open fly closer to the body, the original
