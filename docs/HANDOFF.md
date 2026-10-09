@@ -1,3 +1,69 @@
+## October 9 - tank shading/collar and full-waist garment volume candidate
+
+The user reported black anatomy in WStart, collar fit artifacts and requested
+shallow fly/belt depth with the original belt wrapping the whole waist. Shared
+garment shells, localized chest expansion, bounded stock-cut rounding and
+conservative cut visibility live in Base; Wolverine owns measured licensed
+geometry, original maps, observed skin palettes and native rendering. All other
+spokes adopt those helpers through measured inputs and pins; Witcher is paused.
+
+Runtime source: ed2ebf1013e17fe91b18a8c1d1a6d0a4403713d1.
+Base pin: 8f45949f146f1ce866fc8ac35682be3f76ef585a.
+Clean production DLL SHA256: 2d3fc98213fd4541d8a7ed945d4f1eef4f017c83f486892027f3b74e77b0bb50.
+Sealed native derivative SHA256: 6d56e44131c718f5551fb1fb1ee926afb4654d6b3cd63e4631810d7ac93b5216.
+No unrelated dirty worker/Base development is included in either build.
+
+Tank12 retains original cut corners, folds, UV aliases and source skin/pair
+lineage, with bounded refinement of97 new cut midpoints and posed normals.
+Its localized field preserves source Y/Z; no source face is overturned.
+The corner-only body mask was rejected after a3840 native close-up showed
+black neck triangles. The replacement checks edge/interior witnesses and
+protects a2.5 measured-unit band around welded cuts. This retains skin near
+the neckline without changing body/anatomy positions or topology. Empty body
+mask sections are explicitly represented; the first empty-array build failed
+compilation and was corrected before native qualification.
+
+The black WStart anatomy had a separate native state cause: deferred dog tags
+left upper bone/LocalToWorld constants holding tag transforms. Explicit full
+256-vertex/224-pixel constant restoration fixes it. Native depth/cull/light
+behavior and original skin maps remain; diagnostic-only probes were removed.
+
+Jeans6 adds shallow0.12-unit fly walls and0.22-unit leather depth/0.24 outset.
+The original leather UV chart wraps the waist, splitting at the open fly.
+Original buckle dimensions and donor/skin/UV lineage are retained. Source UV
+error stays below1e-9;2880 angular samples cover the closed belt. The prior
+neater155-degree fly/nine-unit half-width and bounded3-degree flap/2-degree
+open belt-end motion are retained.81 numerical combinations passed with zero
+pin displacement and no face reversal. Original eight stock maps are unchanged.
+
+Clean pinned Base verification passed516 imported files/185 source arrays;
+27 Python garment/cut/binding regressions and five x86 numerical tests passed.
+Native title run20261009-101631-1f714d captured17 cases. Owned grey run
+20261009-101817-cad625 captured15 wardrobe,20 attachment,9 size/fit,16 walking
+and5 front/side/rear/oblique close-ups at1920x1440. All82 explicit samples were
+reviewed within their recorded scope. Seven scoped motion samples stayed
+within travel limits. Zero reported draw rejection/state mismatch. Both runs
+exited0, restored owned audio with HRESULT0, and used no host input/focus.
+The revised collar has continuous exposed neck skin in the reviewed close-ups;
+native rear views show the original belt continuing across the waist.
+
+Full attachment gate remains FALSE. Campaign transitions, every body resource
+and LOD, and every coupled shape/rest-angle/motion case are untested. Extreme
+legacy pouch faceting, full collision and stock UE3 damage/shadow parity remain
+uncertified. Sampled capture completion is not visual acceptance of the full
+invariant. No new runtime is installed or published. Retail remains exactly
+7095f63042e60295b7316b7a3fe457956fafefbe4f8e88b24dee3df51145cee3.
+Retained exact rollback: C:/Games/X-Men Origins Wolverine/WGame/ModBackups/Meridian-development-20261009-083934-46918e/Restore.ps1.
+Production installer ValidateOnly passed source/pin/material/native/baseline
+checks without changing files; explicit development selection is still required
+if proceeding before full acceptance. All accepted backups are retained.
+
+Private evidence/review: Base build/wardrobe-volume-20261009/
+{native-evidence.json,review.html,review-assets.json,native-final4/provenance.json}.
+Canonical production build: Wolverine build/wardrobe-volume-final4.
+Source/receipts are committed locally; licensed geometry exports/pixel assets,
+capture banks, binaries, save/settings/audio and review output stay outside Git.
+
 ## October 9 - user-requested installation of revised stock jeans
 
 The user requested install after reviewing the narrower revision5 fly, original

@@ -1,3 +1,15 @@
+## October 9 - continue repairing the installed wardrobe appearance
+
+The user reported black anatomy in the native title tank and collar fit
+artifacts, then requested slightly three-dimensional fly flaps and belt,
+wrapping the original belt entirely around the waist. Preserve original maps,
+the original clothing cut, close open flaps and gentle secondary motion.
+Shared shells/fitting/cut-coverage live in Base; measured assets/materials and
+native state restoration belong in the Wolverine spoke. See HANDOFF for the
+exact tested candidate, rejected intermediate neck mask and native evidence.
+The existing installed development build/rollback remains intact; the new
+candidate has not been installed and full attachment acceptance is incomplete.
+
 ## October 9 selected development installation
 
 The user subsequently requested installing the reviewed revised jeans candidate.
