@@ -1,3 +1,37 @@
+## October 9 - native Witcher menu verified; root velocity repairs still rejected
+
+Witcher adapter ccb268d (evidence follow-up246fa98) fixes discovery of the
+observed hidden W2ViewportClass in the owned sealed room. Only the validated,
+default-off development probe may use that hidden same-process parent; normal
+production keeps the visible-window requirement. The SDK fixture passed720p,
+1440p and production-stub rejection. Native isolated DLLdb52f317 then attached
+the actual menu and acknowledged16 commands: expand/collapse, wrap, arrows,
+Shift, reset, closed-input rejection and four client captures. The expanded
+native panel was reviewed. Room checkpoints200/201 rendered both body resources
+and49,884 vertices; the final rear-view room image was reviewed independently.
+Clinical/garment actions, physical keyboard routing and focus transitions were
+not exercised. Geometry worker/bindings stayBase431e626/wire6; only the explicit
+shared menu header came from clean4d5ef52. No unaccepted numerical repin.
+
+PID4180/creation134360616148804702 closed0, restored one muted audio session,
+verified24 preserved saves/settings and37 original installed files. Private
+proof: D:/MaleModBuilds/witcher-menu-parent-fixed-20261009/native-menu-proof.json.
+Retail remains unchanged. Menu success does not certify attachment, garments,
+LODs, campaign or performance; the full attachment gate remainsFALSE.
+
+Dense Wolverine contact instrumentation isolates the112.653rad/s burst to
+post-position contact velocity: a pressure warm-start release at step108
+changes the root pitch rate by135.621rad/s. The separate zero-incremental
+velocity trial preserves disabled exact CSV but isREJECTED:38.432rad/s peak,
+54 reversed-hemisphere steps in the expanded matrix. Private evidence in
+D:/MaleModBuilds/wolverine-root-contact-trace-20261009/contact-proof.json and
+D:/MaleModBuilds/wolverine-root-incremental-velocity-20261009/proof.json. Neither
+private adapter trial is promoted or installed. The delegated Base interleaved
+rod-velocity/growth trial is likewise rejected for worse settling; source-coupled
+implicit velocity consistency remains under development. Public4d5ef52 stays
+clean/defaultOFF. Preserve original laws, actual growth velocity, stock closure,
+seam/UV lineage, accepted runtime and rollback; do not impose arbitrary clamps.
+
 ## October 9 - root motion candidate rejected; menu input repair verified
 
 Wolverine source6c05893/Base389f6c0 clean sealed runtime446739b2 ran in owned
