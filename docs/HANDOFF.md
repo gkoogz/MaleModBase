@@ -1,3 +1,56 @@
+## October 9 - original clothing refit corrected, development candidate
+
+The user rejected the first installed clothing appearance and requested the
+original tank/jeans refitted to the larger chest, including the original belt
+and an open version. Preserve the stock look; procedural cotton/denim is
+superseded. The retail first-attempt DLL remains installed only because the
+mandatory attachment gate is incomplete, not because its appearance is accepted.
+
+Wolverine source:cccde407c62fe3afbf8445891707901e5526f5dc.
+Base pin:d49d42c0d0d93727fb5876c697e152cc559499a6.
+Tank revision9 retains stock cut heights, armholes, folds, source pairs and UV
+aliases using a shared smooth section offset. Revision8 was rejected for its
+jagged native neckline/shoulder folds; its offline comparison found509 faces
+rotated beyond90 degrees. Revision9 has zero, maximum25.7941 degrees. The
+exporter now refuses those source-face reversals. Outward envelope support is
+bounded by its normal-angle contract; full grazing-face clearance is not certified.
+
+Jeans revision4 retains the stock mesh, boots, leather belt and separate buckle.
+The open fly keeps the buckle with one proper rigid rotation, preserving its
+shape instead of shearing it with the cloth envelope. All8 original licensed
+DDS maps are hash-validated and embedded locally; no stock pixels enter Git.
+Shared fitting/accessory math lives in Base. Wolverine owns observed assets,
+rigs, GPU resources and lighting. Witcher remains paused; future spokes adopt
+these shared functions through tested pins and measured character inputs.
+
+Clean production build:canonical build/stockfit-final9, SHA256
+f7d78be9abc65ac1f46a8e8104fe68102e5b8908838fafc3ad882fb7965f03b3.
+It excludes unrelated dirty worker code and private factory/input/origin hooks.
+Clean native derivative SHA256:
+f401894adc42ab8158607e6fab5f2aed2074de77bdc8ea0429a852f6a5fc0350.
+18 Python regressions, clean pinned provenance516files/185arrays,45-file source
+room recipe and byte-identical tank/jeans recipe round-trips pass.
+
+Owned run20261009-074328-07fea3 reviewed15 wardrobe,20 attachment and9 jeans-size
+captures. The geometry overlay's runtime inputs were compared against the final
+clean derivative: no runtime-source/header differences. Exact final derivative
+run20261009-075303-179e2f reached native gameplay and reviewed closed/open front
+captures. Both children exited0 and restored scoped audio with HRESULT0. No
+reported garment draw failure or GPU state mismatch; host focus/input untouched.
+Private receipts and embedded8-image review:Base build/stockfit-20261009.
+The46 reviewed images include the two final-build captures.
+
+Full attachment gate remains FALSE. Accessory fan distortion occurs in some
+combined-min/width-max poses; existing extreme pouch faceting remains. The jump
+capture cuts off part of the upper body. Block remains standing, not a certified
+dedicated crouch. All coupled resources/LODs/campaign transitions, grazing cloth
+clearance, native damage/shadow parity and human/FPS acceptance remain incomplete.
+No retail install or release. Installed retail SHA256 remains
+483a555e6dba3d87ee4be33cf063a083090fe50c22d0eb064fdfd98699922f69.
+Its exact035023-48840b rollback and accepted baseline chain remain retained.
+The source changes are local commits, not pushed. Unrelated Base and Wolverine
+worker development remains dirty and excluded from the clean builds.
+
 ## October 9 - independent tank top and closed/open jeans installed
 
 F6 now exposes Top (Naked / Tank Top) independently of Bottom (Naked /

@@ -1,3 +1,12 @@
+## October 9 - preserve original clothing appearance
+
+The user rejected the first Wolverine tank/jeans refit and its discarded stock
+texture detail. Redo the larger-chest fit while retaining the original cuts,
+folds, UVs and textures where possible. Keep the stock jeans belt/buckle and
+provide an open version. Shared fitting belongs in Base; each spoke owns its
+licensed materials, observed assets, native rig and renderer. Native appearance
+and the mandatory attachment gate remain distinct from recipe/build success.
+
 ## October 9 - independent wardrobe intent and implemented Wolverine prototype
 
 User requested a tank top refitted to the enlarged chest, independent Naked /
