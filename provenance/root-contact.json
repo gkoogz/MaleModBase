@@ -6,7 +6,7 @@
   "sourceFiles": [
     {
       "path": "include/malemod/surface/root_contact.hpp",
-      "sha256": "9f21afa10fab48c74c5b30545fe52e4306034828d75ce35a5d566a2df67f057a"
+      "sha256": "861194d0e9af2f4f317cd84a7306295b63657334928e8db6a583c44229b26300"
     },
     {
       "path": "include/malemod/surface/runtime.hpp",
@@ -46,11 +46,15 @@
     },
     {
       "path": "CMakeLists.txt",
-      "sha256": "41a2d091a1b3e0be802fb7e030d9000852a7ae270734f8d0e202de0bce51f5a0"
+      "sha256": "d90d1de8b44fe391ea530a91e9b25e1f06756b0977aa99c8434a1d021943368c"
     },
     {
       "path": "docs/ROOT-CONTACT.md",
       "sha256": "4b587efe6c967ae3e5e5481767be388fab8a12945d55aa69f598b3777dd3f7e2"
+    },
+    {
+      "path": "tests/root_contact_windows_test.cpp",
+      "sha256": "c918a4c03feae243ea88c77e26cbafd6b2998debf52e2a489c72eb7a7f4bc9b1"
     }
   ],
   "processKernelSHA256": "635caeb0be8d4fbc03bd63eaf708f8d9751e62d0a0253108d9048ccba8e582ba",
@@ -83,5 +87,14 @@
     "inactiveTransition": true,
     "maximumGuideDirectionError": 2.98023224e-07,
     "nativeGameplay": false
+  },
+  "macroCompatibility": {
+    "sourceAlgorithmByteIdenticalAfterMaxCallParentheses": true,
+    "priorHeaderSHA256": "9f21afa10fab48c74c5b30545fe52e4306034828d75ce35a5d566a2df67f057a",
+    "windowsHeaderBeforeHelperCompilePassed": true,
+    "numericalWorkerEvidenceCommit": "e42147c75d854a8666bc40d0ccd71b29b0ebd1a8",
+    "numericalWorkerEvidenceInherited": true,
+    "cleanSourceConsumptionReplay": "build/root-contact-source-consumption-e42147c/proof.json",
+    "cleanSourceConsumptionReplaySHA256": "cd12a853050026d78213bc56cc17bee7b964c2ad0042cfca21aa8dfcd74580dd"
   }
 }

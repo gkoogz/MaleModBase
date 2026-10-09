@@ -36,6 +36,6 @@ inline State FromJoint(Point root,Point link,Point velocity,double previousPitch
  while(out.pitch-previousPitch>pi)out.pitch-=2*pi;while(out.pitch-previousPitch < -pi)out.pitch+=2*pi;
  const double sp=std::sin(out.pitch),cp=std::cos(out.pitch),sy=std::sin(out.yaw),cy=std::cos(out.yaw);
  const Point dp={-sp*cy,0,-cp*cy},dy={-cp*sy,cy,sp*sy};
- out.pitchVelocity=Dot(velocity,dp)/(length*std::max(1e-10,Dot(dp,dp)));out.yawVelocity=Dot(velocity,dy)/length;return out;
+ out.pitchVelocity=Dot(velocity,dp)/(length*(std::max)(1e-10,Dot(dp,dp)));out.yawVelocity=Dot(velocity,dy)/length;return out;
 }
 }
