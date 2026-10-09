@@ -31,3 +31,22 @@ licensed materials; they do not copy Wolverine's coordinates, bones or shaders.
 
 Regression command: `python -m unittest tests.test_torso_garment_fit
 tests.test_fly_panels tests.test_radial_garment_coverage`.
+
+The SDK-free `physics/bounded_hinge.hpp` adds damped angular secondary motion.
+It integrates constant measured torque analytically, limits travel, dissipates
+outward stop velocity and resets invalid samples/stalls. The adapter advances
+once per frame, measures its own source-space motion, and resets on wardrobe
+switches, teleports and device loss. It owns gravity-axis and gain calibration.
+`fly_motion_bindings` preserves duplicate hinge pins with continuous response;
+a measured upper band gives original belt ends their separate small response.
+This bounded accessory model does not claim general cloth/body collision.
+
+Wolverine's adoption keeps the original stock jeans/belt UVs and rigid buckle,
+reduces the fly half-width from 14 to 9 measured source units, and folds it back
+from 145 to 155 degrees. Denim travel is at most 3 degrees; belt travel is at
+most 2 degrees. Native normals are rebuilt with position aliases while stock
+UV aliases remain distinct. The closed variant is unchanged. Other spokes
+adopt this header and author measured hinges/bands through their own Base pin;
+Witcher remains paused. Numerical tests: `bounded_hinge_test`; binding tests:
+`tests.test_fly_panels`. Every native adoption still needs the full attachment
+regression and its own material/collision/motion review before installation.

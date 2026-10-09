@@ -1,8 +1,15 @@
 import unittest
 import numpy as np
-from malemod_base.fly_panels import folded_fly,fold_rigid_attachment
+from malemod_base.fly_panels import folded_fly,fold_rigid_attachment,fly_motion_bindings
 
 class FlyPanels(unittest.TestCase):
+    def test_motion_seam_aliases_and_belt_band(self):
+        p=np.array([[10,5,10],[10,5,10],[10,0,10],[10,0,5],[10,0,10]],float)
+        r=fly_motion_bindings(p,[1,1,1,-1,0],lower=0,upper=10,half_width=5,belt_lower=7,belt_upper=9)
+        np.testing.assert_array_equal(r['fly'],[0,0,1,1,0])
+        np.testing.assert_array_equal(r['belt'],[0,0,1,0,0])
+        np.testing.assert_array_equal(r['hinges'][0],r['hinges'][1])
+        with self.assertRaises(ValueError):fly_motion_bindings(p,[1]*5,lower=0,upper=10,half_width=5,belt_lower=9,belt_upper=7)
     def test_rigid_buckle_retains_distances_and_follows_flap_centroid(self):
         p=np.array([[10,-2,9],[11,2,9],[10,-2,11],[11,2,11]],float)
         for side in (-1,1):

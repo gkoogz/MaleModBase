@@ -7,6 +7,26 @@ Fold hinges remain attached. No game, graphics, skeleton or units assumptions.
 import numpy as np
 
 
+def fly_motion_bindings(rest, panels, *, lower, upper, half_width,
+                        belt_lower, belt_upper):
+    """Continuous pinned-seam weights for a fly and its original upper band.
+
+    Inputs are reconstructed pre-fold source positions and authored panel sides.
+    Belt heights are measured by the adapter, never inferred from a skeleton.
+    The shared outer hinge has zero response, including duplicate cut vertices.
+    """
+    p=np.asarray(rest,dtype=float);side=np.asarray(panels,dtype=int)
+    if p.ndim!=2 or p.shape[1]!=3 or len(side)!=len(p) or not np.isfinite(p).all() or not np.isin(side,[-1,0,1]).all() or upper<=lower or half_width<=0 or belt_upper<=belt_lower:
+        raise ValueError('Invalid motion binding frame')
+    width=half_width*np.maximum(0,(p[:,2]-lower)/(upper-lower))
+    hinge=p.copy();hinge[:,1]=side*width
+    free=np.clip(1-np.abs(p[:,1])/np.maximum(width,1e-12),0,1)
+    free=free*free*(3-2*free);free[side==0]=0
+    band=np.clip((p[:,2]-belt_lower)/(belt_upper-belt_lower),0,1)
+    band=band*band*(3-2*band)
+    return dict(hinges=hinge,fly=free,belt=free*band,sides=side)
+
+
 def fold_rigid_attachment(positions, *, front_axis, side_axis, height_axis,
                           lower, upper, half_width, angle, side=1):
     """Carry an accessory with a flap without shearing its original shape.
