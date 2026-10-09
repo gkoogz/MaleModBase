@@ -16,6 +16,13 @@ int main(){try{
   auto cover=ConvexCover({sphere,shifted},{0,0,1});
   for(auto plane:cover){Require(plane.offset>=sphere.support(plane.normal),"Common envelope cuts first support");Require(plane.offset>=shifted.support(plane.normal),"Common envelope cuts second support");}
  }
+ // A tip folded back through the boundary must not reverse or collapse the
+ // display chart. Its boundary and collision primitives remain unchanged.
+ {std::vector<Vec> p={{0,-2,-2},{0,2,-2},{0,2,2},{0,-2,2},{-5,0,0},{2,0,0},{3,1,1},{3,-1,-1}};auto before=p;
+  auto axis=PrepareEnvelopePole(p,4,4,5,8);
+  Require(axis[0]>.999f&&p[4][0]>3,"Folded tip collapsed the sewn-boundary chart");
+  for(unsigned i:{0u,1u,2u,3u,5u,6u,7u})Require(p[i]==before[i],"Envelope pole moved boundary or primitive");
+ }
  auto ring=FitCircularSection({2,0,0},{0,2,0},{-2,0,0},{0,-2,0});Vec dome[8*32+2];AlignDomeRim(ring,{0,0,3});WriteDome(dome,ring,{0,0,3},8,32);
  for(unsigned i=0;i<32;i++)Require(std::abs(Dot(dome[i],dome[i])-4)<1e-5f,"Dome rim lost its exact circle");Require(dome[256]==Vec{0,0,3},"Dome apex moved");
  Vec lobe[9*32+2];WriteOvoid(lobe,{0,0,3},{0,0,-3},{2,0,0},{-2,0,0},{0,1,0},{0,-1,0},8,32);

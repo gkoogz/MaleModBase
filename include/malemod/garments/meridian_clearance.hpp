@@ -58,6 +58,19 @@ inline Vec PreparePole(std::vector<Vec>& points,unsigned poleIndex,unsigned coll
  for(unsigned i=collisionFirst;i<collisionEnd;i++)advance=(std::max)(advance,Dot(Sub(points[i],points[poleIndex]),axis));
  points[poleIndex]=Add(points[poleIndex],Mul(axis,advance+thickness));return axis;
 }
+// A deeply folded tip cannot define a stable polar chart for a sewn outline.
+// Use the current boundary's area normal, oriented toward the contents, then
+// put only the cloth pole beyond the current complete collision support.
+inline Vec PrepareEnvelopePole(std::vector<Vec>& points,unsigned columns,unsigned poleIndex,unsigned collisionFirst,unsigned collisionEnd,float thickness=.12f){
+ if(columns<3||columns>points.size()||poleIndex>=points.size()||collisionFirst>=collisionEnd||collisionEnd>points.size()||thickness<0)throw std::runtime_error("Invalid envelope pole inputs");
+ Vec center=AttachmentCentroid(points,columns),area{};
+ for(unsigned i=0;i<columns;i++)area=Add(area,Cross(Sub(points[i],center),Sub(points[(i+1)%columns],center)));
+ Vec axis=Unit(area);float orientation=0,reach=0;
+ for(unsigned i=collisionFirst;i<collisionEnd;i++)orientation+=Dot(Sub(points[i],center),axis);
+ if(orientation<0)axis=Mul(axis,-1);
+ for(unsigned i=collisionFirst;i<collisionEnd;i++)reach=(std::max)(reach,Dot(Sub(points[i],center),axis));
+ points[poleIndex]=Add(center,Mul(axis,reach+thickness));return axis;
+}
 inline void SeedMeridians(std::vector<Vec>& points,unsigned columns,unsigned rows,const float* heightFractions,Vec axis){
  if(!heightFractions||columns<3||rows<2||std::size_t(columns)*rows>=points.size())throw std::runtime_error("Invalid live meridian seed");
  Vec pole=points[columns*rows];axis=Unit(axis);
