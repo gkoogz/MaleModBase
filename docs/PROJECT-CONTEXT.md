@@ -1,3 +1,16 @@
+## October 9 - independent wardrobe intent and implemented Wolverine prototype
+
+User requested a tank top refitted to the enlarged chest, independent Naked /
+Tank Top and bottom selections, and dog tags clearing the fitted shirt. Then
+closed Jeans must hide anatomy; Jeans (open) must retain it with an unzipped fly
+and two folded-back panels. Wolverine implements all eight combinations from
+measured licensed Alkali sections. Fixed shirt/fly geometry follows the current
+body/skeleton; this introduces no extra cloth simulation or cadence reduction.
+Shared fitting/fly/coverage/preference contracts live in Base and are adopted
+through pin45ca775. Native adapters own assets, observed rigs and rendering.
+This is development installation, not full attachment/campaign/LOD acceptance.
+Exact identities and rollback are in the handoff. Witcher remains paused.
+
 ## October 8 - main integration and requested retail development installation
 
 User requested pushing the current work to main and installing in the actual

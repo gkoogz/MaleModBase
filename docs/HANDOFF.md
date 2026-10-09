@@ -1,3 +1,59 @@
+## October 9 - independent tank top and closed/open jeans installed
+
+F6 now exposes Top (Naked / Tank Top) independently of Bottom (Naked /
+Jockstrap / Jeans / Jeans (open)). The measured stock Alkali tank is refitted
+to the enlarged chest and follows current body deformation. Its fitted surface
+also drives rendered dog-tag clearance. Closed jeans render the measured stock
+trousers/footwear and hide anatomy and clinical-fluid rendering; simulation
+continues. Open jeans retain anatomy and have two authored outward fly folds.
+Denim/cotton use native light inputs and restore GPU state. Fixed folds follow
+the existing skeleton without another cloth simulation or reduced cadence.
+
+Runtime source:027628d3acabd98a973a9ac8c47594f03b736581.
+Exact Base pin:45ca775a2a4fe2e748ec98966727c1702864928b.
+Installed DLL SHA256:
+483a555e6dba3d87ee4be33cf063a083090fe50c22d0eb064fdfd98699922f69.
+Destination:C:/Games/X-Men Origins Wolverine/Binaries/d3d9.dll.
+Clean committed build:build/costumes-stable. Private factory/input/origin and
+unrelated dirty worker/Base work were excluded. Manifest remains Beta2; this
+is the user's requested development update, not a published release.
+Actual rollback to C8D61924 was verified, then the update was reinstalled.
+Final exact rollback:
+C:/Games/X-Men Origins Wolverine/WGame/ModBackups/Meridian-development-20261009-035023-48840b/Restore.ps1.
+Restore validation passed;397 save/settings/audio files were preserved. The
+prior development/accepted baseline chain remains intact. Restore development
+updates before invoking the Beta2 uninstaller.
+
+Source/offline:16 Python regressions, standalone MSVC wardrobe/contact tests,
+and clean pinned Base provenance (516 files/185 arrays) passed. Final tank
+revision6 and jeans revision2 headers reproduce byte-for-byte from licensed
+stock exports and pinned Base recipes. Shared preference, torso fitting,
+radial coverage and fly partition math live in Base; native bones/materials,
+GPU buffers, controls, extraction and installation remain in this adapter.
+
+Native derivative SHA256:
+2fac99179e21088c372eb51750982317f4fd953bb25b96b737aecc577cedcc42.
+Owned grey run20261009-033739-611f95 completed15 wardrobe cases,20 attachment
+samples and9 jeans-size cases. All44 captures were inspected, including eight
+wardrobe combinations, front/side/oblique/rear and stride/jump/landing. No
+reported draw failure/state mismatch; exit0. Title run20261009-034833-c3f317
+exited0; upper-body shirt was blue-lit, tag residual0/limited0 in the sampled
+log. Title jeans were outside the camera frame. Host input/focus untouched.
+Private receipts:Base build/jeans-20261009/{native-evidence.json,
+install-receipt.json}; completed logs/captures are in the named owned runs.
+Repository-only room recipe inventories45 files, including Test-Costumes.ps1
+and Test-JeansFit.ps1. It stays outside release assets.
+
+Full attachment gate remains FALSE. Every coupled shape/resource/LOD/campaign
+transition is not covered. Some shirt edge faceting and extreme pouch faceting
+remain. The Block size samples stayed standing and do not certify largest-size
+crouch recovery. Garment shadow silhouette/receiver fidelity and native
+accessory rigid-body collision are not certified; dog-tag correction is in the
+rendered pose. No human retail gameplay or FPS parity claim. Keep exact
+rollback and the accepted runtime. See TANK-TOP-COSTUME.md/JEANS-COSTUMES.md.
+Witcher remains paused; future spokes consume shared modules through tested
+pins and supply their own observed assets, bindings and native validation.
+
 ## October 9 - bounded pouch spike repair installed for development testing
 
 The user identified severe spikes around the testicles after rejecting the
