@@ -3,6 +3,12 @@ import numpy as np
 from malemod_base.torso_garment_fit import refit_between_bodies,refit_radially,clear_projected_faces,refine_triangles,expand_projected_sections,smooth_tubular_chart
 
 class FitTest(unittest.TestCase):
+ def test_smoothed_expansion_keeps_reference_folds_and_cut_height(self):
+  b=np.array([[2,-2,0],[2,2,0],[2,2,3],[2,-2,3]],float);t=np.array([[0,1,2],[0,2,3]])
+  p=np.array([[2.4,-.5,1],[2.8,0,2],[2.4,.5,1],[2.4,-.5,1]],float)
+  q,_=refit_between_bodies(p,b,t,b,t,.2,garment_triangles=[[0,1,2]],smoothing_passes=8)
+  np.testing.assert_allclose(q,p,atol=1e-12)
+  with self.assertRaises(ValueError):refit_between_bodies(p,b,t,b,t,.2,smoothing_passes=8)
  def test_reference_identity_retains_folds_cuts_and_aliases(self):
   b=np.array([[2,-2,0],[2,2,0],[2,2,3],[2,-2,3]],float);t=np.array([[0,1,2],[0,2,3]])
   p=np.array([[2.4,0,1],[2.8,0,1],[2.4,0,1]],float)

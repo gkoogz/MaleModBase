@@ -161,7 +161,8 @@ def refit_radially(positions, body, triangles, clearance, center=(0., 0.), fallb
 
 
 def refit_between_bodies(positions, source_body, source_triangles, target_body,
-                        target_triangles, clearance, *, fallback_distance=0.):
+                        target_triangles, clearance, *, fallback_distance=0.,
+                        garment_triangles=None, smoothing_passes=0):
     """Transport measured garment ease with the body's radial displacement.
 
     Bind both reference bodies in the same adapter-supplied frame. Retain the
@@ -176,11 +177,32 @@ def refit_between_bodies(positions, source_body, source_triangles, target_body,
                          fallback_distance=fallback_distance)
     source_body=np.asarray(source_body,dtype=float);source_triangles=np.asarray(source_triangles)
     target_body=np.asarray(target_body,dtype=float);target_triangles=np.asarray(target_triangles)
-    result=p.copy()
+    delta=np.zeros(len(p))
     for i,((sf,sw,_),(tf,tw,_)) in enumerate(zip(old,new)):
         a=np.asarray(sw)@source_body[source_triangles[sf]]
         b=np.asarray(tw)@target_body[target_triangles[tf]]
-        result[i]+=b-a
+        # Bounded armhole donors may lie off the query ray. Their height/angle
+        # must not pull a source cut across its neighbours and invert triangles.
+        delta[i]=np.linalg.norm(b[:2])-np.linalg.norm(a[:2])
+    if smoothing_passes:
+        if garment_triangles is None or smoothing_passes<0:raise ValueError('Garment topology required for displacement smoothing')
+        faces=np.asarray(garment_triangles,dtype=int)
+        if faces.ndim!=2 or faces.shape[1]!=3 or np.any(faces<0) or np.any(faces>=len(p)):raise ValueError('Invalid garment topology')
+        # Relax the expansion FIELD, never the original folds or cut chart.
+        # UV aliases share a graph node and therefore move together.
+        keys={};ids=[]
+        for point in p:
+            key=tuple(np.round(point,5));ids.append(keys.setdefault(key,len(keys)))
+        ids=np.asarray(ids);neighbors=[set() for _ in keys]
+        for f in faces:
+            for i in f:
+                neighbors[ids[i]].update(ids[f]);neighbors[ids[i]].discard(ids[i])
+        field=np.array([delta[ids==i].mean() for i in range(len(keys))])
+        for _ in range(smoothing_passes):
+            field=np.array([.5*field[i]+.5*np.mean(field[list(n)]) if n else field[i] for i,n in enumerate(neighbors)])
+        delta=field[ids]
+    result=p.copy();radius=np.linalg.norm(p[:,:2],axis=1)
+    result[:,:2]*=(1+delta/radius)[:,None]
     result,bindings=refit_radially(result,target_body,target_triangles,clearance,
                                   fallback_distance=fallback_distance)
     return result,bindings
