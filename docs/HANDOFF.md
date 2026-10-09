@@ -1,3 +1,34 @@
+## October 9 - normal menu dependency build and frozen contact response
+
+Witcher source6c9c2e2 (evidence0d44849) now resolves its shared menu header
+through dependencies/menu.lock.json and a hash-verified generated Git cache.
+The exact Base theme-only revisionc75da1a adds only the theme and its document
+to numerical431e626; configure rejects numerical differences and hash mismatch.
+The clean ordinary production build passed without private include injection,
+DLLbf67ed49, and the production-stub fixture emitted no probe transport even
+with diagnostic environment variables. Existing historical SDK/cloth warnings
+remain. Numerical worker/profile/bindings stay431/wire6; no installed upgrade.
+Proof: D:/MaleModBuilds/witcher-menu-production-20261009/build-proof.json and
+its dependency-guards/proof.json. Prior native menu evidence stays attributed
+to the exact default-off probe runtime, not this uninstalled production DLL.
+
+A snapshot-only Wolverine replay retained its prior CSV byte-for-byte and
+exported actual accepted step108 positions, masses, root Jacobian, bend alpha/
+gamma and contact impulse. A44DOF frozen response reproduces the135.6214rad/s
+bare root pitch increment. The same equivalent source spring/damping reduces
+the identical impulse to1.91166; adding source distance compliance gives2.32977,
+and source bending gives1.35559. Positive-definite solves have residual below
+4.6e-13. This is only a frozen Gauss-Newton response diagnostic, omitting
+suspension, geometric Hessians and contact active-set reevaluation. It is not
+a runtime repair or attachment acceptance. Evidence and hashed reproduction
+recipes: D:/MaleModBuilds/wolverine-frozen-response-20261009/response-proof.json.
+
+The continuing repair must integrate the same implicit residual and multiplier
+changes, preserve prescribed growth from exact accepted source rest segments,
+and pass full motion/native/visual gates. The independently tested unused
+DrivenVelocity API successor6931c68 does not adopt or certify a new solver.
+Retain installed runtimes/rollback and keep experimental physics defaultOFF.
+
 ## October 9 - native Witcher menu verified; root velocity repairs still rejected
 
 Witcher adapter ccb268d (evidence follow-up246fa98) fixes discovery of the
