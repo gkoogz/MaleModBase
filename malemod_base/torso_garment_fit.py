@@ -8,6 +8,31 @@ Only outward movement is allowed; existing ease and folds remain intact.
 import numpy as np
 
 
+def refine_triangles(positions, triangles):
+    """One edge subdivision with explicit interpolation donors.
+
+    The adapter interpolates UV and skin attributes using the returned source
+    pairs. Separate render aliases stay separate; boundaries are not welded or
+    moved. Original vertices retain their indices and winding is preserved.
+    """
+    positions=np.asarray(positions,dtype=float)
+    triangles=np.asarray(triangles,dtype=np.int64)
+    if positions.ndim!=2 or positions.shape[1]!=3 or not np.isfinite(positions).all():
+        raise ValueError("Expected finite Nx3 positions")
+    if triangles.ndim!=2 or triangles.shape[1]!=3 or np.any(triangles<0) or np.any(triangles>=len(positions)):
+        raise ValueError("Invalid garment topology")
+    out=list(positions);donors=[(i,i) for i in range(len(out))];edges={};faces=[]
+    def midpoint(a,b):
+        edge=tuple(sorted((int(a),int(b))))
+        if edge not in edges:
+            edges[edge]=len(out);out.append((positions[a]+positions[b])*.5);donors.append(edge)
+        return edges[edge]
+    for a,b,c in triangles:
+        ab,bc,ca=midpoint(a,b),midpoint(b,c),midpoint(c,a)
+        faces.extend(((a,ab,ca),(ab,b,bc),(ca,bc,c),(ab,bc,ca)))
+    return np.array(out),np.array(faces),np.array(donors)
+
+
 def refit_radially(positions, body, triangles, clearance, center=(0., 0.), fallback_distance=0.):
     positions=np.asarray(positions, dtype=float)
     body=np.asarray(body, dtype=float)

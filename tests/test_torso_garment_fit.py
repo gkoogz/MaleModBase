@@ -1,8 +1,16 @@
 import unittest
 import numpy as np
-from malemod_base.torso_garment_fit import refit_radially,clear_projected_faces
+from malemod_base.torso_garment_fit import refit_radially,clear_projected_faces,refine_triangles
 
 class FitTest(unittest.TestCase):
+ def test_refinement_preserves_aliases_donors_boundary_and_winding(self):
+  p=np.array([[2,0,0],[2,2,0],[2,0,2],[2,0,0]],float)
+  q,t,d=refine_triangles(p,[[0,1,2],[3,2,1]])
+  np.testing.assert_array_equal(q[:4],p)
+  np.testing.assert_array_equal(q,(p[d[:,0]]+p[d[:,1]])*.5)
+  self.assertEqual(len(t),8)
+  self.assertGreater(len(q),6) # positional alias 3 is deliberately retained
+  self.assertTrue(np.all(np.cross(q[t[:4,1]]-q[t[:4,0]],q[t[:4,2]]-q[t[:4,0]])[:,0]>0))
  def test_face_bridge_over_convex_chest(self):
   source=np.array([[2,-1,0],[2,1,0],[2,0,2]],float)
   out=clear_projected_faces(source,[[0,1,2]],[[3,0,1]],.2)
