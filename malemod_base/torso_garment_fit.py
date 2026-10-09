@@ -33,7 +33,7 @@ def refine_triangles(positions, triangles):
     return np.array(out),np.array(faces),np.array(donors)
 
 
-def expand_projected_sections(positions, triangles, supports, clearance, spacing=2.):
+def expand_projected_sections(positions, triangles, supports, clearance, spacing=2., side_threshold=.05):
     """Expand a common positive X scale field instead of flattening folds.
 
     Y/Z and source cut boundaries remain ordered. Every vertex at the same
@@ -49,7 +49,7 @@ def expand_projected_sections(positions, triangles, supports, clearance, spacing
     basis[np.arange(len(out)),left]=1-blend;basis[np.arange(len(out)),left+1]=blend
     scales=np.ones((2,len(knots)));constraints=[]
     for face in np.asarray(triangles,dtype=np.int64):
-        a,b,c=out[face];sign=1 if np.all(out[face,0]>.05) else (-1 if np.all(out[face,0]<-.05) else 0)
+        a,b,c=out[face];sign=1 if np.all(out[face,0]>side_threshold) else (-1 if np.all(out[face,0]<-side_threshold) else 0)
         if not sign:continue
         det=(b[1]-a[1])*(c[2]-a[2])-(b[2]-a[2])*(c[1]-a[1])
         if abs(det)<1e-9:continue
