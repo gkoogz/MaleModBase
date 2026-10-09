@@ -204,15 +204,15 @@
     },
     {
       "path": "include/malemod/surface/runtime.hpp",
-      "sha256": "535d63880f51794712abf1b95230f45d2376daca2bbd06417892c3d294a22db1"
+      "sha256": "b197846b0255cdef93cad1d4770e108fb5732c145724c8404c62c21c8ecf02b0"
     },
     {
       "path": "src/surface/runtime.cpp",
-      "sha256": "9b5306a31169075d07701704bbf92d32d868989f6771a1a3b6f95c3513c0f209"
+      "sha256": "8f3a558aca5db8ea5ff68a642a630d07552becb16036389385987875e6648859"
     },
     {
       "path": "tools/extract_surface_runtime.py",
-      "sha256": "6cf20f8bacec186adf7991a43f734c8427a0371cb26805af54a42332539de95f"
+      "sha256": "57563e4a60e72ce045fdb7949af7ab7cf33a1a99e9f5d22cb9c6fb6fe1b8ff20"
     },
     {
       "path": "tools/data/surface-closure.json",
@@ -256,7 +256,7 @@
     },
     {
       "path": "include/malemod/surface/wire.hpp",
-      "sha256": "21646c80db4fbe9ad8fe76deb42adcea1e2cf84eb63d1833b322690135f5876f"
+      "sha256": "c0e8d61a3e4e6224d778ccbd64886a0e364456375353fb53955a45a1e4c7cfed"
     },
     {
       "path": "tests/surface_wire_test.cpp",
@@ -272,7 +272,7 @@
     },
     {
       "path": "tests/clinical_surface_trace_oracle.cpp",
-      "sha256": "26f113687b3ebb2a5ea7a680757407d247a2ff464246a81e51217c6c53d0e165"
+      "sha256": "ff7eed804c3f96a0e9a3e463813f9600b3a135e535be86aa5ccdde1e50bc5af7"
     },
     {
       "path": "include/malemod/surface/pelvic_frame.hpp",
@@ -292,7 +292,7 @@
     },
     {
       "path": "modules/pelvic-collar.json",
-      "sha256": "774117626b03c3de3b93c154b0a0dc410d1d64b774c071f248b0da2dff1f74f4"
+      "sha256": "197bd9ace5f68aecd35d6ce2f3f1e053e2b1191b31ff9e23999729f3678619b5"
     },
     {
       "path": "include/malemod/surface/garment_support.hpp",
@@ -5203,7 +5203,7 @@
       },
       {
         "path": "tests/clinical_surface_trace_oracle.cpp",
-        "sha256": "26f113687b3ebb2a5ea7a680757407d247a2ff464246a81e51217c6c53d0e165"
+        "sha256": "ff7eed804c3f96a0e9a3e463813f9600b3a135e535be86aa5ccdde1e50bc5af7"
       },
       {
         "path": "include/malemod/surface/pelvic_frame.hpp",
@@ -5223,7 +5223,7 @@
       },
       {
         "path": "modules/pelvic-collar.json",
-        "sha256": "774117626b03c3de3b93c154b0a0dc410d1d64b774c071f248b0da2dff1f74f4"
+        "sha256": "197bd9ace5f68aecd35d6ce2f3f1e053e2b1191b31ff9e23999729f3678619b5"
       },
       {
         "path": "include/malemod/surface/garment_support.hpp",
@@ -5427,5 +5427,47 @@
   "attachmentTestRegistration": {
     "change": "SDK-free root transition and optional measured body orientation tests; source numerical implementation unchanged",
     "compiledSourcePhysicsChanged": false
-  }
+  },
+  "checkoutNormalizationHistory": [
+    {
+      "path": "include/malemod/surface/runtime.hpp",
+      "previousSHA256": "535d63880f51794712abf1b95230f45d2376daca2bbd06417892c3d294a22db1",
+      "reason": "Git LF normalization only; working source and committed bytes compared exactly after CRLF replacement"
+    },
+    {
+      "path": "src/surface/runtime.cpp",
+      "previousSHA256": "9b5306a31169075d07701704bbf92d32d868989f6771a1a3b6f95c3513c0f209",
+      "reason": "Git LF normalization only; working source and committed bytes compared exactly after CRLF replacement"
+    },
+    {
+      "path": "tools/extract_surface_runtime.py",
+      "previousSHA256": "6cf20f8bacec186adf7991a43f734c8427a0371cb26805af54a42332539de95f",
+      "reason": "Git LF normalization only; working source and committed bytes compared exactly after CRLF replacement"
+    },
+    {
+      "path": "include/malemod/surface/wire.hpp",
+      "previousSHA256": "21646c80db4fbe9ad8fe76deb42adcea1e2cf84eb63d1833b322690135f5876f",
+      "reason": "Git LF normalization only; working source and committed bytes compared exactly after CRLF replacement"
+    },
+    {
+      "path": "tests/clinical_surface_trace_oracle.cpp",
+      "previousSHA256": "26f113687b3ebb2a5ea7a680757407d247a2ff464246a81e51217c6c53d0e165",
+      "reason": "Git LF normalization only; working source and committed bytes compared exactly after CRLF replacement"
+    },
+    {
+      "path": "modules/pelvic-collar.json",
+      "previousSHA256": "774117626b03c3de3b93c154b0a0dc410d1d64b774c071f248b0da2dff1f74f4",
+      "reason": "Git LF normalization only; working source and committed bytes compared exactly after CRLF replacement"
+    },
+    {
+      "path": "tests/clinical_surface_trace_oracle.cpp",
+      "previousSHA256": "26f113687b3ebb2a5ea7a680757407d247a2ff464246a81e51217c6c53d0e165",
+      "reason": "Git LF normalization only; working source and committed bytes compared exactly after CRLF replacement"
+    },
+    {
+      "path": "modules/pelvic-collar.json",
+      "previousSHA256": "774117626b03c3de3b93c154b0a0dc410d1d64b774c071f248b0da2dff1f74f4",
+      "reason": "Git LF normalization only; working source and committed bytes compared exactly after CRLF replacement"
+    }
+  ]
 }

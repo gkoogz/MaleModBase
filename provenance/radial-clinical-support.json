@@ -24,7 +24,7 @@
     },
     {
       "path": "tests/clinical_test.cpp",
-      "sha256": "e6fc45a3722b49bb16e3b14d7e0f64f95f631be4b5b7facaef21e9e681d105d2"
+      "sha256": "5808d6eac7793d45c495dfc07f8695aab184fb9add710ac23905e3543af5e5f6"
     }
   ],
   "verification": {
@@ -33,5 +33,12 @@
     "nativeRendering": false,
     "observedGameplay": false
   },
-  "adoption": "docs/RADIAL-CLINICAL-ADOPTION.md"
+  "adoption": "docs/RADIAL-CLINICAL-ADOPTION.md",
+  "checkoutNormalizationHistory": [
+    {
+      "path": "tests/clinical_test.cpp",
+      "previousSHA256": "e6fc45a3722b49bb16e3b14d7e0f64f95f631be4b5b7facaef21e9e681d105d2",
+      "reason": "Git LF normalization only; working source and committed bytes compared exactly after CRLF replacement"
+    }
+  ]
 }

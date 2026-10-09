@@ -56,7 +56,7 @@
     },
     {
       "path": "modules/pelvic-collar.json",
-      "sha256": "774117626b03c3de3b93c154b0a0dc410d1d64b774c071f248b0da2dff1f74f4"
+      "sha256": "197bd9ace5f68aecd35d6ce2f3f1e053e2b1191b31ff9e23999729f3678619b5"
     }
   ],
   "scope": "Exact scalar metric extraction and source-derived offline coupled collar evaluator; not installed runtime parity",
@@ -68,5 +68,12 @@
     "8-frame sequence phase correction",
     "packed normal/tangent uploads"
   ],
-  "units": "Uncalibrated source model units. A target must supply measured length scale and authoring frame."
+  "units": "Uncalibrated source model units. A target must supply measured length scale and authoring frame.",
+  "checkoutNormalizationHistory": [
+    {
+      "path": "modules/pelvic-collar.json",
+      "previousSHA256": "774117626b03c3de3b93c154b0a0dc410d1d64b774c071f248b0da2dff1f74f4",
+      "reason": "Git LF normalization only; working source and committed bytes compared exactly after CRLF replacement"
+    }
+  ]
 }

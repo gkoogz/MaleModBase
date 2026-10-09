@@ -5,7 +5,7 @@
   "files": [
     {
       "path": "include/malemod/surface/graft_runtime.hpp",
-      "sha256": "0a2ea4d14b4c026756253f6413685959098087c183c0d9d2455f9209cc5325d0"
+      "sha256": "4916d01d4c203d18fb65042e3321852c005307d7c82eb1290594102adaa4c599"
     },
     {
       "path": "include/malemod/surface/binding.hpp",
@@ -13,7 +13,7 @@
     },
     {
       "path": "src/surface/graft_runtime.cpp",
-      "sha256": "9f29efd1128957fe8a416d7f4803d3211adf70f9becf9e143d0b99efde01a98c"
+      "sha256": "fe3d841ed69dfc089ef8ef826362a3e0f1517182dad8f3f4654f7f45a4f4bb87"
     },
     {
       "path": "tests/graft_runtime_cli.cpp",
@@ -1424,5 +1424,17 @@
     "observedGameplay": false,
     "linkedArchiveSHA256": "29fcb57c4b3da7b1bcdb40577855fe05ab0c60d00831cc3efddf98453d67d0d3",
     "previousRecordedArchiveSHA256": "ec75f4a28f767b76cda1ce50c679ccb0c80a4b300c4e72916273ef87cfdb39d9"
-  }
+  },
+  "checkoutNormalizationHistory": [
+    {
+      "path": "include/malemod/surface/graft_runtime.hpp",
+      "previousSHA256": "0a2ea4d14b4c026756253f6413685959098087c183c0d9d2455f9209cc5325d0",
+      "reason": "Git LF normalization only; working source and committed bytes compared exactly after CRLF replacement"
+    },
+    {
+      "path": "src/surface/graft_runtime.cpp",
+      "previousSHA256": "9f29efd1128957fe8a416d7f4803d3211adf70f9becf9e143d0b99efde01a98c",
+      "reason": "Git LF normalization only; working source and committed bytes compared exactly after CRLF replacement"
+    }
+  ]
 }

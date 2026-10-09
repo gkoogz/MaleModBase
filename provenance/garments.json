@@ -505,10 +505,10 @@
         "tests/garment_test.cpp": "1e2bae6470f9340198ac2faa74ff77ebb6c4a6b6947e0a2f2f8ac072411d8134",
         "tests/garment_shape_checks.hpp": "a25c94f32cf97a59464063d36f8a509b1cb2ab84490a36e54ae40f583df4555e",
         "docs/GARMENTS.md": "fff6c14739152d39d565b0deb07ac498f685e28d8a1186eac05edff8b353cbb3",
-        "docs/GARMENT-CONTACT-REPAIR.md": "d44e864d34869406d4d2ac8b42ed9eeb12397fdda53c1f8716449e2479d5dc6d",
+        "docs/GARMENT-CONTACT-REPAIR.md": "fb747838d2c3fdf460a8fd0578a043720d31a55c50f817dc43587915bf4cfaaf",
         "tools/garment_source_routes.py": "6001a9a06f45e65006fd1558509322cb4a28436df993f663d426ffc2cac0c6ae",
         "malemod_base/garment_regions.py": "5271c9ea84e376bde12743b792ac3938d2474c434368b508d0c97db8a500f0fc",
-        "tests/test_garment_regions.py": "68d1eb7c8641ac432b9d7e823ffecda3f47dcea0505d0193386b44bf1bf109db"
+        "tests/test_garment_regions.py": "cf5e3268556e2ec9ca238427b6068c091d4f19feddcc3342f62d683d19c175a1"
       }
     }
   },
@@ -571,5 +571,17 @@
       "reason": "Register SDK-free meridian regressions; no legacy/source numerical changes"
     }
   ],
-  "meridianContract": "provenance/meridian.json"
+  "meridianContract": "provenance/meridian.json",
+  "checkoutNormalizationHistory": [
+    {
+      "path": "docs/GARMENT-CONTACT-REPAIR.md",
+      "previousSHA256": "d44e864d34869406d4d2ac8b42ed9eeb12397fdda53c1f8716449e2479d5dc6d",
+      "reason": "Git LF normalization only; working source and committed bytes compared exactly after CRLF replacement"
+    },
+    {
+      "path": "tests/test_garment_regions.py",
+      "previousSHA256": "68d1eb7c8641ac432b9d7e823ffecda3f47dcea0505d0193386b44bf1bf109db",
+      "reason": "Git LF normalization only; working source and committed bytes compared exactly after CRLF replacement"
+    }
+  ]
 }
