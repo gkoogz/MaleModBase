@@ -1,3 +1,42 @@
+## October 9 - root motion candidate rejected; menu input repair verified
+
+Wolverine source6c05893/Base389f6c0 clean sealed runtime446739b2 ran in owned
+room20261009-175027-cd4fe9 with actual calibrated root contacts enabled.
+Twenty-one requested views/wardrobe/state samples exported same-frame actual
+solver/angular JSON and complete CPU body buffers. Native root motion is
+REJECTED: extreme relative pitch -4.18rad and +2.49rad, pitch rate198.14rad/s,
+and visibly backward/upward curling despite an exact welded root/link length.
+Late normalization of scalar point corrections bypasses the source suspension
+and soft angular stops. Keep the development branch default-off. Shared tangent
+angular mobility/stop correction is being developed in the clean Base worktree;
+do not install any replacement until independent numerical/native/visual gates.
+
+Continuous actual-adapter replay preserves history through eight measured
+episodes of movement/settling/control changes. Disabled old/new reports are
+byte-identical. Enabled max angular rate228.419rad/s versus baseline0.390518;
+fixed root/finite/exact-link/hemisphere checks alone remain insufficient.
+Wolverine tests/root_joint_motion_replay.cpp and docs/ROOT-JOINT-DEVELOPMENT.md
+record the source replay and rejection. Private evidence in Base build/
+wardrobe-defects-20261009/root-joint-motion-proof and the room's exact run/
+root-joint-inspection is ignored, not a committed capture bank. CPU buffers
+are not native skinned-surface certificates. Full attachment gate is FALSE.
+
+Menu source9b9e2f5 fixed the owned-game GetKeyState import boundary, preserving
+closed/background/unrelated pressed/toggle bits and the proxy's raw polling.
+Native title720 run173408-d75f4f, sealed runtime4747dbb4, reviewed six captures
+with original Continue held during open-panel navigation/reset and stock Down
+navigation restored after collapse. Earlier room1440 run172642-005425 independently
+reviewed row/footer fit and isolated controls. The self-contained menu-refresh
+review records exact source/hash boundaries. Witcher native panel QA is still
+pending; layout/input proof does not certify anatomy/garments or installation.
+
+Owned root child closed gracefully exit0; no Wolverine process remained. Retail
+DLL7095f630 and prior accepted4f4900a5/exact rollback remain unchanged. No new
+installation, push or release. Original maps are hash-preserved. Tank20/jeans6
+remain source candidates; strict revision6 pouch failures and sharp-fold trials
+are unresolved and unaccepted. Preserve unrelated dirty CPU-cloth/worker/audio
+work and exclude it from every clean runtime build.
+
 ## October 9 - measured native root/contact diagnostics; replacement still rejected
 
 Request-gated Wolverine source a3febd67/Base2c15479 compiled from clean Git
