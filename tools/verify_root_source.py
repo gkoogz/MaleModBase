@@ -12,7 +12,8 @@ def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 
 def verify(args):
     out=args.output.resolve()
-    if not out.is_relative_to((ROOT/'build').resolve()) or out.exists():
+    allowed=(args.diagnostics_root or ROOT/'build').resolve()
+    if not out.is_relative_to(allowed) or out==allowed or out.exists():
         raise ValueError('Use a fresh owned proof directory')
     expected=json.loads((ROOT/'provenance/source-surface.json').read_text())['currentProcessRuntime']
     if digest(args.reference_library)!=expected['librarySHA256']:
@@ -50,7 +51,7 @@ def verify(args):
         if rows[0]['payloadSHA256']!=rows[2]['payloadSHA256'] or rows[3]['payloadSHA256']==rows[0]['payloadSHA256'] or any(rows[m]['payloadSHA256']!=rows[3]['payloadSHA256'] for m in (4,5,6)):
             raise ValueError('Source impulse consumption/retry/coalescing differs')
         reactions.append(dict(state=state,rows=rows,disabledExact=True,impulseChangesSource=True,retryExact=True,queuedExact=True,coalescedExact=True))
-    paths=['CMakeLists.txt','include/malemod/surface/root_contact.hpp','include/malemod/surface/runtime.hpp','include/malemod/surface/wire.hpp','src/surface/runtime.cpp','tools/extract_surface_runtime.py','tools/verify_root_source.py','tests/surface_runtime_cli.cpp','tests/garment_support_runtime_cli.cpp','tests/surface_root_clinical_test.cpp']
+    paths=['CMakeLists.txt','include/malemod/surface/root_contact.hpp','include/malemod/surface/tangent_root.hpp','tools/angular_root_kernel.py','tests/tangent_root_test.cpp','tests/root_joint_motion_replay.cpp','include/malemod/surface/runtime.hpp','include/malemod/surface/wire.hpp','src/surface/runtime.cpp','tools/extract_surface_runtime.py','tools/verify_root_source.py','tests/surface_runtime_cli.cpp','tests/garment_support_runtime_cli.cpp','tests/surface_root_clinical_test.cpp']
     proof=dict(schema='malemod.root-joint-source-consumption/1',wireVersion=7,rootContactsEnabled=False,
         sourceCommit=subprocess.check_output(['git','-C',str(ROOT),'rev-parse','HEAD'],text=True).strip(),
         sourceHashes={p:digest(ROOT/p) for p in paths},
@@ -66,4 +67,5 @@ if __name__=='__main__':
     for name in ('reference','executable','reference-library','library','reference-reactions','reactions','output'):
         parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--manifests',nargs='+',type=Path,required=True)
+    parser.add_argument('--diagnostics-root',type=Path,help='Explicit owned external artifact root; outputs must be new descendants')
     verify(parser.parse_args())

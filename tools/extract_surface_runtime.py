@@ -265,6 +265,8 @@ parts.append('namespace UnifiedCollar { static V3 RadialTargetDelta(V3 p,V3 root
 output=args.output or root/'build/surface-runtime/surface-kernel.inc'
 output.parent.mkdir(parents=True,exist_ok=True)
 content='\n'.join(parts)+'\n} // namespace malemod::surface::source\n'
+from angular_root_kernel import transform as angular_root_transform
+content=angular_root_transform(content,args.process_isolated)
 if args.verify_provenance:
  if args.process_isolated:raise ValueError('Process variant uses its own measured replay provenance')
  report=json.loads((root/'provenance/source-surface.json').read_text())

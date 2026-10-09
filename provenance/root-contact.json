@@ -1,5 +1,5 @@
 {
-  "schema": "malemod.calibrated-root-joint-candidate/1",
+  "schema": "malemod.tangent-root-development/2",
   "ancestorBase": "2c1547927184b7789ad79e592a2384d73d08dbbb",
   "wireVersion": 7,
   "defaultEnabled": false,
@@ -22,7 +22,7 @@
     },
     {
       "path": "tools/extract_surface_runtime.py",
-      "sha256": "b03eb184405a78257a1d21826c9a5be0670dc23cfc5cc7d906ead30b05904660"
+      "sha256": "859985e2f369d54983d6720d334d446e91039854aa65b57653e78dde32fb9d59"
     },
     {
       "path": "tools/verify_root_contact.py",
@@ -30,7 +30,7 @@
     },
     {
       "path": "tools/verify_root_source.py",
-      "sha256": "d4fc2f02d4d06bb1334477054bb476f7591bf288c9c28f824eeb641df8c41e30"
+      "sha256": "a2ac574b737149c64e01e4f88fe2244d047aefce103ac0933ccbd071817cfd18"
     },
     {
       "path": "tests/root_contact_test.cpp",
@@ -46,26 +46,47 @@
     },
     {
       "path": "CMakeLists.txt",
-      "sha256": "d90d1de8b44fe391ea530a91e9b25e1f06756b0977aa99c8434a1d021943368c"
+      "sha256": "7882694e112488ee11c48bef2eac5cbda63e7b147fa764bf7a9dd4c38c720dec"
     },
     {
       "path": "docs/ROOT-CONTACT.md",
-      "sha256": "4b587efe6c967ae3e5e5481767be388fab8a12945d55aa69f598b3777dd3f7e2"
+      "sha256": "323bafdf95ebdcb32eeac097f9d0b06f48391a17c8e4864c55ffdc2b3ef6f37e"
     },
     {
       "path": "tests/root_contact_windows_test.cpp",
-      "sha256": "c918a4c03feae243ea88c77e26cbafd6b2998debf52e2a489c72eb7a7f4bc9b1"
+      "sha256": "16216b11eb3e22db60c3f7ba27aad581a37b6335bd13d6f10fee349daa27cf8e"
+    },
+    {
+      "path": "include/malemod/surface/tangent_root.hpp",
+      "sha256": "be8e6cfaea8dfcafc2890d717955718f9d78e772e06f58fa6bc928783491fccf"
+    },
+    {
+      "path": "tools/angular_root_kernel.py",
+      "sha256": "d218e6acb33093dc5ad70206bb8102a251a0829a5892d6cf9670d0f7de088395"
+    },
+    {
+      "path": "tests/tangent_root_test.cpp",
+      "sha256": "a6cdff9036d34edb78d06dd1a9aae86dfcf8201590f8264d7ae18f6efd3f3b01"
+    },
+    {
+      "path": "tests/root_joint_motion_replay.cpp",
+      "sha256": "e7933fe882344abfe897afd2e8023d22cd07be5cc87192031960b7aa67f04ede"
+    },
+    {
+      "path": "docs/TANGENT-ROOT-ADOPTION.md",
+      "sha256": "371dc624d0d9104ab389c613b1bb07bae338c9f2a10c70b197106630ff2f1006"
     }
   ],
-  "processKernelSHA256": "635caeb0be8d4fbc03bd63eaf708f8d9751e62d0a0253108d9048ccba8e582ba",
-  "processLibrarySHA256": "008231b110d39cbc1e7a98120bac043141fb27d8b2061b404ffd85293805186a",
+  "processKernelSHA256": "5dc09166a557e96dd7067f3dd96a25e33fe979d28471da102438476555c0a3c0",
+  "processLibrarySHA256": "4af45350631366253fe72243165b55ce1d707e8ae027c34a453a66878cd2a82b",
   "disabledReplay": {
-    "path": "TheWitcher3MaleMod/build/witcher-parity-root-relative-disabled-proof.json",
-    "sha256": "6bcfec45a43f83b0d2116b2e737b3c08979f4476f299d980a0f365adb14eda19",
+    "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\TheWitcher3MaleMod\\build\\witcher-parity-tangent-gradient-final-proof.json",
+    "sha256": "7c3627ef4f079a85fb8b9e394c711c5503ba2a15a0f1816e7a69a3fde8ac94b2",
     "cases": 46,
     "completeNativeBuffers": 138,
     "byteIdentical": true,
-    "measuredBindContacts": true
+    "measuredBindContacts": true,
+    "nativeGameplay": false
   },
   "sourceOnlyTestPassed": true,
   "observedCandidateGameplay": false,
@@ -73,28 +94,90 @@
   "nativeAdoptionAccepted": false,
   "installed": false,
   "sourceConsumptionReplay": {
-    "path": "build/root-contact-source-consumption-current/proof.json",
-    "sha256": "0ce1e3f0a00538e9236acf47b0d5053bcb1440f6252afe35fa1066f1afb5c362",
+    "path": "D:\\MaleModDiagnostics\\witcher-parity-20261009\\tangent-source-consumption-final\\proof.json",
+    "sha256": "ee7e4cefc30a3361cc8ae4dfa4b8fb4c16afeff58af5bcd733825230b541a7d2",
     "cases": 70,
     "completeArtifacts": 560,
     "reactionModes": 18,
     "byteIdentical": true,
-    "rootContactsEnabled": false
+    "rootContactsEnabled": false,
+    "sourceFilesVerified": true,
+    "sourceWorktreeDirtyAtReplay": true,
+    "exactConsumedSourceHashesMatchCandidate": true
   },
   "enabledClinicalRootRegression": {
     "movingRestPitch": true,
     "nonzeroClinicalYaw": true,
     "inactiveTransition": true,
-    "maximumGuideDirectionError": 2.98023224e-07,
+    "maximumGuideDirectionError": 1.5335894e-06,
+    "lateralExcursion": 0.957741082,
+    "stableTravelAccepted": false,
     "nativeGameplay": false
   },
-  "macroCompatibility": {
-    "sourceAlgorithmByteIdenticalAfterMaxCallParentheses": true,
-    "priorHeaderSHA256": "9f21afa10fab48c74c5b30545fe52e4306034828d75ce35a5d566a2df67f057a",
-    "windowsHeaderBeforeHelperCompilePassed": true,
-    "numericalWorkerEvidenceCommit": "e42147c75d854a8666bc40d0ccd71b29b0ebd1a8",
-    "numericalWorkerEvidenceInherited": true,
-    "cleanSourceConsumptionReplay": "build/root-contact-source-consumption-e42147c/proof.json",
-    "cleanSourceConsumptionReplaySHA256": "cd12a853050026d78213bc56cc17bee7b964c2ad0042cfca21aa8dfcd74580dd"
+  "worker": {
+    "path": "build/root-tangent-worker/Release/surface_worker.exe",
+    "sha256": "2666a058a27e270a28871f2b3d2c4d9d2880a0a27ea45b5a7138e0d6e4183102",
+    "wireVersion": 7,
+    "sourceReceiptAccepted": false,
+    "installed": false
+  },
+  "continuousMotion": {
+    "episodes": 8,
+    "stepsPerEpisode": 960,
+    "movingSeconds": 2,
+    "settlingSeconds": 2,
+    "finiteAndFixedRootAndLinkAndDiagnosticHemisphere": true,
+    "maximumRelativePitch": 1.03899229,
+    "maximumRelativeYaw": 0.423645586,
+    "maximumRelativeAngularRate": 15.610714,
+    "lateSettlingMaximumAngularRate": 0.119973086,
+    "maximumStationSpeed": 3719.33936,
+    "maximumRelativeAnalyticalFiniteSuspensionMassError": 0.00208268734,
+    "accepted": false,
+    "nativeGameplay": false,
+    "enabledCSV": {
+      "path": "build/angular-gradient-corrected-motion-1.csv",
+      "sha256": "706a2ab54c39d29db414c4e87b07327aaf5e511735c7f4d059941a97f261f855"
+    },
+    "disabledCSV": {
+      "path": "build/angular-gradient-corrected-motion-0.csv",
+      "sha256": "a9a1d0e4382121fbf7cf8418feb248363f885031341f773b30fb7b3c81625543",
+      "reference": "reconstructed389f6c0",
+      "byteIdentical": true
+    }
+  },
+  "nominalFreeResponse": {
+    "sourceMassAndStationDerived": true,
+    "stiffnessAndDampingCoefficientRatiosPreserved": true,
+    "steps": 960,
+    "passed": true,
+    "fullCoupledResponseParity": false
+  },
+  "disabledIsolation": {
+    "originalFunctionClosureRetained": true,
+    "previousBranchTrialFailedFloatParity": true,
+    "originalArithmeticNotToleranceRelaxed": true
+  },
+  "rejectedPredecessor": {
+    "base": "389f6c04e07b290da34a5261356c745f58f3bb1d",
+    "game": "Wolverine",
+    "nativeRun": "MaleMod/build/posterior-final-room-20261008/runs/20261009-175027-cd4fe9",
+    "excessAngularTravelAndRateObserved": true,
+    "installed": false
+  },
+  "verificationDataRetention": {
+    "receipt": "build/replay-retention-20261009.json",
+    "sha256": "129099654a04eb0200e3be8a86cb4ca2b1e7d42eba06a2dad3f36c7f502b632f",
+    "oldDuplicateBuffersRemoved": true,
+    "hashReceiptsAndSourceAndInputsRetained": true,
+    "finalBuffersOnD": true
+  },
+  "fullMotionAcceptance": false,
+  "skinAcceptance": false,
+  "enabledOfflinePreview": {
+    "path": "D:/MaleModDiagnostics/witcher-parity-20261009/tangent-current-max-preview/s1-o100-w100-a100.png",
+    "sha256": "5cbae96add44385e5abb98d704a3ae26a0c1769f3f942ca38acd92dbc944e405",
+    "visualAcceptance": false,
+    "lowerBridgeAndSkinFoldsRemain": true
   }
 }

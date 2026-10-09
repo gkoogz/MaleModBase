@@ -82,7 +82,7 @@ if(MALEMOD_BUILD_SURFACE_RUNTIME)
   file(GLOB surface_sources CONFIGURE_DEPENDS "legacy/wolverine/src/runtime/*.h" "legacy/wolverine/src/runtime/*.cpp")
   add_custom_command(OUTPUT "${surface_generated}"
     COMMAND Python3::Interpreter "${CMAKE_CURRENT_SOURCE_DIR}/tools/extract_surface_runtime.py" --output "${surface_generated}" ${surface_isolation_args}
-    DEPENDS tools/extract_surface_runtime.py tools/data/surface-closure.json ${surface_sources}
+    DEPENDS tools/extract_surface_runtime.py tools/angular_root_kernel.py tools/data/surface-closure.json ${surface_sources}
     VERBATIM)
   add_library(malemod_surface STATIC src/surface/runtime.cpp "${surface_generated}")
   target_link_libraries(malemod_surface PUBLIC malemod Threads::Threads)
@@ -302,4 +302,21 @@ option(MALEMOD_BUILD_EXAMPLES "Build the CPU clinical adapter example" OFF)
 if(MALEMOD_BUILD_EXAMPLES)
   add_executable(clinical_session examples/clinical_session.cpp)
   target_link_libraries(clinical_session PRIVATE malemod)
+endif()
+
+add_executable(tangent_root_test tests/tangent_root_test.cpp)
+target_link_libraries(tangent_root_test PRIVATE malemod)
+add_test(NAME tangent_angular_root COMMAND tangent_root_test)
+
+option(MALEMOD_BUILD_ROOT_DIAGNOSTICS "Build the unaccepted continuous root-source diagnostic" OFF)
+if(MALEMOD_BUILD_ROOT_DIAGNOSTICS)
+  if(NOT MALEMOD_BUILD_SURFACE_RUNTIME OR NOT MALEMOD_SURFACE_PROCESS_ISOLATED)
+    message(FATAL_ERROR "Root diagnostics require the process-isolated source runtime")
+  endif()
+  add_executable(root_joint_motion_replay tests/root_joint_motion_replay.cpp "${surface_generated}")
+  target_include_directories(root_joint_motion_replay PRIVATE include "${MALEMOD_EIGEN_INCLUDE}" "${CMAKE_CURRENT_BINARY_DIR}/surface-generated")
+  target_compile_features(root_joint_motion_replay PRIVATE cxx_std_17)
+  target_compile_definitions(root_joint_motion_replay PRIVATE MALEMOD_SURFACE_PROCESS_ISOLATED=1 MALEMOD_TEST_TANGENT_ROOT_GRADIENT=1)
+  target_compile_options(root_joint_motion_replay PRIVATE /fp:precise /utf-8)
+  set_property(TARGET root_joint_motion_replay PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
