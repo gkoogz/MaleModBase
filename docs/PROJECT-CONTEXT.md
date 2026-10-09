@@ -1,3 +1,12 @@
+## October 9 open-jeans refinement
+
+The user requested a smaller, neater open fly closer to the body, the original
+belt remaining open, and restrained physics on both flaps and open belt ends.
+Keep original stock textures. Shared secondary math belongs in Base; the spoke
+owns measured garment/rig/material inputs. See HANDOFF for the revision5
+candidate and separate offline/native evidence. No full attachment acceptance
+or retail installation is implied by that preview.
+
 ## October 9 - preserve original clothing appearance
 
 The user rejected the first Wolverine tank/jeans refit and its discarded stock

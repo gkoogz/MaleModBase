@@ -1,3 +1,50 @@
+## October 9 - tighter open jeans and restrained secondary motion
+
+User requested bringing the open fly flaps inward, keeping the original belt
+open, and adding small motion to the fly and belt ends. This supersedes the
+revision4 opening; preserve the original licensed denim/leather/buckle maps.
+
+Runtime source:4f6f137b94484ca70e20009f1307f384bd34cb25.
+Base pin:8553909f0b9b4adc9712747f791622aa82173682.
+Jeans revision5 narrows the source fly half-width14->9 and folds it back
+145->155 degrees. Closed variant arrays remain identical. Source material UVs,
+face donors, interpolation weights, boots and the rigid separate buckle stay.
+Shared bounded hinges and continuous seam/belt-band weights live in Base.
+Wolverine measures stock rig motion, calibrates source-unit forcing, advances
+once per render frame and reconstructs native normals with position aliases.
+Denim travel<=3 degrees, original upper belt ends<=2 degrees; buckle shape is
+rigid. This is restrained secondary motion, not a general cloth collision solver.
+
+19 Python garment tests, SDK-free hinge test and five focused CTest cases pass.
+Clean pinned provenance passes516files/185arrays. The81-combination offline
+motion audit has zero pin displacement, no overturned triangles, maximum
+rest displacement0.703816 source units and buckle distance error1.51e-14.
+
+Clean production DLL:canonical build/jeans-motion-final5, SHA256
+7095f63042e60295b7316b7a3fe457956fafefbe4f8e88b24dee3df51145cee3.
+Clean native derivative SHA256:
+60e41aafa9236fad9e947d0552c7dd612b0418d2babaa754cf603be290aefd59.
+Both exclude unrelated dirty worker code. Native run20261009-081543-713150
+reviewed65 captures:15 wardrobe,20 attachment,9 jeans sizes,16 walking/settling,
+and5 extra views. Recorded motion responds to actual rig changes and remains
+bounded. No reported jeans draw failure or state mismatch. Child exit0, scoped
+audio restoration HRESULT0, host input/focus untouched.
+
+Full attachment gate remains FALSE: general garment/body collision, all true
+oblique shape/state/resource/LOD views, campaign transitions, dedicated crouch,
+shadow/damage parity and campaign cadence are not certified. Existing extreme
+pouch faceting/accessory distortion remains. Some nominal oblique room cases
+actually reached side/rear views; do not count their labels as oblique proof.
+
+Retail DLL remains SHA256:
+483a555e6dba3d87ee4be33cf063a083090fe50c22d0eb064fdfd98699922f69.
+No retail installation, push or release. Prior accepted runtime and rollback
+chain remain. Private Base evidence/review lives in build/jeans-motion-20261009;
+the prior room DLL is saved there as prior-room.dll, SHA256
+f401894adc42ab8158607e6fab5f2aed2074de77bdc8ea0429a852f6a5fc0350.
+Shared adoption:other spokes pin Base and supply measured hinges, source-space
+motion calibration and licensed materials. Witcher remains paused.
+
 ## October 9 - original clothing refit corrected, development candidate
 
 The user rejected the first installed clothing appearance and requested the
