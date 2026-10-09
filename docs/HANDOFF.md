@@ -1,13 +1,25 @@
 ## October 9 - frozen suspension response oracle
 
 The subsequent private Witcher full44DOF configuration-increment trial is also
-REJECTED: eight measured histories contain284 reversed-hemisphere steps,
+REJECTED: eight measured histories contain284 relative angular-limit failures,
 peak222.326rad/s and late158.061rad/s. Fixed root, link and finite checks alone
 pass but cannot establish natural motion. The trial updates nonlinear contact
 geometry while freezing its response within each pass; complete active-set and
 nonlinear residual convergence are unproved. Residual instrumentation is in
 progress. No shared solver adoption, native run or replacement installation.
 Evidence: D:/MaleModDiagnostics/witcher-parity-20261009/implicit-response/motion-1.csv.
+
+An exact per-increment trace reproduces that enabled CSV and identifies the
+first unilateral multiplier violation at default step3/pass0/contact4:
+tension1 becomes+0.00522024 although its source branch requires a nonpositive
+multiplier. The first relative angular-limit failure is firm-max470/contact12;
+its residual is already7.59905 before that correction. The284 diagnostic counts
+abs(relative pitch/yaw)>=pi/2; it has not independently measured hemisphere
+reversal against the driven segment direction. Maximum residual13.5238 and
+worst single-increment increase0.883 show that passing a linear Schur sign
+check cannot certify the nonlinear solve. Evidence: implicit-response-trace/
+analysis.json beside the private trial. Branch/residual acceptance remains in
+progress; no native or installation acceptance.
 
 A second snapshot-only replay preserved the prior CSV byte-for-byte while
 exporting the actual source shear/tension gradients, alpha/gamma and multipliers.
