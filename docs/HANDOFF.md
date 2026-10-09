@@ -1,3 +1,28 @@
+## October 9 - frozen suspension response oracle
+
+The subsequent private Witcher full44DOF configuration-increment trial is also
+REJECTED: eight measured histories contain284 reversed-hemisphere steps,
+peak222.326rad/s and late158.061rad/s. Fixed root, link and finite checks alone
+pass but cannot establish natural motion. The trial updates nonlinear contact
+geometry while freezing its response within each pass; complete active-set and
+nonlinear residual convergence are unproved. Residual instrumentation is in
+progress. No shared solver adoption, native run or replacement installation.
+Evidence: D:/MaleModDiagnostics/witcher-parity-20261009/implicit-response/motion-1.csv.
+
+A second snapshot-only replay preserved the prior CSV byte-for-byte while
+exporting the actual source shear/tension gradients, alpha/gamma and multipliers.
+Both tension rows and hard suspension stops are inactive at the failing step.
+Adding the four active shear rows to the44DOF response gives normal inverse
+mass0.4393626 and same-impulse pitch sensitivity1.700525rad/s. Recomputing the
+unilateral normal projection fully releases the existing pressure multiplier;
+its pitch increment is6.558775rad/s and its final separating normal velocity
+is53.32949. A zero final normal velocity is not required for a released contact.
+The SPD solve residual is below3.84e-13. This is a frozen single-contact oracle,
+omitting friction, geometric Hessians, nonlinear active-set reevaluation and
+hard-stop projection. It does not certify a full solver, native attachment or
+installation. Hashed recipes and run identity are beside the diagnostic:
+D:/MaleModBuilds/wolverine-frozen-suspension-20261009/response-proof.json.
+
 ## October 9 - normal menu dependency build and frozen contact response
 
 Witcher source6c9c2e2 (evidence0d44849) now resolves its shared menu header
