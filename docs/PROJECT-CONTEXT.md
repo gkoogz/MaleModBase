@@ -1,3 +1,13 @@
+## October 9 - match the actual pec shape
+
+The user rejected mountains over the chest in the tank and the subsequent
+attempt to reduce an expanded envelope. Fit the original garment closely to
+the actual enlarged pec contour, preserving its original texture, cut topology,
+UVs, skin and source lineage. Shared fitting lives in Base; measured complete
+body patches, licensed maps, bindings and native integration live in the spoke.
+See HANDOFF for recipe18 source and observed evidence. No replacement retail
+installation or full attachment acceptance is implied by this preview.
+
 ## October 9 - continue repairing the installed wardrobe appearance
 
 The user reported black anatomy in the native title tank and collar fit

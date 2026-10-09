@@ -1,3 +1,57 @@
+## October 9 - tank follows the actual pec surface (recipe18)
+
+The user rejected raised mountains over the pecs and the attempt to reduce
+them by bounding an expanded envelope. The earlier native capture counts were
+sampling evidence, not user acceptance of the clothing shape. Tank12 is
+rejected for this fit; the intermediate tank13 is superseded and uninstalled.
+
+Base now supplies wrap_body_surface: closest points on finite measured target
+triangles, barycentric body bindings, and 10 passes relaxing the three-dimensional
+displacement on the alias-welded garment graph. It uses the complete current
+torso rather than the incomplete skin patch beneath the original outfit.
+Original mesh topology, UVs, normal aliases, source pairs and skin weights are
+unchanged. The original fold chart remains the input; cut positions move with
+the fitted body and body bindings are regenerated. Max displacement 4.1761592;
+zero overturned source faces; maximum source-normal rotation 72.852783 degrees.
+The 0.72 clearance is a target before relaxation, not a final collision proof.
+
+Wolverine runtime source: fe330ba75b3e3684e2b597fb517894958e20f5b9.
+Exact Base pin: 014e57a2d659298cd3126482a2573b2087cabaa6.
+Clean production DLL SHA256: 242378e64d6effcb2ce0b0423f84c0fcbcd3bc48fe3be0b3645ed5b35a954afa.
+Sealed native derivative SHA256: c9dec7dfaa594f8a63749fb6038884c91e778d63cc38e6d5080ba37a4f3df9ff.
+No unrelated dirty worker/Base development is included. Original eight maps,
+shader-constant restoration remain. Coverage is now an explicit visibility
+footprint, with the radial depth constraint omitted in mask coverage, seven interior
+witnesses and a 1-unit cut band. Body positions/depth state are unchanged. The footprint is restricted to the
+observed torso membership/height patch in body resource 0 only, so remote
+arms cannot be hidden. Body resource 1 (exposed neck/head) is preserved fully.
+Tank16/17 retained a small oblique neck hole. A shirt-off diagnostic confirmed
+that body resource 0 also supplies its upper neck band. Faces touching measured
+Z 130 or above are now preserved in that resource, alongside full resource 1.
+Tank15 was rejected for masking forearm skin before that patch restriction.
+Tank14 was rejected for standing-pose skin clipping before this mask repair.
+Jeans6 geometry, belt and bounded secondary motion are unchanged.
+
+Offline: 32 Python garment tests, 5 targeted C++ attachment/hinge tests and source
+provenance verification (516 files/185 arrays) pass. The private lineage audit
+checks topology, UVs, normal aliases, source pairs and skin weights byte values.
+Native: 17 WStart samples (20261009-123712-37c6c1); 15 wardrobe/
+pose samples, 20 sampled attachment cases and 5 close-ups (20261009-122517-fca4df).
+Front/side/moving oblique shirt shape and the native tank scene were reviewed;
+both owned runs exit 0, restore owned audio and report zero draw/state failures.
+The jump frame clips the head/upper collar at the camera boundary. Extreme
+legacy pouch faceting remains; the 20-case matrix is not complete acceptance.
+
+Full attachment gate FALSE: all body resources/LODs, all coupled shape/rest-angle
+cases, grazing-face/full cloth collision, campaign transitions and full native
+damage/shadow parity remain unqualified. The candidate is not installed,
+published or pushed. Installed SHA256 remains 7095f63042e60295b7316b7a3fe457956fafefbe4f8e88b24dee3df51145cee3.
+Exact retained rollback: C:/Games/X-Men Origins Wolverine/WGame/ModBackups/Meridian-development-20261009-083934-46918e/Restore.ps1.
+Private review/evidence: MaleMod/build/tank-pecs-20261009/review.html and
+native-evidence.json. Licensed geometry, captures and pixel maps remain ignored.
+Other spokes adopt the shared fitter through their own pins and complete
+measured body surfaces; Witcher remains paused.
+
 ## October 9 - tank shading/collar and full-waist garment volume candidate
 
 The user reported black anatomy in WStart, collar fit artifacts and requested
