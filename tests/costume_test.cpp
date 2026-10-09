@@ -2,7 +2,7 @@
 #include <cassert>
 using namespace malemod::controls;
 int main(){
- for(int top=0;top<2;top++)for(int bottom=0;bottom<2;bottom++) {
+ for(int top=0;top<2;top++)for(int bottom=0;bottom<4;bottom++) {
   auto c=Costume::Load(top,bottom,1-bottom);
   assert(unsigned(c.top)==unsigned(top)&&unsigned(c.bottom)==unsigned(bottom));
  }
