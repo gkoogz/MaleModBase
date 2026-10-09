@@ -82,6 +82,7 @@ struct Session::Impl {
   kernel::ResetCompliantDynamics();kernel::ResetPelvicAttachmentBody(seed.data());kernel::EvaluateAnatomy(seed.data(),47050);
  }
  void Advance(const Frame& frame){
+  if(frame.rootContacts&&!frame.collision)throw std::invalid_argument("Root contact requires calibrated character contacts");
   auto validateSupport=[](Point p,float limit){if(!std::isfinite(p.x)||!std::isfinite(p.y)||!std::isfinite(p.z)||double(p.x)*p.x+double(p.y)*p.y+double(p.z)*p.z>double(limit)*limit+1e-5)throw std::invalid_argument("Garment support exceeds source acceleration budget");};
   validateSupport(frame.garment.shaftAcceleration,maximumShaftSupportAcceleration);for(auto p:frame.garment.lobeAcceleration)validateSupport(p,maximumLobeSupportAcceleration);
   kernel::surfaceGarmentEnabled=frame.garment.enabled;
@@ -126,6 +127,7 @@ struct Session::Impl {
   for(double& value:kernel::surfaceGeometryMilliseconds)value=0;
 #endif
   kernel::collisionCapsuleOverride=bool(frame.thighEndpoints);
+  kernel::surfaceRootContactEnabled=frame.rootContacts;
   kernel::surfaceCollisionEnabled=bool(frame.collision);
   if(frame.collision){
    const auto& c=*frame.collision;kernel::surfaceTargetPelvisRadius=c.pelvisRadius;

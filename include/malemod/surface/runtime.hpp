@@ -26,6 +26,9 @@ struct Frame {
  // reference pose; it must not be described as observing another game's legs.
  std::optional<std::array<Point,4>> thighEndpoints;
  std::optional<CollisionCalibration> collision;
+ // Explicit calibrated free-section reaction on the angular root drive.
+ // The rest command and sewn root position remain unchanged. Default off.
+ bool rootContacts=false;
  // Target character rest samples, already calibrated into source coordinates.
  // The source evaluates its final radial target law here without donor blur.
  std::vector<Point> collarQueries;

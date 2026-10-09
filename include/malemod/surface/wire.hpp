@@ -9,7 +9,7 @@
 // Versioned numerical messages. Transport, process handles, engine resources
 // and graphics buffers belong to the adapter. Never transmit C++ object layouts.
 namespace malemod::surface::wire {
-constexpr std::uint32_t version=6;
+constexpr std::uint32_t version=7;
 constexpr std::size_t maximumBytes=16*1024*1024;
 constexpr std::uint32_t maximumVertices=60000,maximumIndices=360000;
 using Bytes=std::vector<std::uint8_t>;
@@ -107,6 +107,8 @@ inline Bytes Encode(const Request& q){
  w.Float(q.frame.seconds);w.Float(q.frame.pitchForce);w.Float(q.frame.yawForce);
  w.U32(q.frame.thighEndpoints?1:0);if(q.frame.thighEndpoints)w.Points(*q.frame.thighEndpoints);
  w.U32(q.frame.collision?1:0);if(q.frame.collision){for(float r:q.frame.collision->thighRadii)w.Float(r);w.Points(q.frame.collision->pelvisEndpoints);w.Float(q.frame.collision->pelvisRadius);}
+ if(q.frame.rootContacts&&!q.frame.collision)throw std::invalid_argument("Root contact needs measured character envelopes");
+ w.U32(q.frame.rootContacts?1:0);
  w.U32(std::uint32_t(q.frame.collarQueries.size()));w.Points(q.frame.collarQueries);
  const auto& c=q.frame.clinical;w.U32(c.active?1:0);w.Double(c.time);w.U32(c.throbMode);w.Float(c.sizeTime);w.Float(c.twitchTime);w.Float(c.lateralWobbleDegrees);for(float x:c.angleGain)w.Float(x);for(float x:c.lateralGain)w.Float(x);
  w.U32(q.frame.garment.enabled?1:0);w.Point3(q.frame.garment.shaftAcceleration);w.Points(q.frame.garment.lobeAcceleration);
@@ -124,6 +126,7 @@ inline Request DecodeRequest(const Bytes& bytes){
  if(thigh){q.frame.thighEndpoints=std::array<Point,4>{};r.Points(*q.frame.thighEndpoints);}
  auto calibrated=r.U32();if(calibrated>1)throw std::invalid_argument("Invalid collision flag");
  if(calibrated){q.frame.collision=CollisionCalibration{};for(float& radius:q.frame.collision->thighRadii)radius=r.Float();r.Points(q.frame.collision->pelvisEndpoints);q.frame.collision->pelvisRadius=r.Float();}
+ auto rootContacts=r.U32();if(rootContacts>1||(rootContacts&&!calibrated))throw std::invalid_argument("Invalid calibrated root contact flag");q.frame.rootContacts=rootContacts!=0;
  auto queries=r.U32();if(queries>20000)throw std::invalid_argument("Too many collar queries");q.frame.collarQueries.resize(queries);r.Points(q.frame.collarQueries);
  auto active=r.U32();if(active>1)throw std::invalid_argument("Invalid clinical active flag");auto& c=q.frame.clinical;c.active=active;c.time=r.Double();c.throbMode=r.U32();c.sizeTime=r.Float();c.twitchTime=r.Float();c.lateralWobbleDegrees=r.Float();for(float& x:c.angleGain)x=r.Float();for(float& x:c.lateralGain)x=r.Float();
  auto garment=r.U32();if(garment>1)throw std::invalid_argument("Invalid garment support flag");q.frame.garment.enabled=garment!=0;q.frame.garment.shaftAcceleration=r.Point3();r.Points(q.frame.garment.lobeAcceleration);

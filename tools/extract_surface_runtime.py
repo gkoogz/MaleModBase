@@ -75,6 +75,7 @@ prelude='''// Generated full numerical kernel; see tools/extract_surface_runtime
 #include <malemod/surface/pelvic_frame.hpp>
 #include <malemod/surface/garment_support.hpp>
 #include <malemod/surface/garment_impulse.hpp>
+#include <malemod/surface/root_contact.hpp>
 #include <malemod/clinical/teaching_sequence.h>
 #ifndef _MSC_VER
 #define __forceinline inline
@@ -141,7 +142,7 @@ for d in sorted(decl,key=position):
  if d['name']=='PDInput':
   storage='static ' if args.process_isolated else 'static thread_local '
   parts.append(storage+'bool surfaceGarmentEnabled=false,surfaceGarmentContactReaction=false,surfaceGarmentPendingReady=false;\n'+storage+'V3 surfaceGarmentShaft{},surfaceGarmentLobes[2]{},surfaceGarmentPendingRod[12]{},surfaceGarmentPendingLobes[2]{},surfaceGarmentPendingAngular[2]{};\n'+storage+'::malemod::surface::GarmentImpulseCursor surfaceGarmentCursor;')
-  parts.append(storage+'bool surfaceCollisionEnabled=false;\n'+storage+'float surfaceThighRadii[2]{7.2f,7.2f},surfacePelvisRadius=6.4f,surfaceTargetThighRadii[2]{},surfaceTargetPelvisRadius=0;\n'+storage+'V3 surfacePelvis[2]{{3.f,0.f,70.f},{5.4f,0.f,86.f}},surfaceOldPelvis[2]{},surfaceTargetPelvis[2]{};')
+  parts.append(storage+'bool surfaceCollisionEnabled=false,surfaceRootContactEnabled=false;\n'+storage+'float surfaceThighRadii[2]{7.2f,7.2f},surfacePelvisRadius=6.4f,surfaceTargetThighRadii[2]{},surfaceTargetPelvisRadius=0;\n'+storage+'V3 surfacePelvis[2]{{3.f,0.f,70.f},{5.4f,0.f,86.f}},surfaceOldPelvis[2]{},surfaceTargetPelvis[2]{};')
   s=s.replace('float gait,side;', 'float gait,side; V3 surfacePelvis[2];float surfaceThighRadii[2],surfacePelvisRadius;')
  if d['name']=='Build' and d['parent']=='UnifiedCollar':
   # Observe the actual cache rebuild; do not duplicate its invalidation policy
@@ -177,6 +178,19 @@ for d in sorted(decl,key=position):
  if d['name']=='UpdateCompliantDynamics':
   s=s.replace('memcpy(pdThigh,target.thigh,sizeof(pdThigh));', 'memcpy(pdThigh,target.thigh,sizeof(pdThigh));memcpy(surfacePelvis,target.surfacePelvis,sizeof(surfacePelvis));')
  if d['name']=='StepConstraintSolver':
+  root_mass='pdInvMass[i]=i<2?0.f:1.f/shaftMass;'
+  if s.count(root_mass)!=1:raise ValueError('Source rod root mass changed')
+  s=s.replace(root_mass,root_mass+'if(i==1&&surfaceRootContactEnabled){float segment=constraintRestLength/(shaftNodeCount-1);pdInvMass[i]=float(::malemod::surface::root_contact::PointInverseMass(segment,(1.f+physValues[1]*.016f)*max(.65f,sqrtf(constraintRestLength/24.f))));}')
+  at=' PDSolveContactVelocities(dt);'
+  if s.count(at)!=1:raise ValueError('Source contact velocity pass changed')
+  s=s.replace(at,at+"""if(surfaceRootContactEnabled){
+   namespace contact=::malemod::surface::root_contact;auto cp=[](V3 p){return contact::Point{p.x,p.y,p.z};};
+   V3 first=Unit(pdPosition[1]-root)*segment;pdPosition[1]=root+first;
+   const double drive=rootDriveAngle*3.1415926535/180.;
+   const auto state=contact::FromJoint(cp(root),cp(pdPosition[1]),cp(pdVelocity[1]),drive+shaftSpring.pitch);
+   shaftSpring.pitch=float(state.pitch-drive);shaftSpring.yaw=float(state.yaw);
+   shaftSpring.pitchVelocity=float(state.pitchVelocity);shaftSpring.yawVelocity=float(state.yawVelocity);
+  }""")
   old='V3 acceleration{0.f,side*86.f*response,gait*86.f*response-gravity};float drag=i<pdBody0?shaftDrag:bodyDrag;'
   new='''V3 acceleration{0.f,side*86.f*response,gait*86.f*response-gravity};
   if(surfaceGarmentEnabled&&!surfaceGarmentContactReaction){auto a=i<pdBody0?surfaceGarmentShaft:surfaceGarmentLobes[i-pdBody0];auto bounded=::malemod::surface::BoundGarmentAcceleration({a.x,a.y,a.z},gravity);acceleration=acceleration+V3{bounded.x,bounded.y,bounded.z};}

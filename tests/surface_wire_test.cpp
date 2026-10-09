@@ -6,12 +6,20 @@ int main(){
  wire::Request q;q.reset=true;q.frame.seconds=.01f;q.frame.pitchForce=.2f;q.frame.yawForce=-.3f;
  q.frame.thighEndpoints=std::array<Point,4>{{{1,2,3},{4,5,6},{7,8,9},{10,11,12}}};
  q.frame.collision=CollisionCalibration{{4,5},{{{1,2,3},{1,2,9}}},6};
+ q.frame.rootContacts=true;
  q.frame.collarQueries={{1,2,3},{4,5,6}};q.frame.clinical.active=true;q.frame.clinical.time=7.123456789123;q.frame.clinical.throbMode=3;q.frame.clinical.lateralGain={-.5f,0,.5f,1};
  q.frame.garment.enabled=true;q.frame.garment.shaftAcceleration={1,-2,4};q.frame.garment.lobeAcceleration={{{0,1,3},{0,-1,3}}};
  for(unsigned i=1;i<18;i++)q.controls.values[i]=float(i+1);
  auto bytes=wire::Encode(q);auto decoded=wire::DecodeRequest(bytes);
  if(wire::Encode(decoded)!=bytes)return 1;
  if(decoded.frame.clinical.time!=q.frame.clinical.time)return 14;
+ if(!decoded.frame.rootContacts)return 19;
+ auto uncalibrated=q;uncalibrated.frame.collision.reset();
+ try{wire::Encode(uncalibrated);return 20;}catch(const std::invalid_argument&){}
+ // In this complete measured request, the explicit root flag follows the
+ // four thigh endpoints and measured pelvis/radius block at byte184.
+ auto invalidRoot=bytes;invalidRoot[184]=2;
+ try{wire::DecodeRequest(invalidRoot);return 21;}catch(const std::invalid_argument&){}
  Output o{};Surface s;s.positions={{1,2,3},{2,3,4},{3,4,5}};s.normals={{0,0,1},{0,0,1},{0,0,1}};s.tangents={{1,0,0},{1,0,0},{1,0,0}};s.uv={{{0,0}},{{.5f,1}},{{1,0}}};s.sourceVertexIDs={10,11,12};
  o.anatomy=s;o.body={s,s};o.anatomyIndices={0,1,2};o.restLength=24;o.proximalRadius=3;o.rootDirection={1,0,0};
  o.collarMetric={{10,0,83},{1,0,0},{0,0,1},3,24,27};
