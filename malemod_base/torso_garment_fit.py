@@ -33,6 +33,48 @@ def refine_triangles(positions, triangles):
     return np.array(out),np.array(faces),np.array(donors)
 
 
+def expand_projected_sections(positions, triangles, supports, clearance, spacing=2.):
+    """Expand a common positive X scale field instead of flattening folds.
+
+    Y/Z and source cut boundaries remain ordered. Every vertex at the same
+    height/sign shares the same scale, including UV aliases. Solving measured
+    face support constraints on this field preserves the depth of neighboring
+    source folds which independent nearest-surface projection would collapse.
+    """
+    out=np.array(positions,dtype=float,copy=True);supports=np.asarray(supports,dtype=float)
+    if clearance<=0 or spacing<=0 or not np.isfinite(out).all():raise ValueError("Invalid section fit")
+    knots=np.arange(out[:,2].min()-spacing,out[:,2].max()+2*spacing,spacing)
+    fraction=(out[:,2]-knots[0])/spacing;left=np.floor(fraction).astype(int);blend=fraction-left
+    basis=np.zeros((len(out),len(knots)))
+    basis[np.arange(len(out)),left]=1-blend;basis[np.arange(len(out)),left+1]=blend
+    scales=np.ones((2,len(knots)));constraints=[]
+    for face in np.asarray(triangles,dtype=np.int64):
+        a,b,c=out[face];sign=1 if np.all(out[face,0]>.05) else (-1 if np.all(out[face,0]<-.05) else 0)
+        if not sign:continue
+        det=(b[1]-a[1])*(c[2]-a[2])-(b[2]-a[2])*(c[1]-a[1])
+        if abs(det)<1e-9:continue
+        q=supports[(supports[:,0]*sign>0)&np.all(supports[:,1:]>=out[face,1:].min(0)-1e-6,axis=1)&np.all(supports[:,1:]<=out[face,1:].max(0)+1e-6,axis=1)]
+        u=((q[:,1]-a[1])*(c[2]-a[2])-(q[:,2]-a[2])*(c[1]-a[1]))/det
+        v=((b[1]-a[1])*(q[:,2]-a[2])-(b[2]-a[2])*(q[:,1]-a[1]))/det
+        weights=np.column_stack((1-u-v,u,v));valid=np.all(weights>=-1e-6,axis=1)
+        for w,x in zip(weights[valid],q[valid,0]):
+            coefficient=(w*sign*out[face,0])@basis[face]
+            constraints.append((int(sign<0),coefficient,float(sign*x+clearance)))
+    for _ in range(8):
+        # Only raise valleys; this preserves every previously satisfied support.
+        for side in range(2):
+            smooth=np.convolve(np.pad(scales[side],(2,2),mode='edge'),[1/16,4/16,6/16,4/16,1/16],mode='valid')
+            scales[side]=np.maximum(scales[side],smooth)
+        for side,c,target in constraints:
+            missing=target-np.dot(c,scales[side])
+            if missing>1e-8:scales[side]+=c*missing/np.dot(c,c)
+    for side,c,target in constraints:
+        if target-np.dot(c,scales[side])>1e-5:raise ValueError("Section clearance did not converge")
+    factors=np.sum(basis*scales[(out[:,0]<0).astype(int)],axis=1)
+    out[:,0]*=factors
+    return out
+
+
 def refit_radially(positions, body, triangles, clearance, center=(0., 0.), fallback_distance=0.):
     positions=np.asarray(positions, dtype=float)
     body=np.asarray(body, dtype=float)

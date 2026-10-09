@@ -1,8 +1,14 @@
 import unittest
 import numpy as np
-from malemod_base.torso_garment_fit import refit_radially,clear_projected_faces,refine_triangles
+from malemod_base.torso_garment_fit import refit_radially,clear_projected_faces,refine_triangles,expand_projected_sections
 
 class FitTest(unittest.TestCase):
+ def test_section_expansion_preserves_fold_depth_and_aliases(self):
+  p=np.array([[2,-1,0],[2,1,0],[2,0,2],[2,-1,0],[2.1,-1,0]],float)
+  q=expand_projected_sections(p,[[0,1,2]],[[3,0,1]],.2)
+  np.testing.assert_array_equal(q[0],q[3]);np.testing.assert_array_equal(q[:,1:],p[:,1:])
+  self.assertAlmostEqual(q[4,0]/q[0,0],2.1/2)
+  self.assertGreaterEqual(np.dot([.25,.25,.5],q[:3,0]),3.2-1e-5)
  def test_clearance_moves_uv_aliases_together(self):
   p=np.array([[2,-1,0],[2,1,0],[2,0,2],[2,-1,0]],float)
   q=clear_projected_faces(p,[[0,1,2]],[[3,0,1]],.2,aliases=[0,1,2,0])
