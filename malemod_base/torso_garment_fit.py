@@ -125,6 +125,38 @@ def expand_projected_sections(positions, triangles, supports, clearance, spacing
     return out
 
 
+def curved_boundary_midpoints(source, triangles, refined, lineage, enabled, maximum_offset):
+    """Round newly refined cut edges while retaining every original corner.
+
+    Adapter-supplied masks select measured cuts. A bounded cubic midpoint uses
+    the neighbouring original edge tangents; texture/skin lineage stays on the
+    original edge. UV seams weld only for boundary connectivity.
+    """
+    p=np.asarray(source,dtype=float);q=np.array(refined,dtype=float,copy=True)
+    enabled=np.asarray(enabled,dtype=bool)
+    if enabled.shape!=(len(p),) or maximum_offset<=0 or not np.isfinite(maximum_offset):raise ValueError('Invalid cut mask or rounding bound')
+    keys={};ids=[];points=[]
+    for v in p:
+        key=tuple(np.round(v,5))
+        if key not in keys:keys[key]=len(points);points.append(v)
+        ids.append(keys[key])
+    ids=np.asarray(ids);points=np.asarray(points);edges={}
+    for f in np.asarray(triangles,dtype=int):
+        for a,b in zip(f,np.roll(f,-1)):
+            key=tuple(sorted((int(ids[a]),int(ids[b]))));edges[key]=edges.get(key,0)+1
+    neighbors={}
+    for (a,b),count in edges.items():
+        if count==1:neighbors.setdefault(a,set()).add(b);neighbors.setdefault(b,set()).add(a)
+    for i,(a,b) in enumerate(np.asarray(lineage,dtype=int)):
+        x,y=int(ids[a]),int(ids[b]);edge=tuple(sorted((x,y)))
+        if a==b or not enabled[a] or not enabled[b] or edges.get(edge)!=1 or len(neighbors.get(x,()))!=2 or len(neighbors.get(y,()))!=2:continue
+        before=next(v for v in neighbors[x] if v!=y);after=next(v for v in neighbors[y] if v!=x)
+        midpoint=(-points[before]+9*points[x]+9*points[y]-points[after])/16
+        delta=midpoint-(p[a]+p[b])*.5;length=np.linalg.norm(delta)
+        q[i]+=delta*min(1.,maximum_offset/max(length,1e-12))
+    return q
+
+
 def refit_radially(positions, body, triangles, clearance, center=(0., 0.), fallback_distance=0.):
     positions=np.asarray(positions, dtype=float)
     body=np.asarray(body, dtype=float)

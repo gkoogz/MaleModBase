@@ -4,6 +4,23 @@ Keep the original garment cut, UVs, materials, folds and donor lineage. A larger
 torso needs measured fitting, not a replacement procedural cotton/denim look.
 Original licensed pixel assets stay local to each adapter's build.
 
+`garment_shell.clip_scalar_band` clips an adapter-measured material strip with
+source-face barycentric lineage. `thin_shell` adds a shallow inner face and cut
+walls, welding positional aliases only for topology and offset directions.
+It retains separate source-corner donors and separate wall shading groups.
+Thickness and strip fields are adapter inputs in measured source units.
+Wolverine adopts this through a Base pin for the original full-waist leather
+chart and open fly. Other spokes author their own measured strips and thickness;
+Witcher remains paused. This geometry does not certify body collision.
+
+`torso_garment_fit.curved_boundary_midpoints` rounds newly subdivided cut edges
+using their original edge tangents, a measured adapter mask and a bounded
+offset. Original corners remain exact. Skin/UV lineage stays on the original
+edge. Wolverine uses it at the stock tank neckline/armholes and recomputes
+shading normals from the actually skinned mesh, preserving UV aliases.
+Tests: `python -m unittest tests.test_garment_shell tests.test_torso_garment_fit`.
+Native, campaign and full attachment acceptance must be recorded independently.
+
 `torso_garment_fit.expand_projected_sections` supports an optional smooth signed
 offset field. It translates each front/back height section, vanishes at the
 side join, and retains source Y/Z coordinates. The adapter supplies measured

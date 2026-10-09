@@ -1,8 +1,18 @@
 import unittest
 import numpy as np
 from malemod_base.torso_garment_fit import refit_between_bodies,refit_radially,clear_projected_faces,refine_triangles,expand_projected_sections,smooth_tubular_chart
+from malemod_base.torso_garment_fit import curved_boundary_midpoints
 
 class FitTest(unittest.TestCase):
+ def test_cut_rounding_keeps_original_corners_and_limits_new_offsets(self):
+  p=np.array([[1,0,0],[0,1,0],[-1,0,0],[0,-1,0],[0,0,0]],float)
+  t=np.array([[0,1,4],[1,2,4],[2,3,4],[3,0,4]])
+  q,faces,lineage=refine_triangles(p,t)
+  rounded=curved_boundary_midpoints(p,t,q,lineage,np.ones(len(p),bool),.1)
+  np.testing.assert_array_equal(rounded[:len(p)],p)
+  self.assertLessEqual(np.linalg.norm(rounded-q,axis=1).max(),.1+1e-12)
+  edge=np.where(np.all(lineage==[0,1],axis=1))[0][0]
+  self.assertGreater(np.linalg.norm(rounded[edge]),np.linalg.norm(q[edge]))
  def test_section_offset_retains_fold_depth_and_side_join(self):
   p=np.array([[10,-1,0],[10,1,0],[10,0,2],[11,-1,0],[0,0,1]],float)
   q=expand_projected_sections(p,[[0,1,2]],[[14,0,1]],.2,spacing=4,offset_width=2)
