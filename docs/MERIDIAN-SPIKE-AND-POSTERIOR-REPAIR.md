@@ -11,7 +11,8 @@ now shares normalized axial stations across neighboring rays. Each ray is
 evaluated on its original taut envelope. This prevents neighboring triangles
 from bridging unrelated heights around a lobe and requiring isolated large
 radial corrections. Corrections are re-tautened before the next full-triangle
-certificate. Final local reversal fairing accepts only moves that preserve
+certificate. Required lifts spread to nearby rows and longitudes before the
+next certificate instead of moving an isolated vertex. Final local reversal fairing accepts only moves that preserve
 incident triangle separation and orientation. Sewn outline, pole, fixed trim,
 UV aliases, topology, full-rate following and anatomy solver cadence remain.
 
@@ -30,7 +31,7 @@ velocity. Run the five meridian/anterior source tests with assertions enabled.
 Private native poses/captures are evidence only and are excluded from Git.
 
 Current private sixteen-pose replay reduced worst local-return measure from
-4.04348 to 1.52538 source units (62.3 percent), with no outer failure. This is
+4.04348 to 0.99914 source units (75.3 percent), with no outer failure. This is
 not proof that every sharp shape is eliminated or that game FPS improves.
 Full-solver forced-trap replay remains rearward with the guard disabled and
 returns both supports forward with it enabled. Synthetic crouch capsules and

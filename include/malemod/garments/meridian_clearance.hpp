@@ -344,6 +344,17 @@ inline WrapReceipt ClearMeridians(std::vector<Vec>& points,unsigned columns,unsi
    FairMeridianReversals(work,columns,rows,faces,faceCount,hulls);
    points.swap(work);return receipt;
   }
+  // A separating triangle can demand a large move at just one vertex. Share
+  // that lift with adjacent longitudes/stations before applying it, retaining
+  // every demanded correction. The next pass rechecks all affected faces.
+  for(unsigned pass=0;pass<3;pass++){
+   const auto original=increments;
+   for(unsigned row=1;row<rows;row++)for(unsigned col=0;col<columns;col++){
+    unsigned i=row*columns+col;float neighbor=(std::max)(original[row*columns+(col+columns-1)%columns],original[row*columns+(col+1)%columns]);
+    if(row>1)neighbor=(std::max)(neighbor,original[i-columns]);if(row+1<rows)neighbor=(std::max)(neighbor,original[i+columns]);
+    increments[i]=(std::max)(original[i],neighbor*.65f);
+   }
+  }
   for(unsigned i=columns;i<poleIndex;i++){if(!std::isfinite(increments[i])||increments[i]>100)throw std::runtime_error("Unbounded live wrap correction");work[i]=Add(work[i],Mul(directions[i],increments[i]));}
   // Collision correction must not leave local dents between raised vertices.
   // Re-tauten before the next authoritative full-triangle certificate pass.
