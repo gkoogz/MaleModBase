@@ -4,6 +4,17 @@ Keep the original garment cut, UVs, materials, folds and donor lineage. A larger
 torso needs measured fitting, not a replacement procedural cotton/denim look.
 Original licensed pixel assets stay local to each adapter's build.
 
+`torso_garment_fit.wrap_body_surface` fits the original garment against the
+complete measured target torso. It uses finite closest-triangle barycentrics
+and relaxes the three-dimensional displacement on the alias-welded garment
+graph, retaining the original fold chart and cut topology as inputs. The cut
+positions move with the torso fit; their original donor/UV lineage remains.
+Clearance is a target before relaxation, not a final collision certificate.
+Adapters must reject overturned source faces and inspect native chest shape,
+cut visibility and motion. Wolverine adopts this after the expanded offset
+recipes were rejected for raised pec pockets. Other spokes need complete
+measured body patches and pinned adoption; Witcher remains paused.
+
 `garment_shell.clip_scalar_band` clips an adapter-measured material strip with
 source-face barycentric lineage. `thin_shell` adds a shallow inner face and cut
 walls, welding positional aliases only for topology and offset directions.

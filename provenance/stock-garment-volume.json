@@ -3,9 +3,9 @@
   "sourceSpokeCommit": "4f6f137b94484ca70e20009f1307f384bd34cb25",
   "modules": {
     "malemod_base/garment_shell.py": "fe788e8437003193edad96cd828460a431eb9f4700f4bf68dc5f41b7beb0e711",
-    "malemod_base/torso_garment_fit.py": "d8766afa8ce8985c0e742fbb793c8aebd19c3191d1380d4250459798c4ded394",
+    "malemod_base/torso_garment_fit.py": "29d8742ce10f9420a7328cd3e31a53b4cf430cf3f655028a03878eb8ab29eeef",
     "tests/test_garment_shell.py": "625b8975bd6e6df0d19153a66ab3805a9b183f650f6a9ebbd6834d18a8268bae",
-    "tests/test_torso_garment_fit.py": "bef86523bea6ab74935bb5958beb6999cfc36b607cb9bc61c7b9a944c578c1ea",
+    "tests/test_torso_garment_fit.py": "723343cba6da3df9c7098bf044f987e406f0f5db26b9e623c7f4a90aae6dd965",
     "malemod_base/radial_garment_coverage.py": "93b40eddcf969abb4dfe8a311da8885121e50f1e88f5fd020fe5f104448b2eda",
     "tests/test_radial_garment_coverage.py": "2de34873027ef939f3e4ec2e2002d49091c6be7f0903f3ed34c8b8a4f6704b02"
   },

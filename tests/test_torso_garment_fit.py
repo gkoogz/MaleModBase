@@ -1,9 +1,29 @@
 import unittest
 import numpy as np
 from malemod_base.torso_garment_fit import refit_between_bodies,refit_radially,clear_projected_faces,refine_triangles,expand_projected_sections,smooth_tubular_chart
-from malemod_base.torso_garment_fit import curved_boundary_midpoints,_bounded_smooth_field
+from malemod_base.torso_garment_fit import curved_boundary_midpoints,_bounded_smooth_field,wrap_body_surface
 
 class FitTest(unittest.TestCase):
+ def test_surface_wrap_uses_local_contour_and_finite_donors(self):
+  body=np.array([[2,-2,0],[2,2,0],[3,0,2]],float)
+  p=np.array([[1.8,-.5,.5],[1.8,.5,.5],[2.4,0,1.5],[1.8,-.5,.5]])
+  q,bindings=wrap_body_surface(p,[[0,1,2],[3,1,2]],body,[[0,1,2]],.2,smoothing_passes=0)
+  np.testing.assert_allclose(q[0],q[3],atol=1e-12)
+  normal=np.cross(body[1]-body[0],body[2]-body[0]);normal/=np.linalg.norm(normal)
+  for point,(face,weights,gap) in zip(q,bindings):
+   self.assertTrue(np.all(np.asarray(weights)>=-1e-12));self.assertAlmostEqual(sum(weights),1.)
+   contact=np.asarray(weights)@body
+   np.testing.assert_allclose(point,contact+normal*.2,atol=1e-12)
+  self.assertGreater(q[2,0]-q[0,0],.4)
+  r,_=wrap_body_surface(p,[[0,1,2],[3,1,2]],body,[[0,1,2]],.2,smoothing_passes=10)
+  np.testing.assert_allclose(r[0],r[3],atol=1e-12)
+  self.assertTrue(np.isfinite(r).all())
+ def test_surface_wrap_rejects_invalid_inputs(self):
+  p=np.array([[1,0,0],[1,1,0],[1,0,1]],float);tri=[[0,1,2]]
+  for clearance,steps in [(0,10),(.2,-1),(.2,1.5),(float('nan'),10)]:
+   with self.assertRaises(ValueError):wrap_body_surface(p,tri,p,tri,clearance,steps)
+  with self.assertRaises(ValueError):wrap_body_surface(p,tri,p,[[0,0,1]],.2)
+  with self.assertRaises(ValueError):wrap_body_surface(p,[[0,1,5]],p,tri,.2)
  def test_smooth_field_bounds_peaks_and_certifies_all_clearances(self):
   a=np.array([[.1,.9,0,0],[0,.3,.7,0],[0,0,.05,.95],[.5,.5,0,0]])
   b=np.array([4.,3.,1.,4.])

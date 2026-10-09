@@ -220,6 +220,57 @@ def curved_boundary_midpoints(source, triangles, refined, lineage, enabled, maxi
     return q
 
 
+def wrap_body_surface(positions, garment_triangles, body, body_triangles, clearance, smoothing_passes=10):
+    """Fit a stock garment using the complete measured body's closest surface.
+
+    Relax the three-dimensional displacement, not the stock garment positions,
+    so the original fold chart, cut topology and render aliases remain inputs.
+    Bindings are finite triangle barycentrics on the supplied body. Clearance
+    is an authoring target before relaxation, not a post-relaxation collision
+    certificate; adapters must inspect their native fit and cut visibility.
+    """
+    p=np.asarray(positions,float);body=np.asarray(body,float)
+    faces=np.asarray(garment_triangles,int);tri=np.asarray(body_triangles,int)
+    if any(q.ndim!=2 or q.shape[1]!=3 or not np.isfinite(q).all() for q in (p,body)):
+        raise ValueError('Expected finite Nx3 surfaces')
+    for indices,points in ((faces,p),(tri,body)):
+        if indices.ndim!=2 or indices.shape[1]!=3 or not len(indices) or np.any(indices<0) or np.any(indices>=len(points)):
+            raise ValueError('Invalid surface topology')
+    if not np.isfinite(clearance) or clearance<=0 or not isinstance(smoothing_passes,int) or smoothing_passes<0:
+        raise ValueError('Positive clearance and nonnegative integer relaxation required')
+    a=body[tri[:,0]];e1=body[tri[:,1]]-a;e2=body[tri[:,2]]-a
+    n=np.cross(e1,e2);ns=np.sum(n*n,axis=1)
+    if np.any(ns<1e-20):raise ValueError('Degenerate body surface')
+    normals=n/np.sqrt(ns)[:,None]
+    aa=np.sum(e1*e1,1);bb=np.sum(e2*e2,1);ab=np.sum(e1*e2,1);den=aa*bb-ab*ab
+    delta=[];bindings=[]
+    for q in p:
+        plane=q-n*(np.sum((q-a)*n,1)/ns)[:,None]
+        ap=np.sum((plane-a)*e1,1);bp=np.sum((plane-a)*e2,1)
+        u=(bb*ap-ab*bp)/den;v=(aa*bp-ab*ap)/den
+        w=np.column_stack((1-u-v,u,v));distance=np.linalg.norm(plane-q,axis=1)
+        distance[np.any(w<0,axis=1)]=np.inf
+        j=int(np.argmin(distance));choices=[(distance[j],j,plane[j],w[j])]
+        for start,edge,wa,wb in ((a,e1,[1,0,0],[-1,1,0]),(a,e2,[1,0,0],[-1,0,1]),(a+e1,e2-e1,[0,1,0],[0,-1,1])):
+            fraction=np.clip(np.sum((q-start)*edge,1)/np.sum(edge*edge,1),0,1)
+            points=start+fraction[:,None]*edge;distance=np.linalg.norm(points-q,axis=1)
+            j=int(np.argmin(distance));choices.append((distance[j],j,points[j],np.array(wa)+fraction[j]*np.array(wb)))
+        _,j,point,weights=min(choices,key=lambda item:item[0]);normal=normals[j].copy()
+        # The closed torso's supplied frame defines the outward radial half
+        # space; winding may differ between observed body resources.
+        if np.dot(normal[:2],point[:2])<0:normal=-normal
+        delta.append(point+clearance*normal-q)
+        bindings.append((j,weights.tolist(),float(clearance)))
+    _,ids=np.unique(np.round(p,5),axis=0,return_inverse=True)
+    neighbors=[set() for _ in range(int(ids.max())+1)]
+    for face in faces:
+        for i in face:neighbors[ids[i]].update(ids[face]);neighbors[ids[i]].discard(ids[i])
+    delta=np.asarray(delta);field=np.array([delta[ids==i].mean(0) for i in range(len(neighbors))])
+    for _ in range(smoothing_passes):
+        field=np.array([.5*field[i]+.5*field[sorted(adjacent)].mean(0) if adjacent else field[i] for i,adjacent in enumerate(neighbors)])
+    return p+field[ids],bindings
+
+
 def refit_radially(positions, body, triangles, clearance, center=(0., 0.), fallback_distance=0.):
     positions=np.asarray(positions, dtype=float)
     body=np.asarray(body, dtype=float)
