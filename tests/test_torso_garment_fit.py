@@ -1,9 +1,27 @@
 import unittest
 import numpy as np
 from malemod_base.torso_garment_fit import refit_between_bodies,refit_radially,clear_projected_faces,refine_triangles,expand_projected_sections,smooth_tubular_chart
-from malemod_base.torso_garment_fit import curved_boundary_midpoints,_bounded_smooth_field,wrap_body_surface
+from malemod_base.torso_garment_fit import curved_boundary_midpoints,_bounded_smooth_field,wrap_body_surface,clear_body_cut_band
 
 class FitTest(unittest.TestCase):
+ def test_cut_clearance_repairs_local_penetration_without_moving_remote_chart(self):
+  # A relaxed cut is inside a measured plane; a separate chart must stay exact.
+  body=np.array([[2,-5,-5],[2,5,-5],[2,5,5],[2,-5,5]],float)
+  p=np.array([[1.8,-1,0],[1.8,1,0],[1.8,0,2],[1.8,-1,0],
+              [4,10,0],[4,12,0],[4,11,2]],float)
+  faces=[[0,1,2],[4,5,6]];mask=np.array([1,1,0,1,0,0,0],bool)
+  q=clear_body_cut_band(p,faces,body,[[0,1,2],[0,2,3]],mask,.2)
+  np.testing.assert_allclose(q[[0,1,3],0],2.2,atol=1e-6)
+  np.testing.assert_array_equal(q[0],q[3]);np.testing.assert_array_equal(q[4:],p[4:])
+  np.testing.assert_array_equal(q[:,1:],p[:,1:])
+  np.testing.assert_array_equal(clear_body_cut_band(p,faces,body,[[0,1,2],[0,2,3]],np.zeros(7,bool),.2),p)
+ def test_cut_clearance_ignores_selected_interior_and_rejects_invalid_mask(self):
+  body=np.array([[2,-5,-5],[2,5,-5],[2,0,5]],float)
+  p=np.array([[1.8,-1,0],[1.8,1,0],[1.8,0,2],[1.8,0,.5]],float)
+  faces=[[0,1,3],[1,2,3],[2,0,3]]
+  np.testing.assert_array_equal(clear_body_cut_band(p,faces,body,[[0,1,2]],[0,0,0,1],.2),p)
+  with self.assertRaises(ValueError):clear_body_cut_band(p,faces,body,[[0,1,2]],[True],.2)
+  with self.assertRaises(ValueError):clear_body_cut_band(p,faces,body,[[0,1,2]],[1]*4,.2,contact_passes=0)
  def test_surface_wrap_uses_local_contour_and_finite_donors(self):
   body=np.array([[2,-2,0],[2,2,0],[3,0,2]],float)
   p=np.array([[1.8,-.5,.5],[1.8,.5,.5],[2.4,0,1.5],[1.8,-.5,.5]])

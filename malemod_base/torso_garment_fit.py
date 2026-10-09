@@ -220,6 +220,31 @@ def curved_boundary_midpoints(source, triangles, refined, lineage, enabled, maxi
     return q
 
 
+def _closest_body_contacts(p, body, tri):
+    """Finite measured contacts; callers validate surfaces and outward frame."""
+    a=body[tri[:,0]];e1=body[tri[:,1]]-a;e2=body[tri[:,2]]-a
+    n=np.cross(e1,e2);ns=np.sum(n*n,axis=1)
+    if np.any(ns<1e-20):raise ValueError('Degenerate body surface')
+    normals=n/np.sqrt(ns)[:,None]
+    aa=np.sum(e1*e1,1);bb=np.sum(e2*e2,1);ab=np.sum(e1*e2,1);den=aa*bb-ab*ab
+    points=[];outward=[];bindings=[]
+    for q in p:
+        plane=q-n*(np.sum((q-a)*n,1)/ns)[:,None]
+        ap=np.sum((plane-a)*e1,1);bp=np.sum((plane-a)*e2,1)
+        u=(bb*ap-ab*bp)/den;v=(aa*bp-ab*ap)/den
+        w=np.column_stack((1-u-v,u,v));distance=np.linalg.norm(plane-q,axis=1)
+        distance[np.any(w<0,axis=1)]=np.inf
+        j=int(np.argmin(distance));choices=[(distance[j],j,plane[j],w[j])]
+        for start,edge,wa,wb in ((a,e1,[1,0,0],[-1,1,0]),(a,e2,[1,0,0],[-1,0,1]),(a+e1,e2-e1,[0,1,0],[0,-1,1])):
+            fraction=np.clip(np.sum((q-start)*edge,1)/np.sum(edge*edge,1),0,1)
+            candidates=start+fraction[:,None]*edge;distance=np.linalg.norm(candidates-q,axis=1)
+            j=int(np.argmin(distance));choices.append((distance[j],j,candidates[j],np.array(wa)+fraction[j]*np.array(wb)))
+        _,j,point,weights=min(choices,key=lambda item:item[0]);normal=normals[j].copy()
+        if np.dot(normal[:2],point[:2])<0:normal=-normal
+        points.append(point);outward.append(normal);bindings.append((j,weights.tolist()))
+    return np.asarray(points),np.asarray(outward),bindings
+
+
 def wrap_body_surface(positions, garment_triangles, body, body_triangles, clearance, smoothing_passes=10):
     """Fit a stock garment using the complete measured body's closest surface.
 
@@ -238,29 +263,9 @@ def wrap_body_surface(positions, garment_triangles, body, body_triangles, cleara
             raise ValueError('Invalid surface topology')
     if not np.isfinite(clearance) or clearance<=0 or not isinstance(smoothing_passes,int) or smoothing_passes<0:
         raise ValueError('Positive clearance and nonnegative integer relaxation required')
-    a=body[tri[:,0]];e1=body[tri[:,1]]-a;e2=body[tri[:,2]]-a
-    n=np.cross(e1,e2);ns=np.sum(n*n,axis=1)
-    if np.any(ns<1e-20):raise ValueError('Degenerate body surface')
-    normals=n/np.sqrt(ns)[:,None]
-    aa=np.sum(e1*e1,1);bb=np.sum(e2*e2,1);ab=np.sum(e1*e2,1);den=aa*bb-ab*ab
-    delta=[];bindings=[]
-    for q in p:
-        plane=q-n*(np.sum((q-a)*n,1)/ns)[:,None]
-        ap=np.sum((plane-a)*e1,1);bp=np.sum((plane-a)*e2,1)
-        u=(bb*ap-ab*bp)/den;v=(aa*bp-ab*ap)/den
-        w=np.column_stack((1-u-v,u,v));distance=np.linalg.norm(plane-q,axis=1)
-        distance[np.any(w<0,axis=1)]=np.inf
-        j=int(np.argmin(distance));choices=[(distance[j],j,plane[j],w[j])]
-        for start,edge,wa,wb in ((a,e1,[1,0,0],[-1,1,0]),(a,e2,[1,0,0],[-1,0,1]),(a+e1,e2-e1,[0,1,0],[0,-1,1])):
-            fraction=np.clip(np.sum((q-start)*edge,1)/np.sum(edge*edge,1),0,1)
-            points=start+fraction[:,None]*edge;distance=np.linalg.norm(points-q,axis=1)
-            j=int(np.argmin(distance));choices.append((distance[j],j,points[j],np.array(wa)+fraction[j]*np.array(wb)))
-        _,j,point,weights=min(choices,key=lambda item:item[0]);normal=normals[j].copy()
-        # The closed torso's supplied frame defines the outward radial half
-        # space; winding may differ between observed body resources.
-        if np.dot(normal[:2],point[:2])<0:normal=-normal
-        delta.append(point+clearance*normal-q)
-        bindings.append((j,weights.tolist(),float(clearance)))
+    contacts,normals,donors=_closest_body_contacts(p,body,tri)
+    delta=contacts+clearance*normals-p
+    bindings=[(j,w,float(clearance)) for j,w in donors]
     _,ids=np.unique(np.round(p,5),axis=0,return_inverse=True)
     neighbors=[set() for _ in range(int(ids.max())+1)]
     for face in faces:
@@ -269,6 +274,79 @@ def wrap_body_surface(positions, garment_triangles, body, body_triangles, cleara
     for _ in range(smoothing_passes):
         field=np.array([.5*field[i]+.5*field[sorted(adjacent)].mean(0) if adjacent else field[i] for i,adjacent in enumerate(neighbors)])
     return p+field[ids],bindings
+
+
+def clear_body_cut_band(positions, garment_triangles, body, body_triangles,
+                        enabled, clearance, *, plateau_steps=2, taper_steps=4,
+                        relaxation_passes=60, contact_passes=4):
+    """Clear selected cut vertices with a smooth, local translation patch.
+
+    Only true alias-welded boundary nodes selected by the adapter are contacts.
+    Each connected cut segment moves as one patch along its measured contact
+    normals, preserving small stock folds beside the cut. Two graph bands form
+    a plateau and taper; remote vertices remain exact. The body's XY radial
+    frame matches wrap_body_surface. This certifies sampled cut vertices only,
+    not face interiors, posed deformation, or general garment collision.
+    """
+    p=np.asarray(positions,float);faces=np.asarray(garment_triangles,int)
+    body=np.asarray(body,float);tri=np.asarray(body_triangles,int)
+    enabled=np.asarray(enabled,bool)
+    # Reuse the fitter's surface validation without altering this input.
+    wrap_body_surface(p,faces,body,tri,clearance,smoothing_passes=0)
+    if enabled.shape!=(len(p),):raise ValueError('Invalid measured cut mask')
+    for steps in (plateau_steps,taper_steps,relaxation_passes,contact_passes):
+        if not isinstance(steps,int) or steps<0:raise ValueError('Invalid cut-band iteration count')
+    if contact_passes<1:raise ValueError('Contact passes must be positive')
+    _,ids=np.unique(np.round(p,5),axis=0,return_inverse=True)
+    nodes=np.array([p[ids==i].mean(0) for i in range(ids.max()+1)])
+    adjacent=[set() for _ in nodes];edges={}
+    for face in ids[faces]:
+        for i in face:adjacent[i].update(face);adjacent[i].discard(i)
+        for a,b in zip(face,np.roll(face,-1)):
+            key=tuple(sorted((int(a),int(b))));edges[key]=edges.get(key,0)+1
+    cut=set(v for edge,count in edges.items() if count==1 for v in edge)
+    selected={i for i in cut if np.any(enabled[ids==i])}
+    segments=[];remaining=set(selected)
+    while remaining:
+        group={min(remaining)};pending=list(group);remaining-=group
+        while pending:
+            i=pending.pop();neighbors=adjacent[i]&remaining
+            group.update(neighbors);remaining-=neighbors;pending.extend(sorted(neighbors))
+        segments.append(sorted(group))
+    out=nodes.copy()
+    for group in segments:
+        fixed=set(group)
+        for _ in range(plateau_steps):fixed.update(j for i in list(fixed) for j in adjacent[i])
+        active=set(fixed)
+        for _ in range(taper_steps):active.update(j for i in list(active) for j in adjacent[i])
+        interior=sorted(active-fixed)
+        for _ in range(contact_passes):
+            contact,normal,_=_closest_body_contacts(out[group],body,tri)
+            gap=np.sum((out[group]-contact)*normal,axis=1)
+            need=np.maximum(0,clearance-gap)
+            if need.max()<=1e-6:break
+            direction=np.sum(normal*need[:,None],axis=0)
+            length=np.linalg.norm(direction)
+            if length<1e-12:raise ValueError('Cut contact normals oppose one another')
+            direction/=length;den=normal@direction
+            if np.any((need>1e-6)&(den<.1)):raise ValueError('Cut segment needs separate contact directions')
+            amount=np.max(need/np.maximum(den,.1))
+            field=np.zeros(len(out));field[list(fixed)]=amount
+            for _ in range(relaxation_passes):
+                relaxed=field.copy()
+                for i in interior:relaxed[i]=np.mean(field[sorted(adjacent[i])])
+                field=relaxed
+            out+=field[:,None]*direction
+    if selected:
+        indices=sorted(selected);contact,normal,_=_closest_body_contacts(out[indices],body,tri)
+        if np.any(np.sum((out[indices]-contact)*normal,axis=1)<clearance-1e-5):
+            raise ValueError('Cut vertex clearance did not converge')
+    result=p+(out-nodes)[ids]
+    before=np.cross(p[faces[:,1]]-p[faces[:,0]],p[faces[:,2]]-p[faces[:,0]])
+    after=np.cross(result[faces[:,1]]-result[faces[:,0]],result[faces[:,2]]-result[faces[:,0]])
+    valid=np.linalg.norm(before,axis=1)>1e-12
+    if np.any(np.sum(before[valid]*after[valid],axis=1)<=0):raise ValueError('Cut clearance overturned a garment face')
+    return result
 
 
 def refit_radially(positions, body, triangles, clearance, center=(0., 0.), fallback_distance=0.):

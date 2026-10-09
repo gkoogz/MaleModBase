@@ -96,6 +96,17 @@ licensed materials; they do not copy Wolverine's coordinates, bones or shaders.
 Regression command: `python -m unittest tests.test_torso_garment_fit
 tests.test_fly_panels tests.test_radial_garment_coverage`.
 
+`clear_body_cut_band` repairs selected boundary vertices after surface wrapping
+and relaxation. Each connected cut segment uses measured closest-body normals
+to translate a small plateau, with a harmonic taper into nearby graph bands.
+UV aliases move together; remote chart positions remain exact. This avoids
+independently projecting tiny stock folds next to an armhole. It checks cut
+vertex clearance and refuses overturned garment faces; face interiors and
+animated collision still require native review. The body frame is the same
+XY radial frame used by `wrap_body_surface`, with adapter-supplied units.
+Wolverine adopts it through its exact Base pin and a measured anterior armhole
+mask; every other spoke supplies its own body, cut mask and native verification.
+
 The SDK-free `physics/bounded_hinge.hpp` adds damped angular secondary motion.
 It integrates constant measured torque analytically, limits travel, dissipates
 outward stop velocity and resets invalid samples/stalls. The adapter advances
