@@ -1,3 +1,38 @@
+## October 8 - retail update rejected by user; exact rollback performed
+
+The user reports the 41c5c2a7 runtime is "unplayably bad now". This supersedes
+all previous sampled grey-room results: source tests and paused/rest captures
+did not establish playable retail behavior. Do not reinstall that candidate
+or describe the posterior recovery / spike changes as accepted.
+
+The game was not running. Executed the final game-owned exact Restore.ps1 at
+C:/Games/X-Men Origins Wolverine/WGame/ModBackups/Meridian-development-20261008-221608-a6091a/Restore.ps1.
+Verified installed DLL restored to
+5df442488816ab89b161c69574b22140e35b7e21a4723f7248882de2e9299518,
+production source61fab4314709278d95cd3ac5412709f8a3929125 / Base6d6f113.
+The transaction state is Restored. Rollback replaced only d3d9.dll, leaving
+current personal saves, settings and audio untouched. Prior development runtime
+is restored; no new human gameplay acceptance has been observed. Beta2 exact
+rollback remains available through the older204636 transaction.
+
+Private failing retail log retained in Base build/rejected-retail-20261008.
+At all four size controls100, state2/style1, its inclusive CPU phase samples
+show physics26.446ms mean and gameplay surface21.997ms mean, with sizeable
+peaks. These phases may overlap and are not FPS measurements or a causal A/B
+comparison. At361 chart attempts:120wraps,107followed,134transported,132uncertified;
+a sampled correction reached29.893 source units. This is evidence of unresolved
+cost/contact behavior, not proof that either new component alone caused the
+user's complaint. Similar historical physics costs also exist in the old room.
+Specific visible symptom was requested; not yet supplied at this checkpoint.
+
+Next repair must isolate new posterior recovery from new cloth resampling /
+fairing, compare equal unpaused inputs and frame distributions against the
+restored source, and inspect continuous movement rather than only rest poses.
+Keep the restored runtime installed until the replacement passes attachment,
+continuous motion and performance checks. This rollback does not revert Git
+algorithms; main still contains the rejected candidate source for diagnosis.
+Unrelated dirty development remains preserved.
+
 ## October 8 - pouch spike and all-max posterior recovery development update
 
 User reported pouch spikes around the testicles and suspended contents trapped
