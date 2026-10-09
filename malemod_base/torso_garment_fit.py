@@ -57,3 +57,32 @@ def refit_radially(positions, body, triangles, clearance, center=(0., 0.), fallb
         result[i]=origin+d*fitted
         contacts.append((int(j),[float(1-u[j]-v[j]),float(u[j]),float(v[j])],float(fitted-t[j])))
     return result,contacts
+
+
+def clear_projected_faces(positions, triangles, supports, clearance, passes=8):
+    """Cover dense measured torso supports under each coarse front/back face.
+
+    A vertex-only fit can bridge straight through a convex chest between its
+    corners. Positive half-space corrections raise the WHOLE interpolated face.
+    Only X is changed, so projected neckline/armhole boundaries and triangle
+    winding stay fixed. This is an authoring fit, not a dynamic cloth solver.
+    """
+    out=np.array(positions,dtype=float,copy=True);supports=np.asarray(supports,dtype=float)
+    constraints=[]
+    for face in np.asarray(triangles,dtype=np.int64):
+        p=out[face];sign=1 if np.all(p[:,0]>.05) else (-1 if np.all(p[:,0]<-.05) else 0)
+        if not sign:continue
+        a,b,c=p;det=(b[1]-a[1])*(c[2]-a[2])-(b[2]-a[2])*(c[1]-a[1])
+        if abs(det)<1e-9:continue
+        q=supports[(supports[:,0]*sign>0)&np.all(supports[:,1:]>=p[:,1:].min(0)-1e-6,axis=1)&np.all(supports[:,1:]<=p[:,1:].max(0)+1e-6,axis=1)]
+        u=((q[:,1]-a[1])*(c[2]-a[2])-(q[:,2]-a[2])*(c[1]-a[1]))/det
+        v=((b[1]-a[1])*(q[:,2]-a[2])-(b[2]-a[2])*(q[:,1]-a[1]))/det
+        weights=np.column_stack((1-u-v,u,v));valid=np.all(weights>=-1e-6,axis=1)
+        for w,x in zip(weights[valid],q[valid,0]):constraints.append((face,w,float(sign),float(sign*x+clearance)))
+    for _ in range(passes):
+        for face,w,sign,required in constraints:
+            missing=required-sign*np.dot(w,out[face,0])
+            if missing>1e-7:out[face,0]+=sign*w*missing/np.dot(w,w)
+    for face,w,sign,required in constraints:
+        if required-sign*np.dot(w,out[face,0])>1e-5:raise ValueError("Projected garment clearance did not converge")
+    return out
