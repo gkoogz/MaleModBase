@@ -9,7 +9,7 @@ namespace malemod::physics {
 struct HingeState { float angle=0,velocity=0; };
 inline void StepHinge(HingeState& s,float torque,float omega,float dampingRatio,float limit,float dt){
  if(!std::isfinite(dt)||!std::isfinite(torque)||!std::isfinite(s.angle)||!std::isfinite(s.velocity)||
-    !(omega>0)||!(dampingRatio>0&&dampingRatio<1)||!(limit>0)||dt>.5f){s={};return;}
+    !std::isfinite(omega)||!std::isfinite(limit)||!(omega>0)||!(dampingRatio>0&&dampingRatio<1)||!(limit>0)||dt>.5f){s={};return;}
  if(dt<=0)return;
  torque=std::clamp(torque,-omega*omega*limit,omega*omega*limit);
  const float equilibrium=torque/(omega*omega),a=dampingRatio*omega;
@@ -17,8 +17,8 @@ inline void StepHinge(HingeState& s,float torque,float omega,float dampingRatio,
  const float x=s.angle-equilibrium,c=std::cos(b*dt),sn=std::sin(b*dt),q=(s.velocity+a*x)/b;
  s.angle=equilibrium+decay*(x*c+q*sn);
  s.velocity=decay*(s.velocity*c-(a*q+b*x)*sn);
- if(s.angle>limit){s.angle=limit;s.velocity=std::min(0.f,s.velocity);}
- if(s.angle<-limit){s.angle=-limit;s.velocity=std::max(0.f,s.velocity);}
+ if(s.angle>limit){s.angle=limit;s.velocity=(std::min)(0.f,s.velocity);}
+ if(s.angle<-limit){s.angle=-limit;s.velocity=(std::max)(0.f,s.velocity);}
 }
 inline V3 HingeOffset(V3 point,V3 pivot,V3 unitAxis,float angle,float influence){
  if(influence<=0)return {};
