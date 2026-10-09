@@ -341,7 +341,10 @@ inline WrapReceipt ClearMeridians(std::vector<Vec>& points,unsigned columns,unsi
   if(minimum>=-1e-5f){
    for(unsigned i=0;i<count;i++){Vec d=Sub(work[i],points[i]);receipt.maximumDisplacement=(std::max)(receipt.maximumDisplacement,std::sqrt(Dot(d,d)));}
    for(unsigned f=0;f<faceCount;f++){auto ids=faces[f];Vec n=Cross(Sub(work[ids[1]],work[ids[0]]),Sub(work[ids[2]],work[ids[0]]));if(Dot(n,n)<1e-14f)throw std::runtime_error("Collapsed live cloth face="+std::to_string(f)+" vertices="+std::to_string(ids[0])+","+std::to_string(ids[1])+","+std::to_string(ids[2])+" edge2="+std::to_string(Dot(Sub(work[ids[1]],work[ids[0]]),Sub(work[ids[1]],work[ids[0]])))+","+std::to_string(Dot(Sub(work[ids[2]],work[ids[0]]),Sub(work[ids[2]],work[ids[0]]))));}
-   FairMeridianReversals(work,columns,rows,faces,faceCount,hulls);
+   if(FairMeridianReversals(work,columns,rows,faces,faceCount,hulls))receipt.minimumSeparation=(std::min)(receipt.minimumSeparation,-1e-5f);
+   // Fairing can change the location of the largest displacement. The
+   // separation above is now a conservative bound, not the pre-fair value.
+   receipt.maximumDisplacement=0;for(unsigned i=0;i<count;i++){Vec d=Sub(work[i],points[i]);receipt.maximumDisplacement=(std::max)(receipt.maximumDisplacement,std::sqrt(Dot(d,d)));}
    points.swap(work);return receipt;
   }
   // A separating triangle can demand a large move at just one vertex. Share
