@@ -84,7 +84,7 @@ def refit_radially(positions, body, triangles, clearance, center=(0., 0.), fallb
     return result,contacts
 
 
-def clear_projected_faces(positions, triangles, supports, clearance, passes=8):
+def clear_projected_faces(positions, triangles, supports, clearance, passes=8, aliases=None):
     """Cover dense measured torso supports under each coarse front/back face.
 
     A vertex-only fit can bridge straight through a convex chest between its
@@ -94,6 +94,15 @@ def clear_projected_faces(positions, triangles, supports, clearance, passes=8):
     """
     out=np.array(positions,dtype=float,copy=True);supports=np.asarray(supports,dtype=float)
     constraints=[]
+    groups=[np.array([i]) for i in range(len(out))]
+    if aliases is not None:
+        aliases=np.asarray(aliases)
+        if len(aliases)!=len(out):raise ValueError("Alias count differs from garment vertices")
+        for key in np.unique(aliases):
+            ids=np.flatnonzero(aliases==key)
+            if not np.allclose(out[ids],out[ids[0]],atol=1e-5):raise ValueError("Position aliases already disagree")
+            out[ids]=out[ids].mean(axis=0)
+            for i in ids:groups[i]=ids
     for face in np.asarray(triangles,dtype=np.int64):
         p=out[face];sign=1 if np.all(p[:,0]>.05) else (-1 if np.all(p[:,0]<-.05) else 0)
         if not sign:continue
@@ -107,7 +116,8 @@ def clear_projected_faces(positions, triangles, supports, clearance, passes=8):
     for _ in range(passes):
         for face,w,sign,required in constraints:
             missing=required-sign*np.dot(w,out[face,0])
-            if missing>1e-7:out[face,0]+=sign*w*missing/np.dot(w,w)
+            if missing>1e-7:
+                for vertex,weight in zip(face,w):out[groups[vertex],0]+=sign*weight*missing/np.dot(w,w)
     for face,w,sign,required in constraints:
         if required-sign*np.dot(w,out[face,0])>1e-5:raise ValueError("Projected garment clearance did not converge")
     return out

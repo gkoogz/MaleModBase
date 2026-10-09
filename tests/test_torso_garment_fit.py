@@ -3,6 +3,10 @@ import numpy as np
 from malemod_base.torso_garment_fit import refit_radially,clear_projected_faces,refine_triangles
 
 class FitTest(unittest.TestCase):
+ def test_clearance_moves_uv_aliases_together(self):
+  p=np.array([[2,-1,0],[2,1,0],[2,0,2],[2,-1,0]],float)
+  q=clear_projected_faces(p,[[0,1,2]],[[3,0,1]],.2,aliases=[0,1,2,0])
+  np.testing.assert_array_equal(q[0],q[3])
  def test_refinement_preserves_aliases_donors_boundary_and_winding(self):
   p=np.array([[2,0,0],[2,2,0],[2,0,2],[2,0,0]],float)
   q,t,d=refine_triangles(p,[[0,1,2],[3,2,1]])
