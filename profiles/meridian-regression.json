@@ -13,6 +13,8 @@
     {"id":"width-max", "overall":50, "width":100, "restAngle":50},
     {"id":"combined-min", "overall":1, "width":1, "restAngle":50},
     {"id":"combined-max", "overall":100, "width":100, "restAngle":50},
+    {"id":"all-max", "overall":100, "width":100, "length":100, "scrotum":100, "restAngle":50},
+    {"id":"all-max-naked", "overall":100, "width":100, "length":100, "scrotum":100, "restAngle":50, "naked":true},
     {"id":"angle-min", "overall":50, "width":50, "restAngle":1},
     {"id":"angle-max", "overall":50, "width":50, "restAngle":100},
     {"id":"return-default", "overall":50, "width":50, "restAngle":50}
