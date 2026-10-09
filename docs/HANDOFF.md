@@ -1185,7 +1185,7 @@ collar. Offline only; extreme upward anatomy distortion remains unresolved.
 HEAD stays `19da882`; diagnostic source is dirty. No install or Wolverine change.
 
 
-## October 6 broader bell preview — uncommitted candidate
+## October 6 broader bell preview � uncommitted candidate
 
 User requested a larger and smoother ramp, with updated matched renders before
 installation. HEAD remains `19da882`; the current shared header/test/provenance
@@ -1400,18 +1400,18 @@ all actual authored seam residuals still pass. Bending endpoint preservation
 does not imply byte-identical final contact-adjusted vertices.
 
 The independent full-cloth audit now distinguishes all component pairs.
-Candidate23 has no same-component self-crossings, but617Ã¢â‚¬â€œ944 cross-component
+Candidate23 has no same-component self-crossings, but617â€“944 cross-component
 pairs, predominantly sewn hem/sheet, strap/band and underside attachments.
 Their material adjacency and finite-width construction must be certified;
 they are not covered by the passing sheet-only intersection gate. Candidate26
-adds4Ã¢â‚¬â€œ29 actual same-hem self-crossings per hem. Preserve the complete-pair
+adds4â€“29 actual same-hem self-crossings per hem. Preserve the complete-pair
 classification receipts; no blanket neighboring-face exclusion or complete
 garment self-consistency claim is permitted from these source checkpoints.
 
 The stereographic rest chart constrains spherical triangle orientation and
 angular quality before radial casting, with consistent alternate diagonals at
 the two reflex corners. The SDK cube test checks every face, unchanged top
-donors and translated/rotated 100x covariance. Candidates15Ã¢â‚¬â€œ17 failed actual
+donors and translated/rotated 100x covariance. Candidates15â€“17 failed actual
 geometry despite SDK passes; preserve their rejected receipts. Source renders
 use complete native anatomy/body, neutral material and actual cloth faces;
 there is no anatomy visibility mask. Source opacity is not native 95% proof.
@@ -1430,8 +1430,8 @@ These certify rest geometry, not movement or gameplay.
 Frozen candidate16 raw sheets were injective but near singular (aspect up to
 3.59e6); subsequent contact fitting introduced crossings. Candidate17 adds a
 spherical determinant/longest-edge quality constraint, reducing raw aspect to
-107Ã¢â‚¬â€œ201 with zero raw crossings across eight actual inputs, but full rest
-still fails crossings and upper hem turns (52Ã¢â‚¬â€œ143 degrees in seven cases).
+107â€“201 with zero raw crossings across eight actual inputs, but full rest
+still fails crossings and upper hem turns (52â€“143 degrees in seven cases).
 Candidate19 smooths the native-seam radial transition and restricts REST
 contact fitting to chart rays. Its eight actual rest cases pass contact and
 intersection gates but fail hem turns. Candidate22 fixes those hem turns;
@@ -1460,7 +1460,7 @@ and gravity step 70.17 ms versus the required live cadence. Numerical receipt
 is `build/cloth-dynamics-debug/candidate19-dynamics/numerical-conservation-summary.json`.
 Private parallel native point-query batching preserves all eight actual frame
 bytes and physical fields, including 54 stale tickets recomputed after source
-corrections. Its 3Ã¢â‚¬â€œ8% total improvement is insufficient and is not promoted.
+corrections. Its 3â€“8% total improvement is insufficient and is not promoted.
 No new garment build has been installed or observed in gameplay.
 
 Latest requirement includes tilt into the recruited pelvic root ramp. Actual
@@ -1831,7 +1831,7 @@ Read `AUTHORED-SHAPE.md` for the new source-derived early coarse-shape evaluator
 1,300 original-code fixture samples, coupled graft collar domain and protected
 native part boundaries. The checked correction preserves both sides of the
 seam and prevents inverted triangles. An actual-Geralt synthetic stress probe
-passes those invariants in both LODs but accepts only 17ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“36% of its requested
+passes those invariants in both LODs but accepts only 17Ã¢â‚¬â€œ36% of its requested
 correction: the full-range deformation envelope is NOT established. Actual
 guide/rest-stage completion and native output remain required. The spoke has a
 native-cooked isolated scale graph; pose/dangle compatibility is not verified.
