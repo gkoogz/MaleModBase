@@ -100,15 +100,40 @@ public:
   }return true;
  }
 };
+// A convex support gives exact axis bounds for the current pose. A triangle
+// outside any bound cannot intersect that solid; the margin only makes this
+// rejection more conservative near contact. No bound survives a pose change.
+struct FollowBounds {Vec low{},high{};bool valid=false;};
+inline std::vector<FollowBounds> FollowHullBounds(const std::vector<Hull>& hulls){
+ std::vector<FollowBounds> bounds(hulls.size());
+ for(unsigned h=0;h<hulls.size();h++){
+  if(!hulls[h].support)continue;
+  auto& b=bounds[h];b.valid=true;
+  for(unsigned k=0;k<3;k++){
+   Vec axis{};axis[k]=1;
+   b.high[k]=hulls[h].support(axis);b.low[k]=-hulls[h].support(Mul(axis,-1));
+   if(!std::isfinite(b.low[k])||!std::isfinite(b.high[k])||b.low[k]>b.high[k])throw std::runtime_error("Invalid followed support bounds");
+  }
+ }
+ return bounds;
+}
+inline bool FollowOutsideBounds(Vec a,Vec b,Vec c,const FollowBounds& bounds,float margin=1e-4f){
+ if(!bounds.valid)return false;
+ for(unsigned k=0;k<3;k++)if((std::min)({a[k],b[k],c[k]})>bounds.high[k]+margin||
+                            (std::max)({a[k],b[k],c[k]})<bounds.low[k]-margin)return true;
+ return false;
+}
 // A plane index is a hint only: all three current vertices must clear a current
 // support plane. Scan another plane on a cache miss, without running the walk.
 inline bool CertifyFollowedSurface(const std::vector<Vec>& p,const Face* faces,unsigned faceCount,const std::vector<Hull>& hulls,std::vector<unsigned>& certificates){
  if(certificates.size()!=faceCount*hulls.size())certificates.assign(faceCount*hulls.size(),0);
+ const auto bounds=FollowHullBounds(hulls);
  for(unsigned f=0;f<faceCount;f++){
   const auto ids=faces[f];for(unsigned id:ids)if(id>=p.size())throw std::runtime_error("Invalid followed face");
   Vec area=Cross(Sub(p[ids[1]],p[ids[0]]),Sub(p[ids[2]],p[ids[0]]));if(!std::isfinite(Dot(area,area))||Dot(area,area)<1e-14f)return false;
   for(unsigned h=0;h<hulls.size();h++){
   const auto& hull=hulls[h];auto& cached=certificates[f*unsigned(hulls.size())+h];
+  if(FollowOutsideBounds(p[ids[0]],p[ids[1]],p[ids[2]],bounds[h]))continue;
   auto clear=[&](unsigned k){const auto& plane=hull[k];return Signed(plane,p[ids[0]])>=-1e-5f&&Signed(plane,p[ids[1]])>=-1e-5f&&Signed(plane,p[ids[2]])>=-1e-5f;};
   if(cached<hull.size()&&clear(cached))continue;
   if(ExactTriangleSeparated(hull,p[ids[0]],p[ids[1]],p[ids[2]])){cached=unsigned(hull.size());continue;}
@@ -121,11 +146,13 @@ inline bool CertifyFollowedSurface(const std::vector<Vec>& p,const Face* faces,u
 inline bool RefitFollowedSurface(std::vector<Vec>& p,unsigned columns,unsigned count,const Face* faces,unsigned faceCount,const std::vector<Hull>& hulls,std::vector<unsigned>& certificates,float limit=.12f){
  if(count>p.size()||columns>=count||!std::isfinite(limit)||limit<=0)throw std::runtime_error("Invalid follow contact budget");
  if(CertifyFollowedSurface(p,faces,faceCount,hulls,certificates))return true;
+ const auto bounds=FollowHullBounds(hulls);
  auto work=p;std::vector<Vec> corrections(count);std::vector<unsigned> hits(count);
  for(unsigned pass=0;pass<2;pass++){
   std::fill(corrections.begin(),corrections.end(),Vec{});std::fill(hits.begin(),hits.end(),0);
   for(unsigned f=0;f<faceCount;f++)for(unsigned h=0;h<hulls.size();h++){
    const auto ids=faces[f];const auto& hull=hulls[h];auto& cached=certificates[f*unsigned(hulls.size())+h];
+   if(FollowOutsideBounds(work[ids[0]],work[ids[1]],work[ids[2]],bounds[h]))continue;
    auto score=[&](unsigned k){const auto& plane=hull[k];return (std::min)({Signed(plane,work[ids[0]]),Signed(plane,work[ids[1]]),Signed(plane,work[ids[2]])});};
    float best=cached<hull.size()?score(cached):-std::numeric_limits<float>::infinity();if(best>=-1e-5f)continue;
    if(ExactTriangleSeparated(hull,work[ids[0]],work[ids[1]],work[ids[2]]))continue;

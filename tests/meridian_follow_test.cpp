@@ -35,6 +35,15 @@ int main(){
  hulls[0][0].offset=3;assert(!CertifyFollowedSurface(triangle,&face,1,hulls,hints));
  hulls[0][0].offset=1;triangle={{-2,0,0},{2,0,0},{0,2,0}};assert(!CertifyFollowedSurface(triangle,&face,1,hulls,hints));
  triangle={{2,0,0},{2,0,0},{2,1,0}};assert(!CertifyFollowedSurface(triangle,&face,1,hulls,hints));
+ // Current-pose support bounds reject remote pairs even when the sampled
+ // plane list has no useful separating direction. A moving bound is rebuilt.
+ Hull box;box.push_back({{0,0,1},1});
+ box.support=[](Vec n){return std::abs(n[0])+std::abs(n[1])+std::abs(n[2]);};
+ std::vector<Hull> bounded{box};std::vector<Vec> remote{{3,0,0},{3,1,0},{3,0,1}};
+ assert(CertifyFollowedSurface(remote,&face,1,bounded,hints));
+ auto unchanged=remote;assert(RefitFollowedSurface(remote,0,3,&face,1,bounded,hints));assert(remote==unchanged);
+ bounded[0].support=[](Vec n){return 3*n[0]+std::abs(n[0])+std::abs(n[1])+std::abs(n[2]);};
+ assert(!CertifyFollowedSurface(remote,&face,1,bounded,hints));
  // A small contact correction is certified, bounded, and does not touch pins.
  current=raw;current[4]={.99f,-.3f,0};current[5]={.99f,.3f,0};current[6]={.99f,0,.3f};Face contactFace{4,5,6};
  auto prior=current;assert(RefitFollowedSurface(current,4,9,&contactFace,1,hulls,hints));

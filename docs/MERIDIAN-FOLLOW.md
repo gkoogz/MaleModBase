@@ -22,6 +22,14 @@ publish only a fully certified result. They do not walk paths. A failure asks th
 adapter to rebuild. Gross frame scale changes also request rebuilding; the
 adapter must explicitly invalidate bindings for preference and scene changes.
 
+Current-pose axis bounds from each primitive's exact support reject triangle/
+solid pairs that cannot intersect. Bounds are rebuilt from the current support
+every call and use a conservative margin. The full plane/analytic test still
+runs for overlapping bounds. In an isolated x86 /O2 synthetic 64-by-40 grid
+with nine support solids, 100 certified calls fell from 3.9165 to
+0.6791 ms per call. This only measures the shared certificate loop; it is not
+a native frame-rate or fallback-walk measurement.
+
 The Wolverine prototype supplies seven circular-section frames and two current
 testicle frames from its existing physics/bone pose. Geometry binding revision5,
 32 longitudes, 24 rows, fixed trim, UV aliases and normal/material update cadence
