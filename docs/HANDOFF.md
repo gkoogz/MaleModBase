@@ -1,3 +1,18 @@
+## October 10 - holistic jockstrap compromise trials rejected
+
+The user authorized reasonable resolution, cadence and shape compromises to obtain playable jockstrap performance. No source algorithm or retail installation was adopted from these trials. Wolverine's current retail DLL remains SHA-256 ab1f8d8e028a1239474465aa5f98faedea45860e1547aff21ad4db8d4087a1a7. The owned grey-room child was closed without host input or focus. Unrelated dirty CPU-cloth and provenance work was not touched.
+
+Private 32-column by 24-row experiments under D:/MaleModBuilds/jockstrap-cadence-20261009/room32/runs/ exposed the tradeoff:
+
+- Smaller convex cover with a measured seam fit and cached follower reached 2.33 ms mean Draw across 121 title evaluations (7 rebuilds, 114 follows), but a moving gameplay pose exceeded the seam limit and lost the pouch.
+- Reusing the title follower across the scene without current-pose contact rejection reached 1.46 ms sampled title Draw, but a native front capture showed a displaced grey flap. This unsafe diagnostic stays private.
+- The earlier 32-ray fallback reached 4.35 ms sampled title Draw with 62 uncertified evaluations in 121. A close gameplay front capture showed a missing pouch and exposed gaps where anatomy had been masked.
+- Aligning the chart to the current anatomy guide and using nine separate supports plus an adaptive radial allowance gave about 5.39 ms sampled title Draw. It produced a visible but flat front panel and intermittent gameplay rejection. Its proxy contact certificate was insufficient for visual fit.
+- A local per-vertex radial contact repair passed eleven offline captured poses with small mean motion, but averaged 64.87 ms sampled native title Draw and still failed a moving seam pose. It was rejected.
+- A direct fabric pass over current skinned anatomy reached 2.87 ms mean sampled title Draw, but its native gameplay front view put a grey material patch across a thigh rather than a pouch. The measured semantic region IDs reproduce the existing 31,998 covered / 3,002 retained triangle split, so selecting those regions alone does not repair the shape. Run: 20261009-235601-2b56a0. Rejected.
+
+The seam's angular order reverses under some current gameplay poses, and the single circular boundary and cover produce either a missing cloth surface or a broad panel. Changing the padding, retry limit, solver passes, or resolution alone did not yield a visible, stable, fast garment. The next design needs a pose-stable measured sewn boundary and a fitted pouch surface driven by the rendered anatomy, with waist/body and pouch/anatomy bindings validated together. Put the portable surface and contact method and cases in Base; Wolverine owns measured skinning, recipe, material and native evidence. The full front/side/oblique, controls/states/LODs, movement and campaign attachment gate has not passed. Keep the installed runtime and exact rollback.
+
 ## October 9 - jockstrap performance investigation and rejected native candidate
 
 The user reports a severe jockstrap slowdown. Retail Wolverine DLL SHA-256 remains
