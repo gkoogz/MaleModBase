@@ -1,3 +1,21 @@
+## October 10 - accepted playable pouch and sewn outline
+
+The user accepted the installed Wolverine correction and requested a GitHub
+push. Wolverine pins Base 47023a7f53d794cff84f2f423ba6a7d1fb98ec0f. The small
+radial cage now follows the authored sewn polygon instead of substituting an
+ellipse; its upper concave envelope removes the rejected saddle adjustment.
+The fixed seam, covariance, finite-input, cadence and nonelliptical shoulder
+regressions pass. The new shoulder test fails with the previous implementation.
+Native review included the 20-case control matrix, front/side/oblique/orbit
+views, selected motion samples and campaign movement. Representative pouch
+preparation remained around 3 ms. Full attachment certification and continuous
+contact remain false; exhaustive LOD/motion combinations were not rerun.
+Installed Wolverine DLL SHA256:
+25ca1204061a0a7c0bcdc7943031d8ac8263a1d12c9b4c588efb64d3339ba3fa.
+See the canonical Wolverine handoff for exact source identity and rollback.
+Other adapters can adopt this immutable Base pin with measured seam/supports;
+no Witcher adoption is claimed. No game assets or captures are in this commit.
+
 ## October 9 - outer pec / armhole clipping repair and matched cotton (tank20)
 
 The user supplied a native side crop showing exposed skin through the front
