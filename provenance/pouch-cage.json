@@ -1,0 +1,35 @@
+{
+  "schema": "malemod.pouch-cage/1",
+  "geometryBindingRevision": 6,
+  "hashNormalization": "LF",
+  "files": {
+    "include/malemod/garments/pouch_cage.hpp": "7465a6c72db73b4f49ae4197e4dfdef2ba78b4fc5b519057e7071b549ac64a68",
+    "include/malemod/garments/pouch_budget.hpp": "aad23e4f3b76dd4e4e5962b4dfcdeb222f5424c0646be37034a9441cf4aed601",
+    "tests/pouch_cage_test.cpp": "6fe98a6f808d672126a9c9c5d1c861077c23c771efb67bfd2e8b5e82b07b9b6e",
+    "tools/audit_pouch_cage_replay.py": "6eff70e75524afb917a42eefc8681f52473d99ad0a71fb3cc1a1057322069a2d",
+    "tools/verify_pouch_cage.py": "956a7a6a49ff78bbe162cd77328741e3e64ed19781aed89ea1b94e582e64c85d"
+  },
+  "origin": "New shared implementation; legacy/wolverine remains an unchanged imported snapshot",
+  "adapterReferenceCommit": "c718b1b15cbe16ca1cb309e57770cca9ccfd244d",
+  "adapterRecipeSHA256": "b1f08d1d753147d4dc2152478e3eea16d3fc715938a87ef68d782847c130e6b0",
+  "fixedSewnBoundary": true,
+  "controls": {
+    "angular": 24,
+    "axialIntervals": 16
+  },
+  "continuousContactCertified": false,
+  "fullAttachmentGatePassed": false,
+  "adoption": "Wolverine consumes the compatibility commit through dependencies/base.lock.json. Other spokes must adopt that pin, provide their measured sewn boundary and current supports in their own units, and repeat offline/native attachment and motion gates. No Witcher runtime adoption is claimed.",
+  "verification": {
+    "sourceTest": "pouch_cage_test",
+    "replay": "14 measured poses, 3 repeats, 3 alternating baseline/candidate pairs",
+    "sampleContact": "Zero outside samples beyond the first two sewn display rows; cross-section polygon test, not whole triangle or complete body certification",
+    "native": "Owned Wolverine grey-room size/state/angle captures and walking/sprint/jump samples",
+    "notVerified": [
+      "all supported LODs",
+      "campaign transitions",
+      "continuous rendered cloth/body triangle collision",
+      "human interactive feel"
+    ]
+  }
+}

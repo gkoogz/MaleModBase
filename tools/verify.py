@@ -18,6 +18,7 @@ from extract_root_profile import outputs as root_profile_outputs
 ROOT = Path(__file__).resolve().parents[1]
 
 def main():
+    subprocess.run([sys.executable,str(ROOT/'tools/verify_pouch_cage.py')],check=True)
     meridian=json.loads((ROOT/'provenance/meridian.json').read_text())
     if meridian['geometryBindingRevision']!=5 or meridian['hashNormalization']!='LF':
         raise ValueError('Unsupported meridian geometry/binding contract')
