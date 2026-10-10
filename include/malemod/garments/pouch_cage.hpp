@@ -48,10 +48,16 @@ inline PouchCageReceipt FitPouchCage(std::vector<Vec>& points,unsigned columns,u
    if(at(unsigned(k),wrapped)<value){at(unsigned(k),wrapped)=value;++receipt.corrections;}
   }
  }
- // Keep the waist-to-pouch profile locally fitted. A global concave majorant
- // bridges the empty space above the contents with a straight tent/cone from
- // the waistband. The local splats already provide clearance; smoothing below
- // rounds their joins without forcing that artificial global silhouette.
+ // Let the proximal quarter follow local contact so the cloth can turn
+ // naturally out of the waistband. Keep the taut envelope over the contents
+ // below that transition: removing it everywhere reproduces separate lobes.
+ for(unsigned c=0;c<rays;c++){
+  std::vector<unsigned> hull;
+  for(unsigned j=sections/4;j<=sections;j++){
+   while(hull.size()>1){unsigned a=hull[hull.size()-2],b=hull.back();if((at(b,c)-at(a,c))/(b-a)>(at(j,c)-at(b,c))/(j-b))break;hull.pop_back();}hull.push_back(j);
+  }
+  for(unsigned k=1;k<hull.size();k++){unsigned a=hull[k-1],b=hull[k];for(unsigned j=a+1;j<b;j++)at(j,c)=at(a,c)+(at(b,c)-at(a,c))*float(j-a)/(b-a);}
+ }
  // Outward smoothing across cage kinks; endpoints retain attachment/pole.
  for(unsigned pass=0;pass<8;pass++){auto old=radius;for(unsigned j=1;j<sections;j++)for(unsigned c=0;c<rays;c++)at(j,c)=(std::max)(old[j*rays+c],.5f*old[j*rays+c]+.125f*(old[(j-1)*rays+c]+old[(j+1)*rays+c]+old[j*rays+(c+1)%rays]+old[j*rays+(c+rays-1)%rays]));}
  auto seam=std::vector<Vec>(points.begin(),points.begin()+columns);
