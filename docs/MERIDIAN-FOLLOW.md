@@ -1,5 +1,14 @@
 # Follow the existing anatomy physics
 
+October 9 performance update: the follower and taut solver now derive axis
+bounds from each primitive's exact support in the current pose. A triangle
+outside a bound cannot contact that primitive, so expensive plane and route
+scans can be omitted. The bounds are rebuilt on every call. The Wolverine
+adapter consumes the compatible Base revision `608fdb18` and skips local
+fairing only after a whole-triangle current-pose follower certificate. Seven
+captured 32-ray poses produced byte-identical solved vertices with taut bounds.
+This does not repair its separate sewn-edge failures or certify gameplay.
+
 The normal pouch update is kinematic skinning of a cached, successful taut wrap.
 It reads the current anatomy pose every rendered frame. There is no separate
 cloth simulation, timestep, lag filter or 30 Hz throttle. Walking remains the

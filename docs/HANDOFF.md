@@ -1,3 +1,37 @@
+## October 9 - jockstrap performance investigation and rejected native candidate
+
+The user reports a severe jockstrap slowdown. Retail Wolverine DLL SHA-256 remains
+ab1f8d8e028a1239474465aa5f98faedea45860e1547aff21ad4db8d4087a1a7; this
+work made no retail installation. Preserve the exact menu-branding rollback in
+Wolverine docs/PROJECT_HANDOFF.md.
+
+Base main d4b00c2 adds exact current-pose support bounds to follower and taut
+contact. Adapter-compatible branch codex/jockstrap-perf-pin is commit
+608fdb18eb4a7570afb1fd6f777e2d7eb67c86d3, directly based on old adapter
+pin 389f6c04. Wolverine source 3fe6ddc pins it. Seven captured 32-ray cloth
+poses produced byte-identical solved vertex buffers before/after taut bounds.
+Four shared x86 meridian tests and meridian provenance hashes pass. Full
+verification still fails at unrelated motion/CMake provenance drift.
+
+Clean private DLL SHA-256 70649c9821e633890e9b23078cbd0a9eb303b4981b4fa2f842e034f2cdf0fb4d
+ran in owned grey-room run 20261009-214836-62da7c under
+D:/MaleModBuilds/jockstrap-cadence-20261009/room32. First title wrap took
+157.7277 ms. At 121 title evaluations, 24 rebuilt, 97 followed, and cumulative
+garment Draw mean was 41.8728 ms. Default grey-room gameplay still repeatedly
+failed sewn-edge fitting; frame 402 showed no pouch. The mandatory attachment
+gate FAILS. Minimum/default/maximum, intermediate controls, all states, both
+body resources/LODs, motion and campaign have not been visually accepted.
+Do not install or release this candidate.
+
+Private trials found a duplicate post-shear sampling check, a seam pose needing
+7.23 source units beyond the current 6-unit allowance, and refit rejection
+after two contact passes. Relaxing limits did not establish a visible certified
+gameplay pouch. A 32-ray trial reduced sampled title Draw to 7.63 ms but lost
+the gameplay pouch. Direct donor rendering reached 1.34 ms but buried the pouch
+behind the body. The old CPU worker took 14.7 seconds on its first shared solve.
+These are rejected private diagnostics. Current source changes reduce wasted
+work but do not meet real-time or attachment acceptance. Exact builds/logs and
+captures remain private under D:/MaleModBuilds/jockstrap-cadence-20261009.
 ## October 9 - restoring/contact operator boundary identified
 
 The private active-trial failure trace attributes all11 partial solve failures
