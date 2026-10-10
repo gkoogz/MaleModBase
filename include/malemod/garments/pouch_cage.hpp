@@ -48,12 +48,12 @@ inline PouchCageReceipt FitPouchCage(std::vector<Vec>& points,unsigned columns,u
    if(at(unsigned(k),wrapped)<value){at(unsigned(k),wrapped)=value;++receipt.corrections;}
   }
  }
- // Let the proximal quarter follow local contact so the cloth can turn
+ // Let the proximal half follow local contact so the cloth can turn
  // naturally out of the waistband. Keep the taut envelope over the contents
  // below that transition: removing it everywhere reproduces separate lobes.
  for(unsigned c=0;c<rays;c++){
   std::vector<unsigned> hull;
-  for(unsigned j=sections/4;j<=sections;j++){
+  for(unsigned j=sections/2;j<=sections;j++){
    while(hull.size()>1){unsigned a=hull[hull.size()-2],b=hull.back();if((at(b,c)-at(a,c))/(b-a)>(at(j,c)-at(b,c))/(j-b))break;hull.pop_back();}hull.push_back(j);
   }
   for(unsigned k=1;k<hull.size();k++){unsigned a=hull[k-1],b=hull[k];for(unsigned j=a+1;j<b;j++)at(j,c)=at(a,c)+(at(b,c)-at(a,c))*float(j-a)/(b-a);}
