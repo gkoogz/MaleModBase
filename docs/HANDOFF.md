@@ -1,3 +1,24 @@
+## October 9 - restoring/contact operator boundary identified
+
+The private active-trial failure trace attributes all11 partial solve failures
+to hard-row release at default-after-extremes32/33/38; no cycle/SPD failures
+occur. Those failures do not explain firm-state collapse. Direct measured
+first-segment/driven-direction dot is negative541 steps(min-.397269) in this
+no-clinical fixture, independently matching its relative-angle diagnostic.
+
+Exact free-predictor and operator capture preserves the whole enabled replay.
+Default3 and firm442 have zero ventral recovery. At firm442 the total free
+root angles[.382482,.788852] become[.418279,.787109] after24 position passes,
+then[.370529,.776683] after the contact configuration correction; that stage
+undoes restoring pitch. Later firm470/624 ventral corrections affect lobe1
+only, and remain separate explicit operators. Full states, bases, source
+multipliers and velocities are retained beside newton-boundary-capture/
+boundary-proof.json under D:/MaleModDiagnostics/witcher-parity-20261009.
+Complete restoring/contact Newton remains under development; neither this
+trace nor the frozen affine release oracle is a runtime acceptance. Keep the
+actual pre-constraint free predictor, do not hide recovery deltas by reseeding
+it to the output of24 constraints, and do not install the partial solver.
+
 ## October 9 - independently observed retail installation drift
 
 A read-only live check finds Wolverine retail DLLab1f8d8e, source2d144e80/
