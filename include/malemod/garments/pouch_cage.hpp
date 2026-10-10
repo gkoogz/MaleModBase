@@ -12,14 +12,17 @@ inline PouchCageReceipt FitPouchCage(std::vector<Vec>& points,unsigned columns,u
   throw std::runtime_error("Invalid pouch cage inputs");
  for(float v:tip)if(!std::isfinite(v))throw std::runtime_error("Nonfinite pouch tip");
  for(unsigned c=0;c<columns;c++)for(float v:points[c])if(!std::isfinite(v))throw std::runtime_error("Nonfinite pouch seam");
- Vec center=AttachmentCentroid(points,columns),area{},mean{};
+ Vec center=AttachmentCentroid(points,columns),area{};
  for(unsigned c=0;c<columns;c++)area=Add(area,Cross(Sub(points[c],center),Sub(points[(c+1)%columns],center)));
- Vec axis=Unit(area);for(unsigned i=first;i<end;i++)mean=Add(mean,Sub(points[i],center));if(Dot(axis,mean)<0)axis=Mul(axis,-1);
+ // The adapter must supply an outward-wound seam. Inferring its sign from
+ // moving contents can flip the entire cap into the body during a stride.
+ Vec axis=Unit(area);
  Vec x=Sub(points[columns/2],points[0]);x=Unit(Sub(x,Mul(axis,Dot(x,axis))));Vec y=Cross(axis,x);
  Vec offset=Sub(tip,center),shift=Sub(offset,Mul(axis,Dot(offset,axis)));
  float height=0,rx=0,ry=0;
  for(unsigned c=0;c<columns;c++){auto p=Sub(points[c],center);rx=(std::max)(rx,std::abs(Dot(p,x)));ry=(std::max)(ry,std::abs(Dot(p,y)));}
  for(unsigned i=first;i<end;i++){for(float v:points[i])if(!std::isfinite(v))throw std::runtime_error("Nonfinite pouch cage support");height=(std::max)(height,Dot(Sub(points[i],center),axis));}
+ height=(std::max)(height,.45f*(std::min)(rx,ry));
  height+=(std::max)(ease*3,.035f*height);rx=(std::max)(rx,ease);ry=(std::max)(ry,ease);
  if(height<1e-5f||rx<1e-5f||ry<1e-5f)throw std::runtime_error("Collapsed pouch cage");
  constexpr unsigned rays=24;constexpr float tau=6.28318530718f;

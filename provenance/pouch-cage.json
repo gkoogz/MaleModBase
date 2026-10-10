@@ -3,10 +3,10 @@
   "geometryBindingRevision": 6,
   "hashNormalization": "LF",
   "files": {
-    "include/malemod/garments/pouch_cage.hpp": "7465a6c72db73b4f49ae4197e4dfdef2ba78b4fc5b519057e7071b549ac64a68",
+    "include/malemod/garments/pouch_cage.hpp": "99928d82f8d30fb110ae45837bdcd66d059cf262f092ae6af6f4ee8db7f18491",
     "include/malemod/garments/pouch_budget.hpp": "aad23e4f3b76dd4e4e5962b4dfcdeb222f5424c0646be37034a9441cf4aed601",
-    "tests/pouch_cage_test.cpp": "6fe98a6f808d672126a9c9c5d1c861077c23c771efb67bfd2e8b5e82b07b9b6e",
-    "tools/audit_pouch_cage_replay.py": "6eff70e75524afb917a42eefc8681f52473d99ad0a71fb3cc1a1057322069a2d",
+    "tests/pouch_cage_test.cpp": "6e3c06373eb64b7ac9b7509cea83602644dbf65d3320776ac7eb490f83dc056f",
+    "tools/audit_pouch_cage_replay.py": "39ca4da4bf5dfd8a1983ebcd32ea893447274fa9846a516cce075a707ca2b520",
     "tools/verify_pouch_cage.py": "956a7a6a49ff78bbe162cd77328741e3e64ed19781aed89ea1b94e582e64c85d"
   },
   "origin": "New shared implementation; legacy/wolverine remains an unchanged imported snapshot",
@@ -31,5 +31,6 @@
       "continuous rendered cloth/body triangle collision",
       "human interactive feel"
     ]
-  }
+  },
+  "seamWinding": "Outward ordered sewn boundary; contents never choose the axis sign"
 }

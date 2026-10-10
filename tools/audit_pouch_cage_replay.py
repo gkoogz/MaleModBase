@@ -13,13 +13,14 @@ while offset<len(data):
     p=np.frombuffer(data,dtype='<f4',count=9002*3,offset=offset).reshape(-1,3).astype(float);offset+=9002*12
     if not accepted:continue
     seam=p[:64];center=seam.mean(0);area=np.cross(seam-center,np.roll(seam,-1,axis=0)-center).sum(0);axis=area/np.linalg.norm(area)
-    if np.dot(axis,(p[4279:9001]-center).sum(0))<0:axis=-axis
     x=seam[32]-seam[0];x-=axis*np.dot(x,axis);x/=np.linalg.norm(x);y=np.cross(axis,x)
     local=(p-center)@np.array([x,y,axis]).T
-    rings=local[:2560].reshape(40,64,3);pole=local[2560];heights=rings[:,0,2];worst=0.;outside=0;checked=0;worstRow=None
+    rings=local[:2560].reshape(40,64,3);pole=local[2560];heights=rings[:,0,2];worst=0.;outside=0;checked=0;worstRow=None;excludedBehind=0;excludedSewn=0
     for sample in local[4279:9001]:
         h=sample[2]
-        if h<heights[2] or h>=pole[2]:continue
+        if h<0:excludedBehind+=1;continue
+        if h<heights[2]:excludedSewn+=1;continue
+        if h>=pole[2]:checked+=1;outside+=1;worst=max(worst,float(h-pole[2]));continue
         row=min(39,np.searchsorted(heights,h,side='right')-1)
         low=rings[row];high=rings[row+1] if row<39 else np.tile(pole,(64,1))
         f=(h-low[:,2])/(high[:,2]-low[:,2]);polygon=low[:,:2]+(high[:,:2]-low[:,:2])*f[:,None]
@@ -33,6 +34,6 @@ while offset<len(data):
             distance=np.linalg.norm(polygon+e*t[:,None]-s,axis=1).min()
             if distance>worst:worst=float(distance);worstRow=int(row)
             outside+=1
-    results.append(dict(checked=checked,outside=outside,maxOutsideDistance=worst,worstRow=worstRow))
+    results.append(dict(checked=checked,outside=outside,maxOutsideDistance=worst,worstRow=worstRow,excludedBehindSeam=excludedBehind,excludedSewnTransition=excludedSewn))
 proof=dict(scope='sampled proxy meridian polygons excluding sewn first two rows; not a continuous triangle certificate',poses=results,maxOutsideDistance=max(r['maxOutsideDistance'] for r in results),outside=sum(r['outside'] for r in results))
 (a.replay/'sample-contact.json').write_text(json.dumps(proof,indent=2));print(json.dumps({k:v for k,v in proof.items() if k!='poses'}))

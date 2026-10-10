@@ -24,6 +24,10 @@ int main(){try{
   bool rejected=false;try{FitPouchCage(invalid,cols,rows,first,unsigned(invalid.size()),badTip);}catch(const std::runtime_error&){rejected=true;}
   if(!rejected)throw std::runtime_error("Nonfinite inputs accepted");
  }
+ // Contents crossing behind the seam must not reverse the display cap.
+ auto behind=raw;for(unsigned i=first;i<behind.size();i++)behind[i][2]-=8;
+ FitPouchCage(behind,cols,rows,first,unsigned(behind.size()),Sub(tip,{0,0,8}));
+ if(behind[cols*rows][2]<=.45f*2)throw std::runtime_error("Pouch turned inward or collapsed behind attachment");
  constexpr auto covered=malemod::garments::PouchContentsSimulationBudget(true),bare=malemod::garments::PouchContentsSimulationBudget(false);
  static_assert(covered.stepSeconds==2*bare.stepSeconds&&covered.maximumSteps*2==bare.maximumSteps,"Contents budget must preserve catch-up capacity");
  for(unsigned frame=0;frame<8;frame++){
