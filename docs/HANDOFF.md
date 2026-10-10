@@ -1,3 +1,17 @@
+## October 9 - independently observed retail installation drift
+
+A read-only live check finds Wolverine retail DLLab1f8d8e, source2d144e80/
+Base389f6c04, installed2026-10-09T23:42:53Z by a separate menu-branding workflow.
+Its state receipt records user-requested-development-update/Installed and full
+attachment gateFALSE. The new194250-919fc7 backup contains prior7095f630 bytes
+with their exact expected hash and links to the prior083934 rollback. This run
+has not installed, restored or overwritten it. Preserve the new installation;
+use its exact identity for any later upgrade decision. Prior709 identity below
+is historical, not the current installed runtime. Private6c source physics
+replays remain attributed to their immutable snapshots. Read-only audit:
+D:/MaleModBuilds/wolverine-retail-drift-20261009/proof.json. This identity check
+is not fresh gameplay or full attachment evidence.
+
 ## October 9 - partial active release rejected
 
 The private Witcher correlated release/contact-reprojection trial preserves
