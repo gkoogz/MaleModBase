@@ -1,3 +1,13 @@
+## October 10 - additional fast garment paths rejected
+
+The older October 7 donor-driven 80x24 prototype measured 1.536 ms native Update and .812 ms Draw, but its retained native room captures show a hanging white flap with an exposed central gap, not a fitted jockstrap pouch. It cannot be adopted as a performance fallback.
+
+The private direct-fabric trial under D:/MaleModBuilds/jockstrap-cadence-20261009/candidate32 initially sampled packed anatomy positions. Correcting its input to the current updated anatomy positions did not repair its native front silhouette: run 20261010-000118-ee0b16 still showed a small grey patch beside a moving thigh. Sampled title Draw remained about 2.86 ms. This correction exists only in the private candidate.
+
+A second private trial reused the game's current skinned anatomy vertex buffer and split its source triangle indices into 31,998 cotton and 3,002 skin triangles. It avoided the meridian draw and duplicate CPU skinning. The sealed native run 20261010-000707-9d5a22, front capture native-frame-340-command-4.png, showed a narrow dangling white anatomy-shaped region with no fitted pouch or waist support. The split is fast in principle but fails the required garment silhouette and attachment gate. Its source and DLL remain private under D:/MaleModBuilds/jockstrap-cadence-20261010/fabric-gpu; do not adopt or install.
+
+Neither result changes the design conclusion below. The accepted source, retail DLL SHA-256 ab1f8d8e028a1239474465aa5f98faedea45860e1547aff21ad4db8d4087a1a7, and exact rollback remain unchanged. The owned native child is closed. A measured sewn boundary plus a supported, tailored front pouch are still required before a performance replacement can pass native motion and attachment review.
+
 ## October 10 - holistic jockstrap compromise trials rejected
 
 The user authorized reasonable resolution, cadence and shape compromises to obtain playable jockstrap performance. No source algorithm or retail installation was adopted from these trials. Wolverine's current retail DLL remains SHA-256 ab1f8d8e028a1239474465aa5f98faedea45860e1547aff21ad4db8d4087a1a7. The owned grey-room child was closed without host input or focus. Unrelated dirty CPU-cloth and provenance work was not touched.
