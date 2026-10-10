@@ -28,6 +28,16 @@ int main(){try{
  auto behind=raw;for(unsigned i=first;i<behind.size();i++)behind[i][2]-=8;
  FitPouchCage(behind,cols,rows,first,unsigned(behind.size()),Sub(tip,{0,0,8}));
  if(behind[cols*rows][2]<=.45f*2)throw std::runtime_error("Pouch turned inward or collapsed behind attachment");
+ // An angular sewn outline must not acquire an oval shoulder just beyond
+ // the fixed first row. A diamond is a deliberately non-elliptical boundary.
+ std::vector<Vec> angular(cols*rows+1);
+ for(unsigned c=0;c<cols;c++){float a=c*6.28318531f/cols,dx=std::cos(a),dy=std::sin(a),r=1/(std::abs(dx)+std::abs(dy));angular[c]={r*dx,r*dy,0};}
+ auto seam=angular;angular.push_back({0,0,4});
+ FitPouchCage(angular,cols,rows,cols*rows+1,unsigned(angular.size()),{0,0,4},.01f);
+ for(unsigned c=0;c<cols;c++)for(unsigned row=1;row<=4;row++){
+  auto a=angular[row*cols+c],b=seam[c];
+  if(std::hypot(a[0],a[1])>std::hypot(b[0],b[1])+.025f)throw std::runtime_error("Invented oval shoulder outside sewn outline");
+ }
  constexpr auto covered=malemod::garments::PouchContentsSimulationBudget(true),bare=malemod::garments::PouchContentsSimulationBudget(false);
  static_assert(covered.stepSeconds==2*bare.stepSeconds&&covered.maximumSteps*2==bare.maximumSteps,"Contents budget must preserve catch-up capacity");
  for(unsigned frame=0;frame<8;frame++){

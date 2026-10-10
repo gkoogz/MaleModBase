@@ -3,9 +3,9 @@
   "geometryBindingRevision": 6,
   "hashNormalization": "LF",
   "files": {
-    "include/malemod/garments/pouch_cage.hpp": "b58fb8d16f39de5dde1d0d2e0d0c71b12cb71ce8ccc43ee26bc94af566a15f70",
+    "include/malemod/garments/pouch_cage.hpp": "1218eded258a0039a0e968971ab420667cd3063831d898cd54609f7654a25f43",
     "include/malemod/garments/pouch_budget.hpp": "ad21f58f54a48cb72d7e298d59b39359fe96a4f9ca9c20ed5f937a1b4ed1b481",
-    "tests/pouch_cage_test.cpp": "6e3c06373eb64b7ac9b7509cea83602644dbf65d3320776ac7eb490f83dc056f",
+    "tests/pouch_cage_test.cpp": "cb97a1bf1a1528962e2ae152c382fc4005efc3ea8dc2a076a28ec764bdff4efe",
     "tools/audit_pouch_cage_replay.py": "39ca4da4bf5dfd8a1983ebcd32ea893447274fa9846a516cce075a707ca2b520",
     "tools/verify_pouch_cage.py": "956a7a6a49ff78bbe162cd77328741e3e64ed19781aed89ea1b94e582e64c85d"
   },
@@ -24,7 +24,7 @@
     "sourceTest": "pouch_cage_test",
     "replay": "14 measured poses, 3 repeats, 3 alternating baseline/candidate pairs",
     "sampleContact": "Previous global-envelope audit does not certify the revised local profile; native coverage must be reviewed.",
-    "native": "Waist-transition correction: focused native view check pending.",
+    "native": "New boundary correction pending native review; previous user-rejected oval/saddle is not accepted.",
     "notVerified": [
       "all supported LODs",
       "campaign transitions",
@@ -34,5 +34,5 @@
   },
   "seamWinding": "Outward ordered sewn boundary; contents never choose the axis sign",
   "contentsSupport": "Dimensionless motion transfer .18, root stiffness 4, root damping 3 and linear drag 8 while covered; uncovered multipliers unchanged. Native acceptance remains separate.",
-  "waistTransition": "Upper-waist radial mask blends local contact into the original distal envelope; lower pouch keeps its smooth silhouette."
+  "waistTransition": "Actual sewn polygon radial cage; continuous authored edge detail; concave upper envelope without local release."
 }

@@ -26,9 +26,23 @@ inline PouchCageReceipt FitPouchCage(std::vector<Vec>& points,unsigned columns,u
  height+=(std::max)(ease*3,.035f*height);rx=(std::max)(rx,ease);ry=(std::max)(ry,ease);
  if(height<1e-5f||rx<1e-5f||ry<1e-5f)throw std::runtime_error("Collapsed pouch cage");
  constexpr unsigned rays=24;constexpr float tau=6.28318530718f;
+ // Intersect each cage ray with the actual sewn polygon. The normalizing
+ // extents are a coordinate system, never an invented elliptical attachment.
+ std::vector<float> boundary(rays);
+ for(unsigned c=0;c<rays;c++){
+  float angle=tau*float(c)/rays,dx=std::cos(angle),dy=std::sin(angle);
+  for(unsigned i=0;i<columns;i++){
+   auto a=Sub(points[i],center),b=Sub(points[(i+1)%columns],center);
+   float ax=Dot(a,x)/rx,ay=Dot(a,y)/ry,ex=Dot(Sub(b,a),x)/rx,ey=Dot(Sub(b,a),y)/ry;
+   float den=dx*ey-dy*ex;if(std::abs(den)<1e-7f)continue;
+   float r=(ax*ey-ay*ex)/den,v=(ax*dy-ay*dx)/den;
+   if(r>0&&v>=-1e-5f&&v<=1.00001f)boundary[c]=(std::max)(boundary[c],r);
+  }
+  if(boundary[c]<1e-6f)throw std::runtime_error("Sewn pouch boundary is not radial about its centroid");
+ }
  std::vector<float> radius((sections+1)*rays);
  auto at=[&](unsigned j,unsigned c)->float&{return radius[j*rays+c%rays];};
- for(unsigned j=0;j<=sections;j++){float t=float(j)/sections;float seed=std::sqrt((std::max)(0.f,1-t*t))*(.45f+.55f*std::exp(-8*t));for(unsigned c=0;c<rays;c++)at(j,c)=seed;}
+ for(unsigned j=0;j<=sections;j++){float t=float(j)/sections;float seed=std::sqrt((std::max)(0.f,1-t*t))*(.45f+.55f*std::exp(-8*t));for(unsigned c=0;c<rays;c++)at(j,c)=seed*boundary[c];}
  PouchCageReceipt receipt{sections,end-first,0,height,0};
  // Local splats constrain both endpoints of the containing cage interval.
  // This is a sampled contact fit, not a continuous triangle certificate;
@@ -43,33 +57,18 @@ inline PouchCageReceipt FitPouchCage(std::vector<Vec>& points,unsigned columns,u
   auto weight=[](float distance){float q=(std::max)(0.f,(std::min)(1.f,2-std::abs(distance)));return q*q*(3-2*q);};
   // A continuous splat avoids a contact jumping between bins under tiny pose
   // changes. Its central plateau keeps both interpolation donors outside.
-  for(int k=j-1;k<=j+2;k++)if(k>=0&&k<int(sections))for(int c=col-1;c<=col+2;c++){
+  for(int k=j-1;k<=j+2;k++)if(k>0&&k<int(sections))for(int c=col-1;c<=col+2;c++){
    float value=required*weight(k-u)*weight(c-v);unsigned wrapped=unsigned(c+int(rays))%rays;
    if(at(unsigned(k),wrapped)<value){at(unsigned(k),wrapped)=value;++receipt.corrections;}
   }
  }
- // Blend local contact into the original smooth envelope near the waist.
- // Preserve the distal envelope rather than fitting separate content lobes.
- const auto localRadius=radius;
+ // The least concave envelope bridges contact lobes without a saddle.
  for(unsigned c=0;c<rays;c++){
   std::vector<unsigned> hull;
   for(unsigned j=0;j<=sections;j++){
    while(hull.size()>1){unsigned a=hull[hull.size()-2],b=hull.back();if((at(b,c)-at(a,c))/(b-a)>(at(j,c)-at(b,c))/(j-b))break;hull.pop_back();}hull.push_back(j);
   }
   for(unsigned k=1;k<hull.size();k++){unsigned a=hull[k-1],b=hull[k];for(unsigned j=a+1;j<b;j++)at(j,c)=at(a,c)+(at(b,c)-at(a,c))*float(j-a)/(b-a);}
- }
- // The side opposite the contents' in-plane drop is the upper waist.
- // Release only that side of the envelope: underside/lower pouch stays smooth.
- Vec waistDirection=Mul(Unit(shift),-1);
- for(unsigned c=0;c<rays;c++){
-  float angle=tau*float(c)/rays;
-  Vec radial=Unit(Add(Mul(x,rx*std::cos(angle)),Mul(y,ry*std::sin(angle))));
-  float upper=(std::max)(0.f,(std::min)(1.f,2*Dot(radial,waistDirection)));
-  upper=upper*upper*(3-2*upper);
-  for(unsigned j=1;j<sections*3/4;j++){
-   float w=(std::max)(0.f,(std::min)(1.f,(float(j)/sections-.25f)/.5f));w=w*w*(3-2*w);
-   float release=upper*(1-w);at(j,c)=localRadius[j*rays+c]*release+at(j,c)*(1-release);
-  }
  }
  // Outward smoothing across cage kinks; endpoints retain attachment/pole.
  for(unsigned pass=0;pass<8;pass++){auto old=radius;for(unsigned j=1;j<sections;j++)for(unsigned c=0;c<rays;c++)at(j,c)=(std::max)(old[j*rays+c],.5f*old[j*rays+c]+.125f*(old[(j-1)*rays+c]+old[(j+1)*rays+c]+old[j*rays+(c+1)%rays]+old[j*rays+(c+rays-1)%rays]));}
@@ -78,14 +77,19 @@ inline PouchCageReceipt FitPouchCage(std::vector<Vec>& points,unsigned columns,u
  auto sample=[&](int j,int c){j=(std::max)(0,(std::min)(int(sections),j));return at(unsigned(j),unsigned(c+int(rays)*2)%rays);};
  for(unsigned c=0;c<columns;c++){
   auto d=Sub(seam[c],center);float angle=std::atan2(Dot(d,y)/ry,Dot(d,x)/rx),dx=std::cos(angle),dy=std::sin(angle);if(angle<0)angle+=tau;float angular=angle/tau*rays;unsigned k=unsigned(angular)%rays;float af=angular-unsigned(angular);
+  // Carry the exact authored edge through the cap, including its nonplanar
+  // offset and sub-cage angular detail. No one-row blend into an oval.
+  float base=cubic(sample(0,int(k)-1),sample(0,int(k)),sample(0,int(k)+1),sample(0,int(k)+2),af);
+  float sewnRadius=std::sqrt(std::pow(Dot(d,x)/rx,2)+std::pow(Dot(d,y)/ry,2));
+  float seamDepth=Dot(d,axis);
   for(unsigned row=1;row<rows;row++){
    float t=std::sin(1.57079632679f*float(row)/rows),u=t*sections;unsigned j=(std::min)(sections-1,unsigned(u));float f=u-j;
    float along[4];for(int q=0;q<4;q++)along[q]=cubic(sample(int(j)+q-1,int(k)-1),sample(int(j)+q-1,int(k)),sample(int(j)+q-1,int(k)+1),sample(int(j)+q-1,int(k)+2),af);
    float r=(std::max)(0.f,cubic(along[0],along[1],along[2],along[3],f));
    if(j==sections-1)r=(std::max)(r,along[1]*std::sqrt(1-f));
-   Vec p=Add(center,Add(Mul(axis,height*t),Add(Mul(shift,t),Add(Mul(x,rx*r*dx),Mul(y,ry*r*dy)))));
-   float w=(std::min)(1.f,t*20);w=w*w*(3-2*w);
-   Vec sewn=Add(seam[c],Add(Mul(axis,height*t),Mul(shift,t)));points[row*columns+c]=Add(Mul(sewn,1-w),Mul(p,w));
+   r+=(sewnRadius-base)*(1-t);
+   Vec p=Add(center,Add(Mul(axis,height*t+seamDepth*(1-t)),Add(Mul(shift,t),Add(Mul(x,rx*r*dx),Mul(y,ry*r*dy)))));
+   points[row*columns+c]=p;
   }
  }
  points[columns*rows]=Add(center,Add(Mul(axis,height),shift));
