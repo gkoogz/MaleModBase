@@ -7,6 +7,7 @@
     "include/malemod/garments/meridian_clearance.hpp",
     "include/malemod/garments/meridian_continuity.hpp",
     "include/malemod/garments/meridian_follow.hpp",
+    "include/malemod/garments/taut_contact.hpp",
     "include/malemod/garments/meridian_material.hpp",
     "include/malemod/physics/anterior_envelope.hpp",
     "include/malemod/physics/anterior_capsule.hpp"
@@ -18,6 +19,7 @@
     "include/malemod/garments/meridian_clearance.hpp": "3763f126988930a459c6e741bde52604483a0cc4b55e450a62784c20ce57d2d0",
     "include/malemod/garments/meridian_continuity.hpp": "74a07166204065a4f1d04ed0088987e9ce73e630176c8b0d7cb8c37e31f62a87",
     "include/malemod/garments/meridian_follow.hpp": "a21603a672f26ee8fc02599ac1d9e34d69076c5d7405620500e91598540db519",
+    "include/malemod/garments/taut_contact.hpp": "eff637b3d64a8cfee74810bddf57a5178e19734519604e4c4ce6e3562c009f6d",
     "include/malemod/garments/meridian_material.hpp": "2c1ffaef07b86c11ba7baee32db904c6f4d354d99ae89ba7f0cc281c122829e2",
     "include/malemod/physics/anterior_envelope.hpp": "b745e44ef9d708e5c2dc7190f350d064735065452b72f668ec80301d7e70437b",
     "include/malemod/physics/anterior_capsule.hpp": "ec99e686c3bdf270db823a276f4184addbaf652373f1a45b3b3271f559d24e23"

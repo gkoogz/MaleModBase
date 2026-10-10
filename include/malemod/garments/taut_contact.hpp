@@ -1,6 +1,22 @@
 #pragma once
 #include "meridian_clearance.hpp"
 namespace malemod::garments::meridian {
+// Exact current-pose support bounds. A face beyond one axis bound cannot
+// contact that primitive; no bound or certificate is reused after motion.
+struct TautBounds {Vec low{},high{};bool valid=false;};
+inline std::vector<TautBounds> BuildTautBounds(const std::vector<Hull>& hulls){
+ std::vector<TautBounds> result(hulls.size());
+ for(unsigned h=0;h<hulls.size();h++)if(hulls[h].support){
+  auto& b=result[h];b.valid=true;
+  for(unsigned k=0;k<3;k++){Vec axis{};axis[k]=1;b.high[k]=hulls[h].support(axis);b.low[k]=-hulls[h].support(Mul(axis,-1));}
+ }return result;
+}
+inline bool TautOutside(Vec a,Vec b,Vec c,const TautBounds& bounds,float margin){
+ if(!bounds.valid)return false;
+ for(unsigned k=0;k<3;k++)if((std::min)({a[k],b[k],c[k]})>bounds.high[k]+margin||
+                            (std::max)({a[k],b[k],c[k]})<bounds.low[k]-margin)return true;
+ return false;
+}
 // Refine an existing envelope without a second walk. Each correction uses a
 // current whole-triangle support plane and the vertex's longitude plane. Axial
 // relief follows that contact normal instead of a prescribed row-dependent
@@ -10,6 +26,7 @@ inline WrapReceipt RefineTautContacts(std::vector<Vec>& points,unsigned columns,
  const unsigned count=columns*rows+1,pole=count-1;
  if(columns<3||rows<2||points.size()<count||!faces||!faceCount||margin<0||!budget)throw std::runtime_error("Invalid taut contact surface");
  axis=Unit(axis);const auto original=points;auto work=points;
+ const auto bounds=BuildTautBounds(hulls);
  std::vector<Vec> radial(count);std::vector<float> limits(count,0.f);
  for(unsigned col=0;col<columns;col++){
   Vec q=Sub(work[col],work[pole]);Vec direction=Unit(Sub(q,Mul(axis,Dot(q,axis))));float average=0;
@@ -23,7 +40,13 @@ inline WrapReceipt RefineTautContacts(std::vector<Vec>& points,unsigned columns,
   float minimum=std::numeric_limits<float>::infinity();bool clear=true;
   for(unsigned f=0;f<faceCount;f++){
    auto ids=faces[f];for(auto i:ids)if(i>=count)throw std::runtime_error("Invalid taut contact face");
-   for(const auto& hull:hulls){
+   for(unsigned h=0;h<hulls.size();h++){
+    if(TautOutside(work[ids[0]],work[ids[1]],work[ids[2]],bounds[h],margin)){
+     // The true separation is greater than margin. Keep a conservative
+     // minimum while skipping the full plane and contact-route scan.
+     minimum=(std::min)(minimum,margin);continue;
+    }
+    const auto& hull=hulls[h];
     Plane chosen{};float best=std::numeric_limits<float>::infinity(),chosenGap=0;bool found=false,separated=false;
     auto consider=[&](Plane plane){
      float gap=std::numeric_limits<float>::infinity(),cost=0;
@@ -61,8 +84,15 @@ inline WrapReceipt RefineTautContacts(std::vector<Vec>& points,unsigned columns,
 }
 inline float TautTriangleClearance(const std::vector<Vec>& p,const Face* faces,unsigned faceCount,const std::vector<Hull>& hulls){
  float minimum=std::numeric_limits<float>::infinity();
- for(unsigned f=0;f<faceCount;f++)for(const auto& hull:hulls){
+ const auto bounds=BuildTautBounds(hulls);
+ for(unsigned f=0;f<faceCount;f++)for(unsigned h=0;h<hulls.size();h++){
   auto ids=faces[f];float best=-std::numeric_limits<float>::infinity();
+  if(TautOutside(p[ids[0]],p[ids[1]],p[ids[2]],bounds[h],0)){
+   // Only the sign matters to the caller when deciding whether to enlarge
+   // the cover. Zero is a conservative lower bound for this distant pair.
+   minimum=(std::min)(minimum,0.f);continue;
+  }
+  const auto& hull=hulls[h];
   for(const auto& plane:hull)best=(std::max)(best,(std::min)({Signed(plane,p[ids[0]]),Signed(plane,p[ids[1]]),Signed(plane,p[ids[2]])}));
   Plane exact{};if(TriangleSupportPlane(hull,p[ids[0]],p[ids[1]],p[ids[2]],exact))best=(std::max)(best,(std::min)({Signed(exact,p[ids[0]]),Signed(exact,p[ids[1]]),Signed(exact,p[ids[2]])}));
   minimum=(std::min)(minimum,best);

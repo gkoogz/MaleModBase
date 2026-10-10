@@ -99,6 +99,17 @@ int main(){try{
   for(unsigned i=0;i<cols;i++)Require(points[i]==reference[i],"Certified cover moved sewn anchors");Require(points.back()==reference.back(),"Certified cover moved terminal anchor");
   auto unchanged=points;RefineTautContacts(points,cols,rows,faces.data(),unsigned(faces.size()),hulls,{0,0,1});Require(points==unchanged,"Clear surface received unnecessary correction");
  }
+ // A distant exact support must skip contact work, but moving that same
+ // primitive over the garment on the next pose must be checked again.
+ {const Vec farCorners[]={{99,-1,-1},{101,1,1}},nearCorners[]={{-10,-10,-10},{10,10,10}};
+  Hull distant=SupportHull(farCorners,2,normals,6,0);
+  distant.support=[](Vec n){return 100*n[0]+std::abs(n[0])+std::abs(n[1])+std::abs(n[2]);};
+  auto points=reference;RefineTautContacts(points,cols,rows,faces.data(),unsigned(faces.size()),{distant},{0,0,1});
+  Require(points==reference&&TautTriangleClearance(points,faces.data(),unsigned(faces.size()),{distant})>=0,"Distant contact changed the surface");
+  distant=SupportHull(nearCorners,2,normals,6,0);
+  distant.support=[](Vec n){return 10*(std::abs(n[0])+std::abs(n[1])+std::abs(n[2]));};
+  bool rejected=false;try{RefineTautContacts(points,cols,rows,faces.data(),unsigned(faces.size()),{distant},{0,0,1});}catch(const std::exception&){rejected=true;}
+  Require(rejected&&points==reference,"Moving contact reused stale distant bounds");}
  // An invalid anchored pose must leave the caller's last geometry untouched.
  const Vec enclosing[]={{-10,-10,-10},{10,10,10}};auto bad=reference;bool rejected=false;
  try{ClearMeridians(bad,cols,rows,faces.data(),unsigned(faces.size()),{SupportHull(enclosing,2,normals,6,0)},{0,0,1});}catch(const std::exception&){rejected=true;}
