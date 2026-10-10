@@ -27,8 +27,10 @@ Private trials found a duplicate post-shear sampling check, a seam pose needing
 7.23 source units beyond the current 6-unit allowance, and refit rejection
 after two contact passes. Relaxing limits did not establish a visible certified
 gameplay pouch. A 32-ray trial reduced sampled title Draw to 7.63 ms but lost
-the gameplay pouch. Direct donor rendering reached 1.34 ms but buried the pouch
-behind the body. The old CPU worker took 14.7 seconds on its first shared solve.
+the gameplay pouch. Direct donor rendering reached 1.34 ms but showed a large grey wedge
+from the front. A 1.6-unit convex-cover/interior-contact trial averaged 3.70 ms
+in sampled title Draw but formed an oversized grey bulb in front. The old CPU
+worker took 14.7 seconds on its first shared solve.
 These are rejected private diagnostics. Current source changes reduce wasted
 work but do not meet real-time or attachment acceptance. Exact builds/logs and
 captures remain private under D:/MaleModBuilds/jockstrap-cadence-20261009.
