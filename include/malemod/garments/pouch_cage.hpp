@@ -48,15 +48,28 @@ inline PouchCageReceipt FitPouchCage(std::vector<Vec>& points,unsigned columns,u
    if(at(unsigned(k),wrapped)<value){at(unsigned(k),wrapped)=value;++receipt.corrections;}
   }
  }
- // Let the proximal half follow local contact so the cloth can turn
- // naturally out of the waistband. Keep the taut envelope over the contents
- // below that transition: removing it everywhere reproduces separate lobes.
+ // Blend local contact into the original smooth envelope near the waist.
+ // Preserve the distal envelope rather than fitting separate content lobes.
+ const auto localRadius=radius;
  for(unsigned c=0;c<rays;c++){
   std::vector<unsigned> hull;
-  for(unsigned j=sections/2;j<=sections;j++){
+  for(unsigned j=0;j<=sections;j++){
    while(hull.size()>1){unsigned a=hull[hull.size()-2],b=hull.back();if((at(b,c)-at(a,c))/(b-a)>(at(j,c)-at(b,c))/(j-b))break;hull.pop_back();}hull.push_back(j);
   }
   for(unsigned k=1;k<hull.size();k++){unsigned a=hull[k-1],b=hull[k];for(unsigned j=a+1;j<b;j++)at(j,c)=at(a,c)+(at(b,c)-at(a,c))*float(j-a)/(b-a);}
+ }
+ // The side opposite the contents' in-plane drop is the upper waist.
+ // Release only that side of the envelope: underside/lower pouch stays smooth.
+ Vec waistDirection=Mul(Unit(shift),-1);
+ for(unsigned c=0;c<rays;c++){
+  float angle=tau*float(c)/rays;
+  Vec radial=Unit(Add(Mul(x,rx*std::cos(angle)),Mul(y,ry*std::sin(angle))));
+  float upper=(std::max)(0.f,(std::min)(1.f,2*Dot(radial,waistDirection)));
+  upper=upper*upper*(3-2*upper);
+  for(unsigned j=1;j<sections*3/4;j++){
+   float w=(std::max)(0.f,(std::min)(1.f,(float(j)/sections-.25f)/.5f));w=w*w*(3-2*w);
+   float release=upper*(1-w);at(j,c)=localRadius[j*rays+c]*release+at(j,c)*(1-release);
+  }
  }
  // Outward smoothing across cage kinks; endpoints retain attachment/pole.
  for(unsigned pass=0;pass<8;pass++){auto old=radius;for(unsigned j=1;j<sections;j++)for(unsigned c=0;c<rays;c++)at(j,c)=(std::max)(old[j*rays+c],.5f*old[j*rays+c]+.125f*(old[(j-1)*rays+c]+old[(j+1)*rays+c]+old[j*rays+(c+1)%rays]+old[j*rays+(c+rays-1)%rays]));}
