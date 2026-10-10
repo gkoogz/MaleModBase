@@ -3,7 +3,7 @@
   "geometryBindingRevision": 6,
   "hashNormalization": "LF",
   "files": {
-    "include/malemod/garments/pouch_cage.hpp": "99928d82f8d30fb110ae45837bdcd66d059cf262f092ae6af6f4ee8db7f18491",
+    "include/malemod/garments/pouch_cage.hpp": "753267e88d7c5c4bba0b3f38fd6591fb5eac66cd0ab892c8996745072c177c4b",
     "include/malemod/garments/pouch_budget.hpp": "ad21f58f54a48cb72d7e298d59b39359fe96a4f9ca9c20ed5f937a1b4ed1b481",
     "tests/pouch_cage_test.cpp": "6e3c06373eb64b7ac9b7509cea83602644dbf65d3320776ac7eb490f83dc056f",
     "tools/audit_pouch_cage_replay.py": "39ca4da4bf5dfd8a1983ebcd32ea893447274fa9846a516cce075a707ca2b520",
@@ -23,8 +23,8 @@
   "verification": {
     "sourceTest": "pouch_cage_test",
     "replay": "14 measured poses, 3 repeats, 3 alternating baseline/candidate pairs",
-    "sampleContact": "Zero outside samples beyond the first two sewn display rows; cross-section polygon test, not whole triangle or complete body certification",
-    "native": "Owned Wolverine grey-room size/state/angle captures and walking/sprint/jump samples",
+    "sampleContact": "Previous global-envelope audit does not certify the revised local profile; native coverage must be reviewed.",
+    "native": "Waist-transition correction: focused native view check pending.",
     "notVerified": [
       "all supported LODs",
       "campaign transitions",
@@ -33,5 +33,6 @@
     ]
   },
   "seamWinding": "Outward ordered sewn boundary; contents never choose the axis sign",
-  "contentsSupport": "Dimensionless motion transfer .18, root stiffness 4, root damping 3 and linear drag 8 while covered; uncovered multipliers unchanged. Native acceptance remains separate."
+  "contentsSupport": "Dimensionless motion transfer .18, root stiffness 4, root damping 3 and linear drag 8 while covered; uncovered multipliers unchanged. Native acceptance remains separate.",
+  "waistTransition": "Local splats and outward smoothing only; removed global concave majorant that forced a straight tent from the waistband."
 }

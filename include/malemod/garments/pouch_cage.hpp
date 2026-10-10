@@ -4,8 +4,8 @@ namespace malemod::garments::meridian {
 struct PouchCageReceipt {unsigned sections=0,samples=0,corrections=0;float length=0,maxRadius=0;};
 // A pre-shaped cap with a coherent axis and fixed material rays. Only a small
 // radial cage receives contact corrections; display density does not multiply
-// collision work. The concave radius envelope bridges anatomy rather than
-// reproducing every lobe. Input distances and ease use the adapter's units.
+// collision work. Local outward smoothing rounds the fitted profile without
+// a taut cone from the waistband. Distances/ease use the adapter's units.
 inline PouchCageReceipt FitPouchCage(std::vector<Vec>& points,unsigned columns,unsigned rows,
  unsigned first,unsigned end,Vec tip,float ease=.12f,unsigned sections=16){
  if(columns<3||rows<3||points.size()<=size_t(columns)*rows||first<size_t(columns)*rows+1||first>=end||end>points.size()||sections<4||sections>32||!std::isfinite(ease)||ease<0)
@@ -48,14 +48,10 @@ inline PouchCageReceipt FitPouchCage(std::vector<Vec>& points,unsigned columns,u
    if(at(unsigned(k),wrapped)<value){at(unsigned(k),wrapped)=value;++receipt.corrections;}
   }
  }
- // Least concave majorant: an outward-only rope over the corrected cage.
- for(unsigned c=0;c<rays;c++){
-  std::vector<unsigned> hull;
-  for(unsigned j=0;j<=sections;j++){
-   while(hull.size()>1){unsigned a=hull[hull.size()-2],b=hull.back();if((at(b,c)-at(a,c))/(b-a)>(at(j,c)-at(b,c))/(j-b))break;hull.pop_back();}hull.push_back(j);
-  }
-  for(unsigned k=1;k<hull.size();k++){unsigned a=hull[k-1],b=hull[k];for(unsigned j=a+1;j<b;j++)at(j,c)=at(a,c)+(at(b,c)-at(a,c))*float(j-a)/(b-a);}
- }
+ // Keep the waist-to-pouch profile locally fitted. A global concave majorant
+ // bridges the empty space above the contents with a straight tent/cone from
+ // the waistband. The local splats already provide clearance; smoothing below
+ // rounds their joins without forcing that artificial global silhouette.
  // Outward smoothing across cage kinks; endpoints retain attachment/pole.
  for(unsigned pass=0;pass<8;pass++){auto old=radius;for(unsigned j=1;j<sections;j++)for(unsigned c=0;c<rays;c++)at(j,c)=(std::max)(old[j*rays+c],.5f*old[j*rays+c]+.125f*(old[(j-1)*rays+c]+old[(j+1)*rays+c]+old[j*rays+(c+1)%rays]+old[j*rays+(c+rays-1)%rays]));}
  auto seam=std::vector<Vec>(points.begin(),points.begin()+columns);
