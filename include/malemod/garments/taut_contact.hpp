@@ -35,6 +35,19 @@ inline WrapReceipt RefineTautContacts(std::vector<Vec>& points,unsigned columns,
  }
  auto fixed=[&](unsigned i){return i<columns||i==pole;};
  auto route=[&](unsigned i,Vec n){return Add(Mul(radial[i],(std::max)(0.f,Dot(n,radial[i]))),Mul(axis,Dot(n,axis)));};
+ // A longitude direction and a sampled support plane do not change during
+ // this solve. Reuse the exact route/square root across rows, faces and passes.
+ // Triangle-normal supports are dynamic and deliberately bypass this cache.
+ struct Route {Vec move{};float slope=0,root=0;bool ready=false;};
+ std::vector<unsigned> offsets;unsigned planeCount=0;
+ for(const auto& hull:hulls){offsets.push_back(planeCount);planeCount+=unsigned(hull.size());}
+ std::vector<Route> routes(std::size_t(columns)*planeCount);
+ auto getRoute=[&](unsigned i,Vec n,unsigned planeIndex){
+  auto calculate=[&](){Route r;r.move=route(i,n);r.slope=Dot(r.move,n);r.root=r.slope>=1e-8f?std::sqrt(r.slope):0;r.ready=true;return r;};
+  if(planeIndex>=planeCount)return calculate();
+  auto& cached=routes[std::size_t(i%columns)*planeCount+planeIndex];
+  if(!cached.ready)cached=calculate();return cached;
+ };
  WrapReceipt receipt;
  for(unsigned pass=0;pass<budget;pass++){
   float minimum=std::numeric_limits<float>::infinity();bool clear=true;
@@ -47,23 +60,23 @@ inline WrapReceipt RefineTautContacts(std::vector<Vec>& points,unsigned columns,
      minimum=(std::min)(minimum,margin);continue;
     }
     const auto& hull=hulls[h];
-    Plane chosen{};float best=std::numeric_limits<float>::infinity(),chosenGap=0;bool found=false,separated=false;
-    auto consider=[&](Plane plane){
+    Plane chosen{};unsigned chosenIndex=planeCount;float best=std::numeric_limits<float>::infinity(),chosenGap=0;bool found=false,separated=false;
+    auto consider=[&](Plane plane,unsigned planeIndex){
      float gap=std::numeric_limits<float>::infinity(),cost=0;
      for(auto i:ids){float value=Signed(plane,work[i]);gap=(std::min)(gap,value);
       if(fixed(i)){if(value< -1e-5f)return;}
-      else if(value<margin){Vec move=route(i,plane.normal);float slope=Dot(move,plane.normal);if(slope<1e-8f)return;cost=(std::max)(cost,(margin-value)/std::sqrt(slope));}
+      else if(value<margin){auto r=getRoute(i,plane.normal,planeIndex);if(r.slope<1e-8f)return;cost=(std::max)(cost,(margin-value)/r.root);}
      }
      if(gap>=-1e-5f){separated=true;chosenGap=gap;return;}
-     if(cost<best){best=cost;chosen=plane;chosenGap=gap;found=true;}
+     if(cost<best){best=cost;chosen=plane;chosenIndex=planeIndex;chosenGap=gap;found=true;}
     };
-    for(const auto& plane:hull){consider(plane);if(separated)break;}
-    if(!separated){Plane exact{};if(TriangleSupportPlane(hull,work[ids[0]],work[ids[1]],work[ids[2]],exact))consider(exact);}
+    for(unsigned k=0;k<hull.size();k++){consider(hull[k],offsets[h]+k);if(separated)break;}
+    if(!separated){Plane exact{};if(TriangleSupportPlane(hull,work[ids[0]],work[ids[1]],work[ids[2]],exact))consider(exact,planeCount);}
     minimum=(std::min)(minimum,chosenGap);
     if(separated)continue;
     if(!found)throw std::runtime_error("Taut contact has no fixed-edge route");clear=false;
     for(auto i:ids)if(!fixed(i)){
-     float gap=Signed(chosen,work[i]);if(gap>=margin)continue;Vec move=route(i,chosen.normal);float slope=Dot(move,chosen.normal);
+     float gap=Signed(chosen,work[i]);if(gap>=margin)continue;auto r=getRoute(i,chosen.normal,chosenIndex);Vec move=r.move;float slope=r.slope;
      Vec candidate=Add(work[i],Mul(move,(margin-gap)/slope)),d=Sub(candidate,original[i]);
      if(!std::isfinite(Dot(d,d))||Dot(d,d)>limits[i]*limits[i])throw std::runtime_error("Taut normal correction exceeds sampling spacing vertex="+std::to_string(i)+" face="+std::to_string(f)+" pass="+std::to_string(pass)+" displacement="+std::to_string(std::sqrt(Dot(d,d)))+" limit="+std::to_string(limits[i]));
      work[i]=candidate;
@@ -98,6 +111,32 @@ inline float TautTriangleClearance(const std::vector<Vec>& p,const Face* faces,u
   minimum=(std::min)(minimum,best);
  }return minimum;
 }
+// The final acceptance gate needs a threshold, not the best separation over
+// every direction. Keep the full minimum query for failed-seed padding only.
+// Inputs are validated before early exits so a distant/clear face cannot hide
+// malformed geometry. Support functions must describe finite convex solids.
+inline bool TautTrianglesSeparated(const std::vector<Vec>& p,const Face* faces,unsigned faceCount,const std::vector<Hull>& hulls,float tolerance=1e-5f){
+ if((faceCount&&!faces)||!std::isfinite(tolerance)||tolerance<0)throw std::runtime_error("Invalid taut certificate inputs");
+ for(unsigned f=0;f<faceCount;f++)for(auto id:faces[f]){
+  if(id>=p.size())throw std::runtime_error("Invalid taut certificate face");
+  for(float v:p[id])if(!std::isfinite(v))throw std::runtime_error("Nonfinite taut certificate vertex");
+ }
+ for(const auto& hull:hulls)for(const auto& plane:hull){
+  if(!std::isfinite(plane.offset))throw std::runtime_error("Nonfinite taut certificate plane");
+  for(float v:plane.normal)if(!std::isfinite(v))throw std::runtime_error("Nonfinite taut certificate plane");
+ }
+ const auto bounds=BuildTautBounds(hulls);
+ for(const auto& b:bounds)if(b.valid)for(unsigned k=0;k<3;k++)
+  if(!std::isfinite(b.low[k])||!std::isfinite(b.high[k])||b.low[k]>b.high[k])throw std::runtime_error("Invalid taut support bounds");
+ for(unsigned f=0;f<faceCount;f++)for(unsigned h=0;h<hulls.size();h++){
+  auto ids=faces[f];const Vec a=p[ids[0]],b=p[ids[1]],c=p[ids[2]];
+  if(TautOutside(a,b,c,bounds[h],0))continue;
+  bool clear=false;
+  for(const auto& plane:hulls[h])if((std::min)({Signed(plane,a),Signed(plane,b),Signed(plane,c)})>=-tolerance){clear=true;break;}
+  if(!clear&&!ExactTriangleSeparated(hulls[h],a,b,c,tolerance))return false;
+ }
+ return true;
+}
 // Account for chord error when a finite grid samples a rounded convex cover.
 // Increase construction support only after measuring failed triangle contact;
 // final primitive certificates, fixed anchors and correction bounds remain.
@@ -114,13 +153,16 @@ inline WrapReceipt WalkCertifiedTautEnvelope(std::vector<Vec>& points,unsigned c
    auto d=Sub(seed[row*columns+(col+1)%columns],seed[row*columns+col]);spacing+=std::sqrt(Dot(d,d))/(columns*rows);
   }
   if(padding>(std::max)(2*margin,1.5f*spacing))throw std::runtime_error("Cover discretization exceeds surface spacing");
-  float gap=TautTriangleClearance(seed,faces,faceCount,hulls);auto work=seed;
+  auto work=seed;
   try{
    auto receipt=RefineTautContacts(work,columns,rows,faces,faceCount,hulls,axis,margin);
-   if(TautTriangleClearance(work,faces,faceCount,hulls)<-1e-5f)throw std::runtime_error("Refined cover lacks triangle separation");
+   if(!TautTrianglesSeparated(work,faces,faceCount,hulls))throw std::runtime_error("Refined cover lacks triangle separation");
    if(!WithinMeridianSampling(work,seed,columns,rows,margin))throw std::runtime_error("Refined cover exceeds physical spacing");
    if(usedPadding)*usedPadding=padding;if(acceptedSeed)*acceptedSeed=seed;points.swap(work);return receipt;
   }catch(const std::exception&){if(attempt==5)throw;}
+  // Only a retry consumes the seed's minimum gap. Successful attempts and
+  // terminal failures avoid this exhaustive scan; seed remains unchanged.
+  float gap=TautTriangleClearance(seed,faces,faceCount,hulls);
   padding+=(std::max)(margin,-gap*1.25f);
  }
  throw std::runtime_error("Certified cover construction did not converge");

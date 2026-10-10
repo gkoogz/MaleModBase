@@ -5,6 +5,27 @@
 using namespace malemod::garments::meridian;
 static void Require(bool value,const char* message){if(!value)throw std::runtime_error(message);}
 int main(){try{
+ // Threshold certification must agree with the exhaustive minimum, including
+ // support-only separating directions, moving solids and no-support hulls.
+ {Hull hull={{{1,0,0},1},{{-1,0,0},1},{{0,1,0},1},{{0,-1,0},1},{{0,0,1},1},{{0,0,-1},1}};
+  unsigned calls=0;hull.support=[&](Vec n){++calls;return std::sqrt(Dot(n,n));};
+  const Face face={0,1,2};unsigned rng=17;
+  auto random=[&](){rng=1664525u*rng+1013904223u;return float(rng>>8)/16777216.f*6-3;};
+  for(unsigned k=0;k<3000;k++){
+   std::vector<Vec> p(3);for(auto& v:p)for(float& x:v)x=random();
+   for(float tolerance:{0.f,1e-5f,.01f})Require(TautTrianglesSeparated(p,&face,1,{hull},tolerance)==(TautTriangleClearance(p,&face,1,{hull})>=-tolerance),"Threshold/exhaustive disagreement");
+  }
+  std::vector<Vec> clear={{1,0,0},{1,.1f,0},{1,0,.1f}};calls=0;
+  Require(TautTrianglesSeparated(clear,&face,1,{hull}),"Plane certificate rejected clear face");
+  Require(calls==6,"Clear plane still evaluated exact face support");
+  hull.support={};Require(TautTrianglesSeparated(clear,&face,1,{hull}),"Plane-only hull rejected");
+  auto invalid=clear;invalid[2][0]=std::numeric_limits<float>::quiet_NaN();bool rejected=false;
+  try{TautTrianglesSeparated(invalid,&face,1,{hull});}catch(const std::exception&){rejected=true;}
+  Require(rejected,"Early exit hid a nonfinite vertex");
+  hull[5].offset=std::numeric_limits<float>::infinity();rejected=false;
+  try{TautTrianglesSeparated(clear,&face,1,{hull});}catch(const std::exception&){rejected=true;}
+  Require(rejected,"Early exit hid a nonfinite plane");
+ }
  // A triangle can clear a convex primitive along its own face normal while
  // spanning all preselected plane directions. Do not force it to a distant
  // axis plane. The exact support test still rejects an intersecting chord.
