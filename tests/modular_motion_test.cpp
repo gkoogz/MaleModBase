@@ -26,6 +26,17 @@ int main(){try{
  moved=rest;moved.frames[1].basis={Vec{0,0,1},Vec{0,1,0},Vec{-1,0,0}};
  section=CrossSectionResidual(b[1],moved,{3,2,-5});
  Check(section==Vec{3,2,0},"Section transfer does not follow the root angle");
+ State anchored;anchored.hasShapeFrames=true;
+ for(unsigned i=1;i<=12;i++){
+  anchored.shapeFrames[i].origin={double(i-1),0,0};
+  anchored.frames[i].origin={double(i-1),.5,0};
+ }
+ anchored.frames[13].origin={2,3,-4};anchored.frames[14].origin={2,-3,-5};
+ AnchorRootPhysics(anchored,2,20);
+ Check(anchored.frames[1].origin==anchored.shapeFrames[1].origin,"Root physics moved the fixed opening");
+ Check(anchored.frames[2].origin[1]>0&&anchored.frames[2].origin[1]<.5,"Root release is not gradual");
+ Check(anchored.frames[5].origin[1]==.5&&anchored.frames[12].origin[1]==.5,"Root constraint suppressed distal physics");
+ Check(anchored.frames[13].origin==Vec{2,3,-4}&&anchored.frames[14].origin==Vec{2,-3,-5},"Root constraint moved independent lobes");
  bool rejected=false;try{moved.scales[1][1]=0;plan.Evaluate(moved);}catch(const std::invalid_argument&){rejected=true;}Check(rejected,"Collapsed morphology accepted");
  std::cout<<"PASS independent shaft/lobe ownership, live connecting skin, exact rest and invalid-scale rejection\n";
  return 0;

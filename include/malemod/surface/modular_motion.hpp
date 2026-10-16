@@ -22,6 +22,20 @@ struct State {
  State(){for(auto& s:scales)s={1,1,1};}
 };
 struct Dimensions {double radius=1,length=1;std::array<Vec,2> lobes{{{1,1,1},{1,1,1}}};Vec anchor{};};
+inline void AnchorRootPhysics(State& state,double radius,double length){
+ if(!state.hasShapeFrames)return;
+ // The opening is attached to the body. Rest-angle controls rotate its root,
+ // but the first simulated tangent must not rotate that fixed boundary again.
+ // Release only this proximal constraint over at most one quarter of the rod;
+ // the suspended bodies and the remainder retain their full simulated pose.
+ const double span=(std::max)(1e-6,(std::min)(2*radius,.25*length));double station=0;
+ for(unsigned i=1;i<=12;i++){
+  if(i>1){auto d=Sub(state.shapeFrames[i].origin,state.shapeFrames[i-1].origin);station+=std::sqrt(Dot(d,d));}
+  const double t=std::clamp(station/span,0.,1.),w=t*t*t*(10+t*(-15+6*t));
+  state.frames[i].origin=Add(Scale(state.shapeFrames[i].origin,1-w),Scale(state.frames[i].origin,w));
+  state.frames[i].basis=InterpolateBasis(state.shapeFrames[i].basis,state.frames[i].basis,w);
+ }
+}
 inline State DrivenState(const State& reference,const Dimensions& dimensions,const Output& source){
  if(dimensions.radius<=0||dimensions.length<=0||source.proximalRadius<=0||source.restLength<=0)throw std::invalid_argument("Invalid measured modular dimensions");
  State state;state.frames=MaterialFrames(source);
@@ -42,6 +56,7 @@ inline State DrivenState(const State& reference,const Dimensions& dimensions,con
   const auto current=Precise(source.lobeRadii[i]);if(dimensions.lobes[i][k]<=0||current[k]<=0)throw std::invalid_argument("Invalid measured lobe dimensions");
   state.scales[13+i][k]=current[k]/dimensions.lobes[i][k];
  }
+ AnchorRootPhysics(state,source.proximalRadius,source.restLength);
  return state;
 }
 struct Loft {
