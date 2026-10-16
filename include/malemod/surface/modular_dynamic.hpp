@@ -23,7 +23,9 @@ struct DynamicMount {
  std::vector<Vec> Pose(const Asset& asset,const Plan& plan,const State& state,Vec translation,const std::vector<double>& advances)const{
   auto moved=state;for(unsigned i=1;i<15;i++)moved.frames[i].origin=Add(moved.frames[i].origin,translation);const auto& mount=*asset.mount;
   return plan.Evaluate(moved,[&](auto& points){
-   for(unsigned i=0;i<points.size();i++)if(mount.shaftWeight[i]>0){const double advance=advances.at(i),span=(std::max)(mount.length*.7*state.scales[1][0],2.1*advance);const double station=Dot(Sub(asset.rest[i],origin),basis[0]),t=std::clamp((station-mount.station)*state.scales[1][0]/span,0.,1.);const double fade=1-t*t*t*(10+t*(-15+6*t));points[i]=Add(points[i],Scale(state.frames[1].basis[0],advance*fade*mount.shaftWeight[i]));}
+   for(unsigned i=0;i<points.size();i++)if(mount.shaftWeight[i]>0){const double advance=advances.at(i),span=(std::max)(mount.length*.7*state.scales[1][0],2.1*advance);const double station=Dot(Sub(asset.rest[i],origin),basis[0]),t=std::clamp((station-mount.station)*state.scales[1][0]/span,0.,1.);const double fade=1-t*t*t*(10+t*(-15+6*t));auto offset=Scale(state.frames[1].basis[0],advance*fade*mount.shaftWeight[i]);
+    if(state.shaftMaterial&&ShaftBinding(asset.bindings[i])){const auto& b=state.materialBindings?state.materialBindings->at(i):asset.bindings[i];auto p=state.shaftMaterial->at(i);double crown=state.crownWeights?state.crownWeights->at(i):0;auto restOffset=Scale(state.shapeFrames[1].basis[0],advance*fade*mount.shaftWeight[i]);offset=Sub(MaterialPoint(b,state,Add(p,restOffset),crown),MaterialPoint(b,state,p,crown));}
+    points[i]=Add(points[i],offset);}
   });
  }
  std::vector<Vec> Repose(const DynamicResult& cached,const Asset& asset,const Plan& plan,const State& state)const{

@@ -20,6 +20,7 @@ struct State {
  std::shared_ptr<const std::vector<Vec>> surfaceNormals;
  // A dynamics-free material shape; never apply legacy posed skin twice.
  std::shared_ptr<const std::vector<Vec>> shaftMaterial;
+ std::shared_ptr<const std::vector<Binding>> materialBindings;
  std::shared_ptr<const std::vector<double>> crownWeights;
  std::array<Vec,15> scales{};
  State(){for(auto& s:scales)s={1,1,1};}
@@ -102,7 +103,7 @@ inline void PreserveMaterialLengths(State& s){
 }
 inline State Interpolate(const State& a,const State& b,double t){
  if(!std::isfinite(t)||t<0||t>1)throw std::invalid_argument("Invalid modular interpolation phase");
- State s;s.shaftMaterial=b.shaftMaterial;s.crownWeights=b.crownWeights;
+ State s;s.materialBindings=b.materialBindings;s.shaftMaterial=b.shaftMaterial;s.crownWeights=b.crownWeights;
  if(a.offsets&&b.offsets){if(a.offsets->size()!=b.offsets->size())throw std::invalid_argument("Modular shape transfer size changed");auto values=std::make_shared<std::vector<Vec>>(a.offsets->size());for(unsigned i=0;i<values->size();i++)(*values)[i]=Add(Scale((*a.offsets)[i],1-t),Scale((*b.offsets)[i],t));s.offsets=std::move(values);}
  else s.offsets=t<1?a.offsets:b.offsets;
  if(a.surfaceNormals&&b.surfaceNormals){if(a.surfaceNormals->size()!=b.surfaceNormals->size())throw std::invalid_argument("Modular normal transfer size changed");auto values=std::make_shared<std::vector<Vec>>(a.surfaceNormals->size());for(unsigned i=0;i<values->size();i++){auto n=Add(Scale((*a.surfaceNormals)[i],1-t),Scale((*b.surfaceNormals)[i],t));(*values)[i]=Dot(n,n)>1e-12?Unit(n):Vec{};}s.surfaceNormals=std::move(values);}else s.surfaceNormals=t<1?a.surfaceNormals:b.surfaceNormals;
@@ -184,7 +185,7 @@ class Plan {
   ValidateState(state);
   std::vector<Vec> out;out.reserve(rest_.size());for(const auto& b:bindings_)out.push_back(Point(b,state));
   if(state.offsets){if(state.offsets->size()!=out.size())throw std::invalid_argument("Modular shape transfer size differs");for(unsigned i=0;i<out.size();i++){for(double x:(*state.offsets)[i])if(!std::isfinite(x))throw std::invalid_argument("Nonfinite modular shape transfer");out[i]=Add(out[i],(*state.offsets)[i]);}}
-  if(state.shaftMaterial){if(!state.hasShapeFrames||state.shaftMaterial->size()!=out.size())throw std::invalid_argument("Invalid shaft material field");for(unsigned i=0;i<out.size();i++)if(ShaftBinding(bindings_[i]))out[i]=MaterialPoint(bindings_[i],state,(*state.shaftMaterial)[i],state.crownWeights?state.crownWeights->at(i):0);}
+  if(state.shaftMaterial){if(!state.hasShapeFrames||state.shaftMaterial->size()!=out.size())throw std::invalid_argument("Invalid shaft material field");for(unsigned i=0;i<out.size();i++)if(ShaftBinding(bindings_[i]))out[i]=MaterialPoint(state.materialBindings?state.materialBindings->at(i):bindings_[i],state,(*state.shaftMaterial)[i],state.crownWeights?state.crownWeights->at(i):0);}
   if(moveOwners)moveOwners(out);
   for(const auto& l:lofts_){
    auto a=Direction(l.first,l.firstOwner,reference_,state),b=Direction(l.last,l.lastOwner,reference_,state);
