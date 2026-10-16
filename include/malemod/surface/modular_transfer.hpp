@@ -2,6 +2,15 @@
 #include "modular_asset.hpp"
 
 namespace malemod::surface::modular {
+// The complete rod owns axial material coordinates. A legacy surface may
+// carry a second length/collar correction, which must not pull one retained
+// vertex backwards through its neighboring rod section. Transfer only the
+// cross-sectional residual; length and bending still come from every frame.
+inline Vec CrossSectionResidual(const Binding& binding,const State& state,Vec residual){
+ Vec axis{};for(const auto& influence:binding.influences)if(influence.weight>0)
+  axis=Add(axis,Scale(state.frames[influence.frame].basis[0],influence.weight));
+ axis=Unit(axis);return Sub(residual,Scale(axis,Dot(residual,axis)));
+}
 // Preserve measured surface deformation on retained anatomy. Generated shaft
 // and connecting skin remain owned by the modular mechanical construction.
 class SurfaceTransfer {
@@ -17,12 +26,18 @@ class SurfaceTransfer {
   for(unsigned i=0;i<n;i++){Row row;row.target=u();row.kind=u();auto count=u();if(row.target>=targetCount_||seen[row.target]||row.kind<1||row.kind>2||!count||count>256)throw std::invalid_argument("Invalid surface transfer row");seen[row.target]=true;double sum=0;for(unsigned j=0;j<count;j++){auto id=u();double w=d();if(id>=sourceCount_||w<0)throw std::invalid_argument("Invalid surface transfer donor");sum+=w;row.donors.emplace_back(id,w);}if(std::abs(sum-1)>1e-8)throw std::invalid_argument("Unnormalized surface transfer");rows_.push_back(std::move(row));}
   if(in.peek()!=EOF)throw std::invalid_argument("Trailing surface transfer bytes");
  }
- void Apply(const Asset& asset,State& state,const Output& source,const std::function<Vec(Vec)>& shaftTransform)const{
+ void Apply(const Asset& asset,const Plan& plan,State& state,const Output& source,const std::function<Vec(Vec)>& shaftTransform)const{
   if(asset.rest.size()!=targetCount_||source.anatomy.positions.size()!=sourceCount_)throw std::invalid_argument("Surface transfer topology differs");
   auto offsets=std::make_shared<std::vector<Vec>>(targetCount_),normals=std::make_shared<std::vector<Vec>>(targetCount_);auto sourceFrames=MaterialFrames(source);auto shaftShift=Sub(state.frames[1].origin,sourceFrames[1].origin);
   if(source.anatomy.normals.size()!=sourceCount_)throw std::invalid_argument("Surface transfer normal count differs");
-  for(const auto& row:rows_){Vec desired{},normal{};for(auto donor:row.donors){desired=Add(desired,Scale(Precise(source.anatomy.positions[donor.first]),donor.second));normal=Add(normal,Scale(Precise(source.anatomy.normals[donor.first]),donor.second));}if(row.kind==1){desired=Add(shaftTransform(desired),shaftShift);normal=Sub(shaftTransform(normal),shaftTransform({0,0,0}));}(*offsets)[row.target]=Sub(desired,Point(asset.bindings[row.target],state));(*normals)[row.target]=Unit(normal);}
-  state.offsets=std::move(offsets);state.surfaceNormals=std::move(normals);
+  for(const auto& row:rows_){Vec desired{},normal{};for(auto donor:row.donors){desired=Add(desired,Scale(Precise(source.anatomy.positions[donor.first]),donor.second));normal=Add(normal,Scale(Precise(source.anatomy.normals[donor.first]),donor.second));}if(row.kind==1){desired=Add(shaftTransform(desired),shaftShift);normal=Sub(shaftTransform(normal),shaftTransform({0,0,0}));}auto residual=Sub(desired,Point(asset.bindings[row.target],state));(*offsets)[row.target]=row.kind==1?CrossSectionResidual(asset.bindings[row.target],state,residual):residual;(*normals)[row.target]=Unit(normal);}
+  state.offsets=offsets;state.surfaceNormals=normals;
+  // The removed axial correction also changes the surface differential.
+  // Rebuild the transferred shaft normals from its actual connected surface.
+  // Suspended tissue retains its measured source field and independent motion.
+  const auto posed=plan.Evaluate(state);std::vector<Vec> geometric(targetCount_);
+  for(auto face:asset.faces){auto n=Cross(Sub(posed[face[1]],posed[face[0]]),Sub(posed[face[2]],posed[face[0]]));for(auto i:face)geometric[i]=Add(geometric[i],n);}
+  for(const auto& row:rows_)if(row.kind==1&&Dot(geometric[row.target],geometric[row.target])>1e-20)(*normals)[row.target]=Unit(geometric[row.target]);
  }
 };
 }

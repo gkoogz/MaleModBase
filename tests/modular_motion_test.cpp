@@ -1,4 +1,5 @@
 #include <malemod/surface/modular_motion.hpp>
+#include <malemod/surface/modular_transfer.hpp>
 #include <iostream>
 using namespace malemod::surface;
 using namespace malemod::surface::modular;
@@ -17,6 +18,13 @@ int main(){try{
  Check(result[2]==p[2],"Shaft motion was incorrectly baked into the suspended lobe");
  Check(result[1]==Add(p[1],Vec{0,0,1}),"Shaft frame failed to drive shaft");
  moved=rest;moved.scales[1]={1,2,2};result=plan.Evaluate(moved);Check(result[2]==p[2],"Shaft width changed lobe size");
+ // A second source-length correction must not invert axial station order.
+ // Cross-sectional morphology is retained in the moving rod frame.
+ auto section=CrossSectionResidual(b[1],rest,{-5,2,3});
+ Check(section==Vec{0,2,3},"Legacy axial correction changed the complete rod");
+ moved=rest;moved.frames[1].basis={Vec{0,0,1},Vec{0,1,0},Vec{-1,0,0}};
+ section=CrossSectionResidual(b[1],moved,{3,2,-5});
+ Check(section==Vec{3,2,0},"Section transfer does not follow the root angle");
  bool rejected=false;try{moved.scales[1][1]=0;plan.Evaluate(moved);}catch(const std::invalid_argument&){rejected=true;}Check(rejected,"Collapsed morphology accepted");
  std::cout<<"PASS independent shaft/lobe ownership, live connecting skin, exact rest and invalid-scale rejection\n";
  return 0;
