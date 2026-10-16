@@ -27,11 +27,15 @@ class SurfaceTransfer {
   if(in.peek()!=EOF)throw std::invalid_argument("Trailing surface transfer bytes");
  }
  std::shared_ptr<const std::vector<double>> CrownWeights()const{auto w=std::make_shared<std::vector<double>>(targetCount_);for(auto& r:rows_)if(r.kind==1)(*w)[r.target]=r.axialShapeWeight;return w;}
- void Apply(const Asset& asset,const Plan& plan,State& state,const Output& source,const std::function<Vec(Vec)>& shaftTransform,bool transferShaft=true)const{
+ void Apply(const Asset& asset,const Plan& plan,State& state,const Output& source,const std::function<Vec(Vec)>& shaftTransform,bool transferShaft=true,bool restMorphology=false)const{
   if(asset.rest.size()!=targetCount_||source.anatomy.positions.size()!=sourceCount_)throw std::invalid_argument("Surface transfer topology differs");
   auto offsets=std::make_shared<std::vector<Vec>>(targetCount_),normals=std::make_shared<std::vector<Vec>>(targetCount_);auto sourceFrames=MaterialFrames(source);auto shaftShift=Sub(state.frames[1].origin,sourceFrames[1].origin);
   if(source.anatomy.normals.size()!=sourceCount_)throw std::invalid_argument("Surface transfer normal count differs");
-  for(const auto& row:rows_){if(row.kind==1&&!transferShaft)continue;Vec desired{},normal{};for(auto donor:row.donors){desired=Add(desired,Scale(Precise(source.anatomy.positions[donor.first]),donor.second));normal=Add(normal,Scale(Precise(source.anatomy.normals[donor.first]),donor.second));}if(row.kind==1){desired=Add(shaftTransform(desired),shaftShift);normal=Sub(shaftTransform(normal),shaftTransform({0,0,0}));}auto residual=Sub(desired,Point(asset.bindings[row.target],state));(*offsets)[row.target]=row.kind==1?CrossSectionResidual(asset.bindings[row.target],state,residual,row.axialShapeWeight):residual;(*normals)[row.target]=Unit(normal);}
+  // Axial suppression belongs only to a live legacy deformation. Applying it
+  // to the immutable rest morphology drops the authored longitudinal shape on
+  // one side of the crown blend, making an artificial lip/step before physics.
+  // The cached material then owns all subsequent bending and length response.
+  for(const auto& row:rows_){if(row.kind==1&&!transferShaft)continue;Vec desired{},normal{};for(auto donor:row.donors){desired=Add(desired,Scale(Precise(source.anatomy.positions[donor.first]),donor.second));normal=Add(normal,Scale(Precise(source.anatomy.normals[donor.first]),donor.second));}if(row.kind==1){desired=Add(shaftTransform(desired),shaftShift);normal=Sub(shaftTransform(normal),shaftTransform({0,0,0}));}auto residual=Sub(desired,Point(asset.bindings[row.target],state));(*offsets)[row.target]=row.kind==1&&!restMorphology?CrossSectionResidual(asset.bindings[row.target],state,residual,row.axialShapeWeight):residual;(*normals)[row.target]=Unit(normal);}
   state.offsets=offsets;state.surfaceNormals=normals;
   // The removed axial correction also changes the surface differential.
   // Rebuild the transferred shaft normals from its actual connected surface.
