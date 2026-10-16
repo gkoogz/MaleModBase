@@ -1,0 +1,3 @@
+-r requirements.txt
+# Exact planar cut and constrained triangulation for modular visible unions.
+shapely>=2.1,<3

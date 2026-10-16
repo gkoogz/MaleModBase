@@ -1,0 +1,93 @@
+#pragma once
+#include "convex_surface_cut.hpp"
+#include "modular_motion.hpp"
+
+namespace malemod::surface {
+struct SurfaceLoopChart {
+ std::vector<unsigned> loop;std::vector<double> angles;
+ std::vector<std::array<double,2>> coordinates;
+};
+inline SurfaceLoopChart ChartLoop(const SurfaceCut& mesh,PresentationPoint origin,std::array<PresentationPoint,2> axes,const std::vector<PresentationPoint>* reference=nullptr){
+ constexpr double pi=3.14159265358979323846;SurfaceLoopChart chart;const auto& p=reference?*reference:mesh.points;
+ if(p.size()>mesh.points.size())throw std::invalid_argument("Invalid loop reference positions");
+ std::vector<std::pair<double,unsigned>> order;
+ for(unsigned id:mesh.opening){if(id>=p.size())throw std::invalid_argument("Loop leaves reference positions");auto d=Sub(p[id],origin);double a=std::atan2(Dot(d,axes[1]),Dot(d,axes[0]));if(a<0)a+=2*pi;order.emplace_back(a,id);}
+ std::sort(order.begin(),order.end());
+ for(auto v:order){if(!chart.angles.empty()&&v.first-chart.angles.back()<1e-10)throw std::invalid_argument("Loop is not strictly radial");chart.angles.push_back(v.first);chart.loop.push_back(v.second);auto d=Sub(p[v.second],origin);chart.coordinates.push_back({Dot(d,axes[0]),Dot(d,axes[1])});}
+ return chart;
+}
+inline std::vector<double> CommonLoopKnots(const SurfaceLoopChart& a,const SurfaceLoopChart& b){
+ constexpr double pi=3.14159265358979323846;auto knots=a.angles;knots.insert(knots.end(),b.angles.begin(),b.angles.end());std::sort(knots.begin(),knots.end());
+ knots.erase(std::unique(knots.begin(),knots.end(),[](double x,double y){return std::abs(x-y)<1e-9;}),knots.end());if(knots.back()-knots.front()>2*pi-1e-9)knots.pop_back();return knots;
+}
+inline std::vector<unsigned> RefineSurfaceLoop(SurfaceCut& mesh,const SurfaceLoopChart& chart,const std::vector<double>& knots){
+ constexpr double pi=3.14159265358979323846;using Edge=std::pair<unsigned,unsigned>;
+ struct Insert {unsigned vertex;double t;};std::map<Edge,std::vector<Insert>> insertions;std::vector<unsigned> seam;
+ for(double angle:knots){
+  auto upper=std::upper_bound(chart.angles.begin(),chart.angles.end(),angle);unsigned next=unsigned(upper-chart.angles.begin())%chart.loop.size(),previous=(next+unsigned(chart.loop.size())-1)%chart.loop.size();
+  auto distance=[&](unsigned i){double d=std::abs(chart.angles[i]-angle);return (std::min)(d,2*pi-d);};
+  if(distance(previous)<1e-9){seam.push_back(chart.loop[previous]);continue;}if(distance(next)<1e-9){seam.push_back(chart.loop[next]);continue;}
+  const auto a=chart.coordinates[previous],b=chart.coordinates[next];const double y=std::cos(angle),z=std::sin(angle),den=(b[0]-a[0])*z-(b[1]-a[1])*y;
+  if(std::abs(den)<1e-14)throw std::runtime_error("Radial refinement has no edge intersection");
+  const double t=std::clamp(-(a[0]*z-a[1]*y)/den,0.,1.);unsigned ia=chart.loop[previous],ib=chart.loop[next],id=unsigned(mesh.points.size());
+  mesh.points.push_back(Add(Scale(mesh.points[ia],1-t),Scale(mesh.points[ib],t)));seam.push_back(id);
+  if(ia<ib)insertions[{ia,ib}].push_back({id,t});else insertions[{ib,ia}].push_back({id,1-t});
+ }
+ for(auto& entry:insertions)std::sort(entry.second.begin(),entry.second.end(),[](auto a,auto b){return a.t<b.t;});
+ std::vector<SurfaceCutFace> faces;faces.reserve(mesh.faces.size()+knots.size()*3);
+ for(auto face:mesh.faces){
+  std::vector<SurfaceCutCorner> poly;
+  for(unsigned k=0;k<3;k++){
+   const auto a=face.corners[k],b=face.corners[(k+1)%3];poly.push_back(a);auto found=insertions.find(std::minmax(a.vertex,b.vertex));if(found==insertions.end())continue;
+   auto append=[&](Insert item){const double t=a.vertex<b.vertex?item.t:1-item.t;poly.push_back({item.vertex,Add(Scale(a.donor,1-t),Scale(b.donor,t))});};
+   if(a.vertex<b.vertex)for(auto item:found->second)append(item);else for(auto i=found->second.rbegin();i!=found->second.rend();i++)append(*i);
+  }
+  if(poly.size()==3){faces.push_back(face);continue;}
+  SurfaceCutCorner center;center.vertex=unsigned(mesh.points.size());PresentationPoint p{};
+  for(auto v:poly){p=Add(p,mesh.points[v.vertex]);center.donor=Add(center.donor,v.donor);}p=Scale(p,1./poly.size());center.donor=Scale(center.donor,1./poly.size());mesh.points.push_back(p);
+  for(unsigned k=0;k<poly.size();k++)faces.push_back({face.parent,{center,poly[k],poly[(k+1)%poly.size()]}});
+ }
+ mesh.faces=std::move(faces);mesh.opening=seam;return seam;
+}
+struct SurfaceJoinCorner {unsigned vertex=0,domain=0,parent=0;std::array<double,3> donor{};std::array<double,2> uv{};};
+struct SurfaceJoin {
+ std::vector<PresentationPoint> points;
+ std::vector<std::array<SurfaceJoinCorner,3>> faces;
+ std::vector<std::vector<unsigned>> rings;
+ std::vector<PresentationPoint> firstTangents;
+};
+inline SurfaceJoin StitchSurfaces(SurfaceCut body,SurfaceCut module,const SurfaceLoopChart& bodyChart,const SurfaceLoopChart& moduleChart,PresentationPoint origin,PresentationPoint mountAxis,PresentationPoint shaftAxis,const std::vector<PresentationPoint>& bodyNormals,const std::vector<std::array<unsigned,3>>& bodyParents,double radialMargin=.12,double undersideExtra=.08,unsigned rows=12){
+ using Vec=PresentationPoint;const auto knots=CommonLoopKnots(bodyChart,moduleChart);auto outer=RefineSurfaceLoop(body,bodyChart,knots),inner=RefineSurfaceLoop(module,moduleChart,knots);
+ if(rows<2||rows>128)throw std::invalid_argument("Invalid joining ramp density");
+ // Boundary normals come from the intact source surface, not the remaining
+ // one-sided cut triangles. Exact position/skin donors survive independently.
+ std::vector<Vec> outerNormals(body.points.size());
+ for(auto face:body.faces)for(auto c:face.corners){Vec n{};for(unsigned k=0;k<3;k++)n=Add(n,Scale(bodyNormals[bodyParents[face.parent][k]],c.donor[k]));outerNormals[c.vertex]=Unit(n);}
+ std::set<std::pair<unsigned,unsigned>> directed;for(auto f:body.faces)for(unsigned k=0;k<3;k++)directed.emplace(f.corners[k].vertex,f.corners[(k+1)%3].vertex);
+ const bool reversed=!directed.count({outer[0],outer[1]});if(reversed){std::reverse(outer.begin(),outer.end());std::reverse(inner.begin(),inner.end());}
+ SurfaceJoin out;out.points=body.points;const unsigned offset=unsigned(body.points.size());out.points.insert(out.points.end(),module.points.begin(),module.points.end());
+ for(unsigned domain=0;domain<2;domain++)for(auto f:domain?module.faces:body.faces){std::array<SurfaceJoinCorner,3> row;for(unsigned k=0;k<3;k++){auto c=f.corners[k];row[k]={c.vertex+(domain?offset:0),domain,f.parent,c.donor,{}};}out.faces.push_back(row);}
+ for(auto& i:inner)i+=offset;out.rings.push_back(outer);
+ std::vector<Vec> first(outer.size()),last(outer.size());
+ for(unsigned i=0;i<outer.size();i++){
+  auto a=out.points[outer[i]],b=out.points[inner[i]],d=Sub(b,a),radial=Sub(Sub(a,origin),Scale(mountAxis,Dot(Sub(a,origin),mountAxis)));const double distance=std::sqrt(Dot(d,d)),radius=std::sqrt(Dot(radial,radial));
+  auto tangent=Scale(radial,-1);tangent=Sub(tangent,Scale(outerNormals[outer[i]],Dot(tangent,outerNormals[outer[i]])));
+  // The caller's chart convention has positive second coordinate upward.
+  const double ventral=std::pow((std::max)(0.,-std::sin(knots[reversed?knots.size()-1-i:i])),4);
+  first[i]=Scale(Unit(tangent),(std::min)(distance,2*(radialMargin+undersideExtra*ventral)*radius/(1+radialMargin)));
+  last[i]=Scale(shaftAxis,distance);
+ }
+ out.firstTangents=first;
+ for(unsigned row=1;row<=rows;row++){
+  const double t=.5*(1-std::cos(3.14159265358979323846*row/rows));std::vector<unsigned> ring;
+  for(unsigned i=0;i<outer.size();i++){if(row==rows)ring.push_back(inner[i]);else{ring.push_back(unsigned(out.points.size()));out.points.push_back(modular::Hermite(out.points[outer[i]],out.points[inner[i]],first[i],last[i],t));}}
+  const auto& previous=out.rings.back();const double before=.5*(1-std::cos(3.14159265358979323846*(row-1)/rows));
+  for(unsigned i=0;i<outer.size();i++){
+   const unsigned j=(i+1)%unsigned(outer.size());const double u0=double(i)/outer.size(),u1=double(i+1)/outer.size();
+   SurfaceJoinCorner a{previous[i],2,0,{}, {u0,before}},b{previous[j],2,0,{}, {u1,before}},c{ring[i],2,0,{}, {u0,t}},d{ring[j],2,0,{}, {u1,t}};
+   out.faces.push_back({b,a,c});out.faces.push_back({b,c,d});
+  }out.rings.push_back(std::move(ring));
+ }
+ return out;
+}
+}
