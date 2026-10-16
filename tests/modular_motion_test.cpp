@@ -22,6 +22,7 @@ int main(){try{
  // Cross-sectional morphology is retained in the moving rod frame.
  auto section=CrossSectionResidual(b[1],rest,{-5,2,3});
  Check(section==Vec{0,2,3},"Legacy axial correction changed the complete rod");
+ Check(CrossSectionResidual(b[1],rest,{-5,2,3},1)==Vec{-5,2,3},"Authored distal shape lost its independent axial morphology");
  moved=rest;moved.frames[1].basis={Vec{0,0,1},Vec{0,1,0},Vec{-1,0,0}};
  section=CrossSectionResidual(b[1],moved,{3,2,-5});
  Check(section==Vec{3,2,0},"Section transfer does not follow the root angle");
