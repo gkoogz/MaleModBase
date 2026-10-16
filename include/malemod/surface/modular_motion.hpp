@@ -145,6 +145,21 @@ inline bool ShaftBinding(const Binding& b){
  for(auto v:b.influences)if(v.weight>0&&(v.frame<1||v.frame>12))return false;
  return true;
 }
+inline std::vector<Binding> BindMaterialStations(const std::vector<Vec>& points,const std::vector<Binding>& ownership,const PresentationFrames& frames){
+ if(points.size()!=ownership.size())throw std::invalid_argument("Material station topology differs");
+ auto bindings=ownership;
+ for(unsigned i=0;i<points.size();i++)if(ShaftBinding(ownership[i])){
+  double best=1e300;unsigned station=1;double fraction=0;
+  for(unsigned j=1;j<12;j++){
+   auto d=Sub(frames[j+1].origin,frames[j].origin),v=Sub(points[i],frames[j].origin);const double length2=Dot(d,d);
+   if(length2<1e-16)throw std::invalid_argument("Collapsed material guide interval");
+   const double t=std::clamp(Dot(v,d)/length2,0.,1.);auto delta=Sub(v,Scale(d,t));const double e=Dot(delta,delta);
+   if(e<best){best=e;station=j;fraction=t;}
+  }
+  bindings[i].influences={Influence{station,1-fraction,{}},Influence{station+1,fraction,{}}};
+ }
+ return bindings;
+}
 // Rotate one material section instead of blending rotated vertex positions.
 // Hermite centers remove discrete corners; a rigid crown preserves its shape.
 inline Vec MaterialPoint(const Binding& binding,const State& state,Vec p,double crown=0){

@@ -43,6 +43,10 @@ int main(){try{
  State material;material.hasShapeFrames=true;
  for(unsigned i=1;i<=12;i++){material.shapeFrames[i].origin={double(i-1),0,0};material.frames[i]=material.shapeFrames[i];}
  Binding middle;middle.influences[0]={5,.5,{.5,1,0}};middle.influences[1]={6,.5,{-.5,1,0}};
+ auto remapped=BindMaterialStations({{8.25,1,0}}, {middle},material.shapeFrames);
+ Check(remapped[0].influences[0].frame==9&&std::abs(remapped[0].influences[1].weight-.25)<1e-12,"Morphology retained stale material stations");
+ auto restTransport=MaterialPoint(remapped[0],material,{8.25,1,0});
+ Check(restTransport==Vec{8.25,1,0},"Rebinding moved selected rest geometry");
  material.frames[6].basis={Vec{0,0,1},Vec{0,1,0},Vec{-1,0,0}};
  auto top=MaterialPoint(middle,material,{4.5,0,1}),bottom=MaterialPoint(middle,material,{4.5,0,-1});
  Check(std::abs(std::sqrt(Dot(Sub(top,bottom),Sub(top,bottom)))-2)<1e-10,"Section diameter collapses while bending");

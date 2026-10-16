@@ -3,9 +3,15 @@ import argparse,hashlib,json,struct,re
 from pathlib import Path
 import numpy as np
 from scipy import sparse
+from scipy.sparse.csgraph import dijkstra
 
 def axial_shape_weights(base):
-    """Follow authored crown-ring lineage, never classify a posed vertex."""
+    """Keep the complete authored distal component in one rigid material frame.
+
+    The crown ring lies inside that component, after its shoulder. Beginning
+    rigid ownership there bends the shoulder and tip in different frames. Fade
+    into the adjacent shaft by rest-surface distance, before the authored seam.
+    """
     arrays=np.load(base/'assets/wolverine-reference/geometry.npz')
     source=(base/'legacy/wolverine/src/runtime/r14_asset.h').read_text()
     names=['r14NewStart','r14RingCount','r14SegmentCount','r14CrownRing']
@@ -13,10 +19,18 @@ def axial_shape_weights(base):
     count=len(arrays['r14_asset__r14Base'])//3
     start,rings,sides,crown=[values[name] for name in names]
     if start+rings*sides>count or crown<4:raise ValueError('Invalid authored crown ownership')
-    weights=np.zeros(count)
-    t=np.clip((np.arange(rings)-(crown-4))/4,0,1)
-    weights[start:start+rings*sides]=np.repeat(t*t*t*(10+t*(-15+6*t)),sides)
-    weights[start+rings*sides:]=1
+    points=arrays['r14_asset__r14Base'].reshape(-1,3).astype(float)
+    faces=arrays['r14_asset__r14Indices'].reshape(-1,3)
+    edges=np.unique(np.sort(np.concatenate([faces[:,[0,1]],faces[:,[1,2]],faces[:,[2,0]]]),axis=1),axis=0)
+    lengths=np.linalg.norm(points[edges[:,1]]-points[edges[:,0]],axis=1)
+    if np.any(lengths<=0):raise ValueError('Degenerate authored material edge')
+    graph=sparse.csr_matrix((lengths,(edges[:,0],edges[:,1])),shape=(count,count))
+    seam=points[start:start+sides]
+    radius=np.sqrt(np.mean(np.sum((seam-seam.mean(axis=0))**2,axis=1)))
+    distance=dijkstra(graph,directed=False,indices=np.arange(start,start+sides),min_only=True,limit=radius)
+    t=np.clip(1-distance/radius,0,1)
+    weights=t*t*t*(10+t*(-15+6*t))
+    weights[start:]=1
     fine=arrays['rounded_render_data__rsFineSource'].reshape(-1,3)
     bary=arrays['rounded_render_data__rsFineBary'].reshape(-1,3)
     rounded=np.r_[weights,np.sum(weights[fine]*bary,axis=1)]
@@ -25,7 +39,9 @@ def axial_shape_weights(base):
     result=np.empty(len(direct))
     for i,index in enumerate(direct):
         result[i]=rounded[index] if index!=65535 else np.dot(rounded[ids[offsets[i]:offsets[i+1]]],donors[offsets[i]:offsets[i+1]])
-    if not np.isfinite(result).all() or result.min()<-1e-6 or result.max()>1+1e-6:raise ValueError('Crown lineage leaves normalized support')
+    # The retained subdivision stencil includes small negative coefficients.
+    # Bound this scalar support field without changing any geometry donors.
+    if not np.isfinite(result).all() or result.min()<-.001 or result.max()>1.001:raise ValueError('Crown lineage leaves normalized support')
     return np.clip(result,0,1)
 
 
