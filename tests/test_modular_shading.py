@@ -1,10 +1,23 @@
 import unittest
 import numpy as np
 from malemod_base.modular_anatomy import Mesh,clip
-from malemod_base.modular_shading import corner_frames,unit
+from malemod_base.modular_shading import corner_frames,unit,boundary_uv_field
 
 
 class ModularShadingTest(unittest.TestCase):
+    def test_boundary_uv_preserves_chart_and_affine_field(self):
+        x,y=np.meshgrid(np.linspace(0,2,7),np.linspace(0,1,6))
+        p=np.c_[x.ravel(),y.ravel(),np.zeros(x.size)];faces=[]
+        for j in range(5):
+            for i in range(6):
+                a=j*7+i;faces.extend([[a,a+1,a+8],[a,a+8,a+7]])
+        fixed=np.flatnonzero((x.ravel()==0)|(x.ravel()==2)|(y.ravel()==0)|(y.ravel()==1))
+        expected=p[:,:2]@np.array([[.2,.1],[-.1,.3]])+[.4,.2]
+        before=p.copy();field=boundary_uv_field(p,faces,fixed,expected[fixed])
+        np.testing.assert_array_equal(field[fixed],expected[fixed])
+        np.testing.assert_allclose(field,expected,atol=1e-8)
+        np.testing.assert_array_equal(p,before)
+
     def test_cut_inherits_field_instead_of_recomputing_one_sided_normals(self):
         points=np.array([[0,0,0],[2,0,0],[0,2,0]],float)
         mesh=Mesh.source(points,np.array([[0,1,2]]),points[:,:2])
