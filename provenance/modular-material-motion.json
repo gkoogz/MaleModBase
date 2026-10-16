@@ -1,0 +1,36 @@
+{
+  "schema": "malemod.modular-material-motion/1",
+  "sharedCommit": "8350f0b648ada864f0f5545d721a687fb0b878cc",
+  "purpose": "Separate immutable morphology, numerical material motion and display interpolation.",
+  "sources": {
+    "include/malemod/surface/modular_motion.hpp": "319f68d1bbddd045bb3884c04be19dffeef534b4661af726e634bd446ac22c99",
+    "include/malemod/surface/modular_transfer.hpp": "58fc9db01c4681516305e3cf1b1faf27177194d54a5bdd5a806b87f07ff90d9a",
+    "tools/build_modular_transfer.py": "68e0443388adf2cc1eebd128a2b00862be658ec3f7ada6130a62b9ae6acee124",
+    "tests/modular_motion_test.cpp": "b5259808e8b14139126c47f9a4e7e277c1fdda2f2e3b5aaf5852d8c2f04127e8",
+    "tests/modular_transfer_test.cpp": "10695cece85b62ef3a846e51fa4d0d1c2aaa30b1bf91f1618ab941a2bb62a1a6",
+    "tests/test_modular_transfer.py": "d1c0918951a6a7efa10e1770831b6ecc456f90cafa4c1eac0c01ffbd8b43bebc"
+  },
+  "referenceInputs": {
+    "assets/wolverine-reference/geometry.npz": "435cb9b391e6bf1ee76a09524b075bfc356230920b30e523bac90448961b2f30",
+    "legacy/wolverine/src/runtime/r14_asset.h": "7b62dde4c879c835ee44474fd5b0955cf80dc95d1ab1334e6ee214882ce70957"
+  },
+  "artifact": {
+    "format": "MMXFER02",
+    "geometrySHA256": "11c2d8fb5fd301b475d6f38caa45274c92a88397a15489546aa18b9a2109def0",
+    "transferSHA256": "eebc9c23dc3646c01140c4796ea9aba032f7344048830bb52c526c97d54bc97c"
+  },
+  "tests": [
+    "modular_motion_test",
+    "modular_transfer_test",
+    "tests.test_modular_transfer",
+    "Witcher modular_presentation_test"
+  ],
+  "adoption": "Witcher consumes the pinned Base headers and regenerated coupled transfer artifact. Wolverine and other spokes require their own calibration and native gate before adoption.",
+  "omissions": [
+    "Source-derived binary geometry, captured poses, screenshots, game packages and user data remain private."
+  ],
+  "nativeAcceptance": "Registered native gate passed:32 configurations/96 views,36 motion,9 LOD and39 campaign captures; details and limitations in docs/MODULAR-PHYSICS-REPAIR.md.",
+  "installed": true,
+  "installedDLLSHA256": "745c52e8a81e6a5f7eddc2e1547e8dee4b96baf4d3e754b24874962017eb4fe6",
+  "installedStartup": "Observed installed DLL without preview in private campaign session; six views reviewed,49 managed and7 protected hashes verified,24 saves restored. Not an interactive desktop launch claim."
+}
