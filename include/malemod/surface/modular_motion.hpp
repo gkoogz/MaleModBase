@@ -18,6 +18,9 @@ struct State {
  bool hasShapeFrames=false;
  std::shared_ptr<const std::vector<Vec>> offsets;
  std::shared_ptr<const std::vector<Vec>> surfaceNormals;
+ // A dynamics-free material shape; never apply legacy posed skin twice.
+ std::shared_ptr<const std::vector<Vec>> shaftMaterial;
+ std::shared_ptr<const std::vector<double>> crownWeights;
  std::array<Vec,15> scales{};
  State(){for(auto& s:scales)s={1,1,1};}
 };
@@ -26,9 +29,9 @@ inline void AnchorRootPhysics(State& state,double radius,double length){
  if(!state.hasShapeFrames)return;
  // The opening is attached to the body. Rest-angle controls rotate its root,
  // but the first simulated tangent must not rotate that fixed boundary again.
- // Release only this proximal constraint over at most one quarter of the rod;
+ // Release the boundary constraint within the first guide interval;
  // the suspended bodies and the remainder retain their full simulated pose.
- const double span=(std::max)(1e-6,(std::min)(2*radius,.25*length));double station=0;
+ const double span=(std::max)(1e-6,length/11.);double station=0;
  for(unsigned i=1;i<=12;i++){
   if(i>1){auto d=Sub(state.shapeFrames[i].origin,state.shapeFrames[i-1].origin);station+=std::sqrt(Dot(d,d));}
   const double t=std::clamp(station/span,0.,1.),w=t*t*t*(10+t*(-15+6*t));
@@ -78,9 +81,28 @@ inline void ValidateState(const State& state){
  for(const auto& s:state.scales)for(double x:s)if(!std::isfinite(x)||x<=0)throw std::invalid_argument("Invalid modular morphology scale");
  for(const auto& f:state.frames){for(const auto& a:f.basis)for(double x:a)if(!std::isfinite(x))throw std::invalid_argument("Nonfinite modular frame");Quaternion(f.basis);for(double x:f.origin)if(!std::isfinite(x))throw std::invalid_argument("Nonfinite modular pose");}
 }
+// Preserve rest segment lengths after interpolation or root constraints.
+// Temporal interpolation of bent node positions otherwise shortens the rod.
+inline void PreserveMaterialLengths(State& s){
+ if(!s.hasShapeFrames)return;
+ const auto original=s.frames;
+ for(unsigned i=2;i<=12;i++){
+  auto d=Sub(original[i].origin,original[i-1].origin);
+  const auto r=Sub(s.shapeFrames[i].origin,s.shapeFrames[i-1].origin);
+  const double length=std::sqrt(Dot(r,r));
+  if(Dot(d,d)<1e-16)d=r;
+  s.frames[i].origin=Add(s.frames[i-1].origin,Scale(Unit(d),length));
+ }
+ for(unsigned i=2;i<=12;i++){
+  auto tangent=Unit(Sub(s.frames[(std::min)(12u,i+1)].origin,s.frames[i-1].origin));
+  auto side=Sub(s.frames[i].basis[1],Scale(tangent,Dot(s.frames[i].basis[1],tangent)));
+  if(Dot(side,side)<1e-12)side=Cross(s.frames[i].basis[2],tangent);
+  side=Unit(side);s.frames[i].basis={tangent,side,Unit(Cross(tangent,side))};
+ }
+}
 inline State Interpolate(const State& a,const State& b,double t){
  if(!std::isfinite(t)||t<0||t>1)throw std::invalid_argument("Invalid modular interpolation phase");
- State s;
+ State s;s.shaftMaterial=b.shaftMaterial;s.crownWeights=b.crownWeights;
  if(a.offsets&&b.offsets){if(a.offsets->size()!=b.offsets->size())throw std::invalid_argument("Modular shape transfer size changed");auto values=std::make_shared<std::vector<Vec>>(a.offsets->size());for(unsigned i=0;i<values->size();i++)(*values)[i]=Add(Scale((*a.offsets)[i],1-t),Scale((*b.offsets)[i],t));s.offsets=std::move(values);}
  else s.offsets=t<1?a.offsets:b.offsets;
  if(a.surfaceNormals&&b.surfaceNormals){if(a.surfaceNormals->size()!=b.surfaceNormals->size())throw std::invalid_argument("Modular normal transfer size changed");auto values=std::make_shared<std::vector<Vec>>(a.surfaceNormals->size());for(unsigned i=0;i<values->size();i++){auto n=Add(Scale((*a.surfaceNormals)[i],1-t),Scale((*b.surfaceNormals)[i],t));(*values)[i]=Dot(n,n)>1e-12?Unit(n):Vec{};}s.surfaceNormals=std::move(values);}else s.surfaceNormals=t<1?a.surfaceNormals:b.surfaceNormals;
@@ -91,6 +113,7 @@ inline State Interpolate(const State& a,const State& b,double t){
   s.scales[i]=Add(Scale(a.scales[i],1-t),Scale(b.scales[i],t));
   if(s.hasShapeFrames){s.shapeFrames[i].origin=Add(Scale(a.shapeFrames[i].origin,1-t),Scale(b.shapeFrames[i].origin,t));s.shapeFrames[i].basis=InterpolateBasis(a.shapeFrames[i].basis,b.shapeFrames[i].basis,t);}
  }
+ if(s.shaftMaterial)PreserveMaterialLengths(s);
  return s;
 }
 inline Vec Point(const Binding& b,const State& state){
@@ -117,6 +140,25 @@ inline Vec Hermite(Vec a,Vec b,Vec da,Vec db,double t){
  const double t2=t*t,t3=t2*t;
  return Add(Add(Scale(a,2*t3-3*t2+1),Scale(da,t3-2*t2+t)),Add(Scale(b,-2*t3+3*t2),Scale(db,t3-t2)));
 }
+inline bool ShaftBinding(const Binding& b){
+ for(auto v:b.influences)if(v.weight>0&&(v.frame<1||v.frame>12))return false;
+ return true;
+}
+// Rotate one material section instead of blending rotated vertex positions.
+// Hermite centers remove discrete corners; a rigid crown preserves its shape.
+inline Vec MaterialPoint(const Binding& binding,const State& state,Vec p,double crown=0){
+ const auto a=binding.influences[0],b=binding.influences[1];
+ const unsigned i=a.weight>0?a.frame:b.frame,j=b.weight>0?b.frame:i;
+ const double t=i==j?0:b.weight;
+ auto section=[&](const PresentationFrames& f){
+  const auto d=Sub(f[j].origin,f[i].origin);const double length=std::sqrt(Dot(d,d));
+  return PresentationFrame{Hermite(f[i].origin,f[j].origin,Scale(f[i].basis[0],length),Scale(f[j].basis[0],length),t),InterpolateBasis(f[i].basis,f[j].basis,t)};
+ };
+ auto rest=section(state.shapeFrames),live=section(state.frames);
+ auto result=Add(live.origin,Rotate(live.basis,Unrotate(rest.basis,Sub(p,rest.origin))));
+ if(crown>0){const auto& r=state.shapeFrames[12];const auto& f=state.frames[12];auto rigid=Add(f.origin,Rotate(f.basis,Unrotate(r.basis,Sub(p,r.origin))));result=Add(Scale(result,1-crown),Scale(rigid,crown));}
+ return result;
+}
 class Plan {
  std::vector<Vec> rest_;std::vector<Binding> bindings_;std::vector<Loft> lofts_;State reference_;
  public:
@@ -142,6 +184,7 @@ class Plan {
   ValidateState(state);
   std::vector<Vec> out;out.reserve(rest_.size());for(const auto& b:bindings_)out.push_back(Point(b,state));
   if(state.offsets){if(state.offsets->size()!=out.size())throw std::invalid_argument("Modular shape transfer size differs");for(unsigned i=0;i<out.size();i++){for(double x:(*state.offsets)[i])if(!std::isfinite(x))throw std::invalid_argument("Nonfinite modular shape transfer");out[i]=Add(out[i],(*state.offsets)[i]);}}
+  if(state.shaftMaterial){if(!state.hasShapeFrames||state.shaftMaterial->size()!=out.size())throw std::invalid_argument("Invalid shaft material field");for(unsigned i=0;i<out.size();i++)if(ShaftBinding(bindings_[i]))out[i]=MaterialPoint(bindings_[i],state,(*state.shaftMaterial)[i],state.crownWeights?state.crownWeights->at(i):0);}
   if(moveOwners)moveOwners(out);
   for(const auto& l:lofts_){
    auto a=Direction(l.first,l.firstOwner,reference_,state),b=Direction(l.last,l.lastOwner,reference_,state);

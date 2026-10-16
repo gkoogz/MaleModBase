@@ -35,8 +35,23 @@ int main(){try{
  AnchorRootPhysics(anchored,2,20);
  Check(anchored.frames[1].origin==anchored.shapeFrames[1].origin,"Root physics moved the fixed opening");
  Check(anchored.frames[2].origin[1]>0&&anchored.frames[2].origin[1]<.5,"Root release is not gradual");
+ Check(anchored.frames[3].origin[1]==.5,"Root constraint still locks a quarter of the rod");
  Check(anchored.frames[5].origin[1]==.5&&anchored.frames[12].origin[1]==.5,"Root constraint suppressed distal physics");
  Check(anchored.frames[13].origin==Vec{2,3,-4}&&anchored.frames[14].origin==Vec{2,-3,-5},"Root constraint moved independent lobes");
+ // A section must retain its diameter through a ninety-degree bend, and
+ // the crown must retain all pairwise distances while its frame rotates.
+ State material;material.hasShapeFrames=true;
+ for(unsigned i=1;i<=12;i++){material.shapeFrames[i].origin={double(i-1),0,0};material.frames[i]=material.shapeFrames[i];}
+ Binding middle;middle.influences[0]={5,.5,{.5,1,0}};middle.influences[1]={6,.5,{-.5,1,0}};
+ material.frames[6].basis={Vec{0,0,1},Vec{0,1,0},Vec{-1,0,0}};
+ auto top=MaterialPoint(middle,material,{4.5,0,1}),bottom=MaterialPoint(middle,material,{4.5,0,-1});
+ Check(std::abs(std::sqrt(Dot(Sub(top,bottom),Sub(top,bottom)))-2)<1e-10,"Section diameter collapses while bending");
+ material.frames[12].basis=material.frames[6].basis;
+ auto crownA=MaterialPoint(middle,material,{10,2,1},1),crownB=MaterialPoint(middle,material,{12,-1,-2},1);
+ Check(std::abs(Dot(Sub(crownA,crownB),Sub(crownA,crownB))-22)<1e-10,"Crown shape is not rigid");
+ for(unsigned i=2;i<=12;i++)material.frames[i].origin={.3*(i-1),.1*(i-1),0};
+ PreserveMaterialLengths(material);
+ for(unsigned i=2;i<=12;i++){auto d=Sub(material.frames[i].origin,material.frames[i-1].origin);Check(std::abs(Dot(d,d)-1)<1e-10,"Material rod compressed");}
  bool rejected=false;try{moved.scales[1][1]=0;plan.Evaluate(moved);}catch(const std::invalid_argument&){rejected=true;}Check(rejected,"Collapsed morphology accepted");
  std::cout<<"PASS independent shaft/lobe ownership, live connecting skin, exact rest and invalid-scale rejection\n";
  return 0;
