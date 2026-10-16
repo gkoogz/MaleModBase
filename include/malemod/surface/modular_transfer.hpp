@@ -36,6 +36,7 @@ class SurfaceTransfer {
   // The removed axial correction also changes the surface differential.
   // Rebuild the transferred shaft normals from its actual connected surface.
   // Suspended tissue retains its measured source field and independent motion.
+  if(!transferShaft)return; // Native geometry supplies current shaft differentials.
   const auto posed=plan.Evaluate(state);std::vector<Vec> geometric(targetCount_);
   for(auto face:asset.faces){auto n=Cross(Sub(posed[face[1]],posed[face[0]]),Sub(posed[face[2]],posed[face[0]]));for(auto i:face)geometric[i]=Add(geometric[i],n);}
   for(const auto& row:rows_)if(row.kind==1&&Dot(geometric[row.target],geometric[row.target])>1e-20)(*normals)[row.target]=Unit(geometric[row.target]);
