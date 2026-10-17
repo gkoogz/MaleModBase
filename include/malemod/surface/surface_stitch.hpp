@@ -56,6 +56,21 @@ struct SurfaceJoin {
  std::vector<std::vector<unsigned>> rings;
  std::vector<PresentationPoint> firstTangents;
 };
+// A Hermite derivative can pull the connecting skin inside BOTH endpoints,
+// even when the aperture and shaft diameters are correct. Bound its Bezier
+// control hull in the radial direction. Shortening (never rotating) the two
+// derivatives preserves the source tangent planes and the welded endpoints.
+inline std::array<PresentationPoint,2> BoundRampTangents(PresentationPoint a,PresentationPoint b,PresentationPoint first,PresentationPoint last,PresentationPoint radial,double tolerance){
+ radial=Unit(radial);const double da=Dot(a,radial),db=Dot(b,radial);
+ const double low=(std::min)(da,db)-tolerance,high=(std::max)(da,db)+tolerance;
+ auto limit=[&](PresentationPoint tangent,double endpoint,double sign){
+  const double change=sign*Dot(tangent,radial)/3.;double factor=1;
+  if(change>0)factor=(std::min)(1.,(high-endpoint)/change);
+  if(change<0)factor=(std::min)(1.,(low-endpoint)/change);
+  return Scale(tangent,std::clamp(factor,0.,1.));
+ };
+ return {limit(first,da,1),limit(last,db,-1)};
+}
 inline SurfaceJoin StitchSurfaces(SurfaceCut body,SurfaceCut module,const SurfaceLoopChart& bodyChart,const SurfaceLoopChart& moduleChart,PresentationPoint origin,PresentationPoint mountAxis,PresentationPoint shaftAxis,const std::vector<PresentationPoint>& bodyNormals,const std::vector<std::array<unsigned,3>>& bodyParents,double radialMargin=.12,double undersideExtra=.08,unsigned rows=12){
  using Vec=PresentationPoint;const auto knots=CommonLoopKnots(bodyChart,moduleChart);auto outer=RefineSurfaceLoop(body,bodyChart,knots),inner=RefineSurfaceLoop(module,moduleChart,knots);
  if(rows<2||rows>128)throw std::invalid_argument("Invalid joining ramp density");
@@ -68,7 +83,7 @@ inline SurfaceJoin StitchSurfaces(SurfaceCut body,SurfaceCut module,const Surfac
  SurfaceJoin out;out.points=body.points;const unsigned offset=unsigned(body.points.size());out.points.insert(out.points.end(),module.points.begin(),module.points.end());
  for(unsigned domain=0;domain<2;domain++)for(auto f:domain?module.faces:body.faces){std::array<SurfaceJoinCorner,3> row;for(unsigned k=0;k<3;k++){auto c=f.corners[k];row[k]={c.vertex+(domain?offset:0),domain,f.parent,c.donor,{}};}out.faces.push_back(row);}
  for(auto& i:inner)i+=offset;out.rings.push_back(outer);
- std::vector<Vec> first(outer.size()),last(outer.size());
+ std::vector<Vec> first(outer.size()),last(outer.size());double firstScale=1,lastScale=1;
  for(unsigned i=0;i<outer.size();i++){
   auto a=out.points[outer[i]],b=out.points[inner[i]],d=Sub(b,a),radial=Sub(Sub(a,origin),Scale(mountAxis,Dot(Sub(a,origin),mountAxis)));const double distance=std::sqrt(Dot(d,d)),radius=std::sqrt(Dot(radial,radial));
   auto tangent=Scale(radial,-1);tangent=Sub(tangent,Scale(outerNormals[outer[i]],Dot(tangent,outerNormals[outer[i]])));
@@ -76,7 +91,14 @@ inline SurfaceJoin StitchSurfaces(SurfaceCut body,SurfaceCut module,const Surfac
   const double ventral=std::pow((std::max)(0.,-std::sin(knots[reversed?knots.size()-1-i:i])),4);
   first[i]=Scale(Unit(tangent),(std::min)(distance,2*(radialMargin+undersideExtra*ventral)*radius/(1+radialMargin)));
   last[i]=Scale(shaftAxis,distance);
+  auto bounded=BoundRampTangents(a,b,first[i],last[i],radial,.005*radius);
+  if(Dot(first[i],first[i])>1e-20)firstScale=(std::min)(firstScale,std::sqrt(Dot(bounded[0],bounded[0])/Dot(first[i],first[i])));
+  if(Dot(last[i],last[i])>1e-20)lastScale=(std::min)(lastScale,std::sqrt(Dot(bounded[1],bounded[1])/Dot(last[i],last[i])));
  }
+ // A common derivative scale preserves adjacent-column ordering, including
+ // almost coincident original-edge knots. Per-column clamps can fold the
+ // first strip despite bounding each individual curve correctly.
+ for(unsigned i=0;i<first.size();i++){first[i]=Scale(first[i],firstScale);last[i]=Scale(last[i],lastScale);}
  out.firstTangents=first;
  for(unsigned row=1;row<=rows;row++){
   const double t=.5*(1-std::cos(3.14159265358979323846*row/rows));std::vector<unsigned> ring;

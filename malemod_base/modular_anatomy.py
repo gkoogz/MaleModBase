@@ -292,7 +292,7 @@ class SurfaceAttachment:
         return np.einsum('ij,ijk->ik',self.barycentric,target.points[target.faces[self.target_faces]])
 
 
-def radial_attachment(source, boundary, target, root, distal_center, flare=1., side_wrap_degrees=None):
+def radial_attachment(source, boundary, target, root, distal_center, flare=1., side_wrap_degrees=None, proximal_fill=0.):
     """Bind the detached rim to actual shaft triangles along radial rays.
 
     The binding is independent of the pelvis and is reevaluated after shaft
@@ -317,9 +317,19 @@ def radial_attachment(source, boundary, target, root, distal_center, flare=1., s
             if reach<1e-8:raise ValueError('Neck has no bilateral footprint')
             angles[selected]*=np.deg2rad(side_wrap_degrees)/reach
     middle=(stations.min()+stations.max())*.5
+    if not np.isfinite(proximal_fill) or not 0<=proximal_fill<1:
+        raise ValueError('Proximal footprint fill must stay in [0,1)')
+    footprint=middle+flare*(stations-middle)
+    # Widen only the rootward half of the footprint. Keep the most proximal
+    # station (and its reserved pelvic ramp) and the whole distal half fixed.
+    # This monotone map broadens the rear shoulder without crossing the ramp
+    # or changing the complete shaft, lobes, or circumferential side wrap.
+    span=np.ptp(footprint);t=(footprint-footprint.min())/span
+    rear=np.maximum(0.,1-2*t)
+    footprint-=proximal_fill*span*t*rear
     triangles=target.points[target.faces];a=triangles[:,0];e1=triangles[:,1]-a;e2=triangles[:,2]-a
     face_ids=[];bary=[]
-    for station,angle in zip(middle+flare*(stations-middle),angles):
+    for station,angle in zip(footprint,angles):
         if station<=0 or station>=length:raise ValueError('Scrotal rim leaves complete proximal shaft')
         if abs(angle)>=np.pi*.9:raise ValueError('Flared neck reaches dorsal centerline')
         origin=root+axis*station;direction=np.cos(angle)*down+np.sin(angle)*side

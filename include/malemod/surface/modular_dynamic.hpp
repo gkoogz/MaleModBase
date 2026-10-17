@@ -29,9 +29,17 @@ struct DynamicMount {
  std::vector<Vec> Repose(const DynamicResult& cached,const Asset& asset,const Plan& plan,const State& state)const{
   auto source=Pose(asset,plan,state,cached.fitTranslation,cached.advances);auto points=cached.surface.points;
   for(auto c:cached.moduleVertices){Vec p{};for(unsigned k=0;k<3;k++)p=Add(p,Scale(source[asset.faces[c.parent][k]],c.donor[k]));points[c.vertex]=p;}
-  const auto& rings=cached.surface.rings;for(unsigned row=1;row+1<rings.size();row++){
+  const auto& rings=cached.surface.rings;auto first=cached.surface.firstTangents;std::vector<Vec> last(first.size());double firstScale=1,lastScale=1;
+  for(unsigned i=0;i<first.size();i++){
+   auto a=points[rings.front()[i]],b=points[rings.back()[i]];const double distance=std::sqrt(Dot(Sub(a,b),Sub(a,b)));last[i]=Scale(state.frames[1].basis[0],distance);
+   auto radial=Sub(Sub(a,cached.anchor),Scale(basis[0],Dot(Sub(a,cached.anchor),basis[0])));auto bounded=BoundRampTangents(a,b,first[i],last[i],radial,.005*std::sqrt(Dot(radial,radial)));
+   if(Dot(first[i],first[i])>1e-20)firstScale=(std::min)(firstScale,std::sqrt(Dot(bounded[0],bounded[0])/Dot(first[i],first[i])));
+   if(Dot(last[i],last[i])>1e-20)lastScale=(std::min)(lastScale,std::sqrt(Dot(bounded[1],bounded[1])/Dot(last[i],last[i])));
+  }
+  for(unsigned i=0;i<first.size();i++){first[i]=Scale(first[i],firstScale);last[i]=Scale(last[i],lastScale);}
+  for(unsigned row=1;row+1<rings.size();row++){
    const double t=.5*(1-std::cos(3.14159265358979323846*row/(rings.size()-1)));
-   for(unsigned i=0;i<rings[0].size();i++){auto a=points[rings.front()[i]],b=points[rings.back()[i]];const double distance=std::sqrt(Dot(Sub(a,b),Sub(a,b)));points[rings[row][i]]=Hermite(a,b,cached.surface.firstTangents[i],Scale(state.frames[1].basis[0],distance),t);}
+   for(unsigned i=0;i<rings[0].size();i++){auto a=points[rings.front()[i]],b=points[rings.back()[i]];points[rings[row][i]]=Hermite(a,b,first[i],last[i],t);}
   }return points;
  }
  DynamicResult Evaluate(const Asset& asset,const Plan& plan,const State& state)const{

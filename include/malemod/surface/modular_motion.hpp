@@ -178,6 +178,22 @@ inline Vec MaterialPoint(const Binding& binding,const State& state,Vec p,double 
 class Plan {
  std::vector<Vec> rest_;std::vector<Binding> bindings_;std::vector<Loft> lofts_;State reference_;
  public:
+ Vec SuspensionRestOffset(const std::vector<Vec>& material,const State& rest,Vec up={0,0,1})const{
+  // The independent suspended bodies hang below their actual mounted rim,
+  // not the legacy combined mesh's forward-offset neck. Measure the rim once
+  // in the zero-motion shape; never cancel any live swing or inertial motion.
+  std::vector<unsigned> rim;std::vector<bool> seen(material.size());
+  for(const auto& l:lofts_)if(ShaftBinding(l.lastOwner)&&!ShaftBinding(l.firstOwner)){
+   bool suspended=false;for(auto i:l.firstOwner.influences)suspended|=i.frame>=13&&i.weight>0;
+   if(suspended&&!seen[l.end]){seen[l.end]=true;rim.push_back(l.end);}
+  }
+  if(rim.size()<3)throw std::invalid_argument("Suspended attachment has no closed support rim");
+  Vec center{};double total=0;
+  for(unsigned i=0;i<rim.size();i++){auto a=material[rim[i]],b=material[rim[(i+1)%rim.size()]];const double length=std::sqrt(Dot(Sub(b,a),Sub(b,a)));center=Add(center,Scale(Add(a,b),.5*length));total+=length;}
+  if(total<1e-8)throw std::invalid_argument("Suspended support rim collapsed");
+  center=Scale(center,1/total);auto lobes=Scale(Add(rest.frames[13].origin,rest.frames[14].origin),.5);
+  auto offset=Sub(center,lobes);up=Unit(up);return Sub(offset,Scale(up,Dot(offset,up)));
+ }
  Plan(std::vector<Vec> rest,std::vector<Binding> bindings,std::vector<Loft> lofts,State reference)
  :rest_(std::move(rest)),bindings_(std::move(bindings)),lofts_(std::move(lofts)),reference_(reference){
   if(rest_.empty()||rest_.size()!=bindings_.size())throw std::invalid_argument("Modular topology/binding count differs");

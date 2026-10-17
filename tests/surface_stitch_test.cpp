@@ -4,6 +4,14 @@ using namespace malemod::surface;
 void Check(bool ok,const char* message){if(!ok)throw std::runtime_error(message);}
 int main(){try{
  constexpr double pi=3.14159265358979323846;using Vec=PresentationPoint;
+ // Level endpoints with opposing slopes previously formed the dorsal saddle.
+ for(double slope:{-.9,-.3,0.,.3,.9})for(double height:{-.2,0.,.2}){
+  Vec a{0,0,1},b{1,0,1+height},first{.2,0,-1},last{.7,0,slope};
+  auto tangents=BoundRampTangents(a,b,first,last,{0,0,1},.005);
+  Check(Dot(Cross(first,tangents[0]),Cross(first,tangents[0]))<1e-20,"Body tangent plane changed");
+  Check(Dot(Cross(last,tangents[1]),Cross(last,tangents[1]))<1e-20,"Shaft tangent plane changed");
+  for(unsigned j=0;j<=100;j++){auto p=modular::Hermite(a,b,tangents[0],tangents[1],j/100.);Check(p[2]>=(std::min)(a[2],b[2])-.005-1e-12&&p[2]<=(std::max)(a[2],b[2])+.005+1e-12,"Ramp escaped its radial envelope");}
+ }
  std::vector<Vec> p{{0,-2,-2},{0,2,-2},{0,2,2},{0,-2,2}};std::vector<std::array<unsigned,3>> bodyFaces{{0,1,2},{0,2,3}};
  ConvexSurfaceCut plan(p,bodyFaces,{true,true},{0,0,0},{{{0,1,0},{0,0,1}}},1e-9);std::vector<std::array<double,2>> opening;
  for(unsigned i=0;i<31;i++){double a=2*pi*i/31;opening.push_back({.6*std::cos(a),.6*std::sin(a)});}auto body=plan.Cut(opening);

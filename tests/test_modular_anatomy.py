@@ -134,5 +134,17 @@ class ModularAnatomyTest(unittest.TestCase):
             self.assertAlmostEqual(theta.min(),-reach,places=8)
             np.testing.assert_array_equal(shaft.points,before)
 
+    def test_rear_shoulder_expands_without_entering_pelvic_ramp(self):
+        shaft,*_=complete_shaft(clip(tube(),[1,0,0],1.5),[-2,0,0])
+        a=np.linspace(0,2*np.pi,48,endpoint=False)
+        p=np.c_[.8*np.cos(a),.6*np.sin(a),np.full(len(a),-2.)]
+        source=Mesh.source(p,np.array([[0,j,j+1] for j in range(1,len(a)-1)]),p[:,:2])
+        baseline=radial_attachment(source,np.arange(len(a)),shaft,[-2,0,0],[1.5,0,0],side_wrap_degrees=100).targets(shaft)
+        wider=radial_attachment(source,np.arange(len(a)),shaft,[-2,0,0],[1.5,0,0],side_wrap_degrees=100,proximal_fill=.65).targets(shaft)
+        np.testing.assert_allclose(wider[p[:,0]>=0],baseline[p[:,0]>=0],atol=1e-12)
+        self.assertAlmostEqual(wider[:,0].min(),baseline[:,0].min())
+        self.assertLess(wider[:,0].mean(),baseline[:,0].mean())
+        self.assertTrue(np.all(wider[:,0]<=baseline[:,0]+1e-12))
+
 
 if __name__=='__main__':unittest.main()

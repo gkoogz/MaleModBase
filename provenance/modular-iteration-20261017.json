@@ -1,0 +1,20 @@
+{
+  "schema": "malemod.modular-iteration/1",
+  "files": {
+    "include/malemod/surface/modular_dynamic.hpp": "d8ce0a84b62e764d32a3a1ebbd3f7e3716dc07e93dc9560ef0ab1f429b375af2",
+    "include/malemod/surface/modular_motion.hpp": "b2ce1ae883b84986492382a178e97ae5c88729b8d3bad2f795aa61838901de06",
+    "include/malemod/surface/surface_stitch.hpp": "9e93be3611730d9db393c1f3c29a8d7675c5fbec84a0772ccbc05e718b60a181",
+    "malemod_base/modular_anatomy.py": "f61a15a878b23fee111a6bdabd340dd5c944a9eb95bb8ed3c28dd4d2094fd57d",
+    "tools/build_modular_anatomy.py": "0badadfcbcc58dbdbcfbb1dc41b07f7bf8185ebcb065c67879647cfed8808709"
+  },
+  "omissions": [
+    "Licensed game assets, screenshots and private native evidence remain outside Git."
+  ],
+  "sourceTests": [
+    "modular_motion_test",
+    "surface_stitch_test",
+    "10 Python modular anatomy tests"
+  ],
+  "nativeObserved": false,
+  "installed": false
+}

@@ -9,6 +9,13 @@ int main(){try{
  std::vector<Binding> b(4);for(unsigned i=0;i<4;i++)b[i].influences[0]={i==2?13u:i==0?0u:1u,1,p[i]};
  Loft l{3,2,1,.5,{0,0,2},{0,0,2},p[3],b[2],b[1]};
  Plan plan(p,b,{l},rest);auto baseline=plan.Evaluate(rest);
+ {
+  std::vector<Vec> q{{3,-1,0},{3,1,0},{3,0,2},{0,-1,-2},{0,1,-2},{0,0,-2},{1.5,-1,-1},{1.5,1,-1},{1.5,0,0}};
+  std::vector<Binding> owners(q.size());for(unsigned i=0;i<q.size();i++)owners[i].influences[0]={i<3?1u:13u,1,q[i]};
+  std::vector<Loft> skin;for(unsigned i=0;i<3;i++)skin.push_back({i+6,i+3,i,.5,{0,0,1},{0,0,1},q[i+6],owners[i+3],owners[i]});
+  Plan suspension(q,owners,skin,rest);auto offset=suspension.SuspensionRestOffset(q,rest);
+  Check(std::abs(offset[0]-3)<1e-12&&std::abs(offset[1])<1e-12&&offset[2]==0,"Suspended rest position is not directly below its attachment");
+ }
  for(unsigned i=0;i<p.size();i++)Check(Dot(Sub(baseline[i],p[i]),Sub(baseline[i],p[i]))<1e-24,"Rest geometry changed");
  State moved=rest;moved.frames[13].origin={.4,.2,-.3};auto result=plan.Evaluate(moved);
  Check(result[0]==p[0]&&result[1]==p[1],"Suspended motion changed fixed body or complete shaft");
