@@ -51,3 +51,11 @@ fixed, and independent suspended frames are untouched. This is a material
 presentation constraint, not a change to the pinned numerical worker or a claim
 of full self-contact simulation. Unit tests cover length, turn bounds, active
 root motion, independent suspension and exact rest preservation.
+
+The full-floppy native angle sweep exposed a convergence cutoff at slider66:
+the root search residual fell from2.815 to0.000030 but reached its eight-pass
+limit. The search now allows32 passes and evaluates only the socket rim during
+convergence, binding the full surface once afterward. It retains the same
+fixed-rim tolerance and fails explicitly if no free material rod remains.
+The captured case and continuous integer slider replay are regression evidence;
+native acceptance is repeated for the replacement binary.

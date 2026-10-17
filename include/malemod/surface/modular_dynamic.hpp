@@ -29,12 +29,17 @@ struct DynamicMount {
   }return p;
  }
  std::pair<double,std::shared_ptr<const std::vector<Binding>>> SocketBindings(const Asset& asset,const State& state,const std::vector<Vec>& material)const{
+  std::vector<Vec> rim;std::vector<Binding> owners;
+  for(auto id:inner){rim.push_back(material.at(id));owners.push_back(asset.bindings.at(id));}
   double start=0;
-  for(unsigned iteration=0;iteration<8;iteration++){
-   const auto socket=SocketMaterialState(state,start);auto bindings=std::make_shared<const std::vector<Binding>>(BindMaterialStations(material,asset.bindings,socket.shapeFrames));
+  // Curved rest guides converge asymptotically as the clipped guide is
+  // resampled. Eight iterations left a 3e-5 station residual at slider 66.
+  // Solve only the rim during this search, then bind the full surface once.
+  for(unsigned iteration=0;iteration<32;iteration++){
+   const auto socket=SocketMaterialState(state,start);const auto bindings=BindMaterialStations(rim,owners,socket.shapeFrames);
    std::array<double,13> station{};for(unsigned i=2;i<=12;i++){auto d=Sub(socket.shapeFrames[i].origin,socket.shapeFrames[i-1].origin);station[i]=station[i-1]+std::sqrt(Dot(d,d));}
-   double remaining=0;for(auto id:inner){double s=0;for(auto v:bindings->at(id).influences)if(v.weight>0){if(v.frame<1||v.frame>12)throw std::invalid_argument("Socket rim is not complete-shaft material");s+=station[v.frame]*v.weight;}remaining=(std::max)(remaining,s);}
-   if(remaining<1e-8)return {start,bindings};
+   double remaining=0;for(const auto& binding:bindings){double s=0;for(auto v:binding.influences)if(v.weight>0){if(v.frame<1||v.frame>12)throw std::invalid_argument("Socket rim is not complete-shaft material");s+=station[v.frame]*v.weight;}remaining=(std::max)(remaining,s);}
+   if(remaining<1e-8)return {start,std::make_shared<const std::vector<Binding>>(BindMaterialStations(material,asset.bindings,socket.shapeFrames))};
    start+=remaining+1e-5;
   }
   throw std::invalid_argument("Unable to anchor the complete socket circumference");
