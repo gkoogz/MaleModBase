@@ -22,3 +22,11 @@ nonmanifold additions, or changes to the original pelvis. These are offline
 checks; native visual review and installation are recorded separately in the
 Witcher adapter. Other spokes can adopt this shared header through their own
 pinned modular dependency and must run their native attachment gate.
+
+The first native trial still showed a raised base. Tracing the final root rim
+found clearance moved material as much as 0.711 guide intervals beyond its
+assigned station. `DynamicMount` now binds the final cleared material once per
+shape rebuild and reuses those bindings during motion. Rest geometry remains
+identical; the live surface follows the frames at its actual location. The
+native replay probe checks both properties. A separate tangent-plane experiment
+produced inverted ramp triangles and was rejected before native installation.
