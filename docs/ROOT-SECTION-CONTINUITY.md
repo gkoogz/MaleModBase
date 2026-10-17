@@ -31,6 +31,17 @@ identical; the live surface follows the frames at its actual location. The
 native replay probe checks both properties. A separate tangent-plane experiment
 produced inverted ramp triangles and was rejected before native installation.
 
+Rebinding alone was also rejected: native steep-angle poses moved part of the
+attached rim with a free guide and folded the ramp. The final construction clips
+the material centerline at the frontmost complete socket circumference, then
+resamples twelve sections from that physical anchor through the tip. The entire
+attached rim is constrained to its rest shape. The first free interval moves
+with zero initial angular strain and the radius bound below. Generated neck
+directions and independently suspended objects retain their original reference
+frames. Native temporal presentation uses the same final material frames and
+ownership. Replay assertions require an unchanged zero-motion surface and an
+unchanged attached rim under live motion, not merely welded positions.
+
 The live rod reconstruction also enforces a finite bend radius. Fixed segment
 length alone permitted the first segment to turn too sharply for its diameter.
 Additional live turn is limited to `0.4 * segmentLength / sectionRadius`, with

@@ -205,6 +205,25 @@ inline PresentationFrame MaterialSection(const PresentationFrames& f,unsigned i,
  for(auto& x:q)x/=std::sqrt(norm);
  return {Hermite(f[i].origin,f[j].origin,Scale(f[i].basis[0],length),Scale(f[j].basis[0],length),t),Basis(q)};
 }
+// The actual socket can be ahead of the source solver's hidden root after
+// clearance. Start the material rod at that socket, preserving the selected
+// rest surface and retaining twelve free-section samples through the tip.
+inline State SocketMaterialState(const State& original,double start){
+ State out=original;std::array<double,12> station{};
+ for(unsigned i=1;i<12;i++){auto d=Sub(original.shapeFrames[i+1].origin,original.shapeFrames[i].origin);station[i]=station[i-1]+std::sqrt(Dot(d,d));}
+ if(start<0||start>=station.back()-1e-6)throw std::invalid_argument("Socket leaves no free material rod");
+ for(unsigned i=0;i<12;i++){
+  const double x=start+(station.back()-start)*i/11.;
+  unsigned k=1;while(k<11&&station[k]<x)++k;
+  const double t=std::clamp((x-station[k-1])/(station[k]-station[k-1]),0.,1.);
+  out.shapeFrames[i+1]=MaterialSection(original.shapeFrames,k,k+1,t);
+  out.frames[i+1]=MaterialSection(original.frames,k,k+1,t);
+ }
+ out.frames[1]=out.shapeFrames[1];auto neutral=out;neutral.frames=neutral.shapeFrames;
+ PreserveMaterialLengths(out);PreserveMaterialLengths(neutral);
+ for(unsigned i=1;i<=12;i++){auto basis=out.frames[i].basis;for(unsigned k=0;k<3;k++)out.frames[i].basis[k]=Rotate(basis,Unrotate(neutral.frames[i].basis,out.shapeFrames[i].basis[k]));}
+ return out;
+}
 // Rotate one material section instead of blending rotated vertex positions.
 // Its orthonormal frame preserves diameter; the crown preserves its shape.
 inline Vec MaterialPoint(const Binding& binding,const State& state,Vec p,double crown=0){
@@ -260,11 +279,11 @@ class Plan {
    auto p=Point(bindings_[i],reference_);if(!generated[i]&&std::sqrt(Dot(Sub(p,rest_[i]),Sub(p,rest_[i])))>1e-6)throw std::invalid_argument("Mechanical binding does not reproduce reference surface");
   }
  }
- std::vector<Vec> Evaluate(const State& state,const std::function<void(std::vector<Vec>&)>& moveOwners={})const{
+ std::vector<Vec> Evaluate(const State& state,const std::function<void(std::vector<Vec>&)>& moveOwners={},const State* materialState=nullptr)const{
   ValidateState(state);
   std::vector<Vec> out;out.reserve(rest_.size());for(const auto& b:bindings_)out.push_back(Point(b,state));
   if(state.offsets){if(state.offsets->size()!=out.size())throw std::invalid_argument("Modular shape transfer size differs");for(unsigned i=0;i<out.size();i++){for(double x:(*state.offsets)[i])if(!std::isfinite(x))throw std::invalid_argument("Nonfinite modular shape transfer");out[i]=Add(out[i],(*state.offsets)[i]);}}
-  if(state.shaftMaterial){if(!state.hasShapeFrames||state.shaftMaterial->size()!=out.size())throw std::invalid_argument("Invalid shaft material field");for(unsigned i=0;i<out.size();i++)if(ShaftBinding(bindings_[i]))out[i]=MaterialPoint(state.materialBindings?state.materialBindings->at(i):bindings_[i],state,(*state.shaftMaterial)[i],state.crownWeights?state.crownWeights->at(i):0);}
+  if(state.shaftMaterial){if(!state.hasShapeFrames||state.shaftMaterial->size()!=out.size())throw std::invalid_argument("Invalid shaft material field");const auto& motion=materialState?*materialState:state;for(unsigned i=0;i<out.size();i++)if(ShaftBinding(bindings_[i]))out[i]=MaterialPoint(motion.materialBindings?motion.materialBindings->at(i):bindings_[i],motion,(*state.shaftMaterial)[i],state.crownWeights?state.crownWeights->at(i):0);}
   if(moveOwners)moveOwners(out);
   for(const auto& l:lofts_){
    auto a=Direction(l.first,l.firstOwner,reference_,state),b=Direction(l.last,l.lastOwner,reference_,state);

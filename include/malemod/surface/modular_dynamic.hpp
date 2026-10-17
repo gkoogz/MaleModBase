@@ -4,7 +4,7 @@
 #include "surface_stitch.hpp"
 
 namespace malemod::surface::modular {
-struct DynamicResult {SurfaceJoin surface;Vec anchor{},axis{};double rootAdvance=0;std::vector<SurfaceJoinCorner> moduleVertices;std::vector<double> advances;Vec fitTranslation{},suspensionTranslation{};std::shared_ptr<const std::vector<Binding>> clearedBindings;};
+struct DynamicResult {SurfaceJoin surface;Vec anchor{},axis{};double rootAdvance=0;std::vector<SurfaceJoinCorner> moduleVertices;std::vector<double> advances;Vec fitTranslation{},suspensionTranslation{};std::shared_ptr<const std::vector<Binding>> clearedBindings;double materialRoot=0;};
 struct DynamicMount {
  std::vector<Vec> body,normals,section;std::vector<std::array<unsigned,3>> faces;
  std::vector<unsigned> moduleFaces,inner;Vec origin;PresentationBasis basis;
@@ -28,14 +28,26 @@ struct DynamicMount {
    (*p)[i]=Add((*p)[i],Scale(state.shapeFrames[1].basis[0],advance*(1-t*t*t*(10+t*(-15+6*t)))*mount.shaftWeight[i]));
   }return p;
  }
- std::vector<Vec> Pose(const Asset& asset,const Plan& plan,const State& state,Vec translation,const std::vector<double>& advances,Vec suspension={},std::shared_ptr<const std::vector<Binding>> clearedBindings={})const{
+ std::pair<double,std::shared_ptr<const std::vector<Binding>>> SocketBindings(const Asset& asset,const State& state,const std::vector<Vec>& material)const{
+  double start=0;
+  for(unsigned iteration=0;iteration<8;iteration++){
+   const auto socket=SocketMaterialState(state,start);auto bindings=std::make_shared<const std::vector<Binding>>(BindMaterialStations(material,asset.bindings,socket.shapeFrames));
+   std::array<double,13> station{};for(unsigned i=2;i<=12;i++){auto d=Sub(socket.shapeFrames[i].origin,socket.shapeFrames[i-1].origin);station[i]=station[i-1]+std::sqrt(Dot(d,d));}
+   double remaining=0;for(auto id:inner){double s=0;for(auto v:bindings->at(id).influences)if(v.weight>0){if(v.frame<1||v.frame>12)throw std::invalid_argument("Socket rim is not complete-shaft material");s+=station[v.frame]*v.weight;}remaining=(std::max)(remaining,s);}
+   if(remaining<1e-8)return {start,bindings};
+   start+=remaining+1e-5;
+  }
+  throw std::invalid_argument("Unable to anchor the complete socket circumference");
+ }
+ std::vector<Vec> Pose(const Asset& asset,const Plan& plan,const State& state,Vec translation,const std::vector<double>& advances,Vec suspension={},std::shared_ptr<const std::vector<Binding>> clearedBindings={},double materialRoot=-1)const{
   auto moved=state;for(unsigned i=1;i<15;i++)moved.frames[i].origin=Add(moved.frames[i].origin,translation);const auto& mount=*asset.mount;
   auto clearance=[&](unsigned i){const double advance=advances.at(i),span=(std::max)(mount.length*.7*state.scales[1][0],2.1*advance),station=Dot(Sub(asset.rest[i],origin),basis[0]),t=std::clamp((station-mount.station)*state.scales[1][0]/span,0.,1.);return advance*(1-t*t*t*(10+t*(-15+6*t)))*mount.shaftWeight[i];};
-  if(state.shaftMaterial){moved.shaftMaterial=ClearedMaterial(asset,state,advances);moved.materialBindings=clearedBindings?clearedBindings:std::make_shared<const std::vector<Binding>>(BindMaterialStations(*moved.shaftMaterial,asset.bindings,state.shapeFrames));}
-  return plan.Evaluate(moved,[&](auto& points){for(unsigned i=0;i<points.size();i++)if(mount.shaftWeight[i]>0&&!(state.shaftMaterial&&ShaftBinding(asset.bindings[i])))points[i]=Add(points[i],Scale(state.frames[1].basis[0],clearance(i)));plan.TranslateSuspension(points,suspension);});
+  auto materialState=state;
+  if(state.shaftMaterial){moved.shaftMaterial=ClearedMaterial(asset,state,advances);if(!clearedBindings||materialRoot<0){auto socket=SocketBindings(asset,state,*moved.shaftMaterial);materialRoot=socket.first;clearedBindings=socket.second;}materialState=SocketMaterialState(state,materialRoot);materialState.materialBindings=clearedBindings;for(unsigned i=1;i<=12;i++)materialState.frames[i].origin=Add(materialState.frames[i].origin,translation);}
+  return plan.Evaluate(moved,[&](auto& points){for(unsigned i=0;i<points.size();i++)if(mount.shaftWeight[i]>0&&!(state.shaftMaterial&&ShaftBinding(asset.bindings[i])))points[i]=Add(points[i],Scale(state.frames[1].basis[0],clearance(i)));plan.TranslateSuspension(points,suspension);},state.shaftMaterial?&materialState:nullptr);
  }
  std::vector<Vec> Repose(const DynamicResult& cached,const Asset& asset,const Plan& plan,const State& state)const{
-  auto source=Pose(asset,plan,state,cached.fitTranslation,cached.advances,cached.suspensionTranslation,cached.clearedBindings);auto points=cached.surface.points;
+  auto source=Pose(asset,plan,state,cached.fitTranslation,cached.advances,cached.suspensionTranslation,cached.clearedBindings,cached.materialRoot);auto points=cached.surface.points;
   for(auto c:cached.moduleVertices){Vec p{};for(unsigned k=0;k<3;k++)p=Add(p,Scale(source[asset.faces[c.parent][k]],c.donor[k]));points[c.vertex]=p;}
   const auto& rings=cached.surface.rings;auto first=cached.surface.firstTangents;std::vector<Vec> last(first.size());double firstScale=1,lastScale=1;
   for(unsigned i=0;i<first.size();i++){
@@ -101,9 +113,9 @@ struct DynamicMount {
   // station makes an advanced root vertex follow a frame behind its location,
   // creating a rigid shelf next to a moving section. Bind the final shape once,
   // then reuse these immutable stations throughout live motion.
-  std::shared_ptr<const std::vector<Binding>> clearedBindings;
-  if(auto material=ClearedMaterial(asset,state,advances))clearedBindings=std::make_shared<const std::vector<Binding>>(BindMaterialStations(*material,asset.bindings,state.shapeFrames));
-  return {std::move(surface),aperture.anchor,axis,advance,std::move(mappings),std::move(advances),aperture.translation,suspension,clearedBindings};
+  std::shared_ptr<const std::vector<Binding>> clearedBindings;double materialRoot=0;
+  if(auto material=ClearedMaterial(asset,state,advances)){auto socket=SocketBindings(asset,state,*material);materialRoot=socket.first;clearedBindings=socket.second;}
+  return {std::move(surface),aperture.anchor,axis,advance,std::move(mappings),std::move(advances),aperture.translation,suspension,clearedBindings,materialRoot};
  }
 };
 }

@@ -103,6 +103,13 @@ int main(){try{
   Check(rod.frames[13].origin==lobes.origin,"Bend-radius constraint moved independent suspension");
   rod.frames=rod.shapeFrames;PreserveMaterialLengths(rod);
   for(unsigned i=1;i<=12;i++)Check(rod.frames[i].origin==rod.shapeFrames[i].origin,"Bend-radius constraint changed the rest shape");
+  auto socket=SocketMaterialState(rod,1.25);
+  Check(std::abs(socket.shapeFrames[1].origin[0]-1.25)<1e-10,"Material rod did not start at the final socket");
+  Check(socket.shapeFrames[12].origin==rod.shapeFrames[12].origin,"Socket resampling moved the rest tip");
+  for(unsigned i=1;i<=12;i++){auto d=Sub(socket.frames[i].origin,socket.shapeFrames[i].origin);Check(Dot(d,d)<1e-20,"Socket resampling changed the zero-motion curve");}
+  rod.frames[3].origin[1]=.4;socket=SocketMaterialState(rod,1.25);
+  Check(socket.frames[1].origin==socket.shapeFrames[1].origin&&socket.frames[1].basis==socket.shapeFrames[1].basis,"Socket motion moved the attached rim");
+  Check(socket.frames[2].origin[1]!=0,"Socket resampling froze the free material rod");
  }
  bool rejected=false;try{moved.scales[1][1]=0;plan.Evaluate(moved);}catch(const std::invalid_argument&){rejected=true;}Check(rejected,"Collapsed morphology accepted");
  std::cout<<"PASS independent shaft/lobe ownership, live connecting skin, exact rest and invalid-scale rejection\n";
