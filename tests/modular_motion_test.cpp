@@ -89,6 +89,21 @@ int main(){try{
  for(unsigned i=2;i<=12;i++)material.frames[i].origin={.3*(i-1),.1*(i-1),0};
  PreserveMaterialLengths(material);
  for(unsigned i=2;i<=12;i++){auto d=Sub(material.frames[i].origin,material.frames[i-1].origin);Check(std::abs(Dot(d,d)-1)<1e-10,"Material rod compressed");}
+ {
+  State rod;rod.hasShapeFrames=true;rod.sectionRadius=2;
+  for(unsigned i=1;i<=12;i++){rod.shapeFrames[i].origin={double(i-1),0,0};rod.frames[i].origin={0,double(i-1),0};}
+  rod.frames[13].origin={2,3,-4};auto lobes=rod.frames[13];
+  PreserveMaterialLengths(rod);Vec previous{1,0,0};
+  for(unsigned i=2;i<=12;i++){
+   auto d=Sub(rod.frames[i].origin,rod.frames[i-1].origin);Check(std::abs(Dot(d,d)-1)<1e-10,"Bend bound changed segment length");
+   const double turn=std::acos(std::clamp(Dot(previous,Unit(d)),-1.,1.));
+   Check(turn<=.2*(i==2?.5:1.)+1e-10,"Wide material section exceeds its bend radius");previous=Unit(d);
+  }
+  Check(rod.frames[2].origin[1]>0,"Bend-radius constraint froze the first free interval");
+  Check(rod.frames[13].origin==lobes.origin,"Bend-radius constraint moved independent suspension");
+  rod.frames=rod.shapeFrames;PreserveMaterialLengths(rod);
+  for(unsigned i=1;i<=12;i++)Check(rod.frames[i].origin==rod.shapeFrames[i].origin,"Bend-radius constraint changed the rest shape");
+ }
  bool rejected=false;try{moved.scales[1][1]=0;plan.Evaluate(moved);}catch(const std::invalid_argument&){rejected=true;}Check(rejected,"Collapsed morphology accepted");
  std::cout<<"PASS independent shaft/lobe ownership, live connecting skin, exact rest and invalid-scale rejection\n";
  return 0;

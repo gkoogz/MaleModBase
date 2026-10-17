@@ -30,3 +30,13 @@ shape rebuild and reuses those bindings during motion. Rest geometry remains
 identical; the live surface follows the frames at its actual location. The
 native replay probe checks both properties. A separate tangent-plane experiment
 produced inverted ramp triangles and was rejected before native installation.
+
+The live rod reconstruction also enforces a finite bend radius. Fixed segment
+length alone permitted the first segment to turn too sharply for its diameter.
+Additional live turn is limited to `0.4 * segmentLength / sectionRadius`, with
+half that interval at the clamped root. Authored rest curvature is transported
+unchanged; the first free interval still moves, all segment lengths remain
+fixed, and independent suspended frames are untouched. This is a material
+presentation constraint, not a change to the pinned numerical worker or a claim
+of full self-contact simulation. Unit tests cover length, turn bounds, active
+root motion, independent suspension and exact rest preservation.

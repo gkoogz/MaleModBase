@@ -22,6 +22,7 @@ struct State {
  std::shared_ptr<const std::vector<Vec>> shaftMaterial;
  std::shared_ptr<const std::vector<Binding>> materialBindings;
  std::shared_ptr<const std::vector<double>> crownWeights;
+ double sectionRadius=0;
  std::array<Vec,15> scales{};
  State(){for(auto& s:scales)s={1,1,1};}
 };
@@ -42,7 +43,7 @@ inline void AnchorRootPhysics(State& state,double radius,double length){
 }
 inline State DrivenState(const State& reference,const Dimensions& dimensions,const Output& source){
  if(dimensions.radius<=0||dimensions.length<=0||source.proximalRadius<=0||source.restLength<=0)throw std::invalid_argument("Invalid measured modular dimensions");
- State state;state.frames=MaterialFrames(source);
+ State state;state.frames=MaterialFrames(source);state.sectionRadius=source.proximalRadius;
  for(unsigned i=1;i<=12;i++)state.scales[i]={source.restLength/dimensions.length,source.proximalRadius/dimensions.radius,source.proximalRadius/dimensions.radius};
  const auto& a=reference.frames[1];const auto& b=state.frames[1];
  auto local=Unrotate(a.basis,Sub(dimensions.anchor,a.origin));
@@ -87,12 +88,26 @@ inline void ValidateState(const State& state){
 inline void PreserveMaterialLengths(State& s){
  if(!s.hasShapeFrames)return;
  const auto original=s.frames;
+ Vec previous=s.frames[1].basis[0],previousRest=s.shapeFrames[1].basis[0];
  for(unsigned i=2;i<=12;i++){
   auto d=Sub(original[i].origin,original[i-1].origin);
   const auto r=Sub(s.shapeFrames[i].origin,s.shapeFrames[i-1].origin);
   const double length=std::sqrt(Dot(r,r));
   if(Dot(d,d)<1e-16)d=r;
-  s.frames[i].origin=Add(s.frames[i-1].origin,Scale(Unit(d),length));
+  auto direction=Unit(d),restDirection=Unit(r);
+  if(s.sectionRadius>0){
+   // Carry the authored rest curvature exactly, then bound additional live
+   // curvature by section radius. A centerline can be length-preserving yet
+   // fold its inner surface if a wide section turns through a tight hinge.
+   auto axis=Cross(previousRest,restDirection);const double cosine=std::clamp(Dot(previousRest,restDirection),-1.,1.);
+   auto target=cosine>-.9999?Add(Add(previous,Cross(axis,previous)),Scale(Cross(axis,Cross(axis,previous)),1/(1+cosine))):previous;
+   target=Unit(target);const double angle=std::acos(std::clamp(Dot(target,direction),-1.,1.));
+   // Half a segment from the clamped boundary to the first segment center.
+   // The remaining margin covers interpolated section angular strain.
+   const double limit=.4*length/s.sectionRadius*(i==2?.5:1.);
+   if(angle>limit){auto side=Sub(direction,Scale(target,Dot(direction,target)));if(Dot(side,side)<1e-16)side=s.frames[i].basis[1];side=Unit(side);direction=Add(Scale(target,std::cos(limit)),Scale(side,std::sin(limit)));}
+  }
+  s.frames[i].origin=Add(s.frames[i-1].origin,Scale(direction,length));previous=direction;previousRest=restDirection;
  }
  for(unsigned i=2;i<=12;i++){
   auto tangent=Unit(Sub(s.frames[(std::min)(12u,i+1)].origin,s.frames[i-1].origin));
@@ -103,7 +118,7 @@ inline void PreserveMaterialLengths(State& s){
 }
 inline State Interpolate(const State& a,const State& b,double t){
  if(!std::isfinite(t)||t<0||t>1)throw std::invalid_argument("Invalid modular interpolation phase");
- State s;s.materialBindings=b.materialBindings;s.shaftMaterial=b.shaftMaterial;s.crownWeights=b.crownWeights;
+ State s;s.materialBindings=b.materialBindings;s.shaftMaterial=b.shaftMaterial;s.crownWeights=b.crownWeights;s.sectionRadius=a.sectionRadius*(1-t)+b.sectionRadius*t;
  if(a.offsets&&b.offsets){if(a.offsets->size()!=b.offsets->size())throw std::invalid_argument("Modular shape transfer size changed");auto values=std::make_shared<std::vector<Vec>>(a.offsets->size());for(unsigned i=0;i<values->size();i++)(*values)[i]=Add(Scale((*a.offsets)[i],1-t),Scale((*b.offsets)[i],t));s.offsets=std::move(values);}
  else s.offsets=t<1?a.offsets:b.offsets;
  if(a.surfaceNormals&&b.surfaceNormals){if(a.surfaceNormals->size()!=b.surfaceNormals->size())throw std::invalid_argument("Modular normal transfer size changed");auto values=std::make_shared<std::vector<Vec>>(a.surfaceNormals->size());for(unsigned i=0;i<values->size();i++){auto n=Add(Scale((*a.surfaceNormals)[i],1-t),Scale((*b.surfaceNormals)[i],t));(*values)[i]=Dot(n,n)>1e-12?Unit(n):Vec{};}s.surfaceNormals=std::move(values);}else s.surfaceNormals=t<1?a.surfaceNormals:b.surfaceNormals;
