@@ -160,17 +160,43 @@ inline std::vector<Binding> BindMaterialStations(const std::vector<Vec>& points,
  }
  return bindings;
 }
+// A continuous section frame is needed as well as a continuous centerline.
+// Pairwise SLERP has a different angular derivative on each side of a guide
+// knot, and a nonzero derivative immediately after the fixed root. A wide
+// section multiplies that jump by its radius, producing a visible step even
+// though every center and vertex is position-continuous.
+inline PresentationFrame MaterialSection(const PresentationFrames& f,unsigned i,unsigned j,double t){
+ if(i==j)return f[i];
+ const auto d=Sub(f[j].origin,f[i].origin);const double length=std::sqrt(Dot(d,d));
+ auto qa=Quaternion(f[i].basis),qb=Quaternion(f[j].basis);
+ auto aligned=[](PresentationQuaternion q,const PresentationQuaternion& reference){double dot=0;for(unsigned k=0;k<4;k++)dot+=q[k]*reference[k];if(dot<0)for(auto& x:q)x=-x;return q;};
+ qb=aligned(qb,qa);
+ auto derivative=[&](unsigned node,PresentationQuaternion q){
+  PresentationQuaternion v{};
+  // The body and rigid crown continue with constant orientation. Match their
+  // zero angular strain, rather than introducing a hinge at either boundary.
+  if(node==1||node==12)return v;
+  auto before=aligned(Quaternion(f[node-1].basis),q),after=aligned(Quaternion(f[node+1].basis),q);
+  auto a=Sub(f[node].origin,f[node-1].origin),b=Sub(f[node+1].origin,f[node].origin);
+  const double span=std::sqrt(Dot(a,a))+std::sqrt(Dot(b,b));
+  if(span<1e-12)return v;
+  double normal=0;for(unsigned k=0;k<4;k++){v[k]=(after[k]-before[k])/span;normal+=v[k]*q[k];}
+  for(unsigned k=0;k<4;k++)v[k]-=normal*q[k];return v;
+ };
+ auto va=derivative(i,qa),vb=derivative(j,qb);PresentationQuaternion q{};double norm=0;
+ const double t2=t*t,t3=t2*t;
+ for(unsigned k=0;k<4;k++){q[k]=(2*t3-3*t2+1)*qa[k]+(t3-2*t2+t)*length*va[k]+(-2*t3+3*t2)*qb[k]+(t3-t2)*length*vb[k];norm+=q[k]*q[k];}
+ if(norm<1e-16)throw std::invalid_argument("Collapsed material orientation interpolant");
+ for(auto& x:q)x/=std::sqrt(norm);
+ return {Hermite(f[i].origin,f[j].origin,Scale(f[i].basis[0],length),Scale(f[j].basis[0],length),t),Basis(q)};
+}
 // Rotate one material section instead of blending rotated vertex positions.
-// Hermite centers remove discrete corners; a rigid crown preserves its shape.
+// Its orthonormal frame preserves diameter; the crown preserves its shape.
 inline Vec MaterialPoint(const Binding& binding,const State& state,Vec p,double crown=0){
  const auto a=binding.influences[0],b=binding.influences[1];
  const unsigned i=a.weight>0?a.frame:b.frame,j=b.weight>0?b.frame:i;
  const double t=i==j?0:b.weight;
- auto section=[&](const PresentationFrames& f){
-  const auto d=Sub(f[j].origin,f[i].origin);const double length=std::sqrt(Dot(d,d));
-  return PresentationFrame{Hermite(f[i].origin,f[j].origin,Scale(f[i].basis[0],length),Scale(f[j].basis[0],length),t),InterpolateBasis(f[i].basis,f[j].basis,t)};
- };
- auto rest=section(state.shapeFrames),live=section(state.frames);
+ auto rest=MaterialSection(state.shapeFrames,i,j,t),live=MaterialSection(state.frames,i,j,t);
  auto result=Add(live.origin,Rotate(live.basis,Unrotate(rest.basis,Sub(p,rest.origin))));
  if(crown>0){const auto& r=state.shapeFrames[12];const auto& f=state.frames[12];auto rigid=Add(f.origin,Rotate(f.basis,Unrotate(r.basis,Sub(p,r.origin))));result=Add(Scale(result,1-crown),Scale(rigid,crown));}
  return result;

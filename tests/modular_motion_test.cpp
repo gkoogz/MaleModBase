@@ -57,6 +57,29 @@ int main(){try{
  Check(remapped[0].influences[0].frame==9&&std::abs(remapped[0].influences[1].weight-.25)<1e-12,"Morphology retained stale material stations");
  auto restTransport=MaterialPoint(remapped[0],material,{8.25,1,0});
  Check(restTransport==Vec{8.25,1,0},"Rebinding moved selected rest geometry");
+ // Test the surface, not just guide positions: a wide section amplifies a
+ // discontinuous angular derivative into the root step seen during walking.
+ {
+  auto bent=material;
+  for(unsigned i=2;i<=12;i++){
+   const double angle=.7*std::sin((i-1)*.3);
+   bent.frames[i].basis={Vec{std::cos(angle),0,std::sin(angle)},Vec{0,1,0},Vec{-std::sin(angle),0,std::cos(angle)}};
+   bent.frames[i].origin=Add(bent.frames[i-1].origin,Scale(bent.frames[i].basis[0],1.));
+  }
+  auto sample=[&](double station,double ray){
+   unsigned i=std::min(11u,1u+unsigned(std::max(0.,station)));
+   const double t=std::clamp(station-double(i-1),0.,1.);
+   Binding b;b.influences={Influence{i,1-t,{}},Influence{i+1,t,{}}};
+   return MaterialPoint(b,bent,{station,2*std::cos(ray),2*std::sin(ray)});
+  };
+  const double e=1e-5;
+  for(unsigned knot=0;knot<11;knot++)for(unsigned ray=0;ray<16;ray++){
+   const double x=double(knot),a=ray*6.283185307179586/16;
+   auto left=Scale(Sub(sample(x,a),sample(x-e,a)),1/e);
+   auto right=Scale(Sub(sample(x+e,a),sample(x,a)),1/e);
+   Check(Dot(Sub(left,right),Sub(left,right))<1e-7,"Material section has a root or guide-knot derivative step");
+  }
+ }
  material.frames[6].basis={Vec{0,0,1},Vec{0,1,0},Vec{-1,0,0}};
  auto top=MaterialPoint(middle,material,{4.5,0,1}),bottom=MaterialPoint(middle,material,{4.5,0,-1});
  Check(std::abs(std::sqrt(Dot(Sub(top,bottom),Sub(top,bottom)))-2)<1e-10,"Section diameter collapses while bending");
