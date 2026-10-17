@@ -4,7 +4,7 @@
 #include "surface_stitch.hpp"
 
 namespace malemod::surface::modular {
-struct DynamicResult {SurfaceJoin surface;Vec anchor{},axis{};double rootAdvance=0;std::vector<SurfaceJoinCorner> moduleVertices;std::vector<double> advances;Vec fitTranslation{};};
+struct DynamicResult {SurfaceJoin surface;Vec anchor{},axis{};double rootAdvance=0;std::vector<SurfaceJoinCorner> moduleVertices;std::vector<double> advances;Vec fitTranslation{},suspensionTranslation{};};
 struct DynamicMount {
  std::vector<Vec> body,normals,section;std::vector<std::array<unsigned,3>> faces;
  std::vector<unsigned> moduleFaces,inner;Vec origin;PresentationBasis basis;
@@ -20,14 +20,14 @@ struct DynamicMount {
   for(const auto* values:{&body,&normals,&section})for(auto p:*values)for(double x:p)if(!std::isfinite(x))throw std::invalid_argument("Nonfinite dynamic source");
   Quaternion(basis);for(auto f:faces)for(auto i:f)if(i>=nv)throw std::invalid_argument("Dynamic body index leaves original surface");
  }
- std::vector<Vec> Pose(const Asset& asset,const Plan& plan,const State& state,Vec translation,const std::vector<double>& advances)const{
+ std::vector<Vec> Pose(const Asset& asset,const Plan& plan,const State& state,Vec translation,const std::vector<double>& advances,Vec suspension={})const{
   auto moved=state;for(unsigned i=1;i<15;i++)moved.frames[i].origin=Add(moved.frames[i].origin,translation);const auto& mount=*asset.mount;
   auto clearance=[&](unsigned i){const double advance=advances.at(i),span=(std::max)(mount.length*.7*state.scales[1][0],2.1*advance),station=Dot(Sub(asset.rest[i],origin),basis[0]),t=std::clamp((station-mount.station)*state.scales[1][0]/span,0.,1.);return advance*(1-t*t*t*(10+t*(-15+6*t)))*mount.shaftWeight[i];};
   if(state.shaftMaterial){auto p=std::make_shared<std::vector<Vec>>(*state.shaftMaterial);for(unsigned i=0;i<p->size();i++)if(mount.shaftWeight[i]>0&&ShaftBinding(asset.bindings[i]))(*p)[i]=Add((*p)[i],Scale(state.shapeFrames[1].basis[0],clearance(i)));moved.shaftMaterial=p;}
-  return plan.Evaluate(moved,[&](auto& points){for(unsigned i=0;i<points.size();i++)if(mount.shaftWeight[i]>0&&!(state.shaftMaterial&&ShaftBinding(asset.bindings[i])))points[i]=Add(points[i],Scale(state.frames[1].basis[0],clearance(i)));});
+  return plan.Evaluate(moved,[&](auto& points){for(unsigned i=0;i<points.size();i++)if(mount.shaftWeight[i]>0&&!(state.shaftMaterial&&ShaftBinding(asset.bindings[i])))points[i]=Add(points[i],Scale(state.frames[1].basis[0],clearance(i)));plan.TranslateSuspension(points,suspension);});
  }
  std::vector<Vec> Repose(const DynamicResult& cached,const Asset& asset,const Plan& plan,const State& state)const{
-  auto source=Pose(asset,plan,state,cached.fitTranslation,cached.advances);auto points=cached.surface.points;
+  auto source=Pose(asset,plan,state,cached.fitTranslation,cached.advances,cached.suspensionTranslation);auto points=cached.surface.points;
   for(auto c:cached.moduleVertices){Vec p{};for(unsigned k=0;k<3;k++)p=Add(p,Scale(source[asset.faces[c.parent][k]],c.donor[k]));points[c.vertex]=p;}
   const auto& rings=cached.surface.rings;auto first=cached.surface.firstTangents;std::vector<Vec> last(first.size());double firstScale=1,lastScale=1;
   for(unsigned i=0;i<first.size();i++){
@@ -51,7 +51,7 @@ struct DynamicMount {
   PelvicAperturePlan aperturePlan(body,faces,requestedAnchor,basis,section,1e-8);auto aperture=aperturePlan.Solve(axis,scale);
   const auto apertureChart=ChartLoop(aperture.body,aperture.anchor,{{basis[1],basis[2]}});
   auto moved=state;for(unsigned i=1;i<15;i++)moved.frames[i].origin=Add(moved.frames[i].origin,aperture.translation);
-  double advance=0;std::vector<double> advances(asset.rest.size());
+  double advance=0;std::vector<double> advances(asset.rest.size());Vec suspension{};
   auto posed=plan.Evaluate(moved,[&](auto& points){
    const auto tilt=Sub(axis,Scale(basis[0],Dot(axis,basis[0])));const double tilt2=Dot(tilt,tilt);
    double tiltActivation=std::clamp((std::sqrt(tilt2)-.1)/.2,0.,1.);tiltActivation=tiltActivation*tiltActivation*(3-2*tiltActivation);
@@ -77,13 +77,19 @@ struct DynamicMount {
     double local=0;for(auto sample:angular){double support=.5*(1+std::cos(angle-sample.first));local=(std::max)(local,sample.second*support*support);}advances[i]=local;
     const double span=(std::max)(mount.length*.7*state.scales[1][0],2.1*local),station=Dot(radial,basis[0]),t=std::clamp((station-mount.station)*state.scales[1][0]/span,0.,1.);const double fade=1-t*t*t*(10+t*(-15+6*t));points[i]=Add(points[i],Scale(axis,local*fade*mount.shaftWeight[i]));
    }
+   // Clearance advances the shaft and its attached upper rim. Establish the
+   // suspension equilibrium from that FINAL rim, not the pre-clearance shape.
+   // Evaluate is control/rest-only; Repose reuses this constant offset and
+   // therefore retains the source solver's complete live swing.
+   suspension=plan.SuspensionRestOffset(points,moved);
+   plan.TranslateSuspension(points,suspension);
   });
   SurfaceCut module;module.points=std::move(posed);module.opening=inner;
   for(auto id:moduleFaces){SurfaceCutFace face;face.parent=id;for(unsigned k=0;k<3;k++){face.corners[k].vertex=asset.faces[id][k];face.corners[k].donor[k]=1;}module.faces.push_back(face);}
   auto bodyChart=ChartLoop(aperture.body,aperture.anchor,{{basis[1],basis[2]}}),moduleChart=ChartLoop(module,origin,{{basis[1],basis[2]}},&asset.rest);
   auto surface=StitchSurfaces(std::move(aperture.body),std::move(module),bodyChart,moduleChart,aperture.anchor,basis[0],axis,normals,faces);
   std::vector<SurfaceJoinCorner> mappings;std::vector<bool> visited(surface.points.size());for(auto face:surface.faces)for(auto c:face)if(c.domain==1&&!visited[c.vertex]){visited[c.vertex]=true;mappings.push_back(c);}
-  return {std::move(surface),aperture.anchor,axis,advance,std::move(mappings),std::move(advances),aperture.translation};
+  return {std::move(surface),aperture.anchor,axis,advance,std::move(mappings),std::move(advances),aperture.translation,suspension};
  }
 };
 }

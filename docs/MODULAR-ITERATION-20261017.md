@@ -15,7 +15,9 @@ The scrotal attachment authoring can broaden its rear shoulder with a monotone
 proximal-fill map. The proximal limit and distal half remain fixed, preserving
 the reserved pelvic ramp and complete shaft. The trial uses 0.65 fill. Suspended
 rest placement is measured from the actual attached perimeter and projected
-along gravity. Only the static horizontal offset changes; live lobe swing and
+along gravity. The offset is measured after aperture clearance has advanced the shaft and
+upper neck; measuring it before that pass left the bodies behind. Only the
+static horizontal offset changes; live lobe swing and
 rotation remain independent. The adapter must use the resulting frames for
 external garment support.
 

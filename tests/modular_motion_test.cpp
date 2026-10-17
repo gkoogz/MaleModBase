@@ -15,6 +15,9 @@ int main(){try{
   std::vector<Loft> skin;for(unsigned i=0;i<3;i++)skin.push_back({i+6,i+3,i,.5,{0,0,1},{0,0,1},q[i+6],owners[i+3],owners[i]});
   Plan suspension(q,owners,skin,rest);auto offset=suspension.SuspensionRestOffset(q,rest);
   Check(std::abs(offset[0]-3)<1e-12&&std::abs(offset[1])<1e-12&&offset[2]==0,"Suspended rest position is not directly below its attachment");
+  auto translated=q;suspension.TranslateSuspension(translated,offset);
+  for(unsigned i=0;i<3;i++)Check(translated[i]==q[i],"Suspended alignment moved the complete shaft");
+  for(unsigned i=3;i<6;i++)Check(translated[i]==Add(q[i],offset),"Suspended alignment distorted the retained skin");
  }
  for(unsigned i=0;i<p.size();i++)Check(Dot(Sub(baseline[i],p[i]),Sub(baseline[i],p[i]))<1e-24,"Rest geometry changed");
  State moved=rest;moved.frames[13].origin={.4,.2,-.3};auto result=plan.Evaluate(moved);

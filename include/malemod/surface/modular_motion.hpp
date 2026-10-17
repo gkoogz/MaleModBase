@@ -178,6 +178,13 @@ inline Vec MaterialPoint(const Binding& binding,const State& state,Vec p,double 
 class Plan {
  std::vector<Vec> rest_;std::vector<Binding> bindings_;std::vector<Loft> lofts_;State reference_;
  public:
+ void TranslateSuspension(std::vector<Vec>& points,Vec offset)const{
+  if(points.size()!=bindings_.size())throw std::invalid_argument("Suspended translation topology differs");
+  for(unsigned i=0;i<points.size();i++){
+   bool suspended=true;for(auto owner:bindings_[i].influences)if(owner.weight>0&&owner.frame<13)suspended=false;
+   if(suspended)points[i]=Add(points[i],offset);
+  }
+ }
  Vec SuspensionRestOffset(const std::vector<Vec>& material,const State& rest,Vec up={0,0,1})const{
   // The independent suspended bodies hang below their actual mounted rim,
   // not the legacy combined mesh's forward-offset neck. Measure the rim once
