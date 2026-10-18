@@ -1,5 +1,6 @@
 #pragma once
 #include "modular_asset.hpp"
+#include "raphe_profile.hpp"
 
 namespace malemod::surface::modular {
 // The complete rod owns axial material coordinates. A legacy surface may
@@ -41,7 +42,13 @@ class SurfaceTransfer {
   // Rebuild the transferred shaft normals from its actual connected surface.
   // Suspended tissue retains its measured source field and independent motion.
   if(!transferShaft)return; // Native geometry supplies current shaft differentials.
-  const auto posed=plan.Evaluate(state);std::vector<Vec> geometric(targetCount_);
+  auto posed=plan.Evaluate(state);
+  if(restMorphology&&state.sectionRadius>0){
+   const auto correction=RapheProfileCorrection(posed,asset.bindings,state.frames,*CrownWeights(),state.sectionRadius);
+   for(unsigned i=0;i<targetCount_;i++)(*offsets)[i]=Add((*offsets)[i],correction[i]);
+   posed=plan.Evaluate(state);
+  }
+  std::vector<Vec> geometric(targetCount_);
   for(auto face:asset.faces){auto n=Cross(Sub(posed[face[1]],posed[face[0]]),Sub(posed[face[2]],posed[face[0]]));for(auto i:face)geometric[i]=Add(geometric[i],n);}
   for(const auto& row:rows_)if(row.kind==1&&Dot(geometric[row.target],geometric[row.target])>1e-20)(*normals)[row.target]=Unit(geometric[row.target]);
  }
