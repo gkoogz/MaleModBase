@@ -2,6 +2,7 @@
 #include "modular_asset.hpp"
 #include "pelvic_aperture.hpp"
 #include "surface_stitch.hpp"
+#include "suspension_hang.hpp"
 
 namespace malemod::surface::modular {
 struct DynamicResult {SurfaceJoin surface;Vec anchor{},axis{};double rootAdvance=0;std::vector<SurfaceJoinCorner> moduleVertices;std::vector<double> advances;Vec fitTranslation{},suspensionTranslation{};std::shared_ptr<const std::vector<Binding>> clearedBindings;double materialRoot=0;};
@@ -107,6 +108,15 @@ struct DynamicMount {
    // Evaluate is control/rest-only; Repose reuses this constant offset and
    // therefore retains the source solver's complete live swing.
    suspension=plan.SuspensionRestOffset(points,moved);
+   if(state.hangControl<50){
+    auto measured=points;
+    // Source offsets can contain live soft-tissue motion. Measure the lower
+    // endpoints from the immutable zero-motion shape used by this cache.
+    if(state.shaftMaterial)for(const auto& l:asset.lofts)
+     if(ShaftBinding(l.lastOwner)&&!ShaftBinding(l.firstOwner))
+      measured[l.start]=Add(state.shaftMaterial->at(l.start),aperture.translation);
+    suspension[2]+=SuspensionLift(measured,asset.lofts,state.sectionRadius,state.hangControl);
+   }
    plan.TranslateSuspension(points,suspension);
   });
   SurfaceCut module;module.points=std::move(posed);module.opening=inner;

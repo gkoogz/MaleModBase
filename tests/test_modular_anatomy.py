@@ -150,4 +150,17 @@ class ModularAnatomyTest(unittest.TestCase):
         self.assertTrue(np.all(wider[:,0]<=baseline[:,0]+1e-12))
 
 
+class RearFootprintTests(unittest.TestCase):
+    def test_rear_extension_preserves_front_and_order(self):
+        from malemod_base.modular_anatomy import rear_extended_stations
+        x=np.linspace(4.5,15.2,1001)
+        for extension in [0.,.5,1.,2.]:
+            y=rear_extended_stations(x,extension)
+            np.testing.assert_array_equal(y[x>=(x[0]+x[-1])*.5],x[x>=(x[0]+x[-1])*.5])
+            self.assertAlmostEqual(y[0],x[0]-extension)
+            self.assertTrue(np.all(np.diff(y)>0))
+            np.testing.assert_allclose(rear_extended_stations(x*3,extension*3),y*3,atol=1e-12)
+        with self.assertRaises(ValueError):rear_extended_stations(x,-1)
+
+
 if __name__=='__main__':unittest.main()

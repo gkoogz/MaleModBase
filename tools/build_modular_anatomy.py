@@ -39,7 +39,7 @@ def save(mesh,prefix):
     sparse.save_npz(prefix.parent/(prefix.name+'-donors.npz'),mesh.donors)
 
 
-def build(source,output,shaft_cut,scrotum_cut,lobe_protection,root=None,neck_flare=None,side_wrap_degrees=None,weld=False,refine_shaft=False,proximal_fill=0.,station_bounds=None):
+def build(source,output,shaft_cut,scrotum_cut,lobe_protection,root=None,neck_flare=None,side_wrap_degrees=None,weld=False,refine_shaft=False,proximal_fill=0.,station_bounds=None,rear_extension=0.):
     if weld and neck_flare is None:raise ValueError('Visible union requires an explicit trumpet neck')
     output.mkdir(parents=True,exist_ok=False)
     original,guide,centers,radii,radius=read_source(source)
@@ -54,7 +54,7 @@ def build(source,output,shaft_cut,scrotum_cut,lobe_protection,root=None,neck_fla
     if len(loops)!=1 or np.ptp(detached.points[loops[0],2])>1e-6:
         raise ValueError('Scrotal cut must isolate one complete planar neck boundary')
     if reverse:detached=detached.reversed()
-    binding=radial_attachment(detached,loops[0],shaft,root,center,flare=neck_flare or 1.,side_wrap_degrees=side_wrap_degrees,proximal_fill=proximal_fill,station_bounds=station_bounds)
+    binding=radial_attachment(detached,loops[0],shaft,root,center,flare=neck_flare or 1.,side_wrap_degrees=side_wrap_degrees,proximal_fill=proximal_fill,station_bounds=station_bounds,rear_extension=rear_extension)
     if neck_flare is None:
         scrotum,fixed=attach_neck(detached,binding,shaft,lobe_protection)
         neck={}
@@ -87,7 +87,7 @@ def build(source,output,shaft_cut,scrotum_cut,lobe_protection,root=None,neck_fla
         neckMinimumOutwardCosine=None if neck_flare is None else float(neck['outward_minimum_cosine']),
         neckFlare=neck_flare,sideWrapDegrees=side_wrap_degrees,proximalFill=proximal_fill,retainedSackError=float(np.max(abs(scrotum.points[:len(detached.points)]-detached.points))),
         shaftCut=shaft_cut,scrotumCut=scrotum_cut,lobeProtection=lobe_protection,
-        stationBounds=None if station_bounds is None else list(map(float,station_bounds)),
+        stationBounds=None if station_bounds is None else list(map(float,station_bounds)),rearExtension=rear_extension,
         neckHandleScale=None if neck_flare is None else float(neck['handle_scale']),
         sourceRadius=radius,refinedProximalShaft=refine_shaft,pelvisModified=False,nativeRuntime=False,installed=False,visibleUnion=union_report if weld else None,
         limitations=['Generated proximal UV chart needs source-material transfer before native adoption.',
@@ -106,4 +106,5 @@ if __name__=='__main__':
     p.add_argument('--refine-shaft',action='store_true',help='Uniform section refinement and bounded smooth proximal profile; distal source stays exact')
     p.add_argument('--proximal-fill',type=float,default=0.,help='Broaden the rootward neck shoulder while preserving the reserved pelvic ramp')
     p.add_argument('--station-bounds',type=float,nargs=2,help='Measured attachment interval along the shaft, reserving the pelvic socket')
-    a=p.parse_args();build(a.source,a.output,a.shaft_cut,a.scrotum_cut,a.lobe_protection,a.root,a.neck_flare,a.side_wrap_degrees,a.visible_union,a.refine_shaft,a.proximal_fill,a.station_bounds)
+    p.add_argument('--rear-extension',type=float,default=0.,help='Rootward extension in measured source units; leaves the distal half exact')
+    a=p.parse_args();build(a.source,a.output,a.shaft_cut,a.scrotum_cut,a.lobe_protection,a.root,a.neck_flare,a.side_wrap_degrees,a.visible_union,a.refine_shaft,a.proximal_fill,a.station_bounds,a.rear_extension)

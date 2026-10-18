@@ -292,7 +292,25 @@ class SurfaceAttachment:
         return np.einsum('ij,ijk->ik',self.barycentric,target.points[target.faces[self.target_faces]])
 
 
-def radial_attachment(source, boundary, target, root, distal_center, flare=1., side_wrap_degrees=None, proximal_fill=0., station_bounds=None):
+def rear_extended_stations(stations, extension):
+    """Move only the proximal half of a measured footprint toward its root.
+
+    The distal half stays exact. A quintic falloff joins it with zero slope
+    and curvature, and the map stays monotone for every nonnegative extension.
+    Units are the same measured coordinates as the input, not centimeters.
+    """
+    stations=np.asarray(stations,dtype=float)
+    if not np.isfinite(extension) or extension<0 or not np.isfinite(stations).all():
+        raise ValueError('Invalid rear attachment extension')
+    if extension==0:return stations.copy()
+    low=float(stations.min());span=float(np.ptp(stations))
+    if span<=0:raise ValueError('Attachment footprint has no axial span')
+    t=np.clip((stations-low)/(.5*span),0,1)
+    ease=t*t*t*(10+t*(-15+6*t))
+    return stations-extension*(1-ease)
+
+
+def radial_attachment(source, boundary, target, root, distal_center, flare=1., side_wrap_degrees=None, proximal_fill=0., station_bounds=None, rear_extension=0.):
     """Bind the detached rim to actual shaft triangles along radial rays.
 
     The binding is independent of the pelvis and is reevaluated after shaft
@@ -331,6 +349,7 @@ def radial_attachment(source, boundary, target, root, distal_center, flare=1., s
         low,high=map(float,station_bounds)
         if not 0<low<high<length:raise ValueError('Invalid measured attachment station bounds')
         footprint=low+(footprint-footprint.min())/np.ptp(footprint)*(high-low)
+    footprint=rear_extended_stations(footprint,rear_extension)
     triangles=target.points[target.faces];a=triangles[:,0];e1=triangles[:,1]-a;e2=triangles[:,2]-a
     face_ids=[];bary=[]
     for station,angle in zip(footprint,angles):
