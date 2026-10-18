@@ -76,7 +76,7 @@ class SkinRelief {
  Result Apply(std::vector<Vec>& points,double scale=1,std::vector<Vec>* normalDelta=nullptr)const{
   if(samples_.empty())return {};
   if(points.size()!=samples_.size()||!std::isfinite(scale)||scale<=0)throw std::invalid_argument("Invalid posed skin relief");
-  std::vector<Vec> normals(points.size()),delta(points.size());std::vector<double> metric(points.size()),detail(points.size());
+  std::vector<Vec> normals(points.size()),delta(points.size());std::vector<double> metric(points.size()),detail(points.size()),webHeight(points.size());
   for(auto f:faces_){auto n=Cross(Sub(points[f[1]],points[f[0]]),Sub(points[f[2]],points[f[0]]));for(auto i:f)normals[i]=Add(normals[i],n);}
   for(auto e:edges_){auto d=Sub(points[e[0]],points[e[1]]);double length=std::sqrt(Dot(d,d));for(auto i:e)metric[i]+=length;}
   std::vector<Vec> gridNormals(gridMetric_.size());std::vector<double> gridMetric(gridMetric_.size());
@@ -92,9 +92,10 @@ class SkinRelief {
    const double gather=std::clamp(1+1.6*(1-stretch),.18,1.7);
    const double x=s.x,z=s.z;
    const double neck=Smooth((z-.25)/1.25),bottom=1-Smooth((z+.8)/1.5);
-   const double phase=13.5*z+1.25*std::sin(2.7*x)+.6*std::sin(3.1*z+1.8*x);
-   const double wrinkles=(.012+.006*bottom)*(std::sin(phase)+.32*std::sin(1.79*phase+2.3*x));
-   const double neckFolds=.019*neck*std::sin(10*x+.65*std::sin(2.1*z)+.3*x*z);
+   const double phase=22*z+5*x+2.1*std::sin(4.1*x-2.3*z)+1.4*std::sin(7.3*x+3.7*z);
+   const double patches=.35+.65*std::pow(std::sin(4.7*x+2.9*z+.8*std::sin(3*z)),2);
+   const double wrinkles=(.004+.0015*bottom)*patches*(std::sin(phase)+.3*std::sin(37*z-12*x+std::sin(5*x))+ .15*std::sin(49*z+21*x));
+   const double neckFolds=.012*neck*std::sin(10*x+1.2*std::sin(2.1*z)+.6*x*z);
    // A shallow longitudinal web beside the raphe, fading into the sac and
    // the existing attachment. Its varying width avoids a second cord/seam.
    const double lateral=.22+.065*Smooth((z-.1)/2),width=.17+.055*(1-neck);
@@ -103,20 +104,11 @@ class SkinRelief {
    const double web=.045*ridge*central*Smooth((z+.05)/.85)*s.front;
    detail[i]=radius_*scale*s.fade*gather*(wrinkles+neckFolds)*(.55+.45*s.front);
    const double height=radius_*scale*s.fade*web;
-   delta[i]=Scale(Unit(normals[i]),height);
+   webHeight[i]=height;delta[i]=Scale(Unit(normals[i]),height);
   }
   // Geometry carries the broad web. Smaller wrinkles use a bounded normal
   // field, avoiding corrugation of needle-thin cut triangles or a false rigid
   // physics shape. This fine field remains present when geometry is limited.
-  if(normalDelta){
-   normalDelta->assign(points.size(),{});std::vector<Vec> gradients(points.size()),geometric(points.size());std::vector<double> areas(points.size());
-   for(auto f:faces_){auto e=Sub(points[f[1]],points[f[0]]),v=Sub(points[f[2]],points[f[0]]),n=Cross(e,v);double det=Dot(n,n),area=std::sqrt(det);if(det<1e-24)continue;
-    double h=detail[f[1]]-detail[f[0]],j=detail[f[2]]-detail[f[0]],a=Dot(e,e),b=Dot(e,v),c=Dot(v,v);
-    auto gradient=Scale(Add(Scale(e,h*c-j*b),Scale(v,j*a-h*b)),1/det);double length=std::sqrt(Dot(gradient,gradient));if(length>.65)gradient=Scale(gradient,.65/length);
-    for(auto i:f){gradients[i]=Add(gradients[i],Scale(gradient,area));geometric[i]=Add(geometric[i],n);areas[i]+=area;}
-   }
-   for(unsigned i=0;i<points.size();i++)if(Active(i)&&areas[i]>0&&Dot(geometric[i],geometric[i])>1e-24){auto n=Unit(geometric[i]),g=Scale(gradients[i],1/areas[i]);g=Sub(g,Scale(n,Dot(g,n)));(*normalDelta)[i]=Sub(Unit(Sub(n,g)),n);}
-  }
   // Continuous common amplitude: bound the full oriented-area polynomial,
   // not a discrete halving ladder that could make relief pop during motion.
   double constraint=0;Result result;
@@ -128,6 +120,19 @@ class SkinRelief {
   }
   const double amplitude=1/(1+constraint);
   result.amplitude=amplitude;
+  // Carry the unrepresented broad relief in the normal field when strained
+  // geometry needs protection. Its appearance therefore does not disappear.
+  for(unsigned i=0;i<detail.size();i++)detail[i]+=(1-amplitude)*webHeight[i];
+  if(normalDelta){
+   normalDelta->assign(points.size(),{});std::vector<Vec> gradients(points.size()),geometric(points.size());std::vector<double> areas(points.size());
+   for(auto f:faces_){auto e=Sub(points[f[1]],points[f[0]]),v=Sub(points[f[2]],points[f[0]]),n=Cross(e,v);double det=Dot(n,n),area=std::sqrt(det);if(det<1e-24)continue;
+    double h=detail[f[1]]-detail[f[0]],j=detail[f[2]]-detail[f[0]],a=Dot(e,e),b=Dot(e,v),c=Dot(v,v);
+    auto gradient=Scale(Add(Scale(e,h*c-j*b),Scale(v,j*a-h*b)),1/det);double length=std::sqrt(Dot(gradient,gradient));if(length>.65)gradient=Scale(gradient,.65/length);
+    for(auto i:f){gradients[i]=Add(gradients[i],Scale(gradient,area));geometric[i]=Add(geometric[i],n);areas[i]+=area;}
+   }
+   for(unsigned i=0;i<points.size();i++)if(Active(i)&&areas[i]>0&&Dot(geometric[i],geometric[i])>1e-24){auto n=Unit(geometric[i]),g=Scale(gradients[i],1/areas[i]);g=Sub(g,Scale(n,Dot(g,n)));(*normalDelta)[i]=Sub(Unit(Sub(n,g)),n);}
+  }
+
   for(unsigned i=0;i<points.size();i++)if(Active(i)){
    result.attemptedMaximum=(std::max)(result.attemptedMaximum,std::sqrt(Dot(delta[i],delta[i])));auto d=Scale(delta[i],amplitude);double length=std::sqrt(Dot(d,d));
    if(length>0){points[i]=Add(points[i],d);++result.changed;result.maximumDisplacement=(std::max)(result.maximumDisplacement,length);}}
