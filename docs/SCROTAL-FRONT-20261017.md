@@ -55,10 +55,12 @@ Private generated evidence is under
 D:/MaleModBuilds/modular-anatomy-20261015/sac-front-20261017/recut09.
 The 13 shared anatomy/union tests pass with the authoring triangulation dependency
 available. A 32-case preflight replay preserved the original pelvis and found no
-reversed collar faces. Native full-matrix and restart views have been captured
-and reviewed; final motion, distance, campaign and installation evidence are
-recorded in the adapter's delivery report when complete. Do not infer a full
-attachment gate or installation from authoring, compilation or this checkpoint.
+reversed collar faces. The completed Witcher delivery has 48 captured-pose audits and 192 reviewed
+native matrix/motion/restart/LOD/campaign frames. Installed startup103919 was
+observed, with 49 managed files, 31 protected files and 24 saves verified. The
+local development installation retains an exact rollback; see adapter
+docs/SCROTAL-FRONT-20261018.md for identities, scope and limits. Native evidence
+is independent of authoring and compilation.
 
 The broad dirty-checkout provenance command currently stops at the unrelated
 motion-filter extraction mismatch. This repair does not alter that extraction
