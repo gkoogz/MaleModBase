@@ -1,5 +1,6 @@
 #pragma once
 #include "modular_mount.hpp"
+#include "skin_relief.hpp"
 #include <optional>
 #include <fstream>
 #include <filesystem>
@@ -14,6 +15,7 @@ struct Asset {
  std::vector<Loft> lofts;
  State reference;Dimensions dimensions;
  std::optional<MountData> mount;
+ std::optional<SkinRelief> skin;
  explicit Asset(const std::filesystem::path& path){
   if(std::filesystem::file_size(path)>128*1024*1024)throw std::invalid_argument("Oversize modular asset");
   std::ifstream in(path,std::ios::binary);
@@ -40,13 +42,32 @@ struct Asset {
    mount=std::move(m);
   }
   if(in.peek()!=EOF)throw std::invalid_argument("Trailing modular asset data");
+  std::vector<bool> active(nv);bool hasSkin=false;
+  for(unsigned i=0;i<nv;i++){
+   bool suspended=true;for(auto owner:bindings[i].influences)if(owner.weight>0&&owner.frame<13)suspended=false;
+   active[i]=suspended;hasSkin|=suspended;
+  }
+  for(const auto& l:lofts)if(ShaftBinding(l.lastOwner)&&!ShaftBinding(l.firstOwner)){
+   bool suspended=false;for(auto owner:l.firstOwner.influences)suspended|=owner.frame>=13&&owner.weight>0;
+   if(suspended)active[l.vertex]=true;
+  }
+  if(hasSkin){
+   auto center=Scale(Add(reference.frames[13].origin,reference.frames[14].origin),.5);
+   auto side=Unit(Sub(reference.frames[14].origin,reference.frames[13].origin));
+   auto forward=reference.frames[1].basis[0];forward=Unit(Sub(forward,Scale(side,Dot(forward,side))));
+   const double radius=.5*(dimensions.lobes[0][0]+dimensions.lobes[1][0]);
+   skin.emplace(rest,faces,active,center,PresentationBasis{forward,side,Unit(Cross(forward,side))},radius);
+  }
+ }
+ SkinRelief::Result Relieve(std::vector<Vec>& points,const State& state)const{
+  return skin?skin->Apply(points,.5*(state.scales[13][0]+state.scales[14][0])):SkinRelief::Result{};
  }
  Plan MakePlan()const{return Plan(rest,bindings,lofts,reference);}
  std::vector<Vec> Evaluate(const Plan& plan,const State& state)const{
-  if(!mount)return plan.Evaluate(state);
+  if(!mount){auto points=plan.Evaluate(state);Relieve(points,state);return points;}
   MountPlan recruitment(*mount,rest);
   auto points=plan.Evaluate(state,[&](auto& p){recruitment.Apply(p,reference,state);});
-  recruitment.Finish(points,lofts,reference,state);return points;
+  recruitment.Finish(points,lofts,reference,state);Relieve(points,state);return points;
  }
 };
 }

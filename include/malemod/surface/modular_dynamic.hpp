@@ -45,15 +45,18 @@ struct DynamicMount {
   }
   throw std::invalid_argument("Unable to anchor the complete socket circumference");
  }
- std::vector<Vec> Pose(const Asset& asset,const Plan& plan,const State& state,Vec translation,const std::vector<double>& advances,Vec suspension={},std::shared_ptr<const std::vector<Binding>> clearedBindings={},double materialRoot=-1)const{
+ std::vector<Vec> Pose(const Asset& asset,const Plan& plan,const State& state,Vec translation,const std::vector<double>& advances,Vec suspension={},std::shared_ptr<const std::vector<Binding>> clearedBindings={},double materialRoot=-1,bool relief=true)const{
   auto moved=state;for(unsigned i=1;i<15;i++)moved.frames[i].origin=Add(moved.frames[i].origin,translation);const auto& mount=*asset.mount;
   auto clearance=[&](unsigned i){const double advance=advances.at(i),span=(std::max)(mount.length*.7*state.scales[1][0],2.1*advance),station=Dot(Sub(asset.rest[i],origin),basis[0]),t=std::clamp((station-mount.station)*state.scales[1][0]/span,0.,1.);return advance*(1-t*t*t*(10+t*(-15+6*t)))*mount.shaftWeight[i];};
   auto materialState=state;
   if(state.shaftMaterial){moved.shaftMaterial=ClearedMaterial(asset,state,advances);if(!clearedBindings||materialRoot<0){auto socket=SocketBindings(asset,state,*moved.shaftMaterial);materialRoot=socket.first;clearedBindings=socket.second;}materialState=SocketMaterialState(state,materialRoot);materialState.materialBindings=clearedBindings;for(unsigned i=1;i<=12;i++)materialState.frames[i].origin=Add(materialState.frames[i].origin,translation);}
-  return plan.Evaluate(moved,[&](auto& points){for(unsigned i=0;i<points.size();i++)if(mount.shaftWeight[i]>0&&!(state.shaftMaterial&&ShaftBinding(asset.bindings[i])))points[i]=Add(points[i],Scale(state.frames[1].basis[0],clearance(i)));plan.TranslateSuspension(points,suspension);},state.shaftMaterial?&materialState:nullptr);
+  auto points=plan.Evaluate(moved,[&](auto& points){for(unsigned i=0;i<points.size();i++)if(mount.shaftWeight[i]>0&&!(state.shaftMaterial&&ShaftBinding(asset.bindings[i])))points[i]=Add(points[i],Scale(state.frames[1].basis[0],clearance(i)));plan.TranslateSuspension(points,suspension);},state.shaftMaterial?&materialState:nullptr);
+  if(relief)asset.Relieve(points,state);return points;
  }
- std::vector<Vec> Repose(const DynamicResult& cached,const Asset& asset,const Plan& plan,const State& state)const{
-  auto source=Pose(asset,plan,state,cached.fitTranslation,cached.advances,cached.suspensionTranslation,cached.clearedBindings,cached.materialRoot);auto points=cached.surface.points;
+ std::vector<Vec> Repose(const DynamicResult& cached,const Asset& asset,const Plan& plan,const State& state,std::vector<Vec>* beforeRelief=nullptr)const{
+  auto source=Pose(asset,plan,state,cached.fitTranslation,cached.advances,cached.suspensionTranslation,cached.clearedBindings,cached.materialRoot,false);auto points=cached.surface.points;
+  if(beforeRelief){*beforeRelief=points;for(auto c:cached.moduleVertices){Vec p{};for(unsigned k=0;k<3;k++)p=Add(p,Scale(source[asset.faces[c.parent][k]],c.donor[k]));(*beforeRelief)[c.vertex]=p;}}
+  asset.Relieve(source,state);
   for(auto c:cached.moduleVertices){Vec p{};for(unsigned k=0;k<3;k++)p=Add(p,Scale(source[asset.faces[c.parent][k]],c.donor[k]));points[c.vertex]=p;}
   const auto& rings=cached.surface.rings;auto first=cached.surface.firstTangents;std::vector<Vec> last(first.size());double firstScale=1,lastScale=1;
   for(unsigned i=0;i<first.size();i++){
@@ -119,6 +122,7 @@ struct DynamicMount {
    }
    plan.TranslateSuspension(points,suspension);
   });
+  asset.Relieve(posed,state);
   SurfaceCut module;module.points=std::move(posed);module.opening=inner;
   for(auto id:moduleFaces){SurfaceCutFace face;face.parent=id;for(unsigned k=0;k<3;k++){face.corners[k].vertex=asset.faces[id][k];face.corners[k].donor[k]=1;}module.faces.push_back(face);}
   auto bodyChart=ChartLoop(aperture.body,aperture.anchor,{{basis[1],basis[2]}}),moduleChart=ChartLoop(module,origin,{{basis[1],basis[2]}},&asset.rest);
