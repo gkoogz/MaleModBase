@@ -4,6 +4,13 @@ using namespace malemod::surface;
 using namespace malemod::surface::modular;
 void Check(bool value,const char* message){if(!value)throw std::runtime_error(message);}
 int main(){try{
+ {
+  std::vector<Vec> before{{0,0,0},{1,0,0},{0,1,0}},after{{0,0,0},{1,0,0},{0,-1,0}};
+  const double fraction=RapheCorrectionFraction(before,after,{{0,1,2}});
+  Check(fraction>0&&fraction<.375,"Inverting profile correction was not bounded");
+  Check(1-2*fraction>=.25,"Profile backoff loses its oriented area margin");
+  Check(RapheCorrectionFraction(before,before,{{0,1,2}})==1,"Safe profile unnecessarily weakened");
+ }
  PresentationFrames frames;for(unsigned i=1;i<=12;i++)frames[i].origin={double(i-1)*10,0,0};
  std::vector<Vec> p;std::vector<Binding> owners;std::vector<double> crown;
  for(unsigned i=0;i<=220;i++){

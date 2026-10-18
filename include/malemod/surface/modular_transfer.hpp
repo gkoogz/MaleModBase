@@ -44,9 +44,15 @@ class SurfaceTransfer {
   if(!transferShaft)return; // Native geometry supplies current shaft differentials.
   auto posed=plan.Evaluate(state);
   if(restMorphology&&state.sectionRadius>0){
+   const auto before=posed;
    const auto correction=RapheProfileCorrection(posed,asset.bindings,state.frames,*CrownWeights(),state.sectionRadius);
    for(unsigned i=0;i<targetCount_;i++)(*offsets)[i]=Add((*offsets)[i],correction[i]);
    posed=plan.Evaluate(state);
+   const double fraction=RapheCorrectionFraction(before,posed,asset.faces);
+   if(fraction<1){
+    for(unsigned i=0;i<targetCount_;i++)(*offsets)[i]=Add((*offsets)[i],Scale(correction[i],fraction-1));
+    posed=plan.Evaluate(state);
+   }
   }
   std::vector<Vec> geometric(targetCount_);
   for(auto face:asset.faces){auto n=Cross(Sub(posed[face[1]],posed[face[0]]),Sub(posed[face[2]],posed[face[0]]));for(auto i:face)geometric[i]=Add(geometric[i],n);}

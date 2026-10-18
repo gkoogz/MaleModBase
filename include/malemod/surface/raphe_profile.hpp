@@ -2,6 +2,30 @@
 #include "modular_motion.hpp"
 
 namespace malemod::surface::modular {
+// A common amplitude preserves a smooth profile when a short/wide shape has
+// nearly folded source triangles. Independent per-vertex backoffs would put
+// the very ripples being removed back into the longitudinal crest.
+inline double RapheCorrectionFraction(const std::vector<Vec>& before,
+ const std::vector<Vec>& after,const std::vector<std::array<unsigned,3>>& faces){
+ if(before.size()!=after.size())throw std::invalid_argument("Raphe correction topology differs");
+ double fraction=1;
+ for(auto f:faces){
+  auto e1=Sub(before[f[1]],before[f[0]]),e2=Sub(before[f[2]],before[f[0]]),n=Cross(e1,e2);
+  const double area2=Dot(n,n);if(area2<1e-24)continue;
+  auto d1=Sub(Sub(after[f[1]],after[f[0]]),e1),d2=Sub(Sub(after[f[2]],after[f[0]]),e2);
+  const double a=Dot(n,Cross(d1,d2))/area2,b=Dot(n,Add(Cross(e1,d2),Cross(d1,e2)))/area2,c=.75;
+  double limit=1;
+  if(std::abs(a)<1e-12){if(b<0)limit=(std::min)(limit,-c/b);}
+  else {const double discriminant=b*b-4*a*c;if(discriminant>=0){
+   // Stable quadratic roots; the first positive root is the first crossing
+   // of 25 percent of the original oriented area along this correction.
+   const double q=-.5*(b+std::copysign(std::sqrt(discriminant),b));
+   for(double root:{q/a,q==0?1.:c/q})if(root>0)limit=(std::min)(limit,root);
+  }}
+  if(limit<1)fraction=(std::min)(fraction,.98*limit);
+ }
+ return std::clamp(fraction,0.,1.);
+}
 // Fair the longitudinal ventral crest in immutable material space. The old
 // combined source applies several overlapping underside supports and local
 // triangle backoffs. Their radial bulge must not become permanent rod shape.
