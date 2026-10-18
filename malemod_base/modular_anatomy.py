@@ -292,7 +292,7 @@ class SurfaceAttachment:
         return np.einsum('ij,ijk->ik',self.barycentric,target.points[target.faces[self.target_faces]])
 
 
-def radial_attachment(source, boundary, target, root, distal_center, flare=1., side_wrap_degrees=None, proximal_fill=0.):
+def radial_attachment(source, boundary, target, root, distal_center, flare=1., side_wrap_degrees=None, proximal_fill=0., station_bounds=None):
     """Bind the detached rim to actual shaft triangles along radial rays.
 
     The binding is independent of the pelvis and is reevaluated after shaft
@@ -327,6 +327,10 @@ def radial_attachment(source, boundary, target, root, distal_center, flare=1., s
     span=np.ptp(footprint);t=(footprint-footprint.min())/span
     rear=np.maximum(0.,1-2*t)
     footprint-=proximal_fill*span*t*rear
+    if station_bounds is not None:
+        low,high=map(float,station_bounds)
+        if not 0<low<high<length:raise ValueError('Invalid measured attachment station bounds')
+        footprint=low+(footprint-footprint.min())/np.ptp(footprint)*(high-low)
     triangles=target.points[target.faces];a=triangles[:,0];e1=triangles[:,1]-a;e2=triangles[:,2]-a
     face_ids=[];bary=[]
     for station,angle in zip(footprint,angles):
@@ -473,6 +477,21 @@ def trumpet_neck(source, attachment, shaft, rows=24, source_normals=None, shaft_
     first*=distance[:,None];last*=distance[:,None]
     smooth_first=periodic_boundary_field(start,first)
     if np.min(distance)<1e-6:raise ValueError('Neck patch has no transition width')
+    # A deeper excision changes the separation and inherited conormal. Bound
+    # the complete patch before emitting it; reduce all handle lengths together
+    # so neighboring columns cannot develop incompatible derivatives.
+    samples=.5*(1-np.cos(np.pi*np.arange(rows+1)/rows))
+    for handle_scale in [1.,.8,.6,.4,.25,.15,.08,.04,.02]:
+        candidate=[]
+        for t in samples:
+            q=(2*t**3-3*t*t+1)*start+(-2*t**3+3*t*t)*end
+            q+=handle_scale*((t**3-2*t*t+t)*smooth_first+(t**3-t*t)*last+t*max(1-t/.1,0)**3*(first-smooth_first))
+            candidate.append(q)
+        candidate=np.asarray(candidate)
+        check=loft_orientation(candidate.reshape(-1,3),np.arange(candidate.shape[0]*candidate.shape[1]).reshape(candidate.shape[:2]),initial_normal,end_normal)
+        if not check['reversedFaces']:break
+    else:raise ValueError('No orientation-preserving tangent length for neck footprint')
+    first*=handle_scale;smooth_first*=handle_scale;last*=handle_scale
     points=[source.points];faces=[source.faces];uvs=[source.corner_uv]
     donors=[source.donors];generated=[source.generated];sources=[source.source_faces]
     rings=[loop];previous=loop;offset=len(source.points);count=len(loop)
@@ -510,6 +529,7 @@ def trumpet_neck(source, attachment, shaft, rows=24, source_normals=None, shaft_
     result.validate()
     rim=SurfaceAttachment(rings[-1],binding.target_faces,binding.barycentric)
     return result,rim,dict(rings=np.asarray(rings),start_derivative=first,end_derivative=last,
+                          handle_scale=handle_scale,
                           shaft_normals=end_normal,source_normals=initial_normal,
                           outward_minimum_cosine=audit['minimumOutwardCosine'],
                           reversed_faces=audit['reversedFaces'],retained_vertices=len(source.points))
