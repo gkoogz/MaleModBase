@@ -33,6 +33,6 @@ owners, and propagate geometric normal changes in each renderer. Wolverine and
 other spokes retain their installed runtime until their own native gate passes.
 Do not copy this implementation into an adapter fork.
 
-Verification status: seven focused C++ tests pass (material anchoring, scale,
-rotation, gathering, protected boundary and orientation included). Native and
-installation evidence will be recorded separately after observed review.
+Verification: seven focused C++ tests pass. The Witcher implementation has
+completed native review and installation; exact evidence and limitations are
+recorded in `SCROTAL-SKIN-20261018.md`. Other spokes are not upgraded.
