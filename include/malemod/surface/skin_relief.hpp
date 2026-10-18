@@ -9,7 +9,7 @@ namespace malemod::surface {
 // owners, volumes, socket positions and simulation cadence remain independent.
 class SkinRelief {
  using Vec=PresentationPoint;
- struct Sample {double x=0,z=0,front=0,fade=0,metric=0;};
+ struct Sample {double x=0,z=0,front=0,fade=0,metric=0,detail=0,web=0;};
  std::vector<Sample> samples_;
  std::vector<std::array<unsigned,3>> faces_;
  std::vector<std::array<unsigned,2>> edges_;
@@ -17,6 +17,21 @@ class SkinRelief {
  std::vector<Stencil> stencils_;std::vector<double> gridMetric_;
  double radius_=1;
  static double Smooth(double t){t=std::clamp(t,0.,1.);return t*t*t*(10+t*(-15+6*t));}
+ static std::array<double,2> Pattern(const Sample& s){
+   const double x=s.x,z=s.z;
+   const double neck=Smooth((z-.25)/1.25),bottom=1-Smooth((z+.8)/1.5);
+   const double phase=22*z+5*x+2.1*std::sin(4.1*x-2.3*z)+1.4*std::sin(7.3*x+3.7*z);
+   const double patches=.35+.65*std::pow(std::sin(4.7*x+2.9*z+.8*std::sin(3*z)),2);
+   const double wrinkles=(.004+.0015*bottom)*patches*(std::sin(phase)+.3*std::sin(37*z-12*x+std::sin(5*x))+ .15*std::sin(49*z+21*x));
+   const double neckFolds=.012*neck*std::sin(10*x+1.2*std::sin(2.1*z)+.6*x*z);
+   // A shallow longitudinal web beside the raphe, fading into the sac and
+   // the existing attachment. Its varying width avoids a second cord/seam.
+   const double lateral=.22+.065*Smooth((z-.1)/2),width=.17+.055*(1-neck);
+   const double ridge=std::exp(-std::pow((std::abs(x)-lateral)/width,2));
+   const double central=Smooth(std::abs(x)/.12);
+   const double web=.045*ridge*central*Smooth((z+.05)/.85)*s.front;
+  return {(wrinkles+neckFolds)*(.55+.45*s.front),web};
+ }
  public:
  SkinRelief()=default;
  SkinRelief(const std::vector<Vec>& rest,const std::vector<std::array<unsigned,3>>& faces,
@@ -68,7 +83,7 @@ class SkinRelief {
   }
   gridMetric_.resize(nodes.size());std::vector<Vec> gridNormals(nodes.size());
   for(unsigned i=0;i<rest.size();i++)for(unsigned k=0;k<8;k++){auto node=stencils_[i].nodes[k];auto w=stencils_[i].weights[k];gridMetric_[node]+=samples_[i].metric*w;gridNormals[node]=Add(gridNormals[node],Scale(normals[i],w));}
-  for(unsigned i=0;i<rest.size();i++)if(active[i]){Vec normal{};for(unsigned k=0;k<8;k++){auto node=stencils_[i].nodes[k];if(Dot(gridNormals[node],gridNormals[node])>1e-24)normal=Add(normal,Scale(Unit(gridNormals[node]),stencils_[i].weights[k]));}samples_[i].front=Smooth((Dot(Unit(normal),chart[0])+.15)/.8);}
+  for(unsigned i=0;i<rest.size();i++)if(active[i]){Vec normal{};for(unsigned k=0;k<8;k++){auto node=stencils_[i].nodes[k];if(Dot(gridNormals[node],gridNormals[node])>1e-24)normal=Add(normal,Scale(Unit(gridNormals[node]),stencils_[i].weights[k]));}samples_[i].front=Smooth((Dot(Unit(normal),chart[0])+.15)/.8);auto pattern=Pattern(samples_[i]);samples_[i].detail=pattern[0];samples_[i].web=pattern[1];}
 
  }
  bool Active(unsigned i)const{return i<samples_.size()&&samples_[i].fade>0;}
@@ -81,8 +96,9 @@ class SkinRelief {
   for(auto e:edges_){auto d=Sub(points[e[0]],points[e[1]]);double length=std::sqrt(Dot(d,d));for(auto i:e)metric[i]+=length;}
   std::vector<Vec> gridNormals(gridMetric_.size());std::vector<double> gridMetric(gridMetric_.size());
   for(unsigned i=0;i<points.size();i++)for(unsigned k=0;k<8;k++){auto node=stencils_[i].nodes[k];auto w=stencils_[i].weights[k];gridNormals[node]=Add(gridNormals[node],Scale(normals[i],w));gridMetric[node]+=metric[i]*w;}
+  for(auto& n:gridNormals)if(Dot(n,n)>1e-24)n=Unit(n);
   for(unsigned i=0;i<points.size();i++)if(Active(i)){Vec normal{};double strain=0;
-   for(unsigned k=0;k<8;k++){auto node=stencils_[i].nodes[k];auto w=stencils_[i].weights[k];if(Dot(gridNormals[node],gridNormals[node])>1e-24)normal=Add(normal,Scale(Unit(gridNormals[node]),w));if(gridMetric_[node]>0)strain+=w*gridMetric[node]/gridMetric_[node];}
+   for(unsigned k=0;k<8;k++){auto node=stencils_[i].nodes[k];auto w=stencils_[i].weights[k];if(Dot(gridNormals[node],gridNormals[node])>1e-24)normal=Add(normal,Scale(gridNormals[node],w));if(gridMetric_[node]>0)strain+=w*gridMetric[node]/gridMetric_[node];}
    normals[i]=normal;metric[i]=strain*samples_[i].metric;
   }
   for(unsigned i=0;i<points.size();i++)if(Active(i)&&Dot(normals[i],normals[i])>1e-24){
@@ -90,20 +106,8 @@ class SkinRelief {
    // No time-dependent noise: a feature is fixed to the same skin material.
    // Compression gathers folds; extension relaxes them without erasing them.
    const double gather=std::clamp(1+1.6*(1-stretch),.18,1.7);
-   const double x=s.x,z=s.z;
-   const double neck=Smooth((z-.25)/1.25),bottom=1-Smooth((z+.8)/1.5);
-   const double phase=22*z+5*x+2.1*std::sin(4.1*x-2.3*z)+1.4*std::sin(7.3*x+3.7*z);
-   const double patches=.35+.65*std::pow(std::sin(4.7*x+2.9*z+.8*std::sin(3*z)),2);
-   const double wrinkles=(.004+.0015*bottom)*patches*(std::sin(phase)+.3*std::sin(37*z-12*x+std::sin(5*x))+ .15*std::sin(49*z+21*x));
-   const double neckFolds=.012*neck*std::sin(10*x+1.2*std::sin(2.1*z)+.6*x*z);
-   // A shallow longitudinal web beside the raphe, fading into the sac and
-   // the existing attachment. Its varying width avoids a second cord/seam.
-   const double lateral=.22+.065*Smooth((z-.1)/2),width=.17+.055*(1-neck);
-   const double ridge=std::exp(-std::pow((std::abs(x)-lateral)/width,2));
-   const double central=Smooth(std::abs(x)/.12);
-   const double web=.045*ridge*central*Smooth((z+.05)/.85)*s.front;
-   detail[i]=radius_*scale*s.fade*gather*(wrinkles+neckFolds)*(.55+.45*s.front);
-   const double height=radius_*scale*s.fade*web;
+   detail[i]=radius_*scale*s.fade*gather*s.detail;
+   const double height=radius_*scale*s.fade*s.web;
    webHeight[i]=height;delta[i]=Scale(Unit(normals[i]),height);
   }
   // Geometry carries the broad web. Smaller wrinkles use a bounded normal
