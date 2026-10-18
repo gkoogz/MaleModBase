@@ -1,3 +1,26 @@
+## October 18 - rear scrotal attachment and low Hang installed
+
+Current request completed. Rear-only footprint extends one measured source unit
+(about9.4% longer axial footprint); front191 measured attachment points remain
+exact. Complete shaft, retained sac and4752 protected lower-lobe vertices remain
+exact. Low Hang now retracts the measured free neck span from immutable rest
+geometry, preserving independent live motion and unchanged default/high range.
+
+Base source b734d56d903051547b4e54456e03f7c60ecb5e6e; installed DLL6b456cc9749f29f23417a46f29a36e84396b0d052ddf69d02a5011620c75cc16.
+Twenty focused tests pass;60 captured-pose audits pass. Reviewed228 native
+stages across Hang, control combinations, states, angle/pause/resume, distant
+LODs and campaign. Both body resources/LODs observed. Far-wall obstruction in
+full matrix is superseded by dedicated distant views. Existing distal extremes
+remain out of scope; no physics-frequency improvement claim.
+
+Official install and installed startup153047 verified. All49 managed and31
+protected files match;24 saves restored, audio restored, no pending game session.
+Input settings line ordering restored only after exact semantic comparison.
+Steam grey-room preflight passes. Exact rollback: adapter/local/native-backup-modular-20261018-153046.
+Evidence: D:/MaleModBuilds/modular-anatomy-20261015/scrotal-rear-hang-20261018.
+See docs/SCROTAL-REAR-HANG-20261018.md in both repositories. Current side images:
+native-hang-side.png and native-side-comparison.png in that evidence root.
+
 ## October 10 - additional fast garment paths rejected
 
 The older October 7 donor-driven 80x24 prototype measured 1.536 ms native Update and .812 ms Draw, but its retained native room captures show a hanging white flap with an exposed central gap, not a fitted jockstrap pouch. It cannot be adopted as a performance fallback.
