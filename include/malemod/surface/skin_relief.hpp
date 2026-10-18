@@ -2,6 +2,7 @@
 #include "presentation.hpp"
 #include <queue>
 #include <limits>
+#include <map>
 
 namespace malemod::surface {
 // Material-space skin relief. This changes display geometry only: mechanical
@@ -12,6 +13,8 @@ class SkinRelief {
  std::vector<Sample> samples_;
  std::vector<std::array<unsigned,3>> faces_;
  std::vector<std::array<unsigned,2>> edges_;
+ struct Stencil {std::array<unsigned,8> nodes{};std::array<double,8> weights{};};
+ std::vector<Stencil> stencils_;std::vector<double> gridMetric_;
  double radius_=1;
  static double Smooth(double t){t=std::clamp(t,0.,1.);return t*t*t*(10+t*(-15+6*t));}
  public:
@@ -48,15 +51,40 @@ class SkinRelief {
    s.front=Smooth((Dot(Unit(normals[i]),chart[0])+.15)/.8);
    s.fade=Smooth(distance[i]/(.35*radius));
   }
+  // The cut/loft contains needle triangles with nearly coincident donors.
+  // Their raw per-vertex normal/strain estimates depend on valence. Deposit
+  // these estimates on a material-space grid, then interpolate one continuous
+  // field at every original vertex. No topology or base surface is smoothed.
+  using Cell=std::array<long long,3>;std::map<Cell,unsigned> nodes;
+  stencils_.resize(rest.size());const double cellSize=.3*radius;
+  for(unsigned i=0;i<rest.size();i++){
+   Cell cell;Vec fraction;
+   for(unsigned k=0;k<3;k++){double v=(rest[i][k]-center[k])/cellSize;cell[k]=static_cast<long long>(std::floor(v));fraction[k]=v-cell[k];}
+   unsigned j=0;for(unsigned x=0;x<2;x++)for(unsigned y=0;y<2;y++)for(unsigned z=0;z<2;z++){
+    Cell key{cell[0]+x,cell[1]+y,cell[2]+z};auto entry=nodes.emplace(key,unsigned(nodes.size()));
+    stencils_[i].nodes[j]=entry.first->second;
+    stencils_[i].weights[j]=(x?fraction[0]:1-fraction[0])*(y?fraction[1]:1-fraction[1])*(z?fraction[2]:1-fraction[2]);++j;
+   }
+  }
+  gridMetric_.resize(nodes.size());std::vector<Vec> gridNormals(nodes.size());
+  for(unsigned i=0;i<rest.size();i++)for(unsigned k=0;k<8;k++){auto node=stencils_[i].nodes[k];auto w=stencils_[i].weights[k];gridMetric_[node]+=samples_[i].metric*w;gridNormals[node]=Add(gridNormals[node],Scale(normals[i],w));}
+  for(unsigned i=0;i<rest.size();i++)if(active[i]){Vec normal{};for(unsigned k=0;k<8;k++){auto node=stencils_[i].nodes[k];if(Dot(gridNormals[node],gridNormals[node])>1e-24)normal=Add(normal,Scale(Unit(gridNormals[node]),stencils_[i].weights[k]));}samples_[i].front=Smooth((Dot(Unit(normal),chart[0])+.15)/.8);}
+
  }
  bool Active(unsigned i)const{return i<samples_.size()&&samples_[i].fade>0;}
- struct Result {double amplitude=1,maximumDisplacement=0;unsigned changed=0;};
- Result Apply(std::vector<Vec>& points,double scale=1)const{
+ struct Result {double amplitude=1,maximumDisplacement=0,attemptedMaximum=0;unsigned changed=0;std::array<unsigned,3> limitingFace{};};
+ Result Apply(std::vector<Vec>& points,double scale=1,std::vector<Vec>* normalDelta=nullptr)const{
   if(samples_.empty())return {};
   if(points.size()!=samples_.size()||!std::isfinite(scale)||scale<=0)throw std::invalid_argument("Invalid posed skin relief");
-  std::vector<Vec> normals(points.size()),delta(points.size());std::vector<double> metric(points.size());
+  std::vector<Vec> normals(points.size()),delta(points.size());std::vector<double> metric(points.size()),detail(points.size());
   for(auto f:faces_){auto n=Cross(Sub(points[f[1]],points[f[0]]),Sub(points[f[2]],points[f[0]]));for(auto i:f)normals[i]=Add(normals[i],n);}
   for(auto e:edges_){auto d=Sub(points[e[0]],points[e[1]]);double length=std::sqrt(Dot(d,d));for(auto i:e)metric[i]+=length;}
+  std::vector<Vec> gridNormals(gridMetric_.size());std::vector<double> gridMetric(gridMetric_.size());
+  for(unsigned i=0;i<points.size();i++)for(unsigned k=0;k<8;k++){auto node=stencils_[i].nodes[k];auto w=stencils_[i].weights[k];gridNormals[node]=Add(gridNormals[node],Scale(normals[i],w));gridMetric[node]+=metric[i]*w;}
+  for(unsigned i=0;i<points.size();i++)if(Active(i)){Vec normal{};double strain=0;
+   for(unsigned k=0;k<8;k++){auto node=stencils_[i].nodes[k];auto w=stencils_[i].weights[k];if(Dot(gridNormals[node],gridNormals[node])>1e-24)normal=Add(normal,Scale(Unit(gridNormals[node]),w));if(gridMetric_[node]>0)strain+=w*gridMetric[node]/gridMetric_[node];}
+   normals[i]=normal;metric[i]=strain*samples_[i].metric;
+  }
   for(unsigned i=0;i<points.size();i++)if(Active(i)&&Dot(normals[i],normals[i])>1e-24){
    const auto& s=samples_[i];const double stretch=metric[i]/(s.metric*scale);
    // No time-dependent noise: a feature is fixed to the same skin material.
@@ -73,24 +101,35 @@ class SkinRelief {
    const double ridge=std::exp(-std::pow((std::abs(x)-lateral)/width,2));
    const double central=Smooth(std::abs(x)/.12);
    const double web=.045*ridge*central*Smooth((z+.05)/.85)*s.front;
-   const double height=radius_*scale*s.fade*(gather*(wrinkles+neckFolds)*(.55+.45*s.front)+web);
+   detail[i]=radius_*scale*s.fade*gather*(wrinkles+neckFolds)*(.55+.45*s.front);
+   const double height=radius_*scale*s.fade*web;
    delta[i]=Scale(Unit(normals[i]),height);
   }
-  // A common amplitude, never independent vertex clipping, preserves the
-  // smooth field while preventing new collapsed/reversed display triangles.
-  double amplitude=1;
-  for(unsigned iteration=0;iteration<16;iteration++){
-   bool valid=true;
-   for(auto f:faces_){auto a=Sub(points[f[1]],points[f[0]]),b=Sub(points[f[2]],points[f[0]]),n=Cross(a,b);
-    auto de=Sub(delta[f[1]],delta[f[0]]),df=Sub(delta[f[2]],delta[f[0]]);
-    auto after=Cross(Add(a,Scale(de,amplitude)),Add(b,Scale(df,amplitude)));
-    if(Dot(after,n)<.2*Dot(n,n)){valid=false;break;}}
-   if(valid)break;
-   amplitude*=.5;if(iteration==15)amplitude=0;
+  // Geometry carries the broad web. Smaller wrinkles use a bounded normal
+  // field, avoiding corrugation of needle-thin cut triangles or a false rigid
+  // physics shape. This fine field remains present when geometry is limited.
+  if(normalDelta){
+   normalDelta->assign(points.size(),{});std::vector<Vec> gradients(points.size()),geometric(points.size());std::vector<double> areas(points.size());
+   for(auto f:faces_){auto e=Sub(points[f[1]],points[f[0]]),v=Sub(points[f[2]],points[f[0]]),n=Cross(e,v);double det=Dot(n,n),area=std::sqrt(det);if(det<1e-24)continue;
+    double h=detail[f[1]]-detail[f[0]],j=detail[f[2]]-detail[f[0]],a=Dot(e,e),b=Dot(e,v),c=Dot(v,v);
+    auto gradient=Scale(Add(Scale(e,h*c-j*b),Scale(v,j*a-h*b)),1/det);double length=std::sqrt(Dot(gradient,gradient));if(length>.65)gradient=Scale(gradient,.65/length);
+    for(auto i:f){gradients[i]=Add(gradients[i],Scale(gradient,area));geometric[i]=Add(geometric[i],n);areas[i]+=area;}
+   }
+   for(unsigned i=0;i<points.size();i++)if(Active(i)&&areas[i]>0&&Dot(geometric[i],geometric[i])>1e-24){auto n=Unit(geometric[i]),g=Scale(gradients[i],1/areas[i]);g=Sub(g,Scale(n,Dot(g,n)));(*normalDelta)[i]=Sub(Unit(Sub(n,g)),n);}
   }
-  Result result;result.amplitude=amplitude;
+  // Continuous common amplitude: bound the full oriented-area polynomial,
+  // not a discrete halving ladder that could make relief pop during motion.
+  double constraint=0;Result result;
+  for(auto f:faces_){auto e=Sub(points[f[1]],points[f[0]]),v=Sub(points[f[2]],points[f[0]]),n=Cross(e,v);double area2=Dot(n,n);if(area2<1e-24)continue;
+   auto de=Sub(delta[f[1]],delta[f[0]]),dv=Sub(delta[f[2]],delta[f[0]]);
+   double linear=Dot(n,Add(Cross(de,v),Cross(e,dv)))/area2,quadratic=Dot(n,Cross(de,dv))/area2;
+   double bound=((std::max)(0.,-linear)+std::abs(quadratic))/.8;
+   if(bound>constraint){constraint=bound;result.limitingFace=f;}
+  }
+  const double amplitude=1/(1+constraint);
+  result.amplitude=amplitude;
   for(unsigned i=0;i<points.size();i++)if(Active(i)){
-   auto d=Scale(delta[i],amplitude);double length=std::sqrt(Dot(d,d));
+   result.attemptedMaximum=(std::max)(result.attemptedMaximum,std::sqrt(Dot(delta[i],delta[i])));auto d=Scale(delta[i],amplitude);double length=std::sqrt(Dot(d,d));
    if(length>0){points[i]=Add(points[i],d);++result.changed;result.maximumDisplacement=(std::max)(result.maximumDisplacement,length);}}
   return result;
  }

@@ -59,8 +59,9 @@ struct Asset {
    skin.emplace(rest,faces,active,center,PresentationBasis{forward,side,Unit(Cross(forward,side))},radius);
   }
  }
- SkinRelief::Result Relieve(std::vector<Vec>& points,const State& state)const{
-  return skin?skin->Apply(points,.5*(state.scales[13][0]+state.scales[14][0])):SkinRelief::Result{};
+ SkinRelief::Result Relieve(std::vector<Vec>& points,const State& state,std::vector<Vec>* normalDelta=nullptr)const{
+  if(normalDelta)normalDelta->assign(points.size(),{});
+  return skin?skin->Apply(points,.5*(state.scales[13][0]+state.scales[14][0]),normalDelta):SkinRelief::Result{};
  }
  Plan MakePlan()const{return Plan(rest,bindings,lofts,reference);}
  std::vector<Vec> Evaluate(const Plan& plan,const State& state)const{

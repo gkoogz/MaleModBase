@@ -16,8 +16,11 @@ Irregular transverse wrinkles transition to broader longitudinal neck folds.
 A shallow tapered fold beside the central raphe fades into the same skin.
 Local edge stretch, normalized by lobe scale, controls gathering and relaxation.
 There is no time noise, smoothing of physics, new collision body or rigid ridge.
-Final current geometric normals drive displacement. A common amplitude backoff
-prevents newly reversed/collapsed local faces without independent vertex clamps.
+Broad web relief uses current geometric directions. Fine wrinkles use a bounded
+normal field, preserving detail without corrugating thin cut triangles. A continuous
+oriented-area bound protects broad relief without per-vertex clipping or discrete
+amplitude jumps. Nearly coincident cut donors sample a continuous material-space
+normal/strain field; the underlying surface and topology are never smoothed.
 This local check is not a global self-intersection certificate.
 
 The Witcher adapter transports its retained surface-normal detail through the
