@@ -96,7 +96,14 @@ def bake_patch(lower,upper,s,tile,width,height,repeats,normal=False):
     # with coincident vertices and matching endpoint tangents. Fade over the
     # lower fifth of measured meridian length; keep the mounted rim exact.
     start=smooth(t/.20);end=smooth((1-t)/.025)
-    result=mid*start+a[None]*(1-start)
+    # Transport broad pigment/normal direction farther than individual pores.
+    # Extruding the complete boundary signal for 20% draws its fine texels into
+    # vertical streaks. Fine detail hands over locally; the broad field remains
+    # continuous through the longer transition.
+    lower_field=gaussian_filter(a,sigma=(max(1,width*.006),0),mode='wrap')
+    if normal:lower_field/=np.maximum(np.linalg.norm(lower_field,axis=1,keepdims=True),1e-12)
+    result=mid*start+lower_field[None]*(1-start)
+    result+=(a-lower_field)[None]*(1-smooth(t/.03))
     result=result*end+b[None]*(1-end)
     if normal:result/=np.maximum(np.linalg.norm(result,axis=2,keepdims=True),1e-12)
     result[0]=a;result[-1]=b;result[:,-1]=result[:,0]

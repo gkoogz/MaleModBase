@@ -67,5 +67,14 @@ class LoftMaterialTest(unittest.TestCase):
         self.assertLess(np.linalg.norm(result[10,0]-a[0]),.02)
         np.testing.assert_allclose(result[80,0],tile[0,0],atol=1e-12)
 
+    def test_fine_boundary_normals_are_not_extruded_into_long_streaks(self):
+        s=np.linspace(0,1,128,endpoint=False)
+        x=.25*np.cos(2*np.pi*48*s)
+        a=np.c_[x,np.zeros(len(s)),np.sqrt(1-x*x)]
+        b=np.tile([0.,0.,1.],(128,1));tile=np.tile([0.,0.,1.],(16,16,1))
+        result=bake_patch(a,b,s,tile,513,401,[4,2],normal=True)
+        self.assertLess(np.ptp(result[40,:,0]),.1)
+        np.testing.assert_array_equal(result[0],periodic_samples(a,s,np.linspace(0,1,513)))
+
 
 if __name__=='__main__': unittest.main()
