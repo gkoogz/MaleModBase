@@ -43,6 +43,13 @@ installation evidence under the private `scrotal-proximal-hourglass-20261018`
 folder. Native review and final installation status are recorded in the adapter
 report; successful source tests alone do not establish playability.
 
+The Witcher candidate was subsequently installed October 19 after 252 native
+review stages and 68 captured-pose audits. Installed startup and movement were
+observed; all 53 managed and 31 protected files verify. Native source, offline
+checks, visual review and installation receipts remain separate. The adapter
+report records exact identities, limitations and rollback. No other spoke was
+installed or published.
+
 Other spokes, including Wolverine, can adopt the optional authoring translation
 and profile flag through a pinned Base revision. Each must calibrate its own
 attachment and validate controls, materials, motion, LODs and native appearance.
