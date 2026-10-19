@@ -43,3 +43,17 @@ their measured body cuts and original boundary donors, then run their own native
 attachment gate across controls, states, motion, body resources, LODs and campaign
 scenes. No other game is modified by the Witcher adoption. This is a local
 development runtime with archived compiler inputs, not a clean-checkout release.
+
+The Witcher adoption `b977c39` was installed after252 native captured stages:
+246 usable views reviewed, with six wall-occluded views replaced by a dedicated
+nine-view distance run. All68 new captured-pose audits pass. Representative
+minimum/default/maximum/intermediate sizes, angle extremes, three mechanical
+states, Hang, motion, both body resources, supported LODs and one campaign scene
+were covered. This is finite coverage, not every control combination or scene.
+Existing extreme distal shape defects remain outside this local root change.
+
+Installed DLL SHA256:
+`fd95ca61331a983788208480b9ecd372b16d61d24751a3274eaaf64c240b0935`.
+Installed startup/walking was observed;53 managed and31 protected files verify.
+The Steam grey-room preflight passes. Rollback is in the Witcher adapter at
+`local/native-backup-modular-20261019-114157`.
