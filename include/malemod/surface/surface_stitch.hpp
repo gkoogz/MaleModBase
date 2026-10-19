@@ -3,6 +3,21 @@
 #include "modular_motion.hpp"
 
 namespace malemod::surface {
+// Impose the retained surface's shading direction with a zero-slope boundary
+// condition. Adding only the endpoint error preserves an interior normal spike
+// caused by needle triangles, even when the boundary vertex itself is exact.
+inline PresentationPoint BlendEndpointNormal(PresentationPoint interior,PresentationPoint endpoint,double distance,double span=.25){
+ if(!std::isfinite(distance)||!std::isfinite(span)||span<=0)throw std::invalid_argument("Invalid normal transition");
+ interior=Unit(interior);endpoint=Unit(endpoint);
+ if(distance<=0)return endpoint;if(distance>=span)return interior;
+ const double x=distance/span,w=1-x*x*x*(10+x*(-15+6*x));
+ const double c=std::clamp(Dot(interior,endpoint),-1.,1.);
+ if(c>.999999)return Unit(Add(Scale(interior,1-w),Scale(endpoint,w)));
+ auto side=Sub(endpoint,Scale(interior,c));
+ if(Dot(side,side)<1e-20){PresentationPoint axis{1,0,0};if(std::abs(interior[0])>.9)axis={0,1,0};side=Cross(interior,axis);}
+ side=Unit(side);const double angle=std::acos(c)*w;
+ return Add(Scale(interior,std::cos(angle)),Scale(side,std::sin(angle)));
+}
 struct SurfaceLoopChart {
  std::vector<unsigned> loop;std::vector<double> angles;
  std::vector<std::array<double,2>> coordinates;

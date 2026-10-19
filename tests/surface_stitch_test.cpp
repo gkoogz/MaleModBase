@@ -4,6 +4,15 @@ using namespace malemod::surface;
 void Check(bool ok,const char* message){if(!ok)throw std::runtime_error(message);}
 int main(){try{
  constexpr double pi=3.14159265358979323846;using Vec=PresentationPoint;
+ // A high-frequency interior normal must not survive arbitrarily close to
+ // an exact boundary. This models the observed last-strip shading spike.
+ for(Vec interior:{Vec{1,0,0},Vec{-.8,.6,0},Vec{0,0,-1}}){
+  const Vec endpoint{0,0,1};auto a=BlendEndpointNormal(interior,endpoint,.004);
+  Check(Dot(a,endpoint)>.999999,"Endpoint shading spike survived");
+  Check(std::abs(Dot(a,a)-1)<1e-12,"Nonunit stitched normal");
+  Check(BlendEndpointNormal(interior,endpoint,0)==endpoint,"Endpoint normal changed");
+  auto b=BlendEndpointNormal(interior,endpoint,.25);Check(Dot(Sub(b,Unit(interior)),Sub(b,Unit(interior)))<1e-24,"Interior shading changed outside strip");
+ }
  // Level endpoints with opposing slopes previously formed the dorsal saddle.
  for(double slope:{-.9,-.3,0.,.3,.9})for(double height:{-.2,0.,.2}){
   Vec a{0,0,1},b{1,0,1+height},first{.2,0,-1},last{.7,0,slope};
