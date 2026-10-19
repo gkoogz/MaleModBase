@@ -44,9 +44,19 @@ class LoftMaterialTest(unittest.TestCase):
         np.testing.assert_array_equal(result[-1],periodic_samples(b,s,np.linspace(0,1,129)))
         np.testing.assert_array_equal(result[:,0],result[:,-1])
         self.assertTrue(np.isfinite(result).all())
-        # Broad pigment blend must stay closer to lower pigment early on.
+        # Pigment spans the complete neck without a lower-color plateau.
         pigment=bake_patch(a,b,s,np.full((16,16,3),.2),129,65,[8,4])
-        self.assertLess(np.abs(pigment[16].mean(0)-a.mean(0)).max(),.002)
+        self.assertGreater((pigment[16].mean(0)-a.mean(0))[0],.015)
+        self.assertLess((pigment[16].mean(0)-a.mean(0))[0],.03)
+        np.testing.assert_allclose(pigment[32].mean(0),(a.mean(0)+b.mean(0))/2,atol=.001)
+
+    def test_detail_tile_does_not_tilt_the_entire_generated_surface(self):
+        s=np.linspace(0,1,16,endpoint=False)
+        boundary=np.tile([0.,0.,1.],(16,1))
+        tile=np.tile([.3,-.2,1.],(16,16,1))
+        tile/=np.linalg.norm(tile,axis=2,keepdims=True)
+        result=bake_patch(boundary,boundary,s,tile,65,33,[4,2],normal=True)
+        np.testing.assert_allclose(result,np.broadcast_to([0.,0.,1.],result.shape),atol=1e-12)
 
     def test_normal_blend_is_unit_length_with_exact_boundary_vectors(self):
         s=np.linspace(0,1,16,endpoint=False)

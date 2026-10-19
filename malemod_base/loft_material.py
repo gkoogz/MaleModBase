@@ -81,7 +81,14 @@ def bake_patch(lower,upper,s,tile,width,height,repeats,normal=False):
     x,y=np.meshgrid((u*max(1,round(repeats[0])))%1,(np.linspace(0,1,height)*repeats[1])%1)
     detail=sample(tile,np.stack([x,y],axis=-1))
     if normal:
-        mid=detail.copy();mid/=np.maximum(np.linalg.norm(mid,axis=2,keepdims=True),1e-12)
+        # A source tile's mean slope belongs to its original surface, not to
+        # the newly generated chart. Reuse its relief without imposing that
+        # directional bias on the whole neck (a separate shaded patch).
+        slopes=tile[:,:,:2]/np.maximum(tile[:,:,2,None],.1)
+        slopes-=slopes.mean(axis=(0,1),keepdims=True)
+        detail=sample(slopes,np.stack([x,y],axis=-1))
+        mid=np.concatenate([detail,np.ones((*detail.shape[:2],1))],axis=2)
+        mid/=np.maximum(np.linalg.norm(mid,axis=2,keepdims=True),1e-12)
     else:
         # Retain the source skin's visible creases as well as its pore detail.
         # A tiny high-pass radius erased those folds on the generated strip.
@@ -89,7 +96,7 @@ def bake_patch(lower,upper,s,tile,width,height,repeats,normal=False):
         detail=sample(tile-low,np.stack([x,y],axis=-1))
         aa=gaussian_filter(a,sigma=(max(1,width*.04),0),mode='wrap')
         bb=gaussian_filter(b,sigma=(max(1,width*.04),0),mode='wrap')
-        blend=smooth((t-.25)/.75)
+        blend=smooth(t)
         mid=aa[None]*(1-blend)+bb[None]*blend+detail
     # Continue the retained sac's detail into the lower neck. A 2.5%-wide
     # switch made the two normal/detail fields look like a thick cuff even
