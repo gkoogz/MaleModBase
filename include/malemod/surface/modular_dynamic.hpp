@@ -69,7 +69,7 @@ struct DynamicMount {
   for(unsigned i=0;i<first.size();i++){first[i]=Scale(first[i],firstScale);last[i]=Scale(last[i],lastScale);}
   for(unsigned row=1;row+1<rings.size();row++){
    const double t=.5*(1-std::cos(3.14159265358979323846*row/(rings.size()-1)));
-   for(unsigned i=0;i<rings[0].size();i++){auto a=points[rings.front()[i]],b=points[rings.back()[i]];points[rings[row][i]]=Hermite(a,b,first[i],last[i],t);}
+   for(unsigned i=0;i<rings[0].size();i++){auto a=points[rings.front()[i]],b=points[rings.back()[i]];points[rings[row][i]]=RaisedRampPoint(a,b,first[i],last[i],cached.anchor,basis[0],t);}
   }return points;
  }
  DynamicResult Evaluate(const Asset& asset,const Plan& plan,const State& state)const{

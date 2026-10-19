@@ -4,6 +4,21 @@ using namespace malemod::surface;
 void Check(bool ok,const char* message){if(!ok)throw std::runtime_error(message);}
 int main(){try{
  constexpr double pi=3.14159265358979323846;using Vec=PresentationPoint;
+ // A raised annulus must leave the source rims and tangent planes exact,
+ // scale with the model, and never inflate the circumference itself.
+ for(double scale:{.01,1.,100.}){
+  Vec a{0,0,1.18*scale},b{.3*scale,0,scale},first{0,0,-.3*scale},last{.3*scale,0,0};
+  Check(RaisedRampPoint(a,b,first,last,{0,0,0},{1,0,0},0)==a,"Outer rim moved");
+  Check(RaisedRampPoint(a,b,first,last,{0,0,0},{1,0,0},1)==b,"Inner rim moved");
+  double previous=-1;
+  for(unsigned j=0;j<=100;j++){
+   const double t=j/100.;auto original=modular::Hermite(a,b,first,last,t),p=RaisedRampPoint(a,b,first,last,{0,0,0},{1,0,0},t);
+   Check(p[1]==original[1]&&p[2]==original[2],"Shoulder widened the circumference");
+   Check(p[0]>=original[0]-1e-14&&p[0]-original[0]<=.08*1.18*scale,"Shoulder escaped local envelope");
+   Check(p[0]>=previous,"Raised ramp folded backward");previous=p[0];
+  }
+  for(double t:{1e-5,1-1e-5}){auto d=Sub(RaisedRampPoint(a,b,first,last,{0,0,0},{1,0,0},t),modular::Hermite(a,b,first,last,t));Check(std::sqrt(Dot(d,d))<1e-12*scale,"Shoulder changed boundary differential");}
+ }
  // A high-frequency interior normal must not survive arbitrarily close to
  // an exact boundary. This models the observed last-strip shading spike.
  for(Vec interior:{Vec{1,0,0},Vec{-.8,.6,0},Vec{0,0,-1}}){

@@ -36,7 +36,7 @@ class PelvicAperturePlan {
   for(auto f:faces_){for(auto v:f)if(v>=body_.size())throw std::invalid_argument("Aperture face leaves original body");front_.push_back(Dot(Cross(Sub(body_[f[1]],body_[f[0]]),Sub(body_[f[2]],body_[f[0]])),basis_[0])>1e-10);}
   Vec hit;if(!Ray(Add(origin_,Scale(basis_[0],extent_)),Scale(basis_[0],-1),hit))throw std::invalid_argument("Reference anchor has no measured original body surface");depth_=Dot(Sub(hit,origin_),basis_[0]);
  }
- PelvicAperture Solve(Vec axis,double scale,double margin=.12,double underside=.08,double minimumChartFacing=.35)const{
+ PelvicAperture Solve(Vec axis,double scale,double margin=.18,double underside=.08,double minimumChartFacing=.35)const{
   axis=Unit(axis);if(!std::isfinite(scale)||scale<=0||margin<=0||underside<0||Dot(axis,basis_[0])<.15)throw std::invalid_argument("Unsupported aperture frame");
   auto side=Unit(Sub(basis_[1],Scale(axis,Dot(axis,basis_[1])))),up=Unit(Cross(axis,side));
   double radius=0;for(auto p:section_)radius=(std::max)(radius,std::hypot(Dot(p,basis_[1]),Dot(p,basis_[2]))*scale);

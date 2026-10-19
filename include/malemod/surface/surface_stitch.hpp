@@ -86,7 +86,20 @@ inline std::array<PresentationPoint,2> BoundRampTangents(PresentationPoint a,Pre
  };
  return {limit(first,da,1),limit(last,db,-1)};
 }
-inline SurfaceJoin StitchSurfaces(SurfaceCut body,SurfaceCut module,const SurfaceLoopChart& bodyChart,const SurfaceLoopChart& moduleChart,PresentationPoint origin,PresentationPoint mountAxis,PresentationPoint shaftAxis,const std::vector<PresentationPoint>& bodyNormals,const std::vector<std::array<unsigned,3>>& bodyParents,double radialMargin=.12,double undersideExtra=.08,unsigned rows=12){
+// Raise only the joining annulus. A compact C2 shoulder leaves both sewn rims
+// and their tangent planes exact; its height follows the local radial size and
+// available forward clearance rather than a fixed world-space displacement.
+inline PresentationPoint RaisedRampPoint(PresentationPoint a,PresentationPoint b,PresentationPoint first,PresentationPoint last,PresentationPoint origin,PresentationPoint mountAxis,double t){
+ auto p=modular::Hermite(a,b,first,last,t);
+ const auto radial=Sub(Sub(a,origin),Scale(mountAxis,Dot(Sub(a,origin),mountAxis)));
+ const double radius=std::sqrt(Dot(radial,radial));
+ const double room=(std::max)(0.,Dot(Sub(b,a),mountAxis));
+ const double wanted=.08*radius,available=.18*room;
+ const double height=wanted+available>1e-15?wanted*available/(wanted+available):0;
+ const double q=t*(1-t),shoulder=64*q*q*q;
+ return Add(p,Scale(mountAxis,height*shoulder));
+}
+inline SurfaceJoin StitchSurfaces(SurfaceCut body,SurfaceCut module,const SurfaceLoopChart& bodyChart,const SurfaceLoopChart& moduleChart,PresentationPoint origin,PresentationPoint mountAxis,PresentationPoint shaftAxis,const std::vector<PresentationPoint>& bodyNormals,const std::vector<std::array<unsigned,3>>& bodyParents,double radialMargin=.18,double undersideExtra=.08,unsigned rows=12){
  using Vec=PresentationPoint;const auto knots=CommonLoopKnots(bodyChart,moduleChart);auto outer=RefineSurfaceLoop(body,bodyChart,knots),inner=RefineSurfaceLoop(module,moduleChart,knots);
  if(rows<2||rows>128)throw std::invalid_argument("Invalid joining ramp density");
  // Boundary normals come from the intact source surface, not the remaining
@@ -117,7 +130,7 @@ inline SurfaceJoin StitchSurfaces(SurfaceCut body,SurfaceCut module,const Surfac
  out.firstTangents=first;
  for(unsigned row=1;row<=rows;row++){
   const double t=.5*(1-std::cos(3.14159265358979323846*row/rows));std::vector<unsigned> ring;
-  for(unsigned i=0;i<outer.size();i++){if(row==rows)ring.push_back(inner[i]);else{ring.push_back(unsigned(out.points.size()));out.points.push_back(modular::Hermite(out.points[outer[i]],out.points[inner[i]],first[i],last[i],t));}}
+  for(unsigned i=0;i<outer.size();i++){if(row==rows)ring.push_back(inner[i]);else{ring.push_back(unsigned(out.points.size()));out.points.push_back(RaisedRampPoint(out.points[outer[i]],out.points[inner[i]],first[i],last[i],origin,mountAxis,t));}}
   const auto& previous=out.rings.back();const double before=.5*(1-std::cos(3.14159265358979323846*(row-1)/rows));
   for(unsigned i=0;i<outer.size();i++){
    const unsigned j=(i+1)%unsigned(outer.size());const double u0=double(i)/outer.size(),u1=double(i+1)/outer.size();
