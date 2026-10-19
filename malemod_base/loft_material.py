@@ -94,8 +94,8 @@ def bake_patch(lower,upper,s,tile,width,height,repeats,normal=False):
     # Continue the retained sac's detail into the lower neck. A 2.5%-wide
     # switch made the two normal/detail fields look like a thick cuff even
     # with coincident vertices and matching endpoint tangents. Fade over the
-    # lower fifth of measured meridian length; keep the mounted rim exact.
-    start=smooth(t/.20);end=smooth((1-t)/.025)
+    # outer fifths of measured meridian length; keep both rims exact.
+    start=smooth(t/.20);end=smooth((1-t)/.20)
     # Transport broad pigment/normal direction farther than individual pores.
     # Extruding the complete boundary signal for 20% draws its fine texels into
     # vertical streaks. Fine detail hands over locally; the broad field remains
@@ -104,7 +104,10 @@ def bake_patch(lower,upper,s,tile,width,height,repeats,normal=False):
     if normal:lower_field/=np.maximum(np.linalg.norm(lower_field,axis=1,keepdims=True),1e-12)
     result=mid*start+lower_field[None]*(1-start)
     result+=(a-lower_field)[None]*(1-smooth(t/.03))
-    result=result*end+b[None]*(1-end)
+    upper_field=gaussian_filter(b,sigma=(max(1,width*.006),0),mode='wrap')
+    if normal:upper_field/=np.maximum(np.linalg.norm(upper_field,axis=1,keepdims=True),1e-12)
+    result=result*end+upper_field[None]*(1-end)
+    result+=(b-upper_field)[None]*(1-smooth((1-t)/.03))
     if normal:result/=np.maximum(np.linalg.norm(result,axis=2,keepdims=True),1e-12)
     result[0]=a;result[-1]=b;result[:,-1]=result[:,0]
     return result

@@ -76,5 +76,16 @@ class LoftMaterialTest(unittest.TestCase):
         self.assertLess(np.ptp(result[40,:,0]),.1)
         np.testing.assert_array_equal(result[0],periodic_samples(a,s,np.linspace(0,1,513)))
 
+    def test_mounted_join_blends_broad_shading_without_extruding_pores(self):
+        s=np.linspace(0,1,128,endpoint=False)
+        x=.2*np.cos(2*np.pi*48*s)
+        upper=np.c_[x,np.full(len(s),.5),np.sqrt(.75-x*x)]
+        lower=np.tile([0.,0.,1.],(128,1));tile=np.tile([0.,0.,1.],(16,16,1))
+        result=bake_patch(lower,upper,s,tile,513,401,[4,2],normal=True)
+        np.testing.assert_array_equal(result[-1],periodic_samples(upper,s,np.linspace(0,1,513)))
+        self.assertGreater(result[-11,:,1].mean(),.48)
+        self.assertLess(np.ptp(result[-41,:,0]),.08)
+        np.testing.assert_allclose(result[-81],np.tile([0.,0.,1.],(513,1)),atol=1e-12)
+
 
 if __name__=='__main__': unittest.main()
