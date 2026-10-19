@@ -3,6 +3,8 @@
 #include <vector>
 #include <functional>
 #include <memory>
+#include <map>
+#include "suspension_profile.hpp"
 
 namespace malemod::surface::modular {
 // Semantic mechanical ownership is authored once, never inferred from posed
@@ -23,6 +25,7 @@ struct State {
  std::shared_ptr<const std::vector<Binding>> materialBindings;
  std::shared_ptr<const std::vector<double>> crownWeights;
  double sectionRadius=0,hangControl=50;
+ bool suspensionProfile=false;
  std::array<Vec,15> scales{};
  State(){for(auto& s:scales)s={1,1,1};}
 };
@@ -118,7 +121,7 @@ inline void PreserveMaterialLengths(State& s){
 }
 inline State Interpolate(const State& a,const State& b,double t){
  if(!std::isfinite(t)||t<0||t>1)throw std::invalid_argument("Invalid modular interpolation phase");
- State s;s.materialBindings=b.materialBindings;s.shaftMaterial=b.shaftMaterial;s.crownWeights=b.crownWeights;s.sectionRadius=a.sectionRadius*(1-t)+b.sectionRadius*t;s.hangControl=b.hangControl;
+ State s;s.materialBindings=b.materialBindings;s.shaftMaterial=b.shaftMaterial;s.crownWeights=b.crownWeights;s.sectionRadius=a.sectionRadius*(1-t)+b.sectionRadius*t;s.hangControl=b.hangControl;s.suspensionProfile=b.suspensionProfile;
  if(a.offsets&&b.offsets){if(a.offsets->size()!=b.offsets->size())throw std::invalid_argument("Modular shape transfer size changed");auto values=std::make_shared<std::vector<Vec>>(a.offsets->size());for(unsigned i=0;i<values->size();i++)(*values)[i]=Add(Scale((*a.offsets)[i],1-t),Scale((*b.offsets)[i],t));s.offsets=std::move(values);}
  else s.offsets=t<1?a.offsets:b.offsets;
  if(a.surfaceNormals&&b.surfaceNormals){if(a.surfaceNormals->size()!=b.surfaceNormals->size())throw std::invalid_argument("Modular normal transfer size changed");auto values=std::make_shared<std::vector<Vec>>(a.surfaceNormals->size());for(unsigned i=0;i<values->size();i++){auto n=Add(Scale((*a.surfaceNormals)[i],1-t),Scale((*b.surfaceNormals)[i],t));(*values)[i]=Dot(n,n)>1e-12?Unit(n):Vec{};}s.surfaceNormals=std::move(values);}else s.surfaceNormals=t<1?a.surfaceNormals:b.surfaceNormals;
@@ -237,6 +240,7 @@ inline Vec MaterialPoint(const Binding& binding,const State& state,Vec p,double 
 }
 class Plan {
  std::vector<Vec> rest_;std::vector<Binding> bindings_;std::vector<Loft> lofts_;State reference_;
+ std::vector<SuspensionSection> suspensionSections_;
  public:
  void TranslateSuspension(std::vector<Vec>& points,Vec offset)const{
   if(points.size()!=bindings_.size())throw std::invalid_argument("Suspended translation topology differs");
@@ -275,6 +279,12 @@ class Plan {
    for(const auto& p:{l.first,l.last,l.restValue})for(double x:p)if(!std::isfinite(x))throw std::invalid_argument("Nonfinite modular loft");
   }
   for(const auto& l:lofts_)if(generated[l.start]||generated[l.end])throw std::invalid_argument("Loft endpoint depends on a generated interior");
+  std::map<double,std::vector<unsigned>> sections;
+  for(const auto& l:lofts_)if(ShaftBinding(l.lastOwner)&&!ShaftBinding(l.firstOwner)){
+   bool suspended=false;for(auto v:l.firstOwner.influences)suspended|=v.frame>=13&&v.weight>0;
+   if(suspended)sections[l.t].push_back(l.vertex);
+  }
+  for(auto& entry:sections)suspensionSections_.push_back({entry.first,std::move(entry.second)});
   for(unsigned i=0;i<rest_.size();i++){
    auto p=Point(bindings_[i],reference_);if(!generated[i]&&std::sqrt(Dot(Sub(p,rest_[i]),Sub(p,rest_[i])))>1e-6)throw std::invalid_argument("Mechanical binding does not reproduce reference surface");
   }
@@ -300,6 +310,7 @@ class Plan {
    const double w=l.t*l.t*l.t*(10+l.t*(-15+6*l.t));
    out[l.vertex]=Add(after,Add(Scale(ra,1-w),Scale(rb,w)));
   }
+  if(state.suspensionProfile)ShapeSuspensionSections(out,suspensionSections_,state.hangControl);
   return out;
  }
 };
