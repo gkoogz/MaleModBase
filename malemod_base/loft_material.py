@@ -91,9 +91,11 @@ def bake_patch(lower,upper,s,tile,width,height,repeats,normal=False):
         bb=gaussian_filter(b,sigma=(max(1,width*.04),0),mode='wrap')
         blend=smooth((t-.25)/.75)
         mid=aa[None]*(1-blend)+bb[None]*blend+detail
-    # Preserve original boundary detail. Only a short border transitions to
-    # the 2-D material tile; pigment itself blends over most of the strip.
-    start=smooth(t/.025);end=smooth((1-t)/.025)
+    # Continue the retained sac's detail into the lower neck. A 2.5%-wide
+    # switch made the two normal/detail fields look like a thick cuff even
+    # with coincident vertices and matching endpoint tangents. Fade over the
+    # lower fifth of measured meridian length; keep the mounted rim exact.
+    start=smooth(t/.20);end=smooth((1-t)/.025)
     result=mid*start+a[None]*(1-start)
     result=result*end+b[None]*(1-end)
     if normal:result/=np.maximum(np.linalg.norm(result,axis=2,keepdims=True),1e-12)

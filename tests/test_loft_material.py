@@ -57,5 +57,15 @@ class LoftMaterialTest(unittest.TestCase):
         np.testing.assert_array_equal(result[0],np.tile(a[0],(65,1)))
         np.testing.assert_array_equal(result[-1],np.tile(b[0],(65,1)))
 
+    def test_lower_skin_detail_does_not_switch_at_a_narrow_cuff(self):
+        s=np.linspace(0,1,16,endpoint=False)
+        a=np.tile([.6,0.,.8],(16,1));b=np.tile([0.,0.,1.],(16,1))
+        tile=np.tile([0.,0.,1.],(16,16,1))
+        result=bake_patch(a,b,s,tile,65,401,[4,2],normal=True)
+        # At 2.5% arclength the original join is still carried forward;
+        # by 20% it has blended fully into the independent detail field.
+        self.assertLess(np.linalg.norm(result[10,0]-a[0]),.02)
+        np.testing.assert_allclose(result[80,0],tile[0,0],atol=1e-12)
+
 
 if __name__=='__main__': unittest.main()
