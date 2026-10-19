@@ -96,6 +96,8 @@ def build(source,output,shaft_cut,scrotum_cut,lobe_protection,root=None,neck_fla
         shaftCut=shaft_cut,scrotumCut=scrotum_cut,lobeProtection=lobe_protection,
         stationBounds=None if station_bounds is None else list(map(float,station_bounds)),rearExtension=rear_extension,suspensionShift=suspension_shift,
         neckHandleScale=None if neck_flare is None else float(neck['handle_scale']),
+        neckStartHandleScale=None if neck_flare is None else float(neck['start_handle_scale']),
+        neckEndHandleScale=None if neck_flare is None else float(neck['end_handle_scale']),
         sourceRadius=radius,refinedProximalShaft=refine_shaft,pelvisModified=False,nativeRuntime=False,installed=False,visibleUnion=union_report if weld else None,
         limitations=['Generated proximal UV chart needs source-material transfer before native adoption.',
                      'Independent scrotum stays open at its mounted rim; a separate closed visible union is exported only with --visible-union.',

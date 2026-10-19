@@ -124,6 +124,29 @@ class ModularAnatomyTest(unittest.TestCase):
         audit=loft_orientation(folded,contract['rings'],contract['source_normals'],contract['shaft_normals'])
         self.assertGreater(audit['reversedFaces'],0)
 
+    def test_tight_upper_wrap_does_not_shorten_lower_skin_tangent(self):
+        shaft,*_=complete_shaft(clip(tube(),[1,0,0],1.5),[-2,0,0])
+        volume=np.einsum('ij,ij->i',shaft.points[shaft.faces[:,0]],np.cross(shaft.points[shaft.faces[:,1]],shaft.points[shaft.faces[:,2]])).sum()
+        if volume<0:shaft=shaft.reversed()
+        theta=np.linspace(0,2*np.pi,32,endpoint=False)
+        p=np.array([[r*np.cos(a),r*np.sin(a),z] for r,z in [(.9,-4.),(.6,-3.)] for a in theta])
+        faces=[]
+        for j in range(32):
+            k=(j+1)%32;faces.extend([[j,k,j+32],[k,k+32,j+32]])
+        sack=Mesh.source(p,np.array(faces),p[:,:2])
+        sack=cap(sack,min(directed_boundary(sack),key=lambda l:sack.points[l,2].mean()))
+        binding=radial_attachment(sack,directed_boundary(sack)[0],shaft,[-2,0,0],[1.5,0,0],flare=1.3,side_wrap_degrees=125)
+        result,rim,contract=trumpet_neck(sack,binding,shaft)
+        self.assertEqual(contract['start_handle_scale'],1.)
+        self.assertLess(contract['end_handle_scale'],.5)
+        q=result.points[contract['rings']]
+        # A constrained upper footprint used to reduce this independent lower
+        # tangent by 75%, despite a valid full-length lower transition.
+        np.testing.assert_allclose(np.linalg.norm(contract['start_derivative'],axis=1),np.linalg.norm(q[-1]-q[0],axis=1),atol=1e-12)
+        np.testing.assert_array_equal(result.points[:len(sack.points)],sack.points)
+        np.testing.assert_allclose(result.points[rim.vertices],rim.targets(shaft),atol=1e-12)
+        self.assertEqual(contract['reversed_faces'],0)
+
     def test_side_wrap_reaches_both_sides_without_widening_shaft(self):
         shaft,*_=complete_shaft(clip(tube(),[1,0,0],1.5),[-2,0,0])
         a=np.linspace(0,2*np.pi,48,endpoint=False)
