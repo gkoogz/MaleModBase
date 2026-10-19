@@ -29,8 +29,16 @@ class SkinRelief {
    const double lateral=.22+.065*Smooth((z-.1)/2),width=.17+.055*(1-neck);
    const double ridge=std::exp(-std::pow((std::abs(x)-lateral)/width,2));
    const double central=Smooth(std::abs(x)/.12);
-   const double web=.045*ridge*central*Smooth((z+.05)/.85)*s.front;
-  return {(wrinkles+neckFolds)*(.55+.45*s.front),web};
+   // The longitudinal web belongs to the connecting skin, not the front of
+   // the lobes. Carrying it down their medial faces made a projecting seam.
+   const double web=.045*ridge*central*Smooth((z-.45)/.8)*s.front;
+   // A shallow, compact medial envelope replaces the forward bridge with
+   // skin suspended between the two supports. C2 falloffs leave the lobe
+   // crowns, back surface and mounted rim unchanged. Coordinates are fixed
+   // to the material, so this cannot cancel swing or move mechanical bodies.
+   const double medial=std::pow((std::max)(0.,1-std::pow(x/.45,2)),3);
+   const double bridge=.12*medial*Smooth((z+1.05)/.35)*(1-Smooth((z-.05)/.6))*s.front;
+  return {(wrinkles+neckFolds)*(.55+.45*s.front),web-bridge};
  }
  public:
  SkinRelief()=default;

@@ -9,7 +9,13 @@ int main(){try{
  for(unsigned z=0;z<n;z++)for(unsigned y=0;y<n;y++){p.push_back({0.,-1.5+3.*y/(n-1),-1.+4.*z/(n-1)});active.push_back(z>0&&z<n-1&&y>0&&y<n-1);}
  for(unsigned z=0;z+1<n;z++)for(unsigned y=0;y+1<n;y++){unsigned a=z*n+y;f.push_back({a,a+1,a+n});f.push_back({a+1,a+n+1,a+n});}
  SkinRelief skin(p,f,active,{},PresentationBasis{{{1,0,0},{0,1,0},{0,0,1}}},1);
- auto a=p;auto result=skin.Apply(a);Check(result.changed>1500,"No skin relief");Check(result.amplitude==1,"Nominal relief needed backoff");Check(result.maximumDisplacement<.1,"Relief exceeds skin scale");
+ auto a=p;auto result=skin.Apply(a);Check(result.changed>1500,"No skin relief");Check(result.amplitude==1,"Nominal relief needed backoff");Check(result.maximumDisplacement<.121,"Medial envelope exceeds bounded skin scale");
+ // The medial bridge is recessed, while the lateral supports and upper
+ // attachment retain their original contour. It must not become a new ridge.
+ const unsigned equator=12*n+n/2;
+ Check(a[equator][0]<-.119,"Central skin still projects forwards");
+ for(unsigned i=0;i<p.size();i++)if(p[i][2]<=.05&&std::abs(p[i][1])>=.45)
+  Check(a[i]==p[i],"Medial envelope altered a lateral support");
  auto same=p;skin.Apply(same);Check(same==a,"Relief is nondeterministic");
  for(unsigned i=0;i<p.size();i++)if(!active[i])Check(p[i]==a[i],"Protected attachment changed");
  auto scaled=p;for(auto& v:scaled)v=Add(Scale(v,3),V{100,-200,11});skin.Apply(scaled,3);
