@@ -1,3 +1,7 @@
+## October 20 - storage consolidation
+
+Canonical repositories now live under D:/MaleMod; all generated/private working data belongs in D:/MaleMod/Work. Read docs/STORAGE-LAYOUT.md before generating output. Current source is backed up on GitHub branch codex/storage-consolidation-20261020. Historical backup images, preview games and diagnostic banks were explicitly retired by the user; old evidence paths below are historical, not retained files. No new runtime was installed by this storage operation.
+
 ## 2026-10-19: live pulse / slider cadence repair, Candidate14 (not installed)
 
 Latest user defect: visible pulses and slider geometry updated roughly once
@@ -2837,7 +2841,7 @@ collar. Offline only; extreme upward anatomy distortion remains unresolved.
 HEAD stays `19da882`; diagnostic source is dirty. No install or Wolverine change.
 
 
-## October 6 broader bell preview — uncommitted candidate
+## October 6 broader bell preview ï¿½ uncommitted candidate
 
 User requested a larger and smoother ramp, with updated matched renders before
 installation. HEAD remains `19da882`; the current shared header/test/provenance
@@ -3824,3 +3828,4 @@ its diagnostic material-mask correction is not a shipped repair. Reject the
 radius, loft/profile and owned-arc15 studies; constrained continuous/spatial
 profile studies stopped short. No worker is running and no candidate installed.
 All37 installed managed hashes matched. Preserve existing runtime/rollback.
+
