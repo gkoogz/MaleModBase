@@ -36,16 +36,14 @@ struct State {
 struct Dimensions {double radius=1,length=1;std::array<Vec,2> lobes{{{1,1,1},{1,1,1}}};Vec anchor{};};
 inline void AnchorRootPhysics(State& state,double radius,double length){
  if(!state.hasShapeFrames)return;
- // The opening is attached to the body. Rest-angle controls rotate its root,
- // but the first simulated tangent must not rotate that fixed boundary again.
- // Release the boundary constraint within the first guide interval;
- // the suspended bodies and the remainder retain their full simulated pose.
+ // Anchor translation, not orientation. The body edge is fixed by the mount;
+ // its radial ramp joins the moving shaft rim. Clamping the first tangent
+ // here erased root rotation before the material bend limiter saw it.
  const double span=(std::max)(1e-6,length/11.);double station=0;
  for(unsigned i=1;i<=12;i++){
   if(i>1){auto d=Sub(state.shapeFrames[i].origin,state.shapeFrames[i-1].origin);station+=std::sqrt(Dot(d,d));}
   const double t=std::clamp(station/span,0.,1.),w=t*t*t*(10+t*(-15+6*t));
   state.frames[i].origin=Add(Scale(state.shapeFrames[i].origin,1-w),Scale(state.frames[i].origin,w));
-  state.frames[i].basis=InterpolateBasis(state.shapeFrames[i].basis,state.frames[i].basis,w);
  }
 }
 inline State DrivenState(const State& reference,const Dimensions& dimensions,const Output& source){
@@ -263,7 +261,12 @@ inline State SocketMaterialState(const State& original,double start){
   out.shapeFrames[i+1]=MaterialSection(original.shapeFrames,k,k+1,t);
   out.frames[i+1]=MaterialSection(original.frames,k,k+1,t);
  }
- out.frames[1]=out.shapeFrames[1];auto neutral=out;neutral.frames=neutral.shapeFrames;neutral.materialScale={1,1,1};
+ // Rebase the complete live curve at the socket, retaining its simulated
+ // tangent. Replacing the whole first frame made the connection a fixed-angle
+ // cantilever; replacing only its origin would introduce a first-segment kink.
+ const auto shift=Sub(out.shapeFrames[1].origin,out.frames[1].origin);
+ for(unsigned i=1;i<=12;i++)out.frames[i].origin=Add(out.frames[i].origin,shift);
+ auto neutral=out;neutral.frames=neutral.shapeFrames;neutral.materialScale={1,1,1};
  PreserveMaterialLengths(out);PreserveMaterialLengths(neutral);
  for(unsigned i=1;i<=12;i++){auto basis=out.frames[i].basis;for(unsigned k=0;k<3;k++)out.frames[i].basis[k]=Rotate(basis,Unrotate(neutral.frames[i].basis,out.shapeFrames[i].basis[k]));}
  return out;

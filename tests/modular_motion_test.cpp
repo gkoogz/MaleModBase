@@ -48,6 +48,33 @@ int main(){try{
  Check(anchored.frames[3].origin[1]==.5,"Root constraint still locks a quarter of the rod");
  Check(anchored.frames[5].origin[1]==.5&&anchored.frames[12].origin[1]==.5,"Root constraint suppressed distal physics");
  Check(anchored.frames[13].origin==Vec{2,3,-4}&&anchored.frames[14].origin==Vec{2,-3,-5},"Root constraint moved independent lobes");
+ // A rigid rotation supplied by the solver must reach the proximal surface.
+ // Neither anchoring nor socket resampling may turn it into distal-only bend.
+ for(double angle:{-.65,-.2,.2,.65})for(double radius:{.1,1.,3.}){
+  State rod;rod.hasShapeFrames=true;rod.sectionRadius=radius;
+  const PresentationBasis rotated{Vec{std::cos(angle),0,std::sin(angle)},Vec{0,1,0},Vec{-std::sin(angle),0,std::cos(angle)}};
+  for(unsigned i=1;i<=12;i++){
+   rod.shapeFrames[i].origin={double(i-1),0,0};
+   rod.frames[i].basis=rotated;rod.frames[i].origin=Scale(rotated[0],double(i-1));
+  }
+  rod.frames[13].origin={2,3,-4};rod.frames[14].origin={2,-3,-5};
+  AnchorRootPhysics(rod,radius,11.);
+  Check(Dot(rod.frames[1].basis[0],rotated[0])>1-1e-12,"Anchoring erased simulated root rotation");
+  PreserveMaterialLengths(rod);
+  for(double start:{0.,1.25,3.}){
+   auto socket=SocketMaterialState(rod,start);
+   Check(Dot(Sub(socket.frames[1].origin,socket.shapeFrames[1].origin),Sub(socket.frames[1].origin,socket.shapeFrames[1].origin))<1e-20,"Root rotation translated the socket center");
+   Check(Dot(socket.frames[1].basis[0],rotated[0])>1-1e-12,"Socket erased simulated root rotation");
+   auto early=Sub(socket.frames[2].origin,socket.frames[1].origin);
+   Check(Dot(Unit(early),rotated[0])>1-1e-12,"Root rotation was deferred beyond the first interval");
+   Binding rim;rim.influences[0]={1,1,{}};
+   auto center=socket.shapeFrames[1].origin;
+   auto a=MaterialPoint(rim,socket,Add(center,Vec{0,0,radius}));
+   auto b=MaterialPoint(rim,socket,Add(center,Vec{0,0,-radius}));
+   Check(std::abs(Dot(Sub(a,b),Sub(a,b))-4*radius*radius)<1e-10,"Root participation collapsed the circumference");
+   Check(socket.frames[13].origin==rod.frames[13].origin&&socket.frames[14].origin==rod.frames[14].origin,"Root participation moved independent lobes");
+  }
+ }
  // A section must retain its diameter through a ninety-degree bend, and
  // the crown must retain all pairwise distances while its frame rotates.
  State material;material.hasShapeFrames=true;

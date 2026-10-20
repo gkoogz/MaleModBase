@@ -1,5 +1,12 @@
 ## October 20 - storage consolidation
 
+Latest root-motion correction: `docs/ROOT-PARTICIPATION.md`. Two geometry
+constraints erased source root rotation (up to 6.52 degrees measured) and fed a
+fixed tangent to the bend limiter. The shared correction preserves orientation,
+rebases the socket centerline and follows its moving rim with the radial ramp.
+Numerical worker and Wolverine runtime are unchanged; native adoption belongs
+to the Witcher handoff and must be recorded separately from source tests.
+
 Latest architecture checkpoint: see **October 20 - direct live controls in
 Witcher** at the end of this file and `docs/LIVE-CONTROL-PRESENTATION.md`.
 Final native slider intervals are 148/146 ms; the candidate remains uninstalled.
