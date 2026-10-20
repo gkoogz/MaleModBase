@@ -3835,6 +3835,15 @@ All37 installed managed hashes matched. Preserve existing runtime/rollback.
 
 ## October 20 - direct live controls in Witcher
 
+Later checkpoint: read `docs/ORDERED-RUNTIME-PIPELINE.md` first for the independent
+numerical/retained-skin architecture. Shared deterministic workers and prepared
+geometry preserve six packed native baseline cases; 240 ordered numerical
+samples and 7,218 retained donor rows match the preceding worker. Witcher owns
+the two ordered queues and current native acceptance records. Its adapter
+handoff is authoritative for the final binary/install status. Wolverine remains
+unchanged. Evidence stays under `D:/MaleMod/Work/witcher/runtime-rearchitecture`;
+the notes below describe the earlier slider-only candidate.
+
 Read `docs/LIVE-CONTROL-PRESENTATION.md`. The new shared prepared-mesh deformation
 and Witcher independent presentation path bypass the slow shape-authoring queue
 for ordinary slider edits. Native width/angle acknowledgement intervals are
