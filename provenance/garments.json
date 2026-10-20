@@ -4,7 +4,7 @@
   "legacyChanged": false,
   "characterRecipe": "assets/garments/wolverine-jockstrap-donors.json",
   "verification": {
-    "status": "Uninstalled development. Corrected reference replay passes saved coalesced contact/material checks but is too slow. Optional NvCloth pouch experiment fails full body contact/material/performance gates and is disabled by default. Native attachment matrix and gameplay untested.",
+    "status": "October 8 developer bugfix candidate observed and updated; full attachment gate remains incomplete, extreme deformation and uncertified fallback contact remain. Regular runtimes unchanged.",
     "workingTreeClean": false,
     "geometryBindingRevision": 2,
     "reactionWire": 6,
@@ -207,15 +207,131 @@
       "nativeTrial": "Candidate K visible with fitted straps but REJECTED: intermittent contact/material failures and 0.2-0.4 s worker cadence. Human and retail unchanged.",
       "followup": "Character-local collision coordinates preserve world-space dynamics; reusable classification storage. Saved pose replay 180/180 contact/material passes. New native trial pending.",
       "preparedPlacement": "24-stage dressing passes saved pose; first-use placement carries measured native donors into current pose before simulation. Translation replay 180 updates passes. Native trial M pending."
+    },
+    "performanceUpdate": {
+      "documentation": "docs/PERFORMANCE-IMPLEMENTATION.md",
+      "developerRuntimeSHA256": "01446089bdede19b0d01d925ffccd385f9e8ddab65d9909e6446308b84689f42",
+      "rays": 32,
+      "rows": 24,
+      "fullAttachmentGatePassed": false,
+      "normalRuntimeChanged": false
+    },
+    "nativeMaterialRepair": {
+      "developerRuntimeSHA256": "29ebe88c81e10fd95a26f81ec0e1c9950ab1dd1ae0fe84f0a4ce977b73e4a6c7",
+      "adapterDocumentation": "Wolverine docs/NATIVE-MATERIAL-REPAIR.md",
+      "nativeEvidenceSHA256": "870f5ef93a3b87db9036cc36d036f3e70ae2697b7790cc429af751590803f517",
+      "installReceiptSHA256": "74b858adc4345c73a0e1a5babe1b3fd4bca94f0d070084e5439746394a776ee9",
+      "fullAttachmentGatePassed": false,
+      "normalRuntimeChanged": false,
+      "sharedGeometryChanged": false,
+      "fluidBloomVisuallyAccepted": false
+    },
+    "curvatureLightingFollowup": {
+      "developerRuntimeSHA256": "25dc08422d5bc6585d704ccd937a648356d3d0e10b134ba59bd94dbaff6786f9",
+      "documentation": "docs/MERIDIAN-CURVATURE.md",
+      "rays": 32,
+      "renderRows": 24,
+      "virtualWalkIntervals": 48,
+      "fullAttachmentGatePassed": false,
+      "normalRuntimeChanged": false,
+      "nativeEvidenceSHA256": "53530c4f867d010dcc03c7cd008aeb4cf55d52d4f1ba9337bed47bd2f5414b97",
+      "installed": true,
+      "installReceiptSHA256": "6999c4d99caef4da6ad51e8c4c2a3dadb33ea1ee897e89b8ee9b64fcf91b9e13",
+      "humanPlayObserved": false
+    },
+    "anatomyFollow20261008": {
+      "schema": 1,
+      "runtimeSHA256": "7b6cdd573739ea6482b728401cf5c253fab9bdfd7031e3cd0ff9fab9390997df",
+      "sourceCommit": "16affd49da5a122df776969574ca62a984b59425",
+      "basePin": "99ff741ea95f18ed84526c35a6c3f38a37d857b6",
+      "selectedBuild": "C:\\Users\\Administrator\\Documents\\ChatGPT\\MaleMod\\build\\follow-20261008\\candidate6",
+      "installedIntoHumanPrototype": false,
+      "nativeGameplayObserved": false,
+      "fullAttachmentGatePassed": false,
+      "normalRuntimeModified": false,
+      "syntheticDefaultReplay": {
+        "inputs": 4,
+        "interpolationSteps": 30,
+        "poses": 91,
+        "repeats": 10,
+        "baselineMeanMs": 5.16613,
+        "candidateMeanMs": 1.65484,
+        "candidateP95Ms": 2.1413,
+        "candidateMaxMs": 38.6778,
+        "followCallsIncludingWarmup": 957,
+        "walkCallsIncludingWarmup": 44,
+        "outerFailures": 0,
+        "nativeMotion": false,
+        "FPSMeasured": false
+      },
+      "discontinuousHistoricalReplay": {
+        "poses": 16,
+        "repeats": 6,
+        "baselineMeanMs": 6.47156,
+        "candidateMeanMs": 7.15208,
+        "outerFailures": 0,
+        "fallbacksIncludingWarmup": 21,
+        "nativeMotion": false,
+        "FPSMeasured": false
+      },
+      "sharedTestsPassed": [
+        "meridian_follow",
+        "meridian_runtime",
+        "meridian_clearance",
+        "meridian_continuity"
+      ],
+      "pythonTestsPassed": 17,
+      "limitations": [
+        "native launch did not yet reach device/gameplay; human prototype PID19380 remains running",
+        "sampled native matrix, front/side/oblique views and motion not yet run for this candidate",
+        "all coupled controls, body resources, LODs and campaign gate incomplete",
+        "large discontinuous poses still rebuild and add cache/binding overhead",
+        "CPU replay omits skinning/GPU and adapter UI epoch invalidation; intermediate poses are synthetic"
+      ],
+      "nativeAttempts": [
+        {
+          "run": "20261008-191554-95e20f",
+          "runtime": "980ff7dbcef27a58afdfb48e4f156b7ad15334c789437fee5ef5c5409a14b18e",
+          "exitCode": 0,
+          "graphicsDeviceCreated": false,
+          "gameplayObserved": false
+        },
+        {
+          "run": "20261008-192920-d04f08",
+          "runtime": "7b6cdd573739ea6482b728401cf5c253fab9bdfd7031e3cd0ff9fab9390997df",
+          "exitCode": 0,
+          "graphicsDeviceCreated": false,
+          "gameplayObserved": false
+        }
+      ]
+    },
+    "anatomyFollowNative20261008": {
+      "runtimeSHA256": "7b6cdd573739ea6482b728401cf5c253fab9bdfd7031e3cd0ff9fab9390997df",
+      "nativeGameplayObserved": true,
+      "matrixCases": 18,
+      "reportedDrawRejections": 0,
+      "fullAttachmentGatePassed": false,
+      "installedOnlyIntoDeveloperPrototype": true,
+      "humanLaunched": true,
+      "humanFeedbackObserved": false,
+      "lastReportedCounts": {
+        "attempts": 721,
+        "wrapped": 371,
+        "followed": 268,
+        "transported": 82,
+        "uncertified": 78
+      },
+      "nativeEvidenceSHA256": "37d039e76b6147e5aa680ef4b6b1ceb06c43ebc40da3d5541c1a53965ef5c599",
+      "normalRuntimeModified": false
     }
   },
   "fileHashes": {
     "assets/garments/wolverine-jockstrap-donors.json": "4394af216a7f955896063d453136a264d120f588e151954e64c820258d31c966",
-    "CMakeLists.txt": "ff1f3b39335fe88a4c41092c6485169280e045a5cdb66ecb93562662faa7f854",
+    "CMakeLists.txt": "ebd36d5f9a1b5fc5391579631f1c48e25f5473fefc46fe19de115e8cd6c11fa9",
     "docs/GARMENT-CONTACT-REPAIR.md": "fb747838d2c3fdf460a8fd0578a043720d31a55c50f817dc43587915bf4cfaaf",
     "docs/GARMENT-GEOMETRY-AUDIT.md": "3437079279f2d823e6f9110c7f7c8ba5878bae0a8f2f6e07aea8ee58d51f2bcc",
     "docs/GARMENT-NUMERICAL-SUPPORT.md": "80e7cc520d149761f09ff625b21c0829ef066b885943c6083f44ff5b309a59c8",
-    "docs/GARMENT-QUERY-PERFORMANCE.md": "38dd566ba50a4993f1c6cbc77c61407b15ed53e7dbb7007efd3d6897cb9d68d6",
+    "docs/GARMENT-QUERY-PERFORMANCE.md": "78c9c073157174adca3d6c1bad8fb36b368bb478533000cb94ad886f3ae08993",
     "docs/GARMENT-REACTIONS.md": "12fb1b7a8374bc419ac26b30f40527283c14ad9f144501d4cfa77580fca7bd08",
     "docs/GARMENTS.md": "1edfb038439d91616693dadd5c014f3128dbf9604860b2a6145274d60374c738",
     "docs/WAISTBAND-CONTOURS.md": "a51e11379e3d6b896cc7328772a2b1f5d8545168b96a6ef2133d78979c9c0aae",
@@ -293,14 +409,47 @@
     "include/malemod/garments/input_recording.hpp": "c9b20db930738fbea5114f8aa4182315dc245e35209107b4d6f33f4b4d1514e8",
     "include/malemod/garments/cpu_cloth.hpp": "095eaaa3eac2aa9779be0559be4a48e6e4c043eba766050aa33258f10d4e75d3",
     "include/malemod/garments/measured_capsules.hpp": "db697ced29054560cb08e408caefd87f590aa9ce5b3972e22cc34432b303cc75",
-    "include/malemod/garments/pouch_session.hpp": "cb8f145618f580c71b6e4699b59c655b432553a78ba5879480ece80822bd9458",
-    "src/garments/cpu_cloth.cpp": "fd6650e89e9fc6e55621ea620c9666857bc5684abd84ab2c6195aee4b83d41d7",
-    "src/garments/pouch_session.cpp": "0f2cb2d8666bf67cea638422a8c7b7e1b50f3986b5c73eb7fc238347914c896a",
-    "tests/cpu_cloth_test.cpp": "886f9d12e157e4fa94b6ac87b3ffb64b73de711433c8a13954d7b6058d70971c",
+    "src/garments/cpu_cloth.cpp": "71a17993d71a271ee82f98234238bce7f4c1c2db49ad7c3ae9cb598dbf97ca7b",
+    "tests/cpu_cloth_test.cpp": "d3b2c9de1070c12c781880e6c701a2be4e6006745ad18a5acbfbd9fe1bbb5432",
     "tests/measured_capsules_test.cpp": "e92e0695f3ac997702b2d4bc82ee3b06c934c991e2c8c9b68df5e431bbe3147e",
-    "tools/replay_supported_garment.cpp": "6005fdb7de71e9df5a046e830987fd69d221ad47cbe7a29e55416c66fee46bdd",
+    "tools/replay_supported_garment.cpp": "6dc409ffeca63fd104cb514f72b3882d4b35e801b637a74324b2ee82c719ab1c",
     "cmake/NvClothCPU.cmake": "a4844c5ac033e9d915346f0a7467726da3b2ee5d8cfa033536c8908ba980dd51",
-    "cmake/nvcloth-compat/typeinfo.h": "cd89a9b6dd2088e07e94016908900f83bf148382f09c65fb127ae75cd47f4def"
+    "cmake/nvcloth-compat/typeinfo.h": "cd89a9b6dd2088e07e94016908900f83bf148382f09c65fb127ae75cd47f4def",
+    "include/malemod/garments/material_metric.hpp": "5f0d8b11502d549ced35fd4d5fe6ce19ca1f96eb2721f65bb28f9c00e9766681",
+    "tests/material_metric_test.cpp": "20c45f70b89113a145b54269ae079b675b434330b326d54832f76815fc1b67d3",
+    "malemod_base/collision_chain.py": "66479f2bfff1274d49952554f6334dcd68885d44ded3dcd7351b2d846dd74639",
+    "tests/test_collision_chain.py": "3282b80205d56d91c29f834064dbbdaa2ab4bd32d35313744e7530e953288fd9",
+    "malemod_base/surface_guides.py": "46e9b91ffa073f7684d5132bc034495d0b7c687264ce31a89920f385a9b5426e",
+    "tests/test_surface_guides.py": "7d042caee1a1454b97a4c035cfda8b6601b7f124d34446891118a0ddba8e29f0",
+    "malemod_base/taut_guides.py": "96adaa529db8e297c71ffcaeab671614ac249a6b4487776107ec8ffbe8ba81c8",
+    "tests/test_taut_guides.py": "c133661964d44f505c218e88aa4081ff03463f459d129d034047b10ea03bbbd8",
+    "malemod_base/meridian_surface.py": "af6f5e17a92280c9ea87db4c3de784c61afc62a5ed642955613bdcedf9fbb89f",
+    "tests/test_meridian_surface.py": "e659a56b5f0f6a87e73864712c5c6f3c35ba373bc4fe9146c6405f8819f56c54",
+    "docs/COLLISION-INSPECTION.md": "2b3b427a9f23decd6e338e344c400170fbb43c40520dc5b61aa2c50183cc8c26",
+    "docs/PROJECT-CONTEXT.md": "0b9ed268a2e3bf5db91f6b41fe526825eae4591a810ed0eec25e1fb6946244ad",
+    "docs/HANDOFF.md": "724b80d0cea5b86a48d12816287e8a59653cb4edb335f6e3db3582b27545b94d",
+    "include/malemod/garments/meridian_runtime.hpp": "01c72a1d77c1e6555f70e01079dd38ff81f6ee8ecd3713cdb49d145c75fd7768",
+    "tests/meridian_runtime_test.cpp": "5e21531181402ea04cde574fe43ffe7a8cf74e20e389d1e6f880c3a3c1bf182e",
+    "tools/benchmark_meridian_lods.py": "4162774723b30af405d42004870a0a50c1447db77ccab12f6398dd8ed3a99e43",
+    "tools/benchmark_meridian_runtime.cpp": "9f9d11ad64e9b2ec9ef5f4a8c2b37d25ca559d4c72015886d886beb8375afa7c",
+    "docs/MERIDIAN-RUNTIME.md": "d4f0cc344d570b6c463eb1f12c4e5df0f16911c159736f14e8440af70dd50ea1",
+    "include/malemod/garments/meridian_clearance.hpp": "3e7a19fbedfb1ae16c80722da9d0027d97c99d6c4586b9db67e423de9eb8a5d4",
+    "include/malemod/garments/meridian_rig.hpp": "4bcff62ffb5670212039fac4e1e3651bc4605065b7775ebc068e1ae3b248a41a",
+    "include/malemod/garments/meridian_material.hpp": "2c1ffaef07b86c11ba7baee32db904c6f4d354d99ae89ba7f0cc281c122829e2",
+    "tests/meridian_clearance_test.cpp": "8d0134456d520a98624f5bb9b333344b70fbf44fd5401906c58de73942d79e6f",
+    "tools/replay_meridian_clearance.cpp": "4871da70ccbef85d9249fa5d5123a9e7c42a2637daa668d170dc71840515fe98",
+    "profiles/meridian-regression.json": "1f4fea5f6f32e1d40f3458beaf862f8eb321597fbac567b1ed7376c4ae2d7b25",
+    "include/malemod/garments/meridian_continuity.hpp": "8c2a3ea0e6b2bcaa0e4f3dd322f7e1535ffa30fd5526f6b60fb6b2a912a03b23",
+    "include/malemod/physics/anterior_envelope.hpp": "b745e44ef9d708e5c2dc7190f350d064735065452b72f668ec80301d7e70437b",
+    "tests/meridian_continuity_test.cpp": "66cb0185384ad2deced3bb5a8625be5a4875dcc03b0e17a4dda3b86cb77717e7",
+    "docs/PERFORMANCE-ARCHITECTURE.md": "f1949debeaffe5f30ea7668fc1cdf700b14dc1c40bfd9f7e1a1b216e374c2b23",
+    "tools/author_meridian_lod.py": "0dca3260ea716abc1efdc1f6a31a7e20ca6e533a3a6d5c36c600180472f2b378",
+    "tools/fit_meridian_seam.cpp": "f2bde33413842d67301ddc1d1556f104994204105aa016e019df788f2dbbdb25",
+    "docs/PERFORMANCE-IMPLEMENTATION.md": "678b1236f6f9d79c83d6d865ee556633aea13934ec340579309675c77f343050",
+    "docs/MERIDIAN-CURVATURE.md": "84b36179f173ed46e8970091febd76b717fc1a032d65aa10453c7e33b3549bde",
+    "include/malemod/garments/meridian_follow.hpp": "20b41f044c7a866b0482fc646a1efff76e101bcc39967e5c6b097a8e585e36f7",
+    "tests/meridian_follow_test.cpp": "40d9970acd0ae87895fa3185a14e1d6a36fc79b0663c112067a355bad909db56",
+    "docs/MERIDIAN-FOLLOW.md": "fe6ec075f2c4c98d3f8aea7ecdd2d0ba945109d749995f22bfd57fa139f7d8e7"
   },
   "historicalVerification": {
     "v2ActualGeraltFit": {
@@ -505,10 +654,10 @@
         "tests/garment_test.cpp": "1e2bae6470f9340198ac2faa74ff77ebb6c4a6b6947e0a2f2f8ac072411d8134",
         "tests/garment_shape_checks.hpp": "a25c94f32cf97a59464063d36f8a509b1cb2ab84490a36e54ae40f583df4555e",
         "docs/GARMENTS.md": "fff6c14739152d39d565b0deb07ac498f685e28d8a1186eac05edff8b353cbb3",
-        "docs/GARMENT-CONTACT-REPAIR.md": "fb747838d2c3fdf460a8fd0578a043720d31a55c50f817dc43587915bf4cfaaf",
+        "docs/GARMENT-CONTACT-REPAIR.md": "d44e864d34869406d4d2ac8b42ed9eeb12397fdda53c1f8716449e2479d5dc6d",
         "tools/garment_source_routes.py": "6001a9a06f45e65006fd1558509322cb4a28436df993f663d426ffc2cac0c6ae",
         "malemod_base/garment_regions.py": "5271c9ea84e376bde12743b792ac3938d2474c434368b508d0c97db8a500f0fc",
-        "tests/test_garment_regions.py": "cf5e3268556e2ec9ca238427b6068c091d4f19feddcc3342f62d683d19c175a1"
+        "tests/test_garment_regions.py": "68d1eb7c8641ac432b9d7e823ffecda3f47dcea0505d0193386b44bf1bf109db"
       }
     }
   },
@@ -563,30 +712,150 @@
     "twoWayCoupling": false,
     "nativeAdoption": false,
     "wolverine": "Offline captured inputs only; adapter pin unchanged.",
-    "witcher": "Adapter pin and installed runtime unchanged."
+    "witcher": "Adapter pin and installed runtime unchanged.",
+    "retired": true,
+    "retiredFilesHistoricalHashes": {
+      "include/malemod/garments/pouch_session.hpp": "cb8f145618f580c71b6e4699b59c655b432553a78ba5879480ece80822bd9458",
+      "src/garments/pouch_session.cpp": "e08569adcaa9f8c7bf347743084254d3e0bd10ab2d409a32d1ba26834455f053"
+    }
   },
-  "buildMetadataHistory": [
-    {
-      "previousCMakeSHA256": "cb84a2dab00bcb965db87deb4ba088408e968f11af1c7ac950c51b1f61ada229",
-      "reason": "Register SDK-free meridian regressions; no legacy/source numerical changes"
-    }
-  ],
-  "meridianContract": "provenance/meridian.json",
-  "checkoutNormalizationHistory": [
-    {
-      "path": "docs/GARMENT-CONTACT-REPAIR.md",
-      "previousSHA256": "d44e864d34869406d4d2ac8b42ed9eeb12397fdda53c1f8716449e2479d5dc6d",
-      "reason": "Git LF normalization only; working source and committed bytes compared exactly after CRLF replacement"
+  "collisionInspection": {
+    "sections": 7,
+    "links": 6,
+    "ovaloids": 2,
+    "waistArcDegrees": 80,
+    "ovoidExpansion": 1.03,
+    "sharedModule": "malemod_base/collision_chain.py",
+    "adapter": "XMenOriginsWolverineMaleMod/tools/render_collision_chain.py",
+    "offlineTests": 21,
+    "installed": false,
+    "observedGameplay": false,
+    "handoff": "docs/COLLISION-INSPECTION.md",
+    "trimRevision": "Body-conforming converged fixed straps and conceptual orange hems, October 7",
+    "surfaceGuideModule": "malemod_base/surface_guides.py",
+    "tautGuideCount": 40,
+    "tautGuideBoundary": "entire orange outline",
+    "tautGuideModule": "malemod_base/taut_guides.py",
+    "tipEnclosure": "Measured distal vertices including polygon margin",
+    "embeddedHemPolicy": "Local outward lift off blue root proxy; original body trace retained in private receipt",
+    "tautGuideConstraint": "Ordered distinct outward longitude half-planes; positive radius until common pole",
+    "historicalParallelLaneProof": {
+      "laneDrift": 0.0,
+      "minimumLaneSeparation": 0.004108509362993118
     },
-    {
-      "path": "tests/test_garment_regions.py",
-      "previousSHA256": "68d1eb7c8641ac432b9d7e823ffecda3f47dcea0505d0193386b44bf1bf109db",
-      "reason": "Git LF normalization only; working source and committed bytes compared exactly after CRLF replacement"
+    "originDistribution": "Dynamic bend demand, 160 candidates, 40 weighted-arclength origins, recomputed per call",
+    "nativeIntegrated": "private explicit overlay only",
+    "fixedHemStraps": {
+      "count": 2,
+      "width": 0.3,
+      "thickness": 0.04,
+      "sourceUnits": "uncalibrated caller source units",
+      "smoothCurve": "Bounded endpoint-fixed cubic",
+      "proxyMargin": 0.2
     },
-    {
-      "path": "docs/GARMENT-QUERY-PERFORMANCE.md",
-      "previousSHA256": "78c9c073157174adca3d6c1bad8fb36b368bb478533000cb94ad886f3ae08993",
-      "reason": "One extra CR from historical CRCRLF input removed by Git checkout; normalized text compared"
-    }
-  ]
+    "domes": 1,
+    "apexCenters": 1,
+    "dome": "Axially scaled hemisphere with exact previous crown rim and former tip center",
+    "inspectionSchema": 2,
+    "clothSurfaceModule": "malemod_base/meridian_surface.py",
+    "whiteCloth": {
+      "guideCount": 40,
+      "columns": 160,
+      "rows": 80,
+      "triangles": 25440,
+      "tipThicknessOffset": 0.18,
+      "collisionCertificate": "One convex hull support plane separates each complete triangle per collider",
+      "nativeIntegrated": false
+    },
+    "sharedRuntimeHeader": "include/malemod/garments/meridian_runtime.hpp",
+    "nativeAccepted": false,
+    "runtimeCandidate": {
+      "clothTriangles": 3760,
+      "totalTriangles": 7072,
+      "vertices": 3623,
+      "columns": 80,
+      "rows": 24,
+      "hiddenAnatomyTriangles": 31998,
+      "retainedCollarTriangles": 3002,
+      "drawPasses": 1,
+      "dynamicRewrap": true,
+      "accepted": false,
+      "renderSeamAliases": 24,
+      "geometryBindingRevision": 5,
+      "runtimePoseSamples": 3641,
+      "adaptiveOrigins": false,
+      "selectedRuntimeSHA256": "9e42b4d47c36b972945c4f991e3708cfee78638d75633f0bf6eb6ff1fe98e5a5",
+      "nativeCasesCaptured": 18,
+      "reportedFailureCases": [],
+      "visualGatePassed": false,
+      "sceneLighting": "reflected directional and spherical harmonic diffuse; other permutations incomplete",
+      "humanPrototypeLaunched": false,
+      "humanGameplayObserved": false,
+      "continuousFallback": true,
+      "fallbackCollisionCertified": false,
+      "stageLighting": "even-v3"
+    },
+    "historicalRuntimeCandidates": [
+      {
+        "clothTriangles": 3760,
+        "totalTriangles": 7072,
+        "vertices": 3623,
+        "columns": 80,
+        "rows": 24,
+        "hiddenAnatomyTriangles": 31998,
+        "retainedCollarTriangles": 3002,
+        "drawPasses": 1,
+        "dynamicRewrap": true,
+        "accepted": false,
+        "renderSeamAliases": 24,
+        "geometryBindingRevision": 5,
+        "runtimePoseSamples": 1801,
+        "adaptiveOrigins": false,
+        "selectedRuntimeSHA256": "a83dcb200e44b7313550b7ce89fdc693a90072891fa3ac3f733c77f9ef8627a4",
+        "nativeCasesCaptured": 18,
+        "reportedFailureCases": [
+          "combined-max",
+          "return-default",
+          "mechanical-2"
+        ],
+        "visualGatePassed": false,
+        "sceneLighting": "reflected directional and spherical harmonic diffuse; other permutations incomplete",
+        "humanPrototypeLaunched": true,
+        "humanGameplayObserved": false
+      }
+    ]
+  },
+  "bugfix20261008": {
+    "status": "Developer prototype updated; native bug regression and recovery proof passed; full attachment/campaign gate incomplete",
+    "sourceImportUnchanged": true,
+    "anteriorEnvelope": "include/malemod/physics/anterior_envelope.hpp",
+    "continuity": "include/malemod/garments/meridian_continuity.hpp",
+    "runtimeSHA256": "9e42b4d47c36b972945c4f991e3708cfee78638d75633f0bf6eb6ff1fe98e5a5",
+    "lightingSHA256": "10adb25651b10b14db1ee490feeb17b0ae300ed558c2b507d16f9c2a5789d5eb",
+    "attachmentGatePassed": false,
+    "regularRuntimeModified": false,
+    "fallbackCollisionCertified": false,
+    "pythonTestsPassed": 21,
+    "sharedContinuityTestPassed": true,
+    "recoveryProofSHA256": "fd02c67c1c80401615a3e42cf33bdf0276fed22f8c8b3685bd7e4328413982c1",
+    "schema": 1,
+    "matrixCases": 18,
+    "reportedDrawRejections": 0,
+    "lastReportedAttempts": 1921,
+    "lastReportedDraws": 1921,
+    "lastReportedTransported": 88,
+    "lastReportedUncertified": 76,
+    "drawMeanMilliseconds": 14.7202,
+    "drawMaxMilliseconds": 56.8901,
+    "frontRearEvenLightingReviewed": true,
+    "walkingJumpStoppingObserved": true,
+    "campaignChecked": false,
+    "developerPrototypeUpdated": true,
+    "humanGameplayOfNewRevisionObserved": false,
+    "settingsSHA256": "70f2e316d514afb12448be6dc0d1944df00030aed893cd951e7b88380d291ae2",
+    "matrixSHA256": "20216f46f59dd3f879172769e63391cd491fefcc14abf7d003416b73b8ff7cea",
+    "rollback": "MeridianPrototype/rollback-20261008",
+    "normalRuntimeModified": false,
+    "acceptedRoomModified": false
+  }
 }

@@ -1,0 +1,93 @@
+{
+  "schema": "malemod.physics-cadence/1",
+  "sourceCommit": "985f94755d7a5e039ef6e79e3fdfc4ee36885724",
+  "sourceIsDirty": true,
+  "adapterBasePin": "431e626cae6fb6720b552f8b20206727fe809c80",
+  "baseFiles": [
+    {
+      "path": "include/malemod/surface/root_articulation.hpp",
+      "sha256": "2b9c2f504cde97c64442bddb72e8002488f799554afc8837c0c527b2e0b4828c"
+    },
+    {
+      "path": "src/surface/root_articulation.cpp",
+      "sha256": "23db426e79339c7565ad2912becdb2fb25df02bde0d524b5706826bcfea1aeec"
+    },
+    {
+      "path": "tests/root_articulation_test.cpp",
+      "sha256": "aec0a3e74228dcd0e6dfaf185cc4fbccc790e34c2b264581722afef336aecccc"
+    }
+  ],
+  "adapterFiles": [
+    {
+      "path": "native/target_surface.cpp",
+      "sha256": "e1d6d64ccb4f95431f7566f33d4ab5fc583f9553382f4ae020aabf0798d470cc"
+    },
+    {
+      "path": "native/surface_pipeline.hpp",
+      "sha256": "e71a6ed8ad7780942dc15b2d2754f9b14b3cd05014c58d10ca5eb391fec9dbe2"
+    },
+    {
+      "path": "native/surface_service.hpp",
+      "sha256": "d0d0d9b21924cba03970aa15063eb43d9ce16becdbdf2a399c02e24269dc46be"
+    },
+    {
+      "path": "native/runtime_controller.hpp",
+      "sha256": "a876cafe56150d492bcad4ab1147df573059e1a66eda7ebe64647ef3c9162619"
+    },
+    {
+      "path": "native/runtime_controller_test.cpp",
+      "sha256": "c67c157cba15b38a4c6920fbf9d594cb71d4727d70db25d02bf1b06d24d08d05"
+    },
+    {
+      "path": "native/physics_cadence_test.cpp",
+      "sha256": "16c95f430153c78867b83268ae7a714c402ec8a274d2afed30589e5051fc65ab"
+    },
+    {
+      "path": "native/engine_bridge.cpp",
+      "sha256": "91a955964d6ee5b1109fc543ea7bf986bb67005f6a385bd5102035b623ff6123"
+    },
+    {
+      "path": "native/CMakeLists.txt",
+      "sha256": "6698832842c47b3bdf57155df67a44b01eb9b5605dac9f0ae6bf804fc5aa6782"
+    },
+    {
+      "path": "probes/native/collar_physics_cases.ws",
+      "sha256": "f8968b6ec506da1293d7c34571e1de3592ab5a0643642d8859593197d12781a3"
+    },
+    {
+      "path": "probes/native/physics_motion_cases.ws",
+      "sha256": "2980a88e167878d475fd8516957433c5f055927f6aa867805dac8819704c288c"
+    },
+    {
+      "path": "tools/prepare_collar_session.py",
+      "sha256": "e2b1200de708b1a59060bab3eb938bc6b2f712c9533112f42c90ced7dac734e5"
+    },
+    {
+      "path": "tools/record_collar_session.py",
+      "sha256": "c17f0a90a9eabf51f41aa879493f6940542001ae4721e3c7a41025e707cc8d8a"
+    }
+  ],
+  "privateProof": "D:\\MaleModBuilds\\witcher-fixed-collar-20261014\\physics-final-proof.json",
+  "privateProofSHA256": "67454ed23e8caf8b3d9dac67a27a7e2e835f03f33ca17e0d15a46d886d9604b5",
+  "candidate": {
+    "nativeSession": "C:\\Users\\Administrator\\Documents\\ChatGPT\\TheWitcher3MaleMod\\build\\probe\\sealed-session-20261014-203037\\receipt.json",
+    "nativeDLLSHA256": "df25874dcf3f72d1c9d021bb68d8e2972db6bd855c360865bd26f0297e7cf7a8",
+    "ownershipArtifactSHA256": "201315624a75c45f71c278f8f26ad0fb219ee6bafae47d9d7003214fa6d5e615",
+    "nativeViews": 57,
+    "additionalValidMotionFrames": 36,
+    "allCapturedAngleGains": [
+      1,
+      1
+    ],
+    "normalRuntimeUnchanged": true,
+    "allManagedFilesVerified": 39,
+    "installed": false,
+    "userVisualApproval": false,
+    "fullAttachmentGatePassed": false,
+    "visualReview": "Reviewed all three 57-case attachment sheets and the 36-frame walking/settling contact sheet. Visible shaft and lobe response with continuous attachment in sampled views. Inherited tiny-size and downward-compression limitations remain."
+  },
+  "omissions": [
+    "Licensed meshes, native captures, user controls, packages and private receipts remain outside Git"
+  ],
+  "adoption": "Other spokes adopt shared UpdateReference API via tested Base revision; Witcher scheduling remains adapter-specific. No dependency pin changed."
+}

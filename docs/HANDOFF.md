@@ -1,3 +1,71 @@
+## 2026-10-19: live pulse / slider cadence repair, Candidate14 (not installed)
+
+Latest user defect: visible pulses and slider geometry updated roughly once
+per two seconds. Read `docs/LIVE-MORPHOLOGY-CADENCE-20261019.md` in Base for the
+implementation, evidence and adoption boundary. Shared material strain removes
+pulse-triggered topology rebuilds; aperture and native layout work are faster,
+and fresh rest morphology overlaps the ordered live worker.
+
+Native installed/candidate comparison: observed pulse mesh updates 0.825 ->
+7.335 per second; mean width-edit intervals 2.388 -> 0.958 seconds and angle
+intervals 1.811 -> 0.688 seconds. Slider latency remains measurable: do not call
+it instantaneous or frame-rate. Eight shared tests pass; 40 replays have
+byte-identical static geometry and packed native attributes to Candidate13.
+Twenty-four final native side/front/underside views were reviewed. No new obvious
+root gap/fold was seen; the existing material transition remains. Full native
+state/LOD/campaign attachment certification has NOT been rerun or passed.
+
+Final DLL c3542adcd533b14e0c3e038e015897fd2766b0a9031828104c5f4982ca480780;
+probe dee0dadbb96168cca4a2cac4a0b019bbe0a271b1f553eb9fc5a7103ffdfa6b76.
+Private evidence: D:/MaleModBuilds/modular-anatomy-20261015/root-seam-20261019/candidate-14/performance-review.json.
+All owned sessions closed; 31 protected and 53 installed files remain exact.
+General provenance verification still fails the recorded motion-filter newline
+mismatch. No new commit, adoption pin or installation was made.
+
+A scope question is pending: keep the currently installed geometry, or include
+the newer uninstalled collar preview? Candidate14 presently includes Candidate13
+geometry. Do not silently install that geometry as part of a performance-only
+repair. Retain installed DLL fd95ca61331a983788208480b9ecd372b16d61d24751a3274eaaf64c240b0935
+and rollback local/native-backup-modular-20261019-114157 until the chosen package
+passes its gates. New shared triangle_ray_index.hpp must be included in adoption
+hashes; numerical worker revision is unchanged.
+
+---
+
+## October 19 - broader measured root transition preview (Candidate13)
+
+User requested more natural mesh integration. Read Base
+docs/ROOT-MESH-RECRUITMENT-20261019.md. Candidate13 slightly broadens the measured
+annulus and releases the body-plane constraint earlier, preserving retained
+pelvic geometry. An indexed exact triangle lookup reduces angle rebuild cost
+without changing Candidate12 geometry or native attributes across 40 poses.
+Eight C++ tests pass; 72 native views were captured and reviewed, including
+live angle/pause changes and resumed walking. Material boundary remains visible
+in close views; angle rebuilds are still costly. Full native state/scale/LOD and
+campaign coverage is incomplete. Preview only: no installation, commit or pin.
+DLL d5541ecacccb9f5ba6eb655bc25ca39c2cf313ff9360076e362af31dbcaa4b1c.
+All owned sessions closed; 31 protected and 53 installed files verified exact.
+Installed fd95ca6133 and exact rollback remain unchanged. Private evidence:
+D:/MaleModBuilds/modular-anatomy-20261015/root-seam-20261019/candidate-13.
+
+## October 19 - measured pelvic entry ramp preview (Candidate11)
+
+User clarified the root seam is a mesh problem. Read Base
+docs/ROOT-MESH-RECRUITMENT-20261019.md. Candidate11 conforms the connector to
+measured pelvic triangles, then releases it smoothly into the shaft. Earlier
+retained-body lifting/retriangulation trials were rejected for geometric ripples.
+Eight C++ tests and 24 native preview views are recorded; no full attachment
+acceptance or installation. A close-view material boundary remains visible.
+Installed fd95ca6133 and exact rollback remain unchanged.
+
+## October 19 - root seam rejected; geometry recruitment in review
+
+The user rejected the installed root ramp/pelvis seam. Earlier visual acceptance
+below is superseded for this defect. The installed runtime is unchanged.
+Read MaleMod/docs/ROOT-MESH-RECRUITMENT-20261019.md for the current diagnostic,
+rejected shader trial and outstanding native acceptance. Candidate03 is not
+installed or approved.
+
 ## October19 - compact raised root ramp installed
 
 Shared pin fcb98a4 adds a small clearance-bounded forward shoulder to the root
@@ -138,6 +206,732 @@ Steam grey-room preflight passes. Exact rollback: adapter/local/native-backup-mo
 Evidence: D:/MaleModBuilds/modular-anatomy-20261015/scrotal-rear-hang-20261018.
 See docs/SCROTAL-REAR-HANG-20261018.md in both repositories. Current side images:
 native-hang-side.png and native-side-comparison.png in that evidence root.
+
+## October 18 - underside raphe refinement installed and observed
+
+Current request completed: a more consistent longitudinal underside silhouette,
+retaining distal taper into the frenulum. Shared source 92039f48b104cc5d58ef9bae22d72733de2ce25e;
+installed DLL fc24d6fcbab1d794ca49df123e7c29442ad3152fdd8a7d00681d4a735b5f160c.
+Five C++ tests, 32 rest-profile comparisons and 48 native pose audits pass.
+Final native review: 96 full, 36 motion, 12 walking resume, nine distant and
+39 campaign captures. Obstructed full-matrix far views are superseded by the
+separate distant review. Both body resources and both LODs observed. All
+sessions closed, audio restored and all 24 original saves verified. Independent
+shaft/lobe motion continues after angle changes. No cadence improvement claim.
+First candidate was rejected for four/five short-length inverted faces;
+the final common oriented-area backoff fixes both without local ripple clamps.
+Retained sac, pelvis, crown/frenulum and numerical worker remain exact. Existing
+extreme short-length/crown-size and full-flex distal folds are outside scope.
+
+Official install completed; installed startup130829 loaded and walked in the
+grey room, with three actual native frames reviewed. All49 managed and31
+protected files verified. Engine-only input.settings line reordering was
+checked semantically and exact original bytes restored. Steam preflight passes.
+Rollback: TheWitcher3MaleMod/local/native-backup-modular-20261018-130827.
+Evidence: D:/MaleModBuilds/modular-anatomy-20261015/raphe-profile-20261018/bounded.
+See docs/RAPHE-PROFILE-20261018.md in Base and adapter. No pending native session.
+Only the DLL changed in the coupled bundle. Other spokes remain unchanged.
+
+## October 18 - underside raphe profile candidate in native verification
+
+Current request: make the longitudinal underside silhouette consistent while
+retaining taper into frenulum. Shared profile filter and common oriented-area
+backoff committed92039f48b104cc5d58ef9bae22d72733de2ce25e. Candidate DLLfc24d6fc;
+installed accepted runtime remains39de929d. Do not install before native gate.
+All coupled geometry and worker unchanged from the accepted sac repair.
+First candidate c617d35/DLL1d3ae95b rejected:4/5 material faces reversed at
+shortest-length cases669/672. Common amplitude bounds fixed this; all32 replay
+profiles now preserve crown/sac/body exactly with zero reversed material faces.
+Five focused C++ tests pass. No game install yet; no host input used.
+Evidence root D:/MaleModBuilds/modular-anatomy-20261015/raphe-profile-20261018/bounded.
+Current full private session123619 PID20888 is running; session-full.txt binds it.
+Finish new96-view full matrix,36 motion,12 resume,9 distant,39 campaign; use
+launch.py/finish.py and launch-campaign.py in that root, review-session.py in
+the parent modular-anatomy-20261015 folder before finish/archive. All previous
+candidate sessions are closed/restored; parent evidence is not current DLL.
+Run current audit.py for32 full/12 motion/4 resume poses and profile_audit.py;
+write honest visual-review.json and verification-notes.json, assemble.py gate,
+protect.py snapshot, official install-modular-native validate/install, then
+launch-installed.py and observe actual startup before accepting/cleaning up.
+See Base and adapter docs/RAPHE-PROFILE-20261018.md for scope and source details.
+Retain exact rollback and prior sac/physics repair. Other spokes unchanged.
+
+## October 18 - hanging-sac front repair installed and startup verified
+
+The stiff retained front strip is replaced by a tangent-matched transition from
+the rounded sac. Lower-lobe geometry, complete shaft, original pelvis and
+existing numerical/surface-motion runtime are preserved. Base authoring pin
+406ee46438bb896c468991076ac995e6c120a9fd; retained DLL39de929d and worker431e626c.
+New coupled geometry SHA256:
+b4994bc12b77eed5f2e95077817ab9f0be5b788e5b788e5d501962d8ff5e204326a1a1.
+13 unit tests, exact authoring reproduction,48 captured-pose audits and192
+reviewed native matrix/motion/restart/LOD/campaign frames precede installation.
+Installed startup103919 observed;49 managed/31 protected hashes and24 saves
+verified. Exact input.settings restored after harmless engine reordering.
+Steam grey-room preflight passes; all owned game sessions closed.
+Rollback: Witcher local/native-backup-modular-20261018-103811.
+Evidence: D:/MaleModBuilds/modular-anatomy-20261015/sac-front-20261017/recut09/delivery.
+See Base docs/SCROTAL-FRONT-20261017.md and Witcher docs/SCROTAL-FRONT-20261018.md.
+Rejected runtime/MMXFER03 experiments were reverted; installed format is02.
+Extreme distal folds, bounded static root concavity and angle-rebuild latency
+remain outside this contour repair. Intermittent early startup/verifier failures
+and successful unchanged retries are recorded, not claimed fixed. Broad dirty
+Base verification still stops on unrelated motion-filter extraction mismatch.
+Other spokes remain unchanged pending their own pinned adoption/native review.
+
+## October 17 - front-sac repair in progress, candidates not installed
+
+User identifies front of hanging sac, not neck. See Base docs/SCROTAL-FRONT-20261017.md.
+Legacy surface transfer reintroduces shaft influence into lobe-owned sac.
+Three native diagnostic trials rejected: local fold, harmonic creases, then
+whole-sac transport with remaining upper lip. Latest session112539 closed;
+saves/audio restored. Installed DLL39de929d is unchanged. Current source edits
+and MMXFER03 are experimental, unpinned, and must not be installed.
+Private evidence: D:/MaleModBuilds/modular-anatomy-20261015/sac-front-20261017.
+
+## October 17 - root physics transition repaired and installed
+
+Witcher DLL39de929d7c5a43c0835211a6a162560a068708982fdfee7ac0f8f6bab7e65c9e
+is installed; Base modular pin37cc67f2970ed0a5225ed46d37e919b6b82114df.
+Continuous section rotation, final cleared bindings, complete socket anchor,
+radius-bounded live curvature and morphology-cache refresh repair the live
+base-to-shaft step. Rest collar/pelvis shape and numerical worker are retained.
+100 integer-angle replays and48 captured-pose audits pass. Reviewed native
+matrix/motion/restart/LOD/campaign captures precede exact installation.
+Installed room startup092805 observed;49 managed and31 protected hashes pass,
+24 saves/audio restored. Equivalent reordered input.settings restored exactly.
+Steam grey-room preflight passes. All owned sessions are closed.
+Exact rollback: Witcher local/native-backup-modular-20261017-092643.
+Evidence: D:/MaleModBuilds/modular-anatomy-20261015/root-step-20261017/delivery.
+See Witcher docs/ROOT-SECTION-CONTINUITY-20261017.md and Base
+ROOT-SECTION-CONTINUITY.md. Authored static concavity and extreme distal folds
+remain scoped limitations; this is not global self-contact or60Hz parity.
+Other spokes unchanged pending pinned adoption and their native gate.
+
+## October 17 - installed modular attachment and Steam grey-room update
+
+Witcher installed DLL38f034323a4c8bfe311c5307dfbc4d0207b0938e96f5184ae970ce3f5f528fa4,
+modular Base pin d36b141b092dae1b69922a81bb705fbcb64fa04d, unchanged numerical worker.
+Bounded root-ramp undershoot, broader rootward scrotal shoulder, suspension
+aligned after clearance, topology-aware presentation snap, keyboard Reset,
+and direct Steam development-room entry. See Witcher docs/MODULAR-ITERATION-20261017.md
+and Base docs/MODULAR-ITERATION-20261017.md. Educational scope remains active.
+192 native matrix/motion/LOD/campaign views reviewed;48 captured-mesh audits pass.
+Installed-path room startup observed,49 managed files verified,24 saves restored.
+Private evidence: D:/MaleModBuilds/modular-anatomy-20261015/iteration-20261017/delivery.
+Exact rollback: Witcher local/native-backup-modular-20261017-060524.
+Steam entry: The Witcher 3 - Development Grey Room; preflight passes.
+A small bounded concavity, ~2second angle rebuilds and extreme distal/flexible
+creasing remain; this is scoped attachment acceptance, not exhaustive parity.
+Other spokes remain unchanged pending their own pinned adoption/native gate.
+
+## October 16 - physics repair installed and startup verified
+
+Candidate DLL745c52e8 is installed after the registered native gate:96 full,
+36 motion,9 unobstructed LOD and39 campaign captures reviewed. Fixed matched
+material reference, rest transfer and complete distal ownership. Root motion
+now reaches the first free interval; walking guide lengths remain constant.
+Measured display publication31.49 Hz; not60 Hz. Extreme short/head-size
+combinations retain distal creasing. See MaleModBase/docs/MODULAR-PHYSICS-REPAIR.md.
+Exact rollback: TheWitcher3MaleMod/local/native-backup-modular-20261016-173954.
+Installed startup45 produced six reviewed campaign views without a preview.
+It is closed, audio restored,24 saves and7 settings/control hashes verified.
+All49 installed managed hashes verified; no Witcher process remains.
+Private proof: physics-repair/delivery/post-install-verification.json.
+Read the educational context and preserve current evidence after compaction.
+
+## October 16 - post-install physics repair in progress
+
+See MaleModBase/docs/MODULAR-PHYSICS-REPAIR.md for the active checkpoint,
+matched material-guide repair, native session ownership and remaining gate.
+Installed baseline remains 05485dfc; do not treat prior acceptance as approval
+of this new physics candidate. Read the educational context before resuming.
+
+## October 16 - modular model installed and startup verified
+
+Installed DLL SHA256: 05485dfc19ef0e4fbf7603b8ca6303202eae11cfb763e510ad67c0a75fb04d66.
+Base modular pin 16e941a; numerical worker/profile pin remains 431e626.
+Installer changed 11 coupled files and verified 31 protected files. Post-install
+verification matches all 49 managed file hashes and seven saved settings hashes.
+Registered native attachment acceptance: 32 configurations/96 views, 36 motion
+views, 39 campaign views and nine unobstructed LOD views. Both body resources
+and both LODs reached actual GPU draws. Captured geometry audits passed 32
+configurations and 12 motion poses without reversed ramp faces.
+Installed-path startup then produced 21 campaign captures without injection or
+host input. All owned sessions are closed, audio restored and 24 original saves
+verified per final session. No Witcher process remains.
+
+Exact rollback: TheWitcher3MaleMod/local/native-backup-modular-20261016-145452.
+With game closed, use adapter tools/mod.py restore-native --backup <absolute backup path>.
+Private proof: D:/MaleModBuilds/modular-anatomy-20261015/delivery/modular-acceptance.json.
+Post-install proof: same directory/post-install-verification.json.
+Base docs/MODULAR-NATIVE-INTEGRATION.md records source changes and limitations.
+Extreme short/wide/minimum-head settings retain distal wrinkles outside the
+collar. Exhaustive combinations, global intersections, every garment, performance
+parity and interactive desktop startup are not claimed. Unrelated dirty files
+remain. Five designated external reference JPGs were deleted and verified absent.
+These installed results supersede all pending and offline-only notes below.
+
+## October 16 - active modular native integration
+
+See docs/MODULAR-NATIVE-INTEGRATION.md for current source changes, actual native
+observations, private session ownership and remaining acceptance work. This
+supersedes the offline-only status below. Candidate is not installed or accepted.
+
+## October 16 - narrow trumpet ramp and shared shading (offline)
+
+User approved the natural ramp direction, then requested a seamless, narrow
+radial trumpet with a fuller underside for the raphe. Base now uses a 12 percent
+radial margin plus 8 percent extra ventral support, fading to zero at the sides.
+Lateral opening width and retained pelvis positions are unchanged. Directly
+inherited normal fields survive cuts; new strips match both retained endpoint
+fields. UV aliases retain separate tangents and mirrored handedness. This is
+source geometry/shading work, not a claim of seamless native materials.
+
+Private root: D:/MaleModBuilds/modular-anatomy-20261015. Module:
+trumpet-21-shared-shading; assembly: trumpet-22-ventral-ramp; seven collar-only
+cases: collar-matrix-22. Reviewed seamless-ramp-review.png, seamless-root-detail.png
+and seamless-ramp-angles.png. Fifteen focused tests pass; no reversed ramp faces
+in seven cases, no opposed generated-face shading normals in the sampled union
+and matrix, and boundary shading errors below 1e-12. Retained module geometry
+matches candidate14 within roundoff. Source hashes and measurements are recorded
+in Base provenance/modular-anatomy-authoring.json.
+
+Native materials, lower UV transfer (3920 singular UV faces in this authoring
+assembly), immutable morphology/physics topology, LODs, skinning and live checks
+remain outstanding. The complete shaft/sack was reviewed only at its neutral
+pose; the angle matrix isolates the collar without a posed sack. No installation,
+package, native room or campaign run occurred. Installed DLL remains
+2fde715c2f34635e77723d88d25a7948f94635637eb52cb5aa1aa5e47fcd49c4;
+retain the accepted rollback. Full verifier still fails at the pre-existing
+motion header/source extraction mismatch. Full attachment gate remains false.
+
+## October 16 - reconstructed anatomy and original-pelvis ramp (offline)
+
+Current shape: independent closed shaft, broad side-wrapped sack, and a welded
+compact ramp into the original pelvic surface. The target normal field now uses
+the measured shaft differential; the former 877-fold neck is superseded. Body
+mount and shaft frames are separate, with compressed-arc recruitment measured
+from actual oblique intersections. Preserve underside support when a ray misses
+the space between the legs. See Base docs/MODULAR-ANATOMY.md.
+
+Private root: D:/MaleModBuilds/modular-anatomy-20261015. Anatomy source candidate
+trumpet-14-local-tangent; completed body final-authoring-assembly; collar isolation
+matrix collar-matrix-20. Reviewed current-model-review.png and
+collar-angle-width-review.png. Twelve shared tests and seven offline collar cases
+pass. This is not game-slider, motion, material, LOD or gameplay acceptance.
+
+The original pelvis is unchanged. In the combined stock-body preview, 34 upper
+waist aliases use original lower waist positions (maximum 1.284 mm adjustment).
+Record both resources and native weights when adopting this. Lower body UVs are
+still a clay-preview placeholder. Native topology/quantization, material transfer,
+immutable physics/morphology ownership and posed sack behavior remain to implement.
+No new game install, package, dependency pin or native session was performed.
+Installed DLL still hashes to
+2fde715c2f34635e77723d88d25a7948f94635637eb52cb5aa1aa5e47fcd49c4.
+Retain its rollback until the full native attachment gate passes. The repository
+verifier still fails at the pre-existing motion extraction mismatch.
+
+## October 16 - modular shaft and broad side-wrap scrotum, offline authoring
+
+The user rejected pelvic-shape distortion and requested an independent complete
+shaft, separate sack, original pelvis and compact ramp. The sack must continue
+up both shaft sides and flatten into a continuous surface. See Base
+docs/MODULAR-ANATOMY.md for the implementation and reproduction recipe.
+
+Private candidate: D:/MaleModBuilds/modular-anatomy-20261015/trumpet-08-welded.
+Seven focused shared tests pass. The complete shaft and welded display union
+are closed; 848 boundary knots are shared. Lower sack vertices remain exact.
+This is source/offline evidence. Materials, pelvic ramp assembly, live mechanics
+and native topology/LOD adoption require implementation and review. No modular
+candidate has been installed or run in a native room. Keep the accepted runtime
+and rollback. Older dilation candidates below are superseded, not installable.
+
+## October 15 - collar continuation in progress, NOT installed
+
+Current private build/evidence: D:/MaleModBuilds/dilating-collar-20261014.
+The installed runtime and rollback remain unchanged. Latest probes are the
+`dorsal-*` series; they have not yet been visually reviewed or run in-game.
+New shared `collar_loft.hpp` is experimental. Full-circle lofts caused folds
+at the scrotal transition and were rejected. Current trial limits the loft to
+the dorsal shaft after rigid angle articulation. The body field now uses a
+tilted-cylinder intersection, preserving radial spacing of original edge
+donors rather than collapsing every donor to one radius. `dilating_collar_test`
+checks tilted girth and radial donor spacing; native acceptance is separate.
+
+Source Length reduction now scales with Overall in the opt-in target-owned
+mode. The trial that removed all source collar fitting was compared and
+reverted; current source retains the reference geometry passes. The worker
+opts into target ownership for this diagnostic only. Physics changes from the
+previous relative-dynamics candidate remain present. No normal installation,
+commit, dependency pin update, native session, or campaign check has occurred
+in this continuation. Do not call any candidate accepted.
+
+A whole-domain endpoint projection was tried and rejected: even neutral
+initialization retained 18 violations after 1024 iterations. It is not a
+validated repair and is not active. Body continuation prevents per-step
+signed-area reversal but does not establish absence of endpoint folding.
+Use actual composed meshes, not dimensions alone, to assess the next trial.
+
+## October 14 - shaft-sized opening diagnostic, NOT installable
+
+The latest user explicitly requests installation of a collar whose diameter
+tracks Width and Overall, with a modest recruited pelvic ramp. Installation is
+authorized once a valid tested candidate exists; do not ask for that again.
+The deliverable remains incomplete. The accepted installed DLL remains
+2fde715c2f34635e77723d88d25a7948f94635637eb52cb5aa1aa5e47fcd49c4.
+
+New optional MALEMOD_ENABLE_DILATING_COLLAR (default OFF) uses Base
+include/malemod/surface/dilating_collar.hpp. It prescribes the original edge
+masters so downstream fairing cannot contract the opening; body projection and
+final solve now use the same seam targets. The historical corrective is skipped
+only in this diagnostic because it was fitted to a different opening. Body
+recruitment is smoothed separately with a hard mouth. Projection iterations
+are configurable (historical default 128, diagnostic 2048). The diagnostic
+adapter can explicitly use its unverified isolated graft library only with the
+existing dirty/unverified flags AND the new diagnostic enabled.
+
+Measured maximum mouth width was 8.610 source units vs shaft 15.654; the new
+mouth measures 15.142. Removing absolute shaft fairing identified its contribution
+to the saddle, but is insufficient for a valid replacement. Minimum controls
+(Overall/Width/Length=1) visibly fold/protrude, and angle15 retains a ridge.
+Do not install or call this solved. Both LOD solves complete for the four initial
+cases; successful constraints do not constitute a visual pass. Native/campaign
+checks were not run for this rejected geometry. No new DLL was installed.
+
+Evidence and reproduction: D:/MaleModBuilds/dilating-collar-20261014;
+initial-cases.py runs the actual target probe against stored source fixtures,
+render.py draws actual composed meshes (OFFLINE, true side). comparison.png is
+the latest minimum-size and maximum-angle15 comparison. Earlier images have
+superseded variants. Provenance: provenance/dilating-collar-diagnostic.json in
+Base. Focused tests pass: dilating_collar_test (160 dimension samples),
+graft_orientation_test, graft_sewn_curvature_test. No full gate claimed. Repository-wide tools/verify.py stops at the pre-existing
+Motion header differs from source extraction mismatch.
+
+Next: trace the minimum-size source-to-module mapping and identify proximal
+shaft rows affected by angle junction versus surface fairing. A dimension-only
+mouth constraint does not yet produce a smooth circumferential ramp. Preserve
+UV aliases and edge donors. Resolve these before native grey-room review and
+campaign validation. Then perform the authorized official install with rollback.
+No other spoke has adopted this diagnostic; adoption requires pinned shared
+revision and independent visual/runtime validation in each spoke.
+
+## October 14 - relative physics response candidate, reviewed but not installed
+
+The previous scrotal preview was rejected as rigid. The shared opt-in now
+uses effective-mass transverse suspension compliance, makes root damping
+follow Bounce, reduces curvature damping and consumes all 0.15-second native
+requests. Root stiffness, continuous 12-node rod, tether limits and contacts
+remain. A rejected proximal-stiffness experiment was removed.
+
+Matched settled traces show 5.19/5.45x default-size and 2.43/1.67x maximum-size
+lateral lobe response relative to the attachment. Root-relative tip motion
+is lower in this particular source test; do not claim every response increased.
+The old 50/150 ms clock test differs by 1.031 source units; the candidate's
+sampled rod matches. Enabled and disabled worker parity pass 48 frames each;
+five surface cases and 27 skin unit scenarios pass.
+
+Native sessions 223030 (57 attachment views) and 223856 (36 motion captures)
+are CLOSED, saves/audio restored and temporary room removed. All images were
+reviewed; separate lobe swing and distributed shaft bending are visible.
+Minimum-size protrusion and extreme compression remain. Full attachment,
+campaign, garment and performance gates are not passed. No install or pin.
+All 39 accepted installed files remain hash-verified. Exact evidence and preview:
+D:/MaleModBuilds/relative-dynamics-20261014/final-proof.json and
+relative-native-motion.gif. Shared record: provenance/relative-dynamics.json.
+
+## October 14 - scrotal preview rejected; relative dynamics revision in progress
+
+The user rejected the 212438/212816 preview as still essentially rigid.
+Those captures and tests are historical evidence, not visual acceptance.
+The active investigation measures settled root-relative shaft bending and
+anchor-relative lobe response, excluding common motion and initial settling.
+The accepted installed angle runtime remains protected. See the new private
+D:/MaleModBuilds/relative-dynamics-20261014 comparison and current source.
+
+## October 14 - continuous shaft and compliant scrotal skin preview
+
+User requested a less rigid scrotum and explicitly reaffirmed that the hidden
+shaft must remain a continuous mechanical object. Base SCROTAL-COMPLIANCE.md
+documents the 12-node rod, two independent contents bodies, 0.12 material
+suspension station and immutable donor-based skin ownership. Eleven rod spans
+and the coupled suspension Jacobian are retained. Optional compliant skin and
+control-dependent angular/shear response address the fixed 20000/120 upright
+spring and stateless pouch envelope. Default behavior remains opt-out.
+
+27 unit scenarios pass; five 120-frame source cases retain zero secondary
+skin displacement on shaft/body-owned vertices. Enabled worker matches direct
+API for 48 frames; disabled recipe matches the installed worker for 48 frames.
+Native sessions 212438 (36 motion frames) and 212816 (57 attachment views) are
+CLOSED; saves/audio restored, room/driver removed. Reviewed all motion and
+side/front/oblique sheets. Motion and settling visible; sampled attachment
+continuous. Inherited tiny-size/extreme compression limitations remain. Full
+attachment/campaign/garment/performance gate NOT passed. No install/pin/release.
+
+Private proof: D:/MaleModBuilds/scrotal-compliance-20261014/final-proof.json.
+Preview: scrotal-native-motion.gif; actual source physics diagram:
+mechanical-partition.png in the same directory. Base source identities and
+adoption: provenance/scrotal-compliance.json. All 39 normal managed installed
+files reverified; original accepted angle runtime/rollback preserved.
+
+## October 14 - physics cadence repaired; candidate not installed
+
+User reported reduced motion after accepting the angle fix. The controller's
+single catch-up step fell behind slow target updates. Witcher now batches source
+steps and composes the target once; Base reuses junction topology/symbolic
+analysis while refreshing the exact current metric. See Base PHYSICS-CADENCE.md.
+All 189 cases / 378 settled LOD outputs match the installed collar byte-for-byte;
+24 moving-pose serial parity/pause checks and the shared refreshed-metric test
+pass. Legacy runtime_controller_test was updated but not run.
+
+Native evidence: first 57 attachment views of 203037 plus 36 valid motion frames
+of 204501; 7.2403 seconds pose time / 7.2210 seconds physics time, 7.5319 m travel.
+Reviewed the three attachment sheets and motion contact sheet. Shaft/lobe motion
+is visible, with continuous attachment in sampled views. Later optional captures
+668-680 of 203037 and motion session 203931 were invalid due C: disk exhaustion;
+these are excluded from visual proof. All three sessions are closed, temporary
+driver/room removed and audio/saves restored. Existing small-size and downward
+compression limitations remain; full attachment/campaign/garment/performance
+gate has NOT passed. No pin/commit/release.
+
+Candidate DLL df25874dcf3f72d1c9d021bb68d8e2972db6bd855c360865bd26f0297e7cf7a8
+is NOT installed. Accepted 2fde715c runtime and exact rollback remain intact;
+all 39 managed installed files reverified. Evidence and visual review:
+D:/MaleModBuilds/witcher-fixed-collar-20261014/physics-final-proof.json
+and physics-native-motion.gif. Source identities: provenance/physics-cadence.json.
+
+User then requested C: cleanup. Hash-identical old cooker scratch copies and
+duplicate captures were deleted; original SDK assets and all evidence remain.
+Deletion manifest: D:/MaleModBuilds/cleanup-20261014/.
+
+## October 14 - user-selected root articulation installed
+
+After reviewing the six native side profiles, the user explicitly requested
+installation. Installed the exact reviewed DLL plus MMSEWN02 corrective and
+MMPREC03 ownership data; all 39 managed files verified. DLL SHA256:
+2fde715c2f34635e77723d88d25a7948f94635637eb52cb5aa1aa5e47fcd49c4.
+31 protected save/settings/audio files are unchanged; 37 rollback files verified.
+Exact rollback in Witcher local/native-backup-root-20261014-194227/Restore.ps1.
+The existing startup compatibility repair, source worker, bindings, renderer,
+settings and normal gameplay scripts are retained. No sandbox driver/package
+was installed. No normal game process was launched by this installation.
+
+This is the explicitly selected development candidate, not a released clean
+Base pin or a full attachment/campaign/garment/performance pass. Existing limits
+in ROOT-ARTICULATION.md still apply. Prior preview evidence remains historical.
+Private receipt: D:/MaleModBuilds/witcher-fixed-collar-20261014/selected-install-receipt.json.
+
+## October 14 - rejected spatial hinge; material root articulation in review
+
+The user rejected the 071207 proximal-flow preview: a stationary neck still
+created a saddle and the travel was too narrow. Do not install that candidate.
+Current work replaces the broad spatial angle mask with rigid shaft handles,
+a root-local pivot and a constrained junction extension. Read Base
+`docs/ROOT-ARTICULATION.md`. Normal installation and rollback remain unchanged.
+The first new native session 184159 is CLOSED; its live pose-dependent ownership
+mask exposed another classification error and is superseded in source. New
+MMPREC03 preserves original material ownership across mechanical states.
+Final candidate session 190815 is CLOSED: 57 native views, all gains [1,1],
+both body resources and LOD outputs, with saves/audio restored. Reviewed all
+three sheets and six enlarged side profiles. The upper stationary saddle is
+absent in these samples; downward underside compression and inherited tiny-size
+defects remain outside acceptance. Final 189 cases / 378 outputs have no new
+folds/collapses or backward slider steps; fixed rows and shaft girth are exact.
+DLL: 2fde715c2f34635e77723d88d25a7948f94635637eb52cb5aa1aa5e47fcd49c4.
+Evidence: D:/MaleModBuilds/witcher-fixed-collar-20261014/ownership-final-proof.json
+and ownership-native-side-angles.png. Full attachment gate is FALSE; no campaign,
+garment parity, full shape/LOD matrix or performance acceptance. No normal
+installation, commit, release or dependency pin changed. User visual review pending.
+
+## Historical rejected preview: 2026-10-14 proximal angle correction
+
+User rejected both the initial almost-stationary preview and its shorter distal
+bend: angle applied only to the second half. Current opt-in candidate uses Base
+`attachment_hinge.hpp`, an observed original-edge seam pivot region, protected
+material core and shared endpoint constraints. Do not revert to the old broad
+corrective exclusion mask or claim that its zero-motion pass was sufficient.
+
+Final native session: `build/probe/sealed-session-20261014-071207/receipt.json`
+in the Witcher adapter; CLOSED. DLL 60d99adac11d5acd8f29c7cdafc1fac0a3d00765ae5641507c0f58cc9c08b277.
+57 side/front/oblique views completed, including size/state changes and walking;
+all captured gains [1,1]. The preceding run 065725 stalled at a live size-change
+constraint failure and was closed; exact transient inputs motivated explicit
+bounded angular admissibility and now replay without new folds in both LODs.
+189 settled cases/378 LOD outputs, 378 interpolation intervals: no new folds or
+collapses, exact fixed collar/body/core, donor error <=2.491e-13. The 15-35 percent
+proximal sample now changes +23 degrees at maximum size versus zero previously.
+
+Evidence and images: D:/MaleModBuilds/witcher-fixed-collar-20261014/
+final-hinge-proof.json and hinge-native-side-limits.png. Reviewed all three native
+contact sheets. Tests show the focused angle fix; full attachment gate is false.
+No campaign/garment contact parity or complete distant-LOD/shape-control coverage;
+minimum-size inherited shape defects remain outside this repair. No performance
+parity: source/target medians 47.15/124.80 ms. NORMAL INSTALL UNCHANGED, user visual
+approval pending, no commit/pin/release. All private game processes are closed.
+See Base docs/FIXED-COLLAR-ANGLE.md for current design, reproduction and adoption.
+
+## October 14 - fixed collar angle preview
+
+Latest user request: Angle must not reshape the collar; restricting travel is
+accepted. Implemented Base fixed_root_bend.hpp and an opt-in Witcher adapter
+(MALEMOD_ENABLE_FIXED_COLLAR_ANGLE). Read docs/FIXED-COLLAR-ANGLE.md in Base.
+Source/collar use reference control 35; requested Angle bends the outer shaft
+past the measured fixed material boundary. Nominal distal travel is +/-25 deg,
+further limited for short/wide shapes. Very short shapes may have little travel.
+81 offline cases / 162 LOD outputs preserve collar and excluded anatomy exactly,
+with zero new folds/collapses. Native session sealed-session-20261014-042325
+completed 57 views and walking, then closed/restored saves/audio. Reviewed actual
+side/front/oblique captures. Normal install/pins/rollback are unchanged; no full
+campaign/garment-reaction gate is claimed. Source physics uses the reference pose.
+Preview manifest: build/native-preview/preview-1791966169897155900/preview.json
+in Witcher. Evidence: D:/MaleModBuilds/witcher-fixed-collar-20261014.
+The previous closed preview was individually hash-archived to that evidence
+root; its original screenshots remain available. No licensed junction deletion.
+
+## October 14 - collar repair implemented in a private native preview
+
+Read COLLAR-NATIVE-20261014.md first. Exact-donor endpoint constraints and
+measured upper-clearance activation now run in Witcher. The 63-case/126-LOD
+matrix has zero new folds/collapses and exact exclusions. A closed native room
+session captured 57 views including angles 10-90, sizes/states and walking.
+The deep cleft closes in reviewed views; a narrow upper crease remains. Full
+visual/campaign acceptance is pending. Saves/audio restored; normal runtime,
+rollback and dependency pin retained. Do not restart pivot-only experiments.
+
+## October 13 - active collar coordination repair
+
+Read COLLAR-COORDINATION-20261013.md before resuming. The original-pivot
+dorsal-release experiment restores exact angle-50 baseline parity and removes
+the deep raised upper cleft, but lower defects reject the candidate. New
+constrained fits are still under evaluation. No normal installation or native
+acceptance occurred; preserve the accepted runtime and rollback.
+
+## October 13: measured stock-pelvis anchor investigation
+
+See docs/STOCK-PELVIS-ANCHOR-20261013.md. Original Geralt surface gives a
+candidate pivot 25 mm inward and 9 mm down; original triangle donors recorded.
+Shared measurement/CLI and 17 targeted tests pass. Seven-angle offline trials
+are not native adoption; even angle 50's triangle pass has visible defects.
+No installation. Preserve accepted runtime and full attachment gate.
+
+## October 13 - narrow collar and upper-height bounds (offline only)
+
+Latest user correction: keep the collar close to shaft width and avoid making
+it taller above the shaft. Shared swept-section support now anchors the lateral
+and upper planes and uses a convex inferior allowance. Forty-two maximum-size
+opening checks across states, angles 10-90 and both LODs retain full clearance,
+positive edge order, 1.5-1.6% additional width and zero upper overshoot. This is
+not a full-mesh or native pass. Surface fitting still has rejected folds; no
+replacement was installed. Eleven Python and expanded standalone C++ constraint
+tests pass. See docs/COLLAR-SUPPORT-20261013.md for evidence and adoption limits.
+The earlier suspected LOD1 donor/corner mismatch was disproved; original seam
+parents are the actual nine boundary corners. Preserve their interpolation.
+
+## October 13 - collar support development continues
+
+See COLLAR-SUPPORT-20261013.md for the material support implementation, root-guide
+feedback and seam-donor findings, passing unit/captured-mesh tests and remaining
+visual, performance and native gates. Studies are offline and unaccepted; normal
+Witcher installation, exact rollback and adapter pin remain unchanged.
+
+## October 12 - executable attachment corrective preview
+
+Shared material-bound correction and ownership/support laws are implemented and tested. Both LODs pass 48 offline angle/state cases; six captured native LODs retain hard exclusions exactly. The private room has 24 focused views. Angle 15 improves substantially; a smaller crease at 25 and the full visual/campaign attachment gate remain. Normal installation and dependency pin are unchanged. See ATTACHMENT-CORRECTIVE.md (Base) and ATTACHMENT-CORRECTIVE-20261012.md (Witcher).
+
+## October 11 - circumference study remains unaccepted
+
+Continued the educational attachment repair with exact material lineage,
+measured perimeter checks and actual native-buffer composition on both LODs.
+The user requires approximately shaft-sized circumference plus underside
+clearance and renders before installation. Current loft and spatial-flow trials
+still crease or form a wedge; none is accepted or installed. See the Witcher
+adapter's docs/ATTACHMENT-SADDLE-20261011.md and private
+D:/MaleModBuilds/witcher-root-curvature-20261011. Full attachment gate remains
+failed; retain the installed launch repair and exact rollback.
+
+## October 11 - Witcher raised-angle attachment remains rejected
+
+The user supplied an in-game saddle depression and abrupt upper-root transition.
+The Witcher adapter reproduces the exact private controls against its installed
+Base 431e626 worker/binding/render. Exact seams and body-orientation metrics do
+not certify curvature. Broader/upper-only fairing and upper-loft retraction
+trials were rejected; no shared algorithm or geometry runtime was promoted.
+See ../TheWitcher3MaleMod/docs/ATTACHMENT-SADDLE-20261011.md and private
+D:/MaleModBuilds/witcher-saddle-20261011. Full attachment gate remains failed.
+The separately installed October 11 game-launch compatibility repair retains
+the existing geometry. Keep future shared correction/lineage/regressions here,
+with measured Geralt integration and native checks in the pinned adapter.
+
+## October 10 - sewn boundary and saddle correction installed
+
+Installed production 25ca1204061a0a7c0bcdc7943031d8ac8263a1d12c9b4c588efb64d3339ba3fa
+to C:/Games/X-Men Origins Wolverine/Binaries/d3d9.dll; hash verified.
+Base pin 47023a7f53d794cff84f2f423ba6a7d1fb98ec0f. Source identity
+10ea90218b16ac10c5d7ac93fc272fa2bd327b5746172a2aac6064302192c1d7.
+Only shared pouch_cage.hpp changed among 566 compiled inputs.
+The fitter now derives the cage boundary from the actual sewn polygon and
+propagates exact seam detail, replacing the former immediate elliptical base.
+Removed the upper local-radius release responsible for the saddle depression.
+
+Focused source regression passes and fails against the previous oval-base code.
+Reviewed 20 native control cases, 22 orbit/size views, three exposed attachment
+views, 13 selected motion frames and four campaign captures. No fitting rejects.
+Representative room preparation means remained around 2.9-3.1 ms. No new paired
+FPS benchmark is claimed. Room run 20261010-150456-a7043c and campaign run
+20261010-151021-5a10b3 closed; room prior DLL restored; no host input/focus used.
+This is the requested focused development update. Full attachment certification
+is false: exhaustive all-LOD/body-resource/motion combinations were not rerun;
+prior source-identical body evidence is retained separately. No continuous
+collision or campaign reload-cycle claim. Private receipt:
+D:/MaleModBuilds/jockstrap-boundary-20261010/install-evidence.json.
+
+Exact rollback to the rejected 6fb31e30 build is retained at
+C:/Games/X-Men Origins Wolverine/WGame/ModBackups/
+Meridian-development-20261010-151424-022be3/Restore.ps1; the earlier accepted
+9919da09 rollback chain remains intact. Installer verified protected files and
+rollback. Saves/settings/audio preserved. No push or release; canonical main
+remains 68 commits ahead of origin with pre-existing and current working edits.
+User acceptance of the replacement appearance remains separate from this review.
+
+## October 10 - oval attachment and saddle correction in progress
+
+The user rejected installed 6fb31e30: its oval shoulder remained and the upper
+local-radius release introduced a saddle. Previous visual acceptance below is
+superseded for garment shape. The authored seam is already the actual waistband
+arc plus side hems. FitPouchCage replaced its adjacent rows with an ellipse.
+New Base pin 47023a7f53d794cff84f2f423ba6a7d1fb98ec0f instead seeds each cage ray
+from its intersection with the sewn polygon, preserves nonplanar seam detail
+continuously, pins cage row zero, and removes the upper local-radius release.
+A nonelliptical outline regression fails the old code and passes the correction.
+Source identity 10ea90218b16ac10c5d7ac93fc272fa2bd327b5746172a2aac6064302192c1d7:
+565/566 compiled inputs unchanged; only shared pouch_cage.hpp differs.
+Native review and installation remain pending. Private build/evidence directory:
+D:/MaleModBuilds/jockstrap-boundary-20261010. No complete attachment gate claim.
+
+## October 10 - waistband cone correction installed
+
+Installed 6fb31e30af86dd88ec8b32f3d5b7ab0e341a1c48d6477238f5415fc09b6fb4de
+to C:/Games/X-Men Origins Wolverine/Binaries/d3d9.dll. Base pin
+add4d255ce9faae485c1f9502e296e132c681b10; source identity
+870e94086e24554186e9d606052d71ad9c36c8ca233aa692b912c848537a9bca.
+Exactly one compiled input changed: shared garments/pouch_cage.hpp.
+Upper-waist rays blend local contact into the original distal envelope,
+allowing a curved waistband transition while retaining the rounded underside.
+Removing the whole envelope made the pouch lumpy and was rejected.
+565 anatomy/physics/material/control/binding inputs remain byte-identical.
+
+Focused acceptance: shared seam/covariance/finite/cadence test, source provenance,
+20 native control cases, 22 views, 3 exposed attachment views and reviewed motion
+samples; original campaign front/side running with tank and pouch. No fitting
+rejections; representative preparation remains around 2.8-3.0 ms. Prior broad
+unchanged-body numerical/LOD evidence retained by source identity, not rerun
+exhaustively. No continuous collision or fresh reload-cycle claim.
+Room run 20261010-143041-fa3d43 and campaign 20261010-143835-02b23a closed.
+Room prior DLL restored. No host input/focus. Private evidence:
+D:/MaleModBuilds/jockstrap-waist-20261010/install-evidence.json.
+
+Exact rollback: C:/Games/X-Men Origins Wolverine/WGame/ModBackups/
+Meridian-development-20261010-144251-69d5b0/Restore.ps1. Prior runtime9919da09
+retained; installer verified rollback and protected saves/settings/audio.
+Canonical c718b1b plus named overlays; Base compatibility pins local. No push
+or release. Existing uncommitted work retained. Other spokes adopt the shared
+pin with their own binding/visual checks.
+
+## October 10 - optimized pre-shaped jockstrap installed
+
+Installed normal runtime 9919da09202c9e339db79a4b38df95eeaa0118055dc121df3759279f8c829cb8
+to C:/Games/X-Men Origins Wolverine/Binaries/d3d9.dll. Canonical c718b1b plus
+named hashed overlays, Base pin 3ee59844520e9e4ca6ad949594df9e6c9b2a297c;
+source identity 37e6b6afca3d61f4b49105fa0197e8bd4bba4f93731821abbaebb327b28672dd.
+Exact rollback: C:/Games/X-Men Origins Wolverine/WGame/ModBackups/
+Meridian-development-20261010-134102-530873/Restore.ps1 (prior ab1f8d8e).
+Installer, installed hash, protected save/settings/audio hashes and rollback
+ValidateOnly passed. No private test hooks in installed DLL.
+
+Pre-shaped cage/local contact, CPU source caching and covered cadence replace
+the expensive walker; covered support damping, coherent minimum Length and
+measured Angle bounds repair visual failures; buffer ownership resets on reload.
+147 static / 540 motion / 480 pulse numerical cases passed. Actual character
+has one supported LOD and both body resources were covered. Required sampled
+attachment gate recorded: 133 room images plus campaign evidence, all 3 states,
+size combinations, extreme mapped angles, orbit and motion. This is sampled
+visual acceptance, not continuous collision or every possible pose proof.
+
+Paired fitting CPU 37.875 -> 2.110 ms (94.43% less, 18x). Final native campaign
+Tank + Jockstrap averaged 32.124 ms / 31.13 FPS over 1,080 active frames at720p.
+Landing, damage, running, death and checkpoint rebind/visibility observed.
+Post-reload movement was not captured before bounded timeout. Room exit0,
+campaign bounded exit124; no owned game remains. Room prior DLL restored.
+The earlier host MEMORY_MANAGEMENT BSOD also occurred October8; cause remains
+unknown and no machine stability fix is claimed. Short reruns completed.
+
+See canonical docs/JOCKSTRAP-PLAYABLE-ACCEPTANCE.md and private evidence
+D:/MaleModBuilds/jockstrap-acceptance-20261010/install-evidence-final.json.
+No commit/push/release. Named overlays and unrelated dirty work retained;
+Wolverine ahead68. Other spokes adopt pinned shared Base with native tests.
+
+## October 10 - pre-shaped pouch implemented; native room measured, full gate pending
+
+Shared Base pouch cage/budget pin c2bf9699646a607e48f272d88eb4d58bc6b2f49d
+replaces the walking/following/retry path in current Wolverine source. Local
+24x17 controls, outward seam winding, rounded interpolation and local sampled
+contact preserve the sewn boundary. Persistent CPU authored geometry avoids
+repeated GPU readback; exact-input support caching and 120 Hz covered contents
+plus alternate-frame fine skin reduce the other dominant costs.
+
+Paired 14-pose replay: optimized walker 37.875 -> cage 2.110 ms, 94.43% less fit
+CPU. Final sealed native run 20261010-114753-6238ec: 22 views, 49 motion samples,
+20 control cases, no fit rejection; settled 25.209 ms / 39.7 FPS over 2,040
+frames at 1280x960. This is private-room cadence, not retail campaign parity.
+72 complete geometry frames remain byte-identical after the CPU buffer change.
+Original material restored after an unlit probe showed later native attenuation;
+no speculative shadow bypass remains. See Base docs/JOCKSTRAP-CAGE-IMPLEMENTATION.md
+and D:/MaleModBuilds/jockstrap-cage-20261010/report/Pouch-comparison.html
+(103 original embedded images, source/hash checks and JavaScript syntax pass;
+browser preview not verified because local URL policy blocked it).
+
+Normal uninstalled DLL: D:/MaleModBuilds/jockstrap-cage-20261010/production-original-lighting/d3d9.dll
+SHA256 2c45bbf6e84f042bb7939b99fa477d6a0d965896ac994260f2d0466832a4b61d.
+Test-only candidate16 SHA256 1e1e020778b47d115cb2c28d2a6f167edeac5d4dd376cde13c01aa64b2ad8c45.
+Normal build uses canonical c718b1b plus named overlays and pinned Base; sealed
+native harness inherits 3fe6ddc/Base608f with named current overlays, separately
+recorded. Full attachment/LOD/campaign/human-feel acceptance remains FALSE;
+contact audit is sampled and excludes the first two sewn display rows. Retail
+ab1f8d8e is unchanged. Final owned child exited 0; room DLL restored to74ec982f,
+no diagnostic request files remain, no host input/focus. No push or release.
+Shared tests/provenance and normal build pass. Full Base verify still fails at
+preexisting motion-header extraction drift; sandbox recipe still reports the
+preexisting sealed_d3d9.hpp hash mismatch. Do not refresh unrelated hashes.
+Compatibility pin is local/unpushed; main working changes remain uncommitted.
+
+## October 10 - completed jockstrap optimization and rejected oval comparison
+
+See Base docs/JOCKSTRAP-OPTIMIZATION-COMPARISON.md and the self-contained report
+D:/MaleModBuilds/jockstrap-audit-fixes-20261010/report/Jockstrap-comparison.html.
+Final paired replay: 139.876 -> 36.044 ms (74.23% less rebuild CPU), identical
+geometry/rejection receipts. Local Base pin bd7c4a77387b3f340c1ee2b3aa4a63300519d922
+plus Wolverine attempt guard and all-call timing are implemented. The separate
+16-section loft takes 1.068 ms but is VISUALLY REJECTED: side views show ribs,
+protruding lobes and excessive maximum-size volume. Do not adopt it.
+Production candidate DLL SHA256 9d23137b8cc279be1152942cc05a31491d6f4854c963762222d4233ff4432262
+is built privately, not installed. Retail remains ab1f8d8e. Relevant tests and
+replay pass; full Base verification still hits prior CMake motion-provenance
+drift. Partial native room comparison is not full attachment/LOD/campaign
+acceptance. Both owned runs closed; no host input/focus. No push or release.
+Compatibility pin is local/unpushed; unrelated working changes are preserved.
+
+## October 10 - retail jockstrap regression audit
+
+Read docs/JOCKSTRAP-REGRESSION-AUDIT-20261010.md before further performance work.
+The retail DLL hash still matches ab1f8d8e. Latest retail log samples read today
+report 425.2613 ms mean / 920.1850 ms peak garment Draw, with 88 wraps and 33
+follows in 121 attempts; menu controls include Overall86/Width100. Source confirms
+installed follower fairing, 64x40 collision density and nested taut retries.
+New findings include possible repeated failed preparation across draw hooks and
+success-only timing that omits rejected work. Retry frequency remains unmeasured.
+Prioritize coherent-pose attempt guards, lazy/early-exit certification and stable
+sewn patch construction. Audit only: no mod edit, installation or fresh native
+acceptance. Existing rejected candidates remain rejected.
 
 ## October 10 - additional fast garment paths rejected
 
@@ -2810,3 +3604,223 @@ authored-stage oracle tests pass. See SHAPE-TRANSPORT.md for remaining limitatio
 ## Wolverine voice-pool transcript (October 2, 2026)
 
 Recovered filename-encoded transcript for the 24 WAVs in the installed Wolverine voice pools. See [VOICE-POOLS.md](VOICE-POOLS.md) and its CSV for exact lines, source MP3 and installed WAV sizes, durations and audio-match evidence. Observed counts are Phase 1 = 13 and Phase 2 = 11; the older synthetic sequence regression uses 13/7. No audio files or runtime behavior were changed. Geralt playback/integration remains deferred.
+
+
+## October 11 continued saddle investigation: unresolved
+
+No production geometry change or installation was made. The private trials in
+D:/MaleModBuilds/witcher-root-curvature-20261011 remain unaccepted. See
+current-failure-checkpoint.json for exact artifact hashes and limitations.
+Calibration-locked native vertices are outside the attachment. The incoming
+module boundary measures about 0.164 m across versus 0.087 m after the current
+fit, but preserving that incoming boundary still leaves the dorsal saddle.
+Do not treat this narrowing or a source-guide mismatch as a complete diagnosis.
+Fitted-section lofting, broad/bounded fairing, rigid fitting-offset transport,
+compact spatial compression and module-driven boundary trials all failed the
+visual requirement. Compression reduces the saddle but leaves a narrow valley
+and lower crease. No new native-room/campaign or full-control regression pass
+was completed. One joint-raw diagnostic explicitly bypassed the native
+orientation guard after a guarded failure and cannot count as valid evidence.
+The clean Base worktree has no production source changes. Preserve the working
+launch repair and last installed geometry; no trial is approved for adoption.
+
+
+## October 11 controlled collar-stage isolation (still unresolved)
+
+Private study: D:/MaleModBuilds/witcher-cause-20261011.
+No production geometry edit, adapter pin change, or installation was made.
+The instrumented worker and independently rebuilt target evaluator reproduce
+all eight neutral/reported source, LOD and native-render baseline buffers byte
+for byte. Final recheck is baseline-recheck.json. Exact installed launch-repair
+DLL hashes remain unchanged.
+
+Controlled source ablations cover coarse collar fairing, retopology bands, root
+profile, pelvic ramp, junction and final unified solve. Adapter ablations use
+one frozen source output and separately remove absolute-surface fairing, root
+transition, the displacement solve, or normal fairing. Removing adapter surface
+fairing changes vertices by up to 0.09878864 m, but leaves a pinched junction.
+Normal fairing changes no positions. Coarse FairUnifiedCollar explicitly uses
+intentional shrinking diffusion; GraftPlan's surfaceMetric penalizes absolute
+curvature even when baseMetric preserves target displacement differentials.
+These identify shrinkage contributors, not a complete sole-cause diagnosis.
+
+The exact source cage is already concave before the final unified solve.
+Reordering coarse fairing before pose, a correction-only unified solve, a
+moving radial target frame, neighborhood-based fitted-offset rotation before
+retargeting, and continuous pose membership all failed visual review. None is
+an accepted fix. Do not promote private binaries or mistake trial filenames
+for recommendations. The source pose orientation comparison is a heuristic,
+not proof that 212 triangles are physically inverted.
+
+The final image smoothing-diagnostic.png shows front/side/oblique actual native
+buffers with matched cameras and light. It compares installed geometry with
+adapter surface fairing disabled; both are explicitly unaccepted. The full
+record is investigation-checkpoint.json. Candidates covered only the reported
+controls, not the full controls/motion matrix. No native room or campaign
+observation occurred. The mandatory attachment gate remains unpassed.
+
+
+## October 11 continued junction reconstruction - no accepted replacement
+
+Study D:/MaleModBuilds/witcher-junction-20261011 remains entirely private and
+unaccepted. See investigation-checkpoint.json for hashes and scope. No
+production geometry edit, adapter pin change or installation occurred. All eight
+neutral/reported baseline buffers remain byte-identical after instrumentation;
+installed launcher repair DLLs, executable and binding hashes are unchanged.
+
+Refreshing the cached source metric length (about 25 versus the settled guide's
+about 60 source units) does not remove the saddle. Signed cotangents and
+conforming seam triangulation, individually or combined, do not remove it.
+Preserving exact measured seam-donor positions through final fairing retains
+their width but still leaves the angle-dependent saddle. Axial residual
+preservation, unified transport coordinates, and anchored fitting-offset
+rotation were also rejected. None establishes the sole cause.
+
+An immutable harmonic material chart avoids the zero-station collapse of prior
+lofts, but all chart/sweep/envelope candidates still fail visual requirements.
+Coupled-dorsal improves its side silhouette while distorting the surrounding
+pelvis in front/oblique views. Intrinsic deformation from the same controls at
+Angle 50 produces folds even when restricted to the local collar. The material
+and implicit envelope trials failed native orientation checks. Do not install
+or present any study render as an accepted repair. Tests cover the reported
+controls only, not the required complete shape/state/motion matrix. No native
+room or campaign verification occurred. The attachment gate remains unpassed.
+
+## October 11 polygon-level saddle trace — no accepted replacement
+
+User requested one saddle polygon's complete deformation lineage, in service
+of removing the saddle at moderate upward angles. Private evidence:
+D:/MaleModBuilds/witcher-polygon-trace-20261011/REPORT.md and checkpoint.json.
+LOD0 domain triangle14064 (native resource0 face7674), unique12595/12596/8228,
+maps to source4555/4556/188 and primarily coarse985/2219/2256. Instrumented
+baseline eight buffers and independent adapter outputs remain byte-identical.
+
+At Angle25 the source raphe skin pass moves this sample zero; the adapter
+pelvis blend moves its centroid down41.046mm, then the final solve down6.200mm.
+The blend compares fixed rest seam distances with a posed-radius support reach,
+extending static pelvic ownership into shaft-side material as size increases.
+Absolute surface fairing also contracts the recruited opening. At Angle10 an
+additional problem appears: dorsal-at-rest material receives full ventral raphe
+skin profile weight after its lightly-following collar is classified in the
+live shaft frame. An immutable ventral-material test alone does not fix Angle25.
+
+Rest-space reach plus preserved recruited dorsal donors removes the moderate
+side dip in the private test, but an oblique ridge and steep-angle crease remain.
+Preserving the full opening also creates a lower-junction defect. Reject all
+as completed repairs; do not install. Further work must couple recruited dorsal
+boundary position and shaft-side derivative under one material-space handoff,
+without shrinking the collar or changing the surrounding anatomy. No production
+geometry, adapter pin, installed runtime or game assets changed; hashes verified.
+Full controls/states/LODs/motion and native room/campaign gate remain unpassed.
+
+
+## October 11 angle-conditioned collar preview
+
+Shared header/tests and a guarded Witcher adapter integration are saved. See
+docs/ANGLE-CONDITIONED-COLLAR.md. Thirteen static cases across both LODs pass
+finite-output/seam/protected-boundary checks; front/side/oblique offline renders
+show reduced moderate-angle depression, but an oblique ridge and steep-angle
+crease remain. Full attachment acceptance is false. No installation or Base pin
+change. Private evidence: D:/MaleModBuilds/witcher-angle-response-20261011.
+
+
+## October 11 sewn-curvature follow-up: visual repair unresolved
+
+See Base docs/SEWN-CURVATURE-20261011.md and private evidence at
+D:/MaleModBuilds/witcher-ridge-20261011. Two numerical defects were reproduced:
+seam fluxes were squared before joining, and clipped cotangents lost linear
+precision. A shared, default-disabled coupledCurvature option fixes the flat
+sewn-plane regression (0.0573148 to 6.353e-17 synthetic units). Orientation tests
+pass; four real-domain default replays are byte-identical. Graft hashes verify;
+full verification still fails the pre-existing motion extraction mismatch.
+
+No clean geometry candidate: full coupled solutions move nearby anatomy; fixed
+lower/semantic regions create folds; rim-floor constraints produce LOD1 ledges;
+source diffusion ablations still crease. Do not install or call these repairs.
+No new adapter edits, pins, bindings, native observations or installed changes.
+The full attachment gate remains unpassed. The requested saddle/ridge fix is
+not complete. Retain the accepted runtime and exact rollback.
+
+
+## Angle-driven material arc release, 2026-10-11
+
+See Base docs/COLLAR-ARC-RELEASE.md and private witcher-ownership-20261011/arc-final-audit.json. Shared arc response and per-row fairing retention are implemented/tested. Guarded adapter preview uses original source output, lineage-mapped material arcs, inactive-tissue constraints, and a posed-reference orientation guard. The oblique crease remains; attachment acceptance is false. Nothing installed; hashes verified. Source pose-follow, full-area and positive-up variants were rejected. Do not install or describe this as a completed visual repair.
+
+
+## October 12 user selection: retain Original comparison baseline
+
+The user prefers the Original top row of the side-angle comparison and asks
+for that appearance in the mod. This supersedes pursuing or adopting the
+reduced-saddle candidates. Original is the retained installed baseline; the
+experimental angle/arc-release paths remain inactive. Do not enable them in
+normal builds or install them as the selected appearance.
+
+Verified installed startup and native DLL hashes match the previous untouched
+installation. Replaying Angle 25 with the installed surface worker, bindings,
+render contract and runtime profile through the original offline adapter probe
+reproduces the Original source, both LOD buffers and render buffer byte for byte.
+Receipt: D:/MaleModBuilds/original-selection-20261012/selection-verification.json.
+No deployment or runtime-file change was necessary. This records the user's
+appearance selection and offline identity check, not a new gameplay observation
+or a newly passed full attachment gate. Existing startup repair is preserved.
+
+
+## October 12: live underside and upward-angle reproduction
+
+The user requests a thicker lower attachment at Overall/Length/Width 100, with
+extra raphe clearance, plus removal of the upward-angle saddle. They explicitly
+requested native testing and saved/closed their game for it. The prior Original
+selection remains the installed baseline, not a refusal to pursue this new repair.
+
+See Witcher docs/ROOT-ATTACHMENT-REVIEW-20261012.md. First native session
+build/probe/sealed-session-20261012-024712 captured 24 views across six cases.
+Second session build/probe/sealed-session-20261012-030150 captured three real
+deformed vertex streams at erect Angle15, erect Angle25 and relaxed Angle25;
+each binary exactly matches its native upload FNV hash. Both children closed;
+scoped audio, 24 saves, controls, temporary files and installed hashes verified.
+The pronounced live root narrowing/upper crease is reproduced. Static relaxed
+previews do not adequately represent the erect-state or moving failure.
+
+Boundary pinning and section-radius projection tests in private
+D:/MaleModBuilds/witcher-ventral-support-20261012 create unacceptable ridges or
+local shape despite some numerical passes. They were rejected and not installed.
+The full repair and attachment gate are not complete. Do not install these
+private evaluators. Continue from actual native meshes and these reproduction
+cases, retaining the current runtime and rollback. New checked-in diagnostic
+recipe: probes/native/collar_root_cases.ws; prepare with --root-review.
+
+
+## October 12: full-slider native evidence and isolated-preview startup
+
+See Witcher docs/ROOT-ATTACHMENT-REVIEW-20261012.md. Native session060021
+completed16 angle positions across3 states at maximum size, four views each.
+Its angle-sweep.json binds192 native frames (189 originals plus3 explicit
+recaptures in session061529 after engine filename collisions). Side sheets
+are live-side-state0/1/2.jpg under that session directory. Original runtime
+only: no repaired-candidate native result is claimed.
+
+Offline arc-owner sweep completed48 cases and rejected the candidate: six
+extreme-angle signed-area failures and up to62.142mm lobe-core displacement.
+Target-only release still leaves a ridge; section-owner projection folds.
+Do not install any of these studies or repeat them as accepted solutions.
+
+The relocated private preview now reaches gameplay after copying bin-root
+bootstrap files including gameconf.cfg/redscripts.ini. Session061529 observed
+the room with both body resources and exact requested controls. Both native
+sessions are closed;24 saves each, eight preferences, scoped audio, temporary
+room removal and37 installed managed hashes verified in060021/restoration.json.
+Dependency pin and accepted runtime remain unchanged. Full attachment gate
+and the requested saddle repair remain pending; angle coverage is now backed
+by actual native observations.
+
+
+## October 12: Angle15 follow-up
+
+Read Witcher docs/ROOT-ATTACHMENT-REVIEW-20261012.md, final Angle15 section.
+No accepted repair or native candidate. New Base surface_bending.py audit has
+four passing tests; position/seam/radius passes had missed actual local folds.
+The posed-height support mask excluded the exact saddle triangle at Angle15;
+its diagnostic material-mask correction is not a shipped repair. Reject the
+radius, loft/profile and owned-arc15 studies; constrained continuous/spatial
+profile studies stopped short. No worker is running and no candidate installed.
+All37 installed managed hashes matched. Preserve existing runtime/rollback.

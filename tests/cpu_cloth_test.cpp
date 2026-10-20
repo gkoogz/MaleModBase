@@ -25,5 +25,18 @@ int main(){try{
  auto supported=cloth.Positions();for(unsigned i=0;i<supported.size();i++)if(Length(Sub(supported[i],backstops[i].center))<.1999)throw std::runtime_error("Cloth separation backstop failed");
  bool rejected=false;try{cloth.Step(-1,rest,{},{});}catch(const std::invalid_argument&){rejected=true;}if(!rejected)throw std::runtime_error("Negative elapsed time was accepted");
  std::cout<<"Triangle floor, body backstop and invalid timing checks passed\n";
+ std::vector<Point> tapered;std::vector<bool> attached;
+ for(unsigned y=0;y<=rows;y++)for(unsigned x=0;x<=cols;x++){
+  const double v=double(y)/rows,width=.7*(1-.9*v);
+  tapered.push_back({(double(x)/cols-.5)*width,v,.35});attached.push_back(y==0||(y==rows&&(x==0||x==cols)));
+ }
+ cloth.Initialize(tapered,faces,attached);double taperedStretch=1;
+ for(unsigned step=0;step<180;step++){
+  auto target=tapered;double shift=.04*std::sin(step/60.);for(unsigned x=0;x<=cols;x++)target[rows*(cols+1)+x][0]+=shift;
+  cloth.Step(1./60,target,{},Point{0,0,-2});auto points=cloth.Positions();
+  for(auto face:faces)for(unsigned k=0;k<3;k++){unsigned a=face[k],b=face[(k+1)%3];taperedStretch=(std::max)(taperedStretch,Length(Sub(points[a],points[b]))/Length(Sub(tapered[a],tapered[b])));}
+ }
+ std::cout<<"Tapered panel material-edge stretch="<<taperedStretch<<'\n';
+ if(taperedStretch>1.15)throw std::runtime_error("Tapered material edges became soft bending springs");
  return 0;
 }catch(const std::exception& e){std::cerr<<e.what()<<'\n';return 1;}}

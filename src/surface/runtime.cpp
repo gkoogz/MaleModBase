@@ -6,6 +6,8 @@
 #include <stdexcept>
 #include <thread>
 #include <atomic>
+#include <fstream>
+#include <filesystem>
 #include "surface-kernel.inc"
 #include <malemod/surface/collar_field.hpp>
 #include <malemod/surface/garment_support.hpp>
@@ -57,8 +59,17 @@ struct Session::Impl {
  std::vector<unsigned char> seed;
  std::vector<Point> collarQueries;
  Controls controls;
- explicit Impl(const Controls& controls):worker([this]{Loop();}){
-  try{Call([&]{Initialize(controls);});}catch(...){Stop();throw;}
+ explicit Impl(const Controls& controls,std::optional<Point> anchor,bool targetOwnsCollar):worker([this]{Loop();}){
+  try{Call([&]{
+   if(anchor){
+    if(!std::isfinite(anchor->x)||!std::isfinite(anchor->y)||!std::isfinite(anchor->z))throw std::invalid_argument("Nonfinite attachment anchor");
+    kernel::surfaceAttachmentAnchor[0]=anchor->x;
+    kernel::surfaceAttachmentAnchor[1]=anchor->y;
+    kernel::surfaceAttachmentAnchor[2]=anchor->z;
+   }
+   kernel::surfaceTargetOwnsCollar=targetOwnsCollar;
+   Initialize(controls);
+  });}catch(...){Stop();throw;}
  }
  ~Impl(){Stop();}
  void Stop(){ {std::lock_guard<std::mutex> guard(mutex);stop=true;}cv.notify_one();if(worker.joinable())worker.join(); }
@@ -144,6 +155,21 @@ struct Session::Impl {
   kernel::EvaluateAnatomy(seed.data(),47050);
  }
  Output Capture(){
+  if(const char* directory=std::getenv("MALEMOD_SOURCE_TRACE_DIRECTORY")){
+   auto dump=[&](const char* stage,const auto& points,const auto& indices){
+    std::ofstream v(std::filesystem::path(directory)/(std::string(stage)+"-points.bin"),std::ios::binary);
+    v.write(reinterpret_cast<const char*>(points),sizeof(points));
+    std::ofstream f(std::filesystem::path(directory)/(std::string(stage)+"-faces.bin"),std::ios::binary);
+    for(auto index:indices){std::uint32_t value=index;f.write(reinterpret_cast<const char*>(&value),4);}
+   };
+   dump("morph",kernel::surfaceMorphSnapshot,kernel::graftTriangleIndices);
+   dump("fair",kernel::surfaceFairSnapshot,kernel::graftTriangleIndices);
+   dump("prepared",kernel::firmLobeRestSkin,kernel::graftTriangleIndices);
+   dump("graft",kernel::graftDeformedPositions,kernel::graftTriangleIndices);
+   dump("r14",kernel::r14Positions,kernel::r14Indices);
+   dump("rounded",kernel::rsPositions,kernel::rsIndices);
+   dump("neck",kernel::nrPositions,kernel::nrIndices);
+  }
   if(!kernel::UnifiedCollar::solved.allFinite())throw std::runtime_error("Non-finite collar solve");
   Output out;out.anatomy=Decode(kernel::nrPacked,kernel::nrCount,0);
   for(unsigned i=0;i<2;i++)out.body[i]=Decode(kernel::sharedBodyOutput[i],kernel::sharedBodyCount[i],kernel::sharedBodyFirst[i]);
@@ -189,15 +215,17 @@ struct Session::Impl {
   return out;
  }
 };
-Session::Session(const Controls& controls){
+Session::Session(const Controls& controls):Session(controls,std::optional<Point>{},false){}
+Session::Session(const Controls& controls,const Point& anchor,bool targetOwnsCollar):Session(controls,std::optional<Point>{anchor},targetOwnsCollar){}
+Session::Session(const Controls& controls,std::optional<Point> anchor,bool targetOwnsCollar){
 #ifdef MALEMOD_SURFACE_PROCESS_ISOLATED
  bool expected=false;
  if(!processSessionOwned.compare_exchange_strong(expected,true))throw std::logic_error("Parallel source session requires one character per process");
  // Even a failed initialization can change process-global source caches.
  // Replace the worker process to reset the character lifetime.
- impl_=std::make_unique<Impl>(controls);
+ impl_=std::make_unique<Impl>(controls,anchor,targetOwnsCollar);
 #else
- impl_=std::make_unique<Impl>(controls);
+ impl_=std::make_unique<Impl>(controls,anchor,targetOwnsCollar);
 #endif
 }
 Session::~Session(){
@@ -212,6 +240,14 @@ void Session::Step(const Frame& frame){impl_->Call([&]{impl_->Advance(frame);});
 Output Session::Read(){Output output;impl_->Call([&]{output=impl_->Capture();});return output;}
 Diagnostics Session::ReadDiagnostics(){
  Diagnostics result;
+#ifdef MALEMOD_COMPLIANT_SCROTAL_SKIN
+ impl_->Call([&]{
+  result.scrotalSkinFraction=kernel::surfaceSkinFraction;
+  result.scrotalSkinDisplacement=kernel::surfaceSkinMaximum;
+  result.protectedShaftDisplacement=kernel::surfaceSkinProtectedError;
+  for(unsigned i=0;i<2;i++){auto x=kernel::surfaceScrotalSkin[i].Displacement();result.scrotalSkinOffsets[i]={x[0],x[1],x[2]};}
+ });
+#endif
 #ifdef MALEMOD_SURFACE_PROCESS_ISOLATED
  impl_->Call([&]{std::copy(std::begin(kernel::surfaceGeometryMilliseconds),std::end(kernel::surfaceGeometryMilliseconds),result.geometryMilliseconds.begin());});
 #endif

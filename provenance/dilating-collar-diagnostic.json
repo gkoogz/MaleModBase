@@ -1,0 +1,105 @@
+{
+  "status": "revised dilating collar and warm endpoint candidate; native review in progress; not installed",
+  "baseHead": "985f94755d7a5e039ef6e79e3fdfc4ee36885724",
+  "dirty": true,
+  "files": {
+    "include/malemod/surface/dilating_collar.hpp": "556eec591cad5f5d3d816e9686b191251a3670386b2505deb594292e55532efd",
+    "include/malemod/surface/graft_runtime.hpp": "3ccf24f0f5ffffd20ebe78905aa6e5646048bd05692a9a511b69b8827059a4c1",
+    "src/surface/graft_runtime.cpp": "1da0d8ec7f54f0532f1bdcf21d3e4189ac8552207ce20a9166af972ef0d80f94",
+    "tests/dilating_collar_test.cpp": "41b731ebae937c65010a851e9650a0309c17b4cf5055ed28502df48a30f80518",
+    "include/malemod/surface/collar_radial_support.hpp": "47b9ed904935cc6c51e0c28f55ab840f00400b5790f1d270098b4160c9110023",
+    "include/malemod/surface/endpoint_constraints.hpp": "f4c1d6298cfb137929141e7f851b2a1169af58fc595109dc0bc35e68793135f4",
+    "src/surface/runtime.cpp": "76382d4fb03a79126db4a865cbb316462d9d521fb0f18bc62d42350934c8e9db",
+    "tools/extract_surface_runtime.py": "be229cb17545dca2bbe895b6b16c04797946300ef11d2610beea166b768e93a4",
+    "tests/collar_radial_support_test.cpp": "48dbf65bac8532c7339a11d4b426be0135ae771fa1a96e05d80633cb3fcb7fb0",
+    "tests/attachment_corrective_test.cpp": "d12e20322ad8cd4aa058f80331bde49496d1082564e4fcc890f310b8d3112a10"
+  },
+  "adapterFiles": {
+    "native/target_surface.cpp": "d15de4130b603dfb5f16a698da6316e056f64fb51069cc16b33e8b7f4317c6a2",
+    "native/CMakeLists.txt": "5690e9a8f963e75627e86fe3eaeb7a9925cfef4b01c48dc533fec89a381ceb8e",
+    "native/fixed_collar_angle.hpp": "43deed329ca990c6c0a6108c12def935b6b71f6c4add6b68ea816f556001ea73",
+    "native/surface_worker.cpp": "11e0d00829ed431d8ee0b7c91071c323bcdb49ba0f67bfc625f9b6a6222c43fa"
+  },
+  "testResults": [
+    "160 synthetic mouth-dimension samples pass",
+    "graft_orientation_test passes",
+    "graft_sewn_curvature_test passes"
+  ],
+  "offline": {
+    "matrixCases": 108,
+    "states": 3,
+    "angleSamples": [
+      10,
+      15,
+      50,
+      90
+    ],
+    "maximumSeamErrorMetres": 1.111798801e-07,
+    "protectedNativePositionError": 0,
+    "warmStartMatrix": "in progress",
+    "warmStartFocusedCases": 6,
+    "slowCaseTargetMillisecondsBefore": 613.3,
+    "slowCaseTargetMillisecondsAfter": 66.1,
+    "motionCombinedCases": 46,
+    "motionCombinedCompleted": true,
+    "selfIntersectionCertificate": false
+  },
+  "native": {
+    "firstCompletedReview": "sealed-session-20261015-024520",
+    "capturedViews": 57,
+    "closed": true,
+    "numericalRuntimePass": true,
+    "visualAcceptance": false,
+    "secondReview": "sealed-session-20261015-030420",
+    "status": "in progress"
+  },
+  "campaign": "compiled; not yet run",
+  "attachmentGate": false,
+  "installed": false,
+  "adoption": "No spoke adopts this experimental algorithm until shape, native, motion and campaign gates pass; then pin Base revision in Witcher and validate Wolverine independently.",
+  "repositoryVerification": "tools/verify.py blocked by pre-existing Motion header differs from source extraction",
+  "previousRejectedDiagnostic": {
+    "offline": {
+      "maximumMouthWidthBefore": 8.610163,
+      "maximumMouthWidthCandidate": 15.142427,
+      "shaftWidthReference": 15.6542,
+      "units": "calibrated source units",
+      "cases": [
+        {
+          "size": 100,
+          "angle": 15,
+          "code": 0,
+          "output": "angle 15 weights 0 0\n; hinge complete 9\n; hinge complete 24\n"
+        },
+        {
+          "size": 100,
+          "angle": 90,
+          "code": 0,
+          "output": "angle 90 weights 0 0\n; hinge complete 32\n; hinge complete 8\n"
+        },
+        {
+          "size": 50,
+          "angle": 50,
+          "code": 0,
+          "output": "angle 50 weights 0 0\n\n\n"
+        },
+        {
+          "size": 1,
+          "angle": 50,
+          "code": 0,
+          "output": "angle 50 weights 0 0\n\n\n"
+        }
+      ],
+      "visualFailures": [
+        "minimum overall/width/length=1 folds and protrudes",
+        "raised angle15 still has a proximal ridge"
+      ]
+    },
+    "native": "not run for rejected geometry",
+    "campaign": "not run",
+    "status": "diagnostic only; rejected visual candidate; not installed"
+  },
+  "supersededBy": "modular-anatomy-authoring.json",
+  "userRejectedPelvicShape": true,
+  "installable": false
+}

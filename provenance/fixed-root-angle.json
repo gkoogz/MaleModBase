@@ -1,0 +1,52 @@
+{
+  "contractVersion": 3,
+  "sourceCommit": "985f94755d7a5e039ef6e79e3fdfc4ee36885724",
+  "sourceIsDirty": true,
+  "files": [
+    {
+      "path": "include/malemod/surface/root_articulation.hpp",
+      "sha256": "b28c26d7bc72ae2fc44c952e0f4d053c737f856fd1d91fbef957c6840d397bfd"
+    },
+    {
+      "path": "src/surface/root_articulation.cpp",
+      "sha256": "d4eb6728262118be36425e1e040691bb36a11071caf8f4caf381adefdb76ee99"
+    },
+    {
+      "path": "include/malemod/surface/endpoint_constraints.hpp",
+      "sha256": "8c26a39e5ba8befd37bfc52950ad3a7082fa0bc8db7ebddbba6886a87815a8cd"
+    },
+    {
+      "path": "tests/root_articulation_test.cpp",
+      "sha256": "72a307fd8dfd5c92161d5c2e679875e2006c52e127d24d803c8fd50fce3f34bd"
+    },
+    {
+      "path": "tests/fixed_root_bend_test.cpp",
+      "sha256": "1a25906fd01fa4b6118b00880ee85290dca543424301bc36786c7f27cc5f72a1"
+    },
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "bb118f6712edcf23eab0ba567e2570c4b19458c365de05550337ba1b6893f7f8"
+    }
+  ],
+  "omissions": [
+    "Licensed geometry and character bindings",
+    "Private captures and game packages",
+    "User settings, saves and audio"
+  ],
+  "standaloneCPPTestsPassed": true,
+  "offlineCases": 189,
+  "lodResults": 378,
+  "nativePreviewViews": 57,
+  "nativeSessionClosed": true,
+  "nativeAttachmentGatePassed": false,
+  "nativeDLLSHA256": "2fde715c2f34635e77723d88d25a7948f94635637eb52cb5aa1aa5e47fcd49c4",
+  "allCapturedAngleGains": [
+    1,
+    1
+  ],
+  "interpolationSweepRepeated": false,
+  "capturedTransientReplayRepeated": false,
+  "previousPreviewRejected": true,
+  "evidence": "docs/ROOT-ARTICULATION.md",
+  "adoption": "docs/ROOT-ARTICULATION.md"
+}

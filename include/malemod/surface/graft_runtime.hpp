@@ -38,10 +38,21 @@ struct GraftDomain {
  // against independently prescribed resource-boundary rows. Default false
  // preserves historical anatomy fitting and its numerical replay exactly.
  bool preserveTargetDifferential=false;
+ // Condense original-edge seam fluxes before forming curvature energy.
+ // Otherwise opposite contributions at a flat sewn interface are squared
+ // independently, treating the interface as two free surface boundaries.
+ // Opt-in until each adapter completes its attachment regression gate.
+ bool coupledCurvature=false;
  // Optional local fairing of the actual surface, rather than displacement.
  // Distance uses the supplied calibrated source units; zero keeps historical
  // replay. Exact seam donors and prescribed/protected boundaries still apply.
  double surfaceFairingDistance=0,surfaceFairingStrength=0;
+ // Optional immutable material-row multipliers in [0,1]. Empty preserves the
+ // historical metric exactly. Rebuild the plan when these weights change;
+ // UpdateFrame updates support dimensions, not material bindings.
+ std::vector<double> surfaceFairingRetention;
+ // Bounded diagnostic projection budget; the historical default is unchanged.
+ unsigned orientationIterations=128;
 };
 // The same support law used by the target collar matrix. Adapters can suppress
 // distant body-field inputs without maintaining another copy of that law.
@@ -66,4 +77,10 @@ class GraftPlan {
  private:
   struct Impl;std::unique_ptr<Impl> impl_;
 };
+// Follow large body recruitment in checked increments. Rest-normal signed
+// areas alone cannot distinguish a fold from a legitimate large rotation.
+// Every increment preserves exact donors and positive local orientation.
+std::vector<PrecisePoint> ProjectGraftContinuation(const GraftDomain&,
+ const std::vector<PrecisePoint>& target,unsigned steps=32);
+
 }

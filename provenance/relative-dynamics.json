@@ -1,0 +1,80 @@
+{
+  "schema": "malemod.relative-dynamics-proof/1",
+  "baseCommit": "985f94755d7a5e039ef6e79e3fdfc4ee36885724",
+  "baseDirty": true,
+  "adapterBasePin": "431e626cae6fb6720b552f8b20206727fe809c80",
+  "sourceFiles": [
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "66a349c3ffc47b3a0fbaf245f437e52e1307c82a13405b45f24cfa2feeaf9fcc"
+    },
+    {
+      "path": "tools/extract_surface_runtime.py",
+      "sha256": "abe80e77dda10878960e03301d8a92a31e1be0c9b6ecc3ed283eb3cec9e56cb0"
+    },
+    {
+      "path": "include/malemod/surface/scrotal_compliance.hpp",
+      "sha256": "4a601ec9da96f90236d69ff453834d32d769b4b8c04b2b248d3fb06fa6d6620e"
+    },
+    {
+      "path": "src/surface/runtime.cpp",
+      "sha256": "caa8e616d2dbb7241b4f68259da97a371f346a95fff01ed682bacd5998ddc821"
+    },
+    {
+      "path": "include/malemod/surface/runtime.hpp",
+      "sha256": "077f92da16665538bda70c713c8156a06fcf46d78261dee88c9cec4b0c85917d"
+    },
+    {
+      "path": "tests/relative_dynamics_test.cpp",
+      "sha256": "9a045d075a113e5bad3efc641c3b38d667275b176e353f0531451806f1b1276f"
+    },
+    {
+      "path": "tests/scrotal_surface_test.cpp",
+      "sha256": "72cea5782044b090603aec2d817e640a51ecaa56f227d0f7911756e81eaac974"
+    },
+    {
+      "path": "tests/scrotal_compliance_test.cpp",
+      "sha256": "d7e6f1bc2ffb66730285918f1cc2c91804f34132e6a3bb0f6074ede34c664e0f"
+    },
+    {
+      "path": "tools/compare_relative_dynamics.py",
+      "sha256": "e00577ce6c3c14908175d445eaec4ae8cfbad361ebeb40fa64acb4aed0db2ed2"
+    },
+    {
+      "path": "docs/SCROTAL-COMPLIANCE.md",
+      "sha256": "fa2ed6b1d422b9d8413bf40565e1d49322f217b06ebae2d8ead93b3650154137"
+    }
+  ],
+  "candidate": {
+    "workerSHA256": "a109220561466caa8eeb921bd275ae7e29b57dfe7f10d5d9b0f510e1ad44dd53",
+    "librarySHA256": "8ffb223f194ac343242fc748a0a914eb0a8c3a79e13c800740968e48b1ef356f",
+    "moduleSHA256": "df25874dcf3f72d1c9d021bb68d8e2972db6bd855c360865bd26f0297e7cf7a8",
+    "preview": "C:\\Users\\Administrator\\Documents\\ChatGPT\\TheWitcher3MaleMod\\build\\native-preview\\preview-1792031400620533800\\preview.json",
+    "installed": false,
+    "option": "MALEMOD_COMPLIANT_SCROTAL_SKIN",
+    "defaultEnabled": false
+  },
+  "visualReview": "Reviewed all 57 side/front/oblique attachment views and 36 motion frames. Visible independent lobe travel and distributed shaft bending during walking/settling. Sampled normal-size attachment remains continuous. Minimum-size protrusion and extreme downward compression remain; no full attachment acceptance.",
+  "userAccepted": false,
+  "fullAttachmentGatePassed": false,
+  "installedFilesVerified": 39,
+  "importedSnapshotChanged": false,
+  "adoption": "Shared optional extraction and physics helper in Base. Witcher private worker/profile binds exact candidate; pin unchanged. Wolverine and other spokes must consume a tested Base pin and pass their native attachment gate.",
+  "limitations": [
+    "Source metrics are uncalibrated model coordinates, not clinical validation",
+    "Root-relative tip response decreased in the matched source test; not every excursion increased",
+    "Minimum-size protrusion and extreme compression retained; full attachment gate not passed",
+    "Campaign, garments and performance parity not tested for this candidate",
+    "Default broad CMake tests blocked by pre-existing motion-filter extraction mismatch; focused targets tested",
+    "TLS extraction fingerprinted but not runtime tested"
+  ],
+  "omissions": [
+    "Licensed geometry",
+    "Screenshots and capture traces",
+    "User saves/settings",
+    "Compiled binaries"
+  ],
+  "privateProof": "D:\\MaleModBuilds\\relative-dynamics-20261014\\final-proof.json",
+  "privateProofSHA256": "fd4825a33319d5ea32085ac1c7da9c8c706f8c7a35aefcabe90d678ec189b3e5",
+  "nativeReviewedViews": 93
+}

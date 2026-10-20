@@ -80,7 +80,12 @@ struct Output {
  std::vector<Point> collarDisplacements;
  Point nozzlePosition{},nozzleDirection{1,0,0};
 };
-struct Diagnostics {std::array<double,16> geometryMilliseconds{};};
+struct Diagnostics {
+ std::array<double,16> geometryMilliseconds{};
+ // Optional secondary skin diagnostics; not part of the wire protocol.
+ float scrotalSkinFraction=1,scrotalSkinDisplacement=0,protectedShaftDisplacement=0;
+ std::array<Point,2> scrotalSkinOffsets{};
+};
 // Each session owns a worker thread and all mutable source caches. Evaluation
 // is synchronous. Do not call from a render hook while holding engine locks.
 // No game/graphics SDK, engine skin palette, input or upload API is exposed.
@@ -89,6 +94,9 @@ struct Diagnostics {std::array<double,16> geometryMilliseconds{};};
 class Session {
  public:
   explicit Session(const Controls& controls={});
+  // Opt-in character authoring anchor in the calibrated source frame. It is
+  // immutable for the session, so prepared geometry and dynamics share it.
+  Session(const Controls& controls,const Point& attachmentAnchor,bool targetOwnsCollar=false);
   ~Session();
   Session(const Session&)=delete;
   Session& operator=(const Session&)=delete;
@@ -97,6 +105,7 @@ class Session {
   Output Read();
   Diagnostics ReadDiagnostics();
  private:
+  Session(const Controls& controls,std::optional<Point> attachmentAnchor,bool targetOwnsCollar);
   struct Impl;
   std::unique_ptr<Impl> impl_;
 };

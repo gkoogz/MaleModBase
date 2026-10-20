@@ -39,6 +39,7 @@ struct Assertions final:nv::cloth::PxAssertHandler {
 };
 physx::PxVec3 Vec(Point p){return {float(p[0]),float(p[1]),float(p[2])};}
 template<class T> nv::cloth::Range<const T> Range(const std::vector<T>& v){return {v.data(),v.data()+v.size()};}
+template<class T> nv::cloth::Range<T> Writable(std::vector<T>& v){return {v.data(),v.data()+v.size()};}
 }
 struct CpuCloth::Impl {
  nv::cloth::Factory* factory=nullptr;
@@ -69,6 +70,29 @@ void CpuCloth::Initialize(const std::vector<Point>& points,const std::vector<std
  nv::cloth::Vector<int32_t>::Type phaseTypes;
  fresh->fabric=NvClothCookFabricFromMesh(fresh->factory,mesh,{0,0,-1},&phaseTypes,true);
  if(!fresh->fabric)throw std::runtime_error("NvCloth fabric cooking failed");
+ // The generic cooker infers bending from angles in the supplied 3D mesh.
+ // On tapered/folded garment panels it can classify a real triangle edge as
+ // bending. Preserve every actual material edge as an extensional constraint;
+ // only additional non-edge bending springs receive the soft coefficient.
+ {
+  auto& cooked=*fresh->fabric;
+  std::vector<uint32_t> phases(cooked.getNumPhases()),sets(cooked.getNumSets()),links(cooked.getNumIndices()),anchors(cooked.getNumTethers()),indices(cooked.getNumTriangles()*3);
+  std::vector<float> lengths(cooked.getNumRestvalues()),tethers(cooked.getNumTethers()),stiffness(lengths.size());
+  fresh->factory->extractFabricData(cooked,Writable(phases),Writable(sets),Writable(lengths),{},Writable(links),Writable(anchors),Writable(tethers),Writable(indices));
+  std::set<std::array<unsigned,2>> materialEdges;
+  for(auto face:triangles)for(unsigned k=0;k<3;k++){std::array<unsigned,2> edge{face[k],face[(k+1)%3]};std::sort(edge.begin(),edge.end());materialEdges.insert(edge);}
+  for(unsigned phase=0;phase<phases.size();phase++){
+   unsigned set=phases[phase],begin=set?sets[set-1]:0;
+   for(unsigned i=begin;i<sets[set];i++){
+    std::array<unsigned,2> edge{links[2*i],links[2*i+1]};std::sort(edge.begin(),edge.end());
+    bool structural=materialEdges.count(edge)||phaseTypes[phase]!=nv::cloth::ClothFabricPhaseType::eBENDING;
+    stiffness[i]=structural?-std::numeric_limits<float>::max():std::log2(.98f);
+   }
+  }
+  auto replacement=fresh->factory->createFabric(unsigned(points.size()),Range(phases),Range(sets),Range(lengths),Range(stiffness),Range(links),Range(anchors),Range(tethers),Range(indices));
+  if(!replacement)throw std::runtime_error("Explicit material-edge fabric creation failed");
+  fresh->fabric=replacement;cooked.decRefCount();
+ }
  fresh->fabric->scaleRestvalues(float(restScale));fresh->fabric->scaleTetherLengths(float(restScale));
  fresh->cloth=fresh->factory->createCloth(Range(particles),*fresh->fabric);
  if(!fresh->cloth)throw std::runtime_error("NvCloth cloth creation failed");

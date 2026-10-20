@@ -1,3 +1,5 @@
+> RETIRED October 7: The user rejected this pouch and fabric logic. These are historical failure receipts, not current implementation instructions. Continue with docs/COLLISION-INSPECTION.md.
+
 # CPU pouch development checkpoint — 2026-10-07
 
 This is an **unaccepted offline experiment**, not a playable release or a passed
@@ -11,7 +13,7 @@ The supported reference solver previously mixed interpolated collision hits
 with final-pose reaction barycentrics. Contact weights now come from the exact
 queried collider. Its complete material/contact solve also belongs inside each
 substep. The corrected captured coalesced replay passed its old contact/material
-checks, but took 41.50 seconds for 5.453 seconds of motion. That is unsuitable as
+checks, but took 39.8901 seconds for 5.453 seconds of motion. That is unsuitable as
 the new runtime path.
 
 The optional `malemod_cloth` target uses the standalone NvCloth CPU solver. Base
@@ -30,6 +32,23 @@ body triangle patch; the preceding backstop integration was rejected.
 The lower attachments use
 the measured perineal ends of the glute routes, rather than anatomy-root donors.
 The short strap connectors and hems follow the sewn pouch edge.
+
+The retained refinement rebuilds the body-supported straps from the measured
+centerline, projects both width rails onto actual skin, and sews each final cap
+to the pouch's actual transverse seam. Independently transported cap frames
+were the source of the last strap/body intersections. The retained replay has
+zero strap/body face intersections in all seven poses. This is a narrow offline
+intersection result, not complete anatomy contact, native appearance or gameplay.
+
+`material_metric.hpp` measures the intrinsic rest length of a rendered edge
+across simulation triangles. A straight 3D chord across a folded rest surface
+can incorrectly report unfolding as stretch. Its folded-surface, shared-edge,
+reversed-direction, rigid-transform/scale and missing-coverage tests pass.
+
+The NvCloth wrapper explicitly keeps actual triangle edges stiff. The generic
+cooker's geometric classification can label an actual edge as bending on a
+tapered/folded input. Per-constraint stiffness retains soft non-edge bending
+without softening those material edges. No upstream dependency source changed.
 
 Capsules retain measured triangle support ownership and source-bound axis ends.
 They enclose the assigned actual source vertices. Instantaneous PCA axes were
@@ -67,7 +86,7 @@ git -C build/dependencies/NvCloth checkout 6e86b1838ae185c527744d475d34777ff69c1
 cmake -S . -B build/nvcloth-cmake -A Win32 -DMALEMOD_BUILD_NVCLOTH=ON -DMALEMOD_BUILD_POUCH_EXPERIMENT=ON -DBUILD_TESTING=OFF
 cmake --build build/nvcloth-cmake --config Release --target cpu_cloth_test replay_cpu_pouch
 build/nvcloth-cmake/Release/cpu_cloth_test.exe
-build/nvcloth-cmake/Release/replay_cpu_pouch.exe PRIVATE_RECORDING_DIRECTORY 60
+build/nvcloth-cmake/Release/replay_cpu_pouch.exe PRIVATE_RECORDING_DIRECTORY 60 --contacts
 ```
 
 Recordings contain `reference.input`, `prepared.input`, and contiguous
@@ -77,12 +96,15 @@ beside the private inputs. `body_intersections` audits the complete actual body
 mesh; pouch proxy clearance alone is insufficient. Fine rendered mesh strain is
 measured separately from simulation edges against the authored eased pattern.
 Complete anatomy/trim, volume membership and coverage auditing remain incomplete.
+The optional `--contacts` writes exact intersecting garment/body face IDs next
+to each private mesh export. Those witnesses located the rotating strap caps.
 
 The final generic CPU cloth test passes on MSVC x86 and x64. Its first 600
-moving-attachment/capsule frames have maximum stretch 1.00893 and minimum vertex
-gap -0.0000263875 in fixture units (small numerical overlap, not exact zero).
+moving-attachment/capsule frames have maximum stretch 1.00987 and minimum vertex
+gap -0.0000205338 in fixture units (small numerical overlap, not exact zero).
 It also checks a triangle floor, separation backstops and rejected negative time.
-The source-bound capsule enclosure/frame/unit/ray fixture passes on both builds.
+A tapered panel with moving lower anchors reaches maximum stretch 1.09009.
+The source-bound capsule and folded material-metric fixtures pass on both builds.
 These are numerical fixtures, not Wolverine gameplay results.
 
 The final supported reference replay passes 7 coalesced requests spanning 5.453
@@ -90,15 +112,31 @@ seconds, taking 39.8901 solver seconds. Nine targeted body/contact/reaction,
 root/collar/waist, lifecycle and strap tests pass. Source provenance verification
 passes; the original Wolverine import remains unchanged.
 
-The **final CPU pouch experiment is rejected**: its same 7 coalesced requests all
-fail contact/material budgets, taking 16.0879 solver seconds. The last request has
-75 body-intersecting garment faces (1 pouch, 71 strap, 3 hem), maximum coarse
-stretch 1.29497 and maximum rendered stretch 2.05319. The preceding 60 Hz-interpolated
-capture replay failed all 331 updates and cost 52.1657 solver seconds. These
-timings include full body auditing and do not establish a native frame rate.
-Body wrapping, lower connectors/hems, collision workload and strain remain
-unresolved. Neither the fast proxy-only approach nor the slower complete-body
-approach is playable.
+The **retained CPU pouch experiment is rejected**: six of seven coalesced requests
+fail contact/material checks. The structural-edge refinement took 14.8831 solver
+seconds to advance 5.453 seconds. The last request has six body-intersecting faces
+(one pouch, five hem, zero strap), maximum coarse stretch 1.14030 and rendered
+stretch 1.13231. Earlier poses still exceed the 1.15 material limit. A fresh
+retained-source receipt is `build/nvcloth-cmake/retained-final.csv/.err`.
+
+The earlier checkpoint failed all seven requests with 75 body-intersecting faces
+and rendered stretch 2.05319. Its 60 Hz-interpolated replay failed all 331 updates
+and cost 52.1657 solver seconds. Timings include full body auditing and do not
+establish a native frame rate. No revised 60 Hz replay has passed.
+
+Additional rejected trials are preserved as private receipts: wider body-pinned
+lower seams overconstrained the garment; identical simulation/render topology
+reduced face crossings but stretched narrow lower edges excessively; area-based
+particle masses worsened the tapered fixture and capture; a flat pattern with
+lower-edge gathering still failed contact/material checks. None is retained as
+an accepted fallback. Near-body hem rail projection did not fix the face-interior
+crossings and was removed.
+
+The upstream CPU path applies virtual collision samples to sphere/capsule
+contacts, not triangle contacts (`SwCollision.cpp`). Actual body triangle
+collision therefore does not certify rendered-face separation. Remaining work
+includes full pouch/hem contact, stable pattern strain and collision cost.
+Neither the fast proxy-only approach nor the complete-body experiment is playable.
 
 Private development receipts are under `build/nvcloth-cmake/replay*.csv/.err`.
 Earlier iterations that checked pouch proxies alone were subsequently rejected

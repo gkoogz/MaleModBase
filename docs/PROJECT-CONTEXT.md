@@ -1074,3 +1074,13 @@ Canonical hub: https://github.com/gkoogz/MaleModBase
 Witcher spoke: https://github.com/gkoogz/TheWitcher3MaleMod
 
 Wolverine spoke: https://github.com/gkoogz/XMenOriginsWolverineMaleMod
+
+## October 11 - collar circumference and preview requirements
+
+The user requests repair of the raised-angle saddle and discontinuity while
+preserving surrounding anatomy. The collar should have approximately the
+shaft's actual circumference, with extra underside space for the raphe tube.
+Show matched actual-mesh renders before installing a replacement. This is a
+neutral geometry repair in the educational scope documented above; nudity or
+anatomical terminology alone is not a reason to discard that context.
+No geometric candidate from the current root-curvature study is accepted.

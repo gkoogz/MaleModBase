@@ -1,0 +1,13 @@
+{
+  "schema": "malemod.experimental-pouch-loft/1",
+  "geometryBindingRevision": 6,
+  "status": "comparison-prototype-not-adopted",
+  "files": {
+    "include/malemod/garments/pouch_loft.hpp": "dd1ae6eafff09cceeea31445537fa9708ab35522dc90f6a45144e40dd3ba493e",
+    "tests/pouch_loft_test.cpp": "b97b7a5936da3c77c792401f9bffffbbc9891c2bb847852f03fe0d8eacd245d3"
+  },
+  "fixedSewnBoundary": true,
+  "continuousContactCertified": false,
+  "nativeAttachmentGatePassed": false,
+  "retailInstalled": false
+}

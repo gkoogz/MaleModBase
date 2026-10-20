@@ -73,6 +73,7 @@ prelude='''// Generated full numerical kernel; see tools/extract_surface_runtime
 #include <Eigen/SparseCholesky>
 #include <Eigen/Geometry>
 #include <malemod/surface/pelvic_frame.hpp>
+#include <malemod/surface/scrotal_compliance.hpp>
 #include <malemod/surface/garment_support.hpp>
 #include <malemod/surface/garment_impulse.hpp>
 #include <malemod/clinical/teaching_sequence.h>
@@ -104,6 +105,8 @@ struct PerfScope { explicit PerfScope(int){} };
 static double PerfClock(){return 0;}
 template<class F>static void GeometryFor(unsigned n,const F& f){for(unsigned i=0;i<n;i++)f(i);}
 static thread_local float surfaceClinicalLateralYaw=0;
+static thread_local float surfaceAttachmentAnchor[3]={9.0f,0.f,84.3f};
+static thread_local bool surfaceTargetOwnsCollar=false;
 namespace teaching {
 using ::malemod::clinical::teaching::WeightedMainPulse;
 using ::malemod::clinical::teaching::PulseEnvelopeAt;
@@ -120,6 +123,8 @@ if args.process_isolated:
  if 'constexpr unsigned batches=16' not in parallel or 'template<class Function>' not in parallel:raise ValueError('Source bounded geometry dispatcher changed')
  prelude=prelude.replace('#include <Eigen/Geometry>','#include <Eigen/Geometry>\n#include <ppl.h>')
  prelude=prelude.replace('static thread_local float surfaceClinicalLateralYaw','static float surfaceClinicalLateralYaw')
+ prelude=prelude.replace('static thread_local float surfaceAttachmentAnchor','static float surfaceAttachmentAnchor')
+ prelude=prelude.replace('static thread_local bool surfaceTargetOwnsCollar','static bool surfaceTargetOwnsCollar')
  prelude=prelude.replace('template<class F>static void GeometryFor(unsigned n,const F& f){for(unsigned i=0;i<n;i++)f(i);}',parallel)
  if args.serial_geometry:
   prelude=prelude.replace(parallel,'template<class F>static void GeometryFor(unsigned n,const F& f){for(unsigned i=0;i<n;i++)f(i);}')
@@ -133,6 +138,133 @@ struct PerfScope {
  parts=[prelude]
 for d in sorted(decl,key=position):
  s=d['source'].replace('\r\n','\n').replace('\r','')
+ if d['name'] in ('RestBallAnchor','BallAnchor','PDMaterialTarget','PDSuspensionMassFiniteDifference','PDSuspensionMass','PDVentralHeight'):
+  s=s.replace('.12f','::malemod::surface::scrotal::MechanicalPartition::suspensionCoordinate')
+ if d['name']=='ResetCompliantDynamics':
+  storage='static ' if args.process_isolated else 'static thread_local '
+  parts.append('#ifdef MALEMOD_COMPLIANT_SCROTAL_SKIN\n'+storage+'::malemod::surface::scrotal::Envelope surfaceScrotalSkin[2];\n'+storage+'float surfaceSkinFraction=1,surfaceSkinMaximum=0,surfaceSkinProtectedError=0;\n#endif')
+  s=s.replace('pdReady=false;','''pdReady=false;
+#ifdef MALEMOD_COMPLIANT_SCROTAL_SKIN
+ for(auto& skin:surfaceScrotalSkin)skin.Reset();
+#endif
+''')
+ if d['name']=='PDSuspensionShear':
+  old='alpha=compliance/(dt*dt);'
+  if s.count(old)!=1:raise ValueError('Suspension effective mass span changed')
+  s=s.replace(old,'''alpha=compliance/(dt*dt);
+#ifdef MALEMOD_COMPLIANT_SCROTAL_SKIN
+  compliance=::malemod::surface::scrotal::ShearCompliance(w,physUI[4]);
+  alpha=compliance/(dt*dt);
+#endif''')
+ if d['name']=='PDPrepareBend':
+  old='float ratio=.10f+.40f*(1.f-max(0.f,min(1.f,physUI[2]/100.f)));'
+  if s.count(old)!=1:raise ValueError('Rod damping span changed')
+  s=s.replace(old,'''#ifdef MALEMOD_COMPLIANT_SCROTAL_SKIN
+ float ratio=.05f+.25f*(1.f-max(0.f,min(1.f,physUI[2]/100.f)));
+#else
+ '''+old+'''
+#endif''')
+ if d['name']=='StepRootSuspension':
+  old='float k=ModeValue(38.f,22.f,10.f),damping=2.f*sqrtf(k*mass)*ModeValue(.60f,.72f,.86f);'
+  if s.count(old)!=1:raise ValueError('Root suspension damping span changed')
+  s=s.replace(old,'''#ifdef MALEMOD_COMPLIANT_SCROTAL_SKIN
+  // The root previously ignored the bounce control and remained almost
+  // critically damped in the flexible state. Retain stiffness, mass and stops.
+  float ratio=.20f+.60f*(1.f-max(0.f,min(1.f,physUI[2]/100.f)));
+  float k=ModeValue(38.f,22.f,10.f),damping=2.f*sqrtf(k*mass)*ratio;
+#else
+  '''+old+'''
+#endif''')
+ if d['name']=='PDSuspensionShear':
+  old='float gamma=2.1f*sqrtf(compliance/max(w,1e-8f))/dt;'
+  if s.count(old)!=1:raise ValueError('Scrotal shear source span changed')
+  s=s.replace(old,'''#ifdef MALEMOD_COMPLIANT_SCROTAL_SKIN
+  float gamma=::malemod::surface::scrotal::Response(physUI[4],physUI[6]).shearDamping*sqrtf(compliance/max(w,1e-8f))/dt;
+#else
+  '''+old+'''
+#endif''')
+ if d['name']=='ApplyPouchSurface':
+  marker=' for(unsigned i=0;i<r14Count;i++)r14Positions[i]=rsPositions[i];'
+  if s.count(marker)!=1:raise ValueError('Pouch publication span changed')
+  s=s.replace(marker,'''#ifdef MALEMOD_COMPLIANT_SCROTAL_SKIN
+ // Immutable donor ownership separates external skin from the hidden rod.
+ // Fine vertices inherit the same donor field, never a moving spatial test.
+ static float skinMask[rsCount],skinRight[rsCount];static bool skinReady=false;
+ if(!skinReady){
+  for(unsigned i=0;i<r14Count;i++){
+   float ball=0,shaft=0;
+   for(unsigned j=r14Offsets[i];j<r14Offsets[i+1];j++){
+    unsigned id=r14Sources[j];float weight=r14Weight[j];
+    ball+=weight*phys_scrotum_weight[id];shaft+=weight*max(phys_shaft_weight[id],phys_attachment_weight[id]);
+   }
+   skinMask[i]=::malemod::surface::scrotal::SkinOwnership(ball,shaft);
+   skinRight[i]=Smoother01(.5f+r14Base[3*i+1]/1.4f);
+  }
+  for(unsigned k=0;k<rsFineCount;k++)for(unsigned j=0;j<3;j++){
+   unsigned id=rsFineSource[k*3+j];float w=rsFineBary[k*3+j];
+   skinMask[r14Count+k]+=w*skinMask[id];skinRight[r14Count+k]+=w*skinRight[id];
+  }
+  skinReady=true;
+ }
+ static V3 skinBefore[rsCount],skinDelta[rsCount];memcpy(skinBefore,rsPositions,sizeof(skinBefore));
+ auto left=surfaceScrotalSkin[0].Displacement(),right=surfaceScrotalSkin[1].Displacement();
+ for(unsigned i=0;i<rsCount;i++){
+  float t=skinRight[i],w=skinMask[i];
+  rsPositions[i]=rsPositions[i]+V3{left[0]*(1-t)+right[0]*t,left[1]*(1-t)+right[1]*t,left[2]*(1-t)+right[2]*t}*w;
+ }
+ CPKeepSkinOutside();
+ for(unsigned i=0;i<rsCount;i++)skinDelta[i]=skinMask[i]>0?rsPositions[i]-skinBefore[i]:V3{};
+ // Prevent fold/collapse against the pre-secondary-motion surface. No seam,
+ // shaft-owned or body vertex receives an independent skin displacement.
+ float skinFraction=1.f;
+ for(unsigned k=0;k<rsIndexCount;k+=3){unsigned a=rsIndices[k],b=rsIndices[k+1],c=rsIndices[k+2];
+  skinFraction=min(skinFraction,RSSafeFraction(skinBefore[a],skinBefore[b],skinBefore[c],skinDelta[a],skinDelta[b],skinDelta[c],.5f));
+ }
+ surfaceSkinFraction=skinFraction;surfaceSkinMaximum=surfaceSkinProtectedError=0;
+ for(unsigned i=0;i<rsCount;i++){
+  rsPositions[i]=skinBefore[i]+skinDelta[i]*skinFraction;
+  float change=Length(rsPositions[i]-skinBefore[i]);surfaceSkinMaximum=max(surfaceSkinMaximum,change);
+  if(skinMask[i]==0)surfaceSkinProtectedError=max(surfaceSkinProtectedError,change);
+ }
+#endif
+'''+marker)
+ if d['name']=='ShaftRoot':
+  if s!='static V3 ShaftRoot(){return {9.0f,0.f,84.3f};}':raise ValueError('Source attachment root span changed')
+  s='static V3 ShaftRoot(){return {surfaceAttachmentAnchor[0],surfaceAttachmentAnchor[1],surfaceAttachmentAnchor[2]};}'
+ if d['name']=='ApplyShaftPoseAngle':
+  old_follow='if(bw<.05f&&membership>.02f)active=1.f+(pelvicAngleFollow[i]-1.f)*preparedPelvicRampBlend;'
+  if s.count(old_follow)!=1:raise ValueError('Source pelvis angle follow changed')
+  s=s.replace(old_follow,old_follow+'\n  if(surfaceTargetOwnsCollar)active+=(1.f-active)*SurfaceDorsalRelease(i);')
+  s='''static float SurfaceDorsalRelease(UINT i){
+ const float z=morph_base[i*3+2]-84.3f,y=morph_base[i*3+1],r=sqrtf(y*y+z*z);
+ return Smoother01((neutralShape[4]-sliderValues[4])/45.f)*Smoother01(((r>1e-6f?z/r:0)+.3f)/.8f)*(1-Smoother01(phys_scrotum_weight[i]/.2f));
+}
+'''+s
+  at='if(active<=.001f)return;'
+  if s.count(at)!=1:raise ValueError('Source angle ownership span changed')
+  # Rebase the authored material BEFORE rotation; the same root then anchors
+  # the rest guide, constraints and source collar frame. This is opt-in and
+  # bypassed arithmetically at the original source anchor.
+  rebase='''const auto anchor=ShaftRoot();
+  if(anchor.x!=9.0f||anchor.y!=0.f||anchor.z!=84.3f){
+   value[0]+=(anchor.x-9.0f)*active;
+   value[1]+=anchor.y*active;
+   value[2]+=(anchor.z-84.3f)*active;
+  }
+  '''
+  s=s.replace(at,rebase+at)
+ if d['name']=='BuildShaftRestFrame':
+  if s.count('center.y=0.f;')!=1:raise ValueError('Source guide lateral anchor span changed')
+  s=s.replace('center.y=0.f;','center.y=ShaftRoot().y;')
+ if d['name']=='FlareAttachment':
+  if s.count('value[1]*=scale;')!=1:raise ValueError('Source radial origin span changed')
+  s=s.replace('value[1]*=scale;','if(root.y==0.f)value[1]*=scale;else value[1]=root.y+(value[1]-root.y)*scale;')
+ if d['name']=='BuildPreparedShape':
+  shortening='value[axis]+=delta*(s==3?pouchOwner:1.f);'
+  if s.count(shortening)!=1:raise ValueError('Source length composition span changed')
+  s=s.replace(shortening,'if(surfaceTargetOwnsCollar&&s==1&&v<spec.def)delta*=OverallShapeScale();\n        '+shortening)
+  parts.append('static V3 surfaceMorphSnapshot[graftCount],surfaceFairSnapshot[graftCount];')
+  s=s.replace('  FairUnifiedCollar(controlled,graftFirstVertex,collarGrowth);','  memcpy(surfaceMorphSnapshot,graftDeformedPositions,sizeof(surfaceMorphSnapshot));\n  FairUnifiedCollar(controlled,graftFirstVertex,collarGrowth);\n  memcpy(surfaceFairSnapshot,graftDeformedPositions,sizeof(surfaceFairSnapshot));')
  if d['kind']=='CursorKind.FUNCTION_DECL':
   raw=(root/d['file']).read_bytes();start=raw.rfind(b'\n',0,d['start'])+1;prefix=raw[start:d['start']].decode()
   if prefix.startswith('template<'):s=prefix+s
@@ -158,6 +290,9 @@ for d in sorted(decl,key=position):
   # publish its aliases, otherwise an earlier body pass can leave a visible gap.
   s=s.replace(old,'write[ucSeamVertices[k*3]]=true;')
  if d['name']=='Apply' and d['parent']=='UnifiedCollar':
+  if s.count('if(!valid)return;')!=1:raise ValueError('Source collar metric/solve boundary changed')
+  # Keep the measured metric/cache available to the target, but avoid a
+  # second solve against the reference character's body and seam.
   old='Topology();Read(body);V3 root,axis;SampleShaftChain(0,root,axis);V3 up=Unit(Cross(axis,{0,1,0}));'
   new='Topology();Read(body);const auto pelvic=StablePelvicRecruitmentFrame();V3 root{pelvic.root.x,pelvic.root.y,pelvic.root.z},axis{pelvic.axis.x,pelvic.axis.y,pelvic.axis.z},up{pelvic.up.x,pelvic.up.y,pelvic.up.z};'
   if s.count(old)!=1:raise ValueError('Observed collar frame source span changed')
@@ -165,7 +300,9 @@ for d in sorted(decl,key=position):
   # with RestAngle/live swing. The immutable source remains unchanged.
   s=s.replace(old,new)
   s='''static ::malemod::collar::RecruitmentFrame StablePelvicRecruitmentFrame(){
- const auto root=ShaftRoot();const float angle=neutralShape[4]*3.1415926535f/180.f;
+ const auto root=ShaftRoot();
+ const bool calibrated=root.x!=9.0f||root.y!=0.f||root.z!=84.3f;
+ const float angle=(calibrated?sliderValues[4]:neutralShape[4])*3.1415926535f/180.f;
  return ::malemod::collar::StableRecruitmentFrame({root.x,root.y,root.z},{cosf(angle),0.f,-sinf(angle)},{0,1,0});
 }
 '''+s
@@ -175,8 +312,39 @@ for d in sorted(decl,key=position):
   at=s.rfind('}')
   s=s[:at]+'for(unsigned i=0;i<2;i++){surfaceOldPelvis[i]=surfacePelvis[i];surfacePelvis[i]=a.surfacePelvis[i]+(b.surfacePelvis[i]-a.surfacePelvis[i])*t;surfaceThighRadii[i]=a.surfaceThighRadii[i]+(b.surfaceThighRadii[i]-a.surfaceThighRadii[i])*t;}surfacePelvisRadius=a.surfacePelvisRadius+(b.surfacePelvisRadius-a.surfacePelvisRadius)*t;\n'+s[at:]
  if d['name']=='UpdateCompliantDynamics':
+  # Wire-valid requests reach .15 seconds. The reference .10/24 cap silently
+  # lost up to one third of a slow native frame's actual simulated time.
+  s=s.replace('constraintAccumulator+=min(dt,.10f);const float fixed=1.f/240.f;', '''#ifdef MALEMOD_COMPLIANT_SCROTAL_SKIN
+ constraintAccumulator+=min(dt,.15f);const float fixed=1.f/240.f;
+#else
+ constraintAccumulator+=min(dt,.10f);const float fixed=1.f/240.f;
+#endif''')
+  s=s.replace('int steps=min(24,int((constraintAccumulator+1e-7f)/fixed));', '''#ifdef MALEMOD_COMPLIANT_SCROTAL_SKIN
+ int steps=min(36,int((constraintAccumulator+1e-7f)/fixed));
+#else
+ int steps=min(24,int((constraintAccumulator+1e-7f)/fixed));
+#endif''')
   s=s.replace('memcpy(pdThigh,target.thigh,sizeof(pdThigh));', 'memcpy(pdThigh,target.thigh,sizeof(pdThigh));memcpy(surfacePelvis,target.surfacePelvis,sizeof(surfacePelvis));')
  if d['name']=='StepConstraintSolver':
+  old='V3 torque=Cross(up,CPDesiredUp(s))*20000.f+up*(twist*torsion);cpOmega[s]=(cpOmega[s]+torque*dt)*expf(-120.f*dt);PDRotateBody(s,cpOmega[s]*dt);'
+  if s.count(old)!=1:raise ValueError('Scrotal angular source span changed')
+  s=s.replace(old,'''#ifdef MALEMOD_COMPLIANT_SCROTAL_SKIN
+  auto response=::malemod::surface::scrotal::Response(physUI[4],physUI[6]);
+  V3 torque=Cross(up,CPDesiredUp(s))*response.angularStiffness+up*(twist*torsion);
+  cpOmega[s]=(cpOmega[s]+torque*dt)*(1.f/(1.f+response.angularDamping*dt+response.angularStiffness*dt*dt));
+  PDRotateBody(s,cpOmega[s]*dt);
+#else
+  '''+old+'''
+#endif''')
+  at=s.rfind('}')
+  s=s[:at]+'''#ifdef MALEMOD_COMPLIANT_SCROTAL_SKIN
+ static_assert(shaftNodeCount==::malemod::surface::scrotal::MechanicalPartition::shaftNodes,"Continuous rod node contract");
+ for(unsigned side=0;side<2;side++){
+  V3 center=CPCenter(side),r=CPRadii(side);
+  surfaceScrotalSkin[side].Step(dt,{center.x,center.y,center.z},min(r.x,min(r.y,r.z)),physUI[4],physUI[6]);
+ }
+#endif
+'''+s[at:]
   old='V3 acceleration{0.f,side*86.f*response,gait*86.f*response-gravity};float drag=i<pdBody0?shaftDrag:bodyDrag;'
   new='''V3 acceleration{0.f,side*86.f*response,gait*86.f*response-gravity};
   if(surfaceGarmentEnabled&&!surfaceGarmentContactReaction){auto a=i<pdBody0?surfaceGarmentShaft:surfaceGarmentLobes[i-pdBody0];auto bounded=::malemod::surface::BoundGarmentAcceleration({a.x,a.y,a.z},gravity);acceleration=acceleration+V3{bounded.x,bounded.y,bounded.z};}

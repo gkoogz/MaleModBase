@@ -1,0 +1,137 @@
+{
+  "schema": "malemod.scrotal-compliance-proof/1",
+  "baseCommit": "985f94755d7a5e039ef6e79e3fdfc4ee36885724",
+  "baseDirty": true,
+  "adapterBasePin": "431e626cae6fb6720b552f8b20206727fe809c80",
+  "sourceFiles": [
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "dcdfa16954fcef13022475ad22d1407b02a87a0e7f90fb87a2570bcd79df10ea"
+    },
+    {
+      "path": "include/malemod/surface/scrotal_compliance.hpp",
+      "sha256": "2335241eb53c03d4ec76b196ec8b41e6f7c34ae17aacda8d53b2c3558daa214f"
+    },
+    {
+      "path": "include/malemod/surface/runtime.hpp",
+      "sha256": "077f92da16665538bda70c713c8156a06fcf46d78261dee88c9cec4b0c85917d"
+    },
+    {
+      "path": "src/surface/runtime.cpp",
+      "sha256": "caa8e616d2dbb7241b4f68259da97a371f346a95fff01ed682bacd5998ddc821"
+    },
+    {
+      "path": "tools/extract_surface_runtime.py",
+      "sha256": "f5f0904369ddca606c8430801f86b6004c6343930211eae332fecb597b28920a"
+    },
+    {
+      "path": "tests/scrotal_compliance_test.cpp",
+      "sha256": "d7e6f1bc2ffb66730285918f1cc2c91804f34132e6a3bb0f6074ede34c664e0f"
+    },
+    {
+      "path": "tests/scrotal_surface_test.cpp",
+      "sha256": "72cea5782044b090603aec2d817e640a51ecaa56f227d0f7911756e81eaac974"
+    },
+    {
+      "path": "tools/render_mechanical_partition.py",
+      "sha256": "68fa67017f71ed5ed791f862322cb0b17294a393256bf7c48dc2d33d555c650a"
+    },
+    {
+      "path": "docs/SCROTAL-COMPLIANCE.md",
+      "sha256": "07e991b41d97d198a15cd428d78ca86be483690811b71d354544502c1bc9418e"
+    }
+  ],
+  "mechanics": {
+    "continuousRodNodes": 12,
+    "continuousRodSegments": 11,
+    "separateContentsBodies": 2,
+    "suspensionMaterialCoordinate": 0.12,
+    "skinOwnership": "Immutable donor memberships and barycentric fine donors; zero for shaft membership >=0.5",
+    "protectedSkinPassDisplacement": 0,
+    "suspensionReactionIntoRodPreserved": true,
+    "originalSnapshotModified": false
+  },
+  "candidate": {
+    "workerSHA256": "80b462ec5cc5a6b79a51efdb94c08965d55bec9a497e62862f83555b7b253ada",
+    "librarySHA256": "09677a57067f9803e94e3c08c03572bf7b9ffc8959b782e259f6d88ecf54b020",
+    "moduleSHA256": "df25874dcf3f72d1c9d021bb68d8e2972db6bd855c360865bd26f0297e7cf7a8",
+    "preview": "C:\\Users\\Administrator\\Documents\\ChatGPT\\TheWitcher3MaleMod\\build\\native-preview\\preview-1792027435136474400\\preview.json",
+    "previewSHA256": "75f4b3596188f9217bf3c3a7e23f091388fd86f504729fcb4a5461cb36dc78ab",
+    "enabledOption": "MALEMOD_COMPLIANT_SCROTAL_SKIN",
+    "installed": false,
+    "allManagedInstalledFilesVerified": 39,
+    "fullAttachmentGatePassed": false,
+    "userVisualApproval": false
+  },
+  "offline": {
+    "unitCases": 27,
+    "surfaceMotionCases": {
+      "fullsize-motion": {
+        "passed": true,
+        "maxSkin": 0.93493,
+        "protectedDisplacement": 0,
+        "minFraction": 0.977931,
+        "maxRodStretch": 0.00648746,
+        "maxLobeMovement": 3.15178
+      },
+      "firm-default": {
+        "passed": true,
+        "maxSkin": 0.422513,
+        "protectedDisplacement": 0,
+        "minFraction": 1,
+        "maxRodStretch": 0.00493319,
+        "maxLobeMovement": 1.13005
+      },
+      "semi-small-soft": {
+        "passed": true,
+        "maxSkin": 0.284606,
+        "protectedDisplacement": 0,
+        "minFraction": 1,
+        "maxRodStretch": 0.00575061,
+        "maxLobeMovement": 1.39327
+      },
+      "fullsize-stiff": {
+        "passed": true,
+        "maxSkin": 0.944219,
+        "protectedDisplacement": 0,
+        "minFraction": 1,
+        "maxRodStretch": 0.00639674,
+        "maxLobeMovement": 3.23199
+      },
+      "minimum-motion": {
+        "passed": true,
+        "maxSkin": 0.21331,
+        "protectedDisplacement": 0,
+        "minFraction": 0.730342,
+        "maxRodStretch": 0.230068,
+        "maxLobeMovement": 3.54491
+      }
+    },
+    "enabledDirectWorkerParityFrames": 48,
+    "disabledInstalledWorkerParityFrames": 48,
+    "kernelRegenerationPassed": true,
+    "extractionProvenancePassed": true
+  },
+  "limitations": [
+    "Full attachment/campaign/garment/performance parity not passed",
+    "No clinical material validation; bounded secondary skin model",
+    "Inherited tiny-size and extreme downward-compression shapes remain",
+    "Default full CMake test configuration blocked by pre-existing motion-filter extraction mismatch; focused targets and native checks run",
+    "No normal installation or dependency pin change"
+  ],
+  "privateProof": "D:\\MaleModBuilds\\scrotal-compliance-20261014\\final-proof.json",
+  "privateProofSHA256": "2a604c1c8a2a5b7df99c2511897bdce1012726dd397c015f7eaf7045e35f937b",
+  "nativeReviewedViews": 93,
+  "adoption": "Other spokes adopt shared helper/extraction through tested Base revision; default option OFF. Witcher preview changes worker and private worker-hash profile binding. No Wolverine runtime changed.",
+  "omissions": [
+    "Licensed geometry",
+    "Native screenshots and local receipts",
+    "User settings and save data",
+    "Compiled workers and libraries"
+  ],
+  "userReview": {
+    "accepted": false,
+    "reason": "Still essentially rigid",
+    "supersededByInvestigation": "D:/MaleModBuilds/relative-dynamics-20261014"
+  }
+}

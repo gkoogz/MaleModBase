@@ -34,6 +34,7 @@ double GraftRecruitmentWeight(PrecisePoint point,const GraftFrame& frame){
 struct GraftPlan::Impl {
  std::vector<double> seamDistance;
  double scale,fairingDistance=0,orientationAreaTargetRatio=.02;
+ unsigned orientationIterations=128;
  std::size_t count;
  bool preserveTargetDifferential;
  bool projectionOnly;
@@ -50,6 +51,8 @@ struct GraftPlan::Impl {
  Impl(const GraftDomain& domain,const GraftFrame& frame,bool only=false):scale(frame.sourceLengthScale),count(domain.points.size()),preserveTargetDifferential(domain.preserveTargetDifferential),projectionOnly(only){
   if(!count||count>1000000||!Finite(frame.root)||!Finite(frame.axis)||!Finite(frame.up)||!std::isfinite(scale)||scale<=0||!std::isfinite(frame.radius)||frame.radius<=0||!std::isfinite(frame.length)||frame.length<=0)throw std::invalid_argument("Invalid graft frame/domain");
   orientationAreaTargetRatio=domain.orientationAreaTargetRatio;
+  orientationIterations=domain.orientationIterations;
+  if(orientationIterations==0||orientationIterations>4096)throw std::invalid_argument("Invalid orientation iteration budget");
   if(!std::isfinite(orientationAreaTargetRatio)||orientationAreaTargetRatio<=0||orientationAreaTargetRatio>1)throw std::invalid_argument("Invalid orientation area target ratio");
   const auto axis=V(frame.axis),up=V(frame.up);
   if(std::abs(axis.norm()-1)>1e-5||std::abs(up.norm()-1)>1e-5||std::abs(axis.dot(up))>1e-5)throw std::invalid_argument("Graft axis/up must be orthonormal");
@@ -94,7 +97,12 @@ struct GraftPlan::Impl {
    Vector p[3]={points[face[0]],points[face[1]],points[face[2]]};
    const double twice=(p[1]-p[0]).cross(p[2]-p[0]).norm();if(twice<1e-14)continue;
    for(unsigned j=0;j<3;j++){
-    auto a=face[(j+1)%3],b=face[(j+2)%3];const double w=std::clamp((p[(j+1)%3]-p[j]).dot(p[(j+2)%3]-p[j])/(2*twice),0.,20.);
+    auto a=face[(j+1)%3],b=face[(j+2)%3];
+    const double cotangent=(p[(j+1)%3]-p[j]).dot(p[(j+2)%3]-p[j])/(2*twice);
+    // Signed cotangents retain linear precision on obtuse triangles. Their
+    // assembled FEM stiffness is positive semidefinite; clamping individual
+    // entries destroys the opposite-flux cancellation of a flat sewn patch.
+    const double w=domain.coupledCurvature?cotangent:std::clamp(cotangent,0.,20.);
     entries.emplace_back(a,a,w);entries.emplace_back(b,b,w);entries.emplace_back(a,b,-w);entries.emplace_back(b,a,-w);
     area[face[j]]+=twice/6;
    }
@@ -108,14 +116,40 @@ struct GraftPlan::Impl {
   Sparse inverse(count,count);inverse.setFromTriplets(inverseArea.begin(),inverseArea.end());
   Sparse cp=curvature*projection;
   baseMetric=cp.transpose()*inverse*cp*8+projection.transpose()*curvature*projection*2;
+  Sparse joinedCurvature,joinedInverse;
+  Eigen::VectorXd joinedArea;
+  if(domain.coupledCurvature){
+   joinedCurvature=projection.transpose()*curvature*projection;
+   joinedArea=projection.transpose()*area;
+   std::vector<Entry> values;
+   for(unsigned i=0;i<masters.size();i++)values.emplace_back(i,i,1/std::max(joinedArea[i],.005));
+   joinedInverse.resize(masters.size(),masters.size());joinedInverse.setFromTriplets(values.begin(),values.end());
+   baseMetric=joinedCurvature.transpose()*joinedInverse*joinedCurvature*8+joinedCurvature*2;
+  }
   if(!std::isfinite(domain.surfaceFairingDistance)||domain.surfaceFairingDistance<0||!std::isfinite(domain.surfaceFairingStrength)||domain.surfaceFairingStrength<0)throw std::invalid_argument("Invalid local surface fairing");
+  if(!domain.surfaceFairingRetention.empty()&&domain.surfaceFairingRetention.size()!=count)throw std::invalid_argument("Fairing retention size");
+  for(double v:domain.surfaceFairingRetention)if(!std::isfinite(v)||v<0||v>1)throw std::invalid_argument("Fairing retention range");
+  auto retention=[&](unsigned i){return domain.surfaceFairingRetention.empty()?1.:domain.surfaceFairingRetention[i];};
   surfaceMetric.resize(masters.size(),masters.size());
   if(domain.surfaceFairingDistance>0&&domain.surfaceFairingStrength>0){
    fairingDistance=domain.surfaceFairingDistance/scale;
    std::vector<Entry> local;
-   for(unsigned i=0;i<count;i++)local.emplace_back(i,i,domain.surfaceFairingStrength*Smoother(1-seamDistance[i]/(domain.surfaceFairingDistance/scale))/area[i]);
+   for(unsigned i=0;i<count;i++)local.emplace_back(i,i,retention(i)*domain.surfaceFairingStrength*Smoother(1-seamDistance[i]/(domain.surfaceFairingDistance/scale))/area[i]);
    Sparse weight(count,count);weight.setFromTriplets(local.begin(),local.end());
    surfaceMetric=cp.transpose()*weight*cp;
+   if(domain.coupledCurvature){
+    std::vector<bool> physicalBoundary(count,false);
+    for(auto i:domain.protectedVertices)physicalBoundary[i]=true;
+    std::vector<Entry> values;
+    for(unsigned i=0;i<masters.size();i++){
+     // A protected physical edge has no opposite surface flux to combine.
+     // Its position remains fixed, but it must not act as a curved interior.
+     if(physicalBoundary[masters[i]])continue;
+     values.emplace_back(i,i,retention(masters[i])*domain.surfaceFairingStrength*Smoother(1-seamDistance[masters[i]]/fairingDistance)/std::max(joinedArea[i],.005));
+    }
+    Sparse joinedWeight(masters.size(),masters.size());joinedWeight.setFromTriplets(values.begin(),values.end());
+    surfaceMetric=joinedCurvature.transpose()*joinedWeight*joinedCurvature;
+   }
   }
   Update(frame);
  }
@@ -186,7 +220,7 @@ struct GraftPlan::Impl {
   // a protected boundary nor a shared prescribed waist master can move.
   if(!orientations.empty()){
    auto position=[&](unsigned id)->Vector{Vector p=points[id];for(auto [master,w]:vertexMasters[id])p+=solved.row(master).transpose()*w;return p;};
-   for(unsigned iteration=0;iteration<128;iteration++){
+   for(unsigned iteration=0;iteration<orientationIterations;iteration++){
     bool changed=false;
     for(const auto& constraint:orientations){
      const auto f=constraint.face;const Vector a=position(f[0]),b=position(f[1]),c=position(f[2]);
@@ -199,7 +233,7 @@ struct GraftPlan::Impl {
       if(found==accumulated.end())accumulated.push_back({master,gradient[vertex]*w});else found->second+=gradient[vertex]*w;
      }
      double denominator=0;for(const auto& row:accumulated)denominator+=row.second.squaredNorm();
-     if(denominator<1e-20)throw std::runtime_error("Graft orientation conflicts with fixed boundaries");
+     if(denominator<1e-20)throw std::runtime_error("Graft orientation conflicts with fixed boundaries at "+std::to_string(f[0])+","+std::to_string(f[1])+","+std::to_string(f[2])+" (ratio "+std::to_string(value/constraint.area)+")");
      const double correction=.8*(minimum-value)/denominator;
      for(const auto& row:accumulated)solved.row(row.first)+=(correction*row.second).transpose();changed=true;
     }
@@ -217,4 +251,17 @@ GraftPlan::~GraftPlan()=default;
 void GraftPlan::UpdateFrame(const GraftFrame& frame){if(impl_->projectionOnly)throw std::invalid_argument("Constraint-only graft plan has no support frame");impl_->Update(frame);}
 std::vector<PrecisePoint> GraftPlan::SolveDisplacement(const std::vector<PrecisePoint>& displacement)const{return impl_->Solve(displacement);}
 std::vector<PrecisePoint> GraftPlan::ProjectDisplacement(const std::vector<PrecisePoint>& displacement)const{return impl_->Solve(displacement,true);}
+std::vector<PrecisePoint> ProjectGraftContinuation(const GraftDomain& domain,const std::vector<PrecisePoint>& target,unsigned steps){
+ if(target.size()!=domain.points.size()||steps<1||steps>256)throw std::invalid_argument("Invalid graft continuation");
+ auto reference=domain.points;auto local=domain;
+ for(unsigned step=1;step<=steps;step++){
+  local.points=reference;GraftPlan projector(local);std::vector<PrecisePoint> delta(target.size());
+  for(unsigned i=0;i<delta.size();i++)for(unsigned k=0;k<3;k++)delta[i][k]=domain.points[i][k]+target[i][k]*(double(step)/steps)-reference[i][k];
+  auto safe=projector.ProjectDisplacement(delta);
+  for(unsigned i=0;i<reference.size();i++)for(unsigned k=0;k<3;k++)reference[i][k]+=safe[i][k];
+ }
+ for(unsigned i=0;i<reference.size();i++)for(unsigned k=0;k<3;k++)reference[i][k]-=domain.points[i][k];
+ return reference;
+}
+
 }

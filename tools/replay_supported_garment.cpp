@@ -4,26 +4,19 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
-#ifdef MALEMOD_REPLAY_CPU_POUCH
-#include <malemod/garments/pouch_session.hpp>
-#endif
 using namespace malemod::garments;
 
 // Replays private recordings without an engine or graphics SDK. Captures stay
 // outside Git; failed contact/material budgets must fail the process as well.
 int main(int argc,char** argv) {
  try {
-  if(argc<2)throw std::invalid_argument("Usage: replay_supported_garment DIRECTORY [interpolation-hz]");
+  if(argc<2)throw std::invalid_argument("Usage: replay_supported_garment DIRECTORY [interpolation-hz] [--contacts]");
   const std::filesystem::path directory(argv[1]);
   const double hz=argc>2?std::stod(argv[2]):0;
   if(!std::isfinite(hz)||hz<0||hz>120)throw std::invalid_argument("Interpolation rate outside 0..120 Hz");
   auto read=[&](const std::string& name){std::ifstream file(directory/(name+".input"),std::ios::binary);return input_recording::Read(file);};
   auto reference=read("reference"),previous=read("prepared");
-#ifdef MALEMOD_REPLAY_CPU_POUCH
-  PouchSession session(SupportedPouchParameters());
-#else
   Session session(SupportedPouchParameters());
-#endif
   auto output=session.InitializeDraped(reference,previous);
   bool passed=output.contactBudgetSatisfied&&output.physics.materialBudgetSatisfied;
   std::cout<<"request,substep,seconds,solver_ms,contact,material,stretch,render_stretch,seam,clock,worst_a,worst_b,rest_length,current_length,coverage,body_intersections,pouch_penetrations\n"<<std::setprecision(10);
@@ -60,6 +53,14 @@ int main(int argc,char** argv) {
    std::ofstream mesh(directory/("checked-replay-"+std::to_string(request)+".obj"));
    geometry_export::WriteOBJ(mesh,output.mesh);
    std::ofstream layout(directory/("checked-replay-"+std::to_string(request)+".json"));geometry_export::WriteLayout(layout,output.layout);
+   if(argc>3&&std::string(argv[3])=="--contacts"){
+    detail::BodyCollider body;body.Update(current.bodySurface,current.bodyTriangles,current.frame.origin,output.measuredCircumference);
+    std::ofstream contacts(directory/("checked-replay-"+std::to_string(request)+".contacts.csv"));contacts<<"garment_face,a,b,c,body_face\n";
+    for(unsigned index=0;index<output.mesh.triangles.size();index++){
+     const auto face=output.mesh.triangles[index].vertices;std::array<Point,3> triangle;for(unsigned k=0;k<3;k++)triangle[k]=Mul(Sub(output.mesh.vertices[face[k]].position,current.frame.origin),1/output.measuredCircumference);
+     auto hit=body.ClosestFace(triangle,1e-7);if(hit.distance<1e-8)contacts<<index<<','<<face[0]<<','<<face[1]<<','<<face[2]<<','<<hit.triangle<<'\n';
+    }
+   }
    std::cerr<<"request="<<request<<" body_crossings band="<<output.bodyIntersectionsByPart[0]<<" pouch="<<output.bodyIntersectionsByPart[1]<<" straps="<<output.bodyIntersectionsByPart[2]<<" hems="<<output.bodyIntersectionsByPart[3]<<'\n';
   }
   if(!requests)throw std::invalid_argument("Replay contains no request-1.input");

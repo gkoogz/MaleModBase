@@ -12,11 +12,13 @@
     "cmake/nvcloth-compat/typeinfo.h": "cd89a9b6dd2088e07e94016908900f83bf148382f09c65fb127ae75cd47f4def",
     "include/malemod/garments/cpu_cloth.hpp": "095eaaa3eac2aa9779be0559be4a48e6e4c043eba766050aa33258f10d4e75d3",
     "include/malemod/garments/measured_capsules.hpp": "db697ced29054560cb08e408caefd87f590aa9ce5b3972e22cc34432b303cc75",
-    "src/garments/cpu_cloth.cpp": "fd6650e89e9fc6e55621ea620c9666857bc5684abd84ab2c6195aee4b83d41d7",
-    "tests/cpu_cloth_test.cpp": "886f9d12e157e4fa94b6ac87b3ffb64b73de711433c8a13954d7b6058d70971c",
+    "src/garments/cpu_cloth.cpp": "71a17993d71a271ee82f98234238bce7f4c1c2db49ad7c3ae9cb598dbf97ca7b",
+    "tests/cpu_cloth_test.cpp": "d3b2c9de1070c12c781880e6c701a2be4e6006745ad18a5acbfbd9fe1bbb5432",
     "tests/measured_capsules_test.cpp": "e92e0695f3ac997702b2d4bc82ee3b06c934c991e2c8c9b68df5e431bbe3147e",
     "third-party/licenses/NvCloth.txt": "b4fa2a357a4e50df2d3d514858bdbefc5b356f4a289523969daeea65d67b9004",
-    "third-party/licenses/PxShared.txt": "b4fa2a357a4e50df2d3d514858bdbefc5b356f4a289523969daeea65d67b9004"
+    "third-party/licenses/PxShared.txt": "b4fa2a357a4e50df2d3d514858bdbefc5b356f4a289523969daeea65d67b9004",
+    "include/malemod/garments/material_metric.hpp": "5f0d8b11502d549ced35fd4d5fe6ce19ca1f96eb2721f65bb28f9c00e9766681",
+    "tests/material_metric_test.cpp": "20c45f70b89113a145b54269ae079b675b434330b326d54832f76815fc1b67d3"
   },
   "verification": {
     "x86": "MSVC Release: cpu_cloth and measured_capsules fixtures passed",
@@ -26,7 +28,7 @@
       "minVertexGap": -2.63875e-05,
       "maxStretch": 1.00893
     },
-    "pouchExperiment": "REJECTED; see docs/CPU-POUCH-DEVELOPMENT.md",
+    "pouchExperiment": "RETIRED by user October 7. Generic numerical library remains historical and unused by collision inspection.",
     "nativeGameplay": "Not tested; no installed-game adoption",
     "pouchFinalReplay": {
       "requests": 7,

@@ -1,0 +1,25 @@
+pool,clip_index,installed_clip,transcript_exactly_as_filename,original_filename,source_mp3_size_bytes,installed_wav_size_bytes,duration_seconds,audio_envelope_correlation,evidence
+Phase1,1,clip-01.wav,here we go,here we go.mp3,44233,152142,1.724,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase1,2,clip-02.wav,here we go here we go,here we go here we go.mp3,75998,327246,3.709,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase1,3,clip-03.wav,i cant ah,i cant ah.mp3,53010,200526,2.273,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase1,4,clip-04.wav,ah yeah here we go ah,ah yeah here we go ah.mp3,82685,364110,4.127,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase1,5,clip-05.wav,holy fuck I i'm coming,holy fuck I i'm coming.mp3,88954,398670,4.519,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase1,6,clip-06.wav,ah ah im gonna blow,ah ah im gonna blow.mp3,77252,334158,3.788,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase1,7,clip-07.wav,oh fuck oh fuck ah ah,oh fuck oh fuck ah ah.mp3,104419,483918,5.486,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase1,8,clip-08.wav,oh fuck here we go,oh fuck here we go.mp3,63459,258126,2.926,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase1,9,clip-09.wav,oh i think im gonna,oh i think im gonna.mp3,60951,244302,2.769,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase1,10,clip-10.wav,its gonna be a big one,its gonna be a big one.mp3,49248,179790,2.038,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase1,11,clip-11.wav,oh fuck yeah fuck yeah,oh fuck yeah fuck yeah.mp3,54264,207438,2.351,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase1,12,clip-12.wav,aw yeah yeah,aw yeah yeah.mp3,72236,306510,3.474,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase1,13,clip-13.wav,aw yeah here we go,aw yeah here we go.mp3,80177,350286,3.971,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase2,1,clip-01.wav,oh ah ah there it is,oh ah ah there it is.mp3,104419,483918,5.486,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase2,2,clip-02.wav,oh yeah get soaked,oh yeah get soaked.mp3,58025,228174,2.586,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase2,3,clip-03.wav,im blastin,im blastin.mp3,47994,172878,1.959,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase2,4,clip-04.wav,oh no no no no yeah,oh no no no no yeah.mp3,83939,371022,4.206,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase2,5,clip-05.wav,ah ah ah,ah ah ah.mp3,88954,398670,4.519,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase2,6,clip-06.wav,oh fuck,oh fuck.mp3,47994,172878,1.959,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase2,7,clip-07.wav,oh oh oh oh,oh oh oh oh.mp3,91462,412494,4.676,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase2,8,clip-08.wav,im pumpin ah,im pumpin ah.mp3,56772,221262,2.508,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase2,9,clip-09.wav,oh ah ah there it is 2,oh ah ah there it is 2.mp3,108181,504654,5.721,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase2,10,clip-10.wav,oh boy ah ah ah,oh boy ah ah ah.mp3,97732,447054,5.068,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation
+Phase2,11,clip-11.wav,here it is,here it is.mp3,45487,159054,1.802,1.000,Recycle Bin original-name record and matching deleted MP3; decoded duration and 10 ms RMS envelope correlation

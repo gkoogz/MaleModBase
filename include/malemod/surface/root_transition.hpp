@@ -3,8 +3,12 @@
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
+#include <optional>
 
 namespace malemod::surface {
+struct RootTransitionProfile {
+ double sectionScale=1.12, lateralThickness=.06, inferiorThickness=.14, forwardGain=1.3;
+};
 // A measured rest opening and the independently moving anatomy share a C2
 // displacement field at the attachment. No game units, bones or vertex IDs.
 class RootTransition {
@@ -16,12 +20,15 @@ class RootTransition {
  PrecisePoint openingUp_;
  PrecisePoint openingSide_;
  std::vector<double> openingRadius_;
+ RootTransitionProfile profile_;
  static double Smooth(double t){t=std::clamp(t,0.,1.);return t*t*t*(t*(t*6-15)+10);}
  public:
- RootTransition(std::vector<PrecisePoint> rest,unsigned bodyCount,const std::vector<PrecisePoint>& opening,PrecisePoint forward={1,0,0},PrecisePoint openingUp={0,0,1}):rest_(std::move(rest)),bodyCount_(bodyCount),forward_(forward),openingUp_(openingUp){
+ RootTransition(std::vector<PrecisePoint> rest,unsigned bodyCount,const std::vector<PrecisePoint>& opening,PrecisePoint forward={1,0,0},PrecisePoint openingUp={0,0,1},std::optional<PrecisePoint> anchor={},RootTransitionProfile profile={}):rest_(std::move(rest)),bodyCount_(bodyCount),forward_(forward),openingUp_(openingUp),profile_(profile){
+  if(!std::isfinite(profile_.sectionScale+profile_.lateralThickness+profile_.inferiorThickness+profile_.forwardGain)||profile_.sectionScale<1||profile_.lateralThickness<0||profile_.inferiorThickness<0||profile_.forwardGain<0)throw std::invalid_argument("Invalid measured root profile");
   if(opening.size()<3||!bodyCount_||bodyCount_>=rest_.size())throw std::invalid_argument("Incomplete measured root transition");
   double f=0;for(double x:forward_){if(!std::isfinite(x))throw std::invalid_argument("Nonfinite pelvic forward");f+=x*x;}if(f<1e-12)throw std::invalid_argument("Degenerate pelvic forward");for(auto& x:forward_)x/=std::sqrt(f);
   for(auto p:opening)for(unsigned a=0;a<3;a++){if(!std::isfinite(p[a]))throw std::invalid_argument("Nonfinite opening");root_[a]+=p[a]/opening.size();}
+  if(anchor){for(double x:*anchor)if(!std::isfinite(x))throw std::invalid_argument("Nonfinite measured attachment anchor");root_=*anchor;}
   double u=0,fu=0;for(unsigned a=0;a<3;a++){if(!std::isfinite(openingUp_[a]))throw std::invalid_argument("Nonfinite opening up");u+=openingUp_[a]*openingUp_[a];fu+=openingUp_[a]*forward_[a];}if(std::abs(u-1)>1e-5||std::abs(fu)>1e-5)throw std::invalid_argument("Opening frame must be orthonormal");
   openingSide_={openingUp_[1]*forward_[2]-openingUp_[2]*forward_[1],openingUp_[2]*forward_[0]-openingUp_[0]*forward_[2],openingUp_[0]*forward_[1]-openingUp_[1]*forward_[0]};
   // Cache a smooth angular section of this measured opening, not the source
@@ -33,7 +40,70 @@ class RootTransition {
   for(auto p:rest_){double best=1e100;for(auto q:opening){double ds=0;for(unsigned a=0;a<3;a++){if(!std::isfinite(p[a]))throw std::invalid_argument("Nonfinite rest transition");ds+=(p[a]-q[a])*(p[a]-q[a]);}best=std::min(best,std::sqrt(ds));}seamDistance_.push_back(best);}
  }
  PrecisePoint Root()const{return root_;}
- PrecisePoint BodyDisplacement(unsigned i,const GraftFrame& frame,double neutralRadius)const{
+ PrecisePoint AnchoredBodyDisplacement(unsigned i,const GraftFrame& pose,double neutralRadius)const{
+  // A finite tube crossing the measured body plane needs its oblique section,
+  // rather than the neutral-angle circle. Near a tangential/backward extreme,
+  // release continuously to the bounded historical field instead of dividing
+  // by a nearly zero plane-crossing cosine.
+  double crossing=0;for(unsigned a=0;a<3;a++)crossing+=pose.axis[a]*forward_[a];
+  auto result=BodyDisplacement(i,pose,neutralRadius);
+  if(crossing<=.10)return result;
+  const auto oblique=ObliqueBodyDisplacement(i,pose,neutralRadius,0);
+  const double weight=Smooth((crossing-.10)/.15);
+  for(unsigned a=0;a<3;a++)result[a]+=(oblique[a]-result[a])*weight;
+  return result;
+ }
+ double ArcAnteriorLimit(unsigned i,const GraftFrame& pose,double neutralRadius)const{
+  if(i>=rest_.size()||!std::isfinite(neutralRadius)||neutralRadius<=0)throw std::invalid_argument("Invalid collar arc budget");
+  double y=0,z=0,pitch=0,norm=0;for(unsigned a=0;a<3;a++){if(!std::isfinite(pose.axis[a]))throw std::invalid_argument("Nonfinite collar axis");y+=(rest_[i][a]-root_[a])*openingSide_[a];z+=(rest_[i][a]-root_[a])*openingUp_[a];pitch+=pose.axis[a]*openingUp_[a];norm+=pose.axis[a]*pose.axis[a];}
+  if(std::abs(norm-1)>1e-5)throw std::invalid_argument("Invalid collar axis");
+  const double rho=std::hypot(y,z),cosine=rho>1e-10?z/rho:0;
+  // Forward travel is distinct from circumference. Release the compressed
+  // arc as pitch changes, retaining the full radial/raphe section below.
+  const double upper=Smooth(pitch/std::sqrt(.5)),lower=Smooth(-pitch/std::sqrt(.5));
+  return neutralRadius*std::clamp(1-upper*Smooth(-cosine)-lower*Smooth(cosine),0.,1.);
+ }
+ PrecisePoint ObliqueBodyDisplacement(unsigned i,const GraftFrame& pose,double neutralRadius,double anteriorLimit=-1)const{
+  // The live centreline and measured pelvic plane define the support opening.
+  // Intersecting the tube with that plane gives an ellipse. Expanding a circle
+  // of the same radius would constrict the oblique upper/lower section.
+  if(i>=rest_.size()||!std::isfinite(neutralRadius)||neutralRadius<=0||!std::isfinite(pose.radius)||pose.radius<=0)throw std::invalid_argument("Invalid oblique root dimensions");
+  if(!std::isfinite(anteriorLimit)||(anteriorLimit<0&&anteriorLimit!=-1))throw std::invalid_argument("Invalid anterior opening limit");
+  double fx=0,az=0,ay=0,norm=0;for(unsigned a=0;a<3;a++){if(!std::isfinite(pose.axis[a])||!std::isfinite(pose.root[a]))throw std::invalid_argument("Nonfinite live attachment pose");fx+=pose.axis[a]*forward_[a];az+=pose.axis[a]*openingUp_[a];ay+=pose.axis[a]*openingSide_[a];norm+=pose.axis[a]*pose.axis[a];}
+  if(std::abs(norm-1)>1e-5||fx<.1)throw std::invalid_argument("Oblique attachment must cross the pelvic plane");
+  const double growth=Smooth((pose.radius-neutralRadius)/(.75*neutralRadius));if(growth==0)return {};
+  PrecisePoint q{},d{};double s=0,z=0,y=0;
+  for(unsigned a=0;a<3;a++){q[a]=rest_[i][a]-root_[a];s+=q[a]*forward_[a];z+=q[a]*openingUp_[a];y+=q[a]*openingSide_[a];}
+  const double rho=std::hypot(y,z);if(rho<1e-10)return {};
+  const double uz=z/rho,uy=y/rho,r0=openingRadius_[i],inferior=std::pow(std::max(0.,-uz),2);
+  const double metric=std::sqrt(std::max(.01,1-std::pow(az*uz+ay*uy,2)));
+  const double desired=pose.radius*(1.03+.20*inferior)/metric,dilation=std::max(0.,desired-r0)*growth;
+  if(dilation==0)return {};
+  double rootForward=0,rootUp=0,rootSide=0;for(unsigned a=0;a<3;a++){rootForward+=(root_[a]-pose.root[a])*forward_[a];rootUp+=(pose.root[a]-root_[a])*openingUp_[a];rootSide+=(pose.root[a]-root_[a])*openingSide_[a];}
+  // Translation of the oblique section consumes the same radial budget as
+  // its widening. Recruit more rings for that shift; otherwise its falloff
+  // reverses the annulus even when the radial widening alone is monotone.
+  // Width and anterior depth are independent. A larger circumference need
+  // not drive the pelvic opening beyond its observed attachment plane.
+  const double anterior=anteriorLimit<0?1.3*dilation:std::min(1.3*dilation,anteriorLimit*growth);
+  const double shiftBound=std::hypot(rootUp+(rootForward+s+anterior)*az/fx,rootSide+(rootForward+s+anterior)*ay/fx)*growth;
+  const double inner=r0+dilation,width=.81*r0+2.18*(dilation+shiftBound),length=inner+width-r0,t=(rho-r0)/length;
+  if(t>=1)return {};
+  const double v=std::max(0.,t),v2=v*v,v3=v2*v,v4=v3*v,v5=v4*v,m0=.5*length/width,m1=length/width;
+  const double h=m0*v+(10-6*m0-4*m1)*v3+(8*m0+7*m1-15)*v4+(6-3*m0-3*m1)*v5;
+  const double radial=t<0?inner+.5*(rho-r0):inner+width*h;
+  const double bell=t<0?1-t:1-v-4*v3+7*v4-3*v5;
+  const double weight=Smooth((s+3*neutralRadius)/(1.5*neutralRadius))*(1-Smooth(std::max(0.,s)/(2*inner)));
+  const double forward=anterior*bell*weight;
+  const double upShift=(rootUp+(rootForward+s+forward)*az/fx)*growth*bell*weight;
+  const double sideShift=(rootSide+(rootForward+s+forward)*ay/fx)*growth*bell*weight;
+  for(unsigned a=0;a<3;a++)d[a]=forward_[a]*forward+(openingUp_[a]*z+openingSide_[a]*y)*(radial-rho)*weight/rho+openingUp_[a]*upShift+openingSide_[a]*sideShift;
+  return d;
+ }
+ PrecisePoint BodyDisplacement(unsigned i,const GraftFrame& frame,double neutralRadius,double lowerSupportRadius=0,double forwardGain=-1)const{
+  if(forwardGain==-1)forwardGain=profile_.forwardGain;
+  if(!std::isfinite(lowerSupportRadius)||lowerSupportRadius<0)throw std::invalid_argument("Invalid inferior attachment support");
+  if(!std::isfinite(forwardGain)||forwardGain<0)throw std::invalid_argument("Invalid anterior recruitment gain");
   if(i>=rest_.size()||!std::isfinite(neutralRadius)||neutralRadius<=0||!std::isfinite(frame.radius)||frame.radius<=0)throw std::invalid_argument("Invalid root transition dimensions");
   if(!std::isfinite(frame.sourceLengthScale)||frame.sourceLengthScale<=0||!std::isfinite(frame.length)||frame.length<=0)throw std::invalid_argument("Invalid root transition scale or length");
   double aa=0,uu=0,au=0;for(unsigned a=0;a<3;a++){aa+=frame.axis[a]*frame.axis[a];uu+=frame.up[a]*frame.up[a];au+=frame.axis[a]*frame.up[a];}if(!std::isfinite(aa+uu+au)||std::abs(aa-1)>1e-5||std::abs(uu-1)>1e-5||std::abs(au)>1e-5)throw std::invalid_argument("Invalid transition frame");
@@ -48,7 +118,8 @@ class RootTransition {
   // body and sewn anatomy together instead of leaving a thin root above an
   // empty underside wedge. No enlargement is applied at neutral size.
   const double inferior=rho>1e-8*scale?std::pow(std::max(0.,-z/rho),2):0;
-  const double dilation=std::max(0.,frame.radius*1.12-r0)*growth;
+  const double section=frame.radius*profile_.sectionScale+inferior*std::max(0.,lowerSupportRadius-frame.radius*profile_.sectionScale);
+  const double dilation=std::max(0.,section-r0)*growth;
   if(dilation<=1e-12*scale)return d;
   // Enlarge the support annulus with growth instead of concentrating the
   // transition beside the cutout. The exterior still returns exactly to rest.
@@ -62,7 +133,7 @@ class RootTransition {
   const double clamped=std::max(0.,t),t2=clamped*clamped,t3=t2*clamped,t4=t3*clamped,t5=t4*clamped;
   const double hermite=m0*clamped+(10-6*m0-4*m1)*t3+(8*m0+7*m1-15)*t4+(6-3*m0-3*m1)*t5;
   const double localBell=1-Smooth(std::max(0.,rho-r0)/(2*neutralRadius));
-  const double rootThickness=frame.radius*(.06*lateral*lateral*lateral+.14*inferior)*growth*localBell;
+  const double rootThickness=frame.radius*(profile_.lateralThickness*lateral*lateral*lateral+profile_.inferiorThickness*inferior)*growth*localBell;
   const double radius=(t<0?inner+innerSlope*(rho-r0):inner+width*hermite)+rootThickness;
   const double bell=t<0?1-t:1-clamped-4*t3+7*t4-3*t5;
   const double anterior=Smooth((s+3*neutralRadius)/(1.5*neutralRadius));
@@ -74,16 +145,17 @@ class RootTransition {
   // The lower root returns deeper into the pelvis instead of moving forward
   // as far as the upper bell. This fills the posterior ventral hollow locally;
   // the surrounding body annulus keeps the previous displacement exactly.
-  const double lowerReturn=1-.40*inferior*localBell;
-  for(unsigned a=0;a<3;a++)d[a]+=forward_[a]*(1.3*dilation*bell*weight*lowerReturn);
+  const double lowerReturn=lowerSupportRadius>0?1:1-.40*inferior*localBell;
+  for(unsigned a=0;a<3;a++)d[a]+=forward_[a]*(forwardGain*dilation*bell*weight*lowerReturn);
   // The lower ramp may grow down/out, never backward into the thighs.
   double backward=0;for(unsigned a=0;a<3;a++)backward+=d[a]*forward_[a];if(backward<0)for(unsigned a=0;a<3;a++)d[a]-=backward*forward_[a];return d;
  }
- std::vector<PrecisePoint> Evaluate(const std::vector<PrecisePoint>& completeDelta,const GraftFrame& frame,double neutralRadius)const{
+ std::vector<PrecisePoint> Evaluate(const std::vector<PrecisePoint>& completeDelta,const GraftFrame& frame,double neutralRadius,double movingReach=0,bool oblique=false)const{
   if(completeDelta.size()!=rest_.size())throw std::invalid_argument("Root transition topology differs");
-  auto out=completeDelta;const double reach=std::max(2*neutralRadius,1.5*frame.radius);
+  if(!std::isfinite(movingReach)||movingReach<0)throw std::invalid_argument("Invalid independent anatomy transition reach");
+  auto out=completeDelta;const double reach=movingReach>0?movingReach:std::max(2*neutralRadius,1.5*frame.radius);
   for(unsigned i=0;i<out.size();i++){
-   auto d=BodyDisplacement(i,frame,neutralRadius);
+   auto d=oblique?AnchoredBodyDisplacement(i,frame,neutralRadius):BodyDisplacement(i,frame,neutralRadius);
    // Preserve the complete morphology field outside the sewn neighborhood,
    // including recruitment that crosses existing torso/leg resource joins.
    // Only the local opening replaces that field with the measured transition.

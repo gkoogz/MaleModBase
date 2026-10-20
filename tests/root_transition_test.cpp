@@ -8,6 +8,15 @@ int main(){try{
  std::vector<PrecisePoint> opening={{0,-1,0},{0,0,1},{0,1,0},{0,0,-1}};
  std::vector<PrecisePoint> rest=opening;rest.push_back({-100,0,0});rest.insert(rest.end(),opening.begin(),opening.end());rest.push_back({100,0,0});
  RootTransition ramp(rest,5,opening);GraftFrame f{{0,0,0},{1,0,0},{0,0,1},7,25,1};
+ RootTransition measured(rest,5,opening,{1,0,0},{0,0,1},std::nullopt,RootTransitionProfile{1,0,.14,.35});
+ auto measuredSide=measured.BodyDisplacement(2,f,2.9),measuredTop=measured.BodyDisplacement(1,f,2.9),measuredBottom=measured.BodyDisplacement(3,f,2.9);
+ Check(std::abs(rest[2][1]+measuredSide[1]-f.radius)<1e-12,"Measured opening double-counts lateral width");
+ Check(std::abs(rest[1][2]+measuredTop[2]-f.radius)<1e-12,"Measured opening exceeds the upper section");
+ Check(std::abs(rest[3][2]+measuredBottom[2]+1.14*f.radius)<1e-12,"Measured opening loses inferior allowance");
+ auto measuredNeutral=f;measuredNeutral.radius=2.9;
+ Check(measured.BodyDisplacement(2,measuredNeutral,2.9)==PrecisePoint{},"Custom profile changes neutral tissue");
+ bool badProfile=false;try{RootTransition invalid(rest,5,opening,{1,0,0},{0,0,1},std::nullopt,RootTransitionProfile{.9,0,.14,.35});}catch(const std::invalid_argument&){badProfile=true;}
+ Check(badProfile,"Profile accepts a deliberately constricted section");
  std::vector<PrecisePoint> delta(rest.size(),{3,4,5});auto out=ramp.Evaluate(delta,f,2.9);
  for(unsigned i=0;i<4;i++)Check(out[i]==out[i+5],"Body/module sewn displacement differs");
  Check(out.back()==delta.back(),"Distant anatomy motion was overwritten");Check(out[4]==delta[4],"Distant body morphology was overwritten");

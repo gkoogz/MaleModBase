@@ -1,0 +1,38 @@
+{
+  "schema": "malemod.pouch-cage/1",
+  "geometryBindingRevision": 6,
+  "hashNormalization": "LF",
+  "files": {
+    "include/malemod/garments/pouch_cage.hpp": "1218eded258a0039a0e968971ab420667cd3063831d898cd54609f7654a25f43",
+    "include/malemod/garments/pouch_budget.hpp": "ad21f58f54a48cb72d7e298d59b39359fe96a4f9ca9c20ed5f937a1b4ed1b481",
+    "tests/pouch_cage_test.cpp": "cb97a1bf1a1528962e2ae152c382fc4005efc3ea8dc2a076a28ec764bdff4efe",
+    "tools/audit_pouch_cage_replay.py": "39ca4da4bf5dfd8a1983ebcd32ea893447274fa9846a516cce075a707ca2b520",
+    "tools/verify_pouch_cage.py": "956a7a6a49ff78bbe162cd77328741e3e64ed19781aed89ea1b94e582e64c85d"
+  },
+  "origin": "New shared implementation; legacy/wolverine remains an unchanged imported snapshot",
+  "adapterReferenceCommit": "c718b1b15cbe16ca1cb309e57770cca9ccfd244d",
+  "adapterRecipeSHA256": "b1f08d1d753147d4dc2152478e3eea16d3fc715938a87ef68d782847c130e6b0",
+  "fixedSewnBoundary": true,
+  "controls": {
+    "angular": 24,
+    "axialIntervals": 16
+  },
+  "continuousContactCertified": false,
+  "fullAttachmentGatePassed": false,
+  "adoption": "Wolverine consumes the compatibility commit through dependencies/base.lock.json. Other spokes must adopt that pin, provide their measured sewn boundary and current supports in their own units, and repeat offline/native attachment and motion gates. No Witcher runtime adoption is claimed.",
+  "verification": {
+    "sourceTest": "pouch_cage_test",
+    "replay": "14 measured poses, 3 repeats, 3 alternating baseline/candidate pairs",
+    "sampleContact": "Previous global-envelope audit does not certify the revised local profile; native coverage must be reviewed.",
+    "native": "New boundary correction pending native review; previous user-rejected oval/saddle is not accepted.",
+    "notVerified": [
+      "all supported LODs",
+      "campaign transitions",
+      "continuous rendered cloth/body triangle collision",
+      "human interactive feel"
+    ]
+  },
+  "seamWinding": "Outward ordered sewn boundary; contents never choose the axis sign",
+  "contentsSupport": "Dimensionless motion transfer .18, root stiffness 4, root damping 3 and linear drag 8 while covered; uncovered multipliers unchanged. Native acceptance remains separate.",
+  "waistTransition": "Actual sewn polygon radial cage; continuous authored edge detail; concave upper envelope without local release."
+}

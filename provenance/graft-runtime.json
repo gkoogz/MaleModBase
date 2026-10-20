@@ -5,7 +5,7 @@
   "files": [
     {
       "path": "include/malemod/surface/graft_runtime.hpp",
-      "sha256": "4916d01d4c203d18fb65042e3321852c005307d7c82eb1290594102adaa4c599"
+      "sha256": "3f09686a41530a31bc2c1f4e1c1f8fa3246925b5ccf868ef2a925ae777e7a99c"
     },
     {
       "path": "include/malemod/surface/binding.hpp",
@@ -13,7 +13,7 @@
     },
     {
       "path": "src/surface/graft_runtime.cpp",
-      "sha256": "fe3d841ed69dfc089ef8ef826362a3e0f1517182dad8f3f4654f7f45a4f4bb87"
+      "sha256": "2cd8270ced0c8c4b92cc66776f40ab6049a222ab871272f7677d9b9e8b5d575d"
     },
     {
       "path": "tests/graft_runtime_cli.cpp",
@@ -30,6 +30,18 @@
     {
       "path": "malemod_base/graft_collar.py",
       "sha256": "3df4ac970e7f8ddaa905a93383213fb5da23470a54ca368f8973dacbd0ee3f9c"
+    },
+    {
+      "path": "tests/graft_sewn_curvature_test.cpp",
+      "sha256": "72dba20ec5479e39fcaedf290f73867e4f7053315d35edb644bb58b7df09a4cf"
+    },
+    {
+      "path": "include/malemod/surface/collar_arc_release.hpp",
+      "sha256": "ab580c74ce2f68f1d9629a1bc7eddd92e736c192699fb7aa5065f7dae1022557"
+    },
+    {
+      "path": "tests/collar_arc_release_test.cpp",
+      "sha256": "7c6b77d43360cd9823d0f5be08079d31475328ae11ac247f49c528593d57babb"
     }
   ],
   "verification": {
@@ -1425,16 +1437,31 @@
     "linkedArchiveSHA256": "29fcb57c4b3da7b1bcdb40577855fe05ab0c60d00831cc3efddf98453d67d0d3",
     "previousRecordedArchiveSHA256": "ec75f4a28f767b76cda1ce50c679ccb0c80a4b300c4e72916273ef87cfdb39d9"
   },
-  "checkoutNormalizationHistory": [
-    {
-      "path": "include/malemod/surface/graft_runtime.hpp",
-      "previousSHA256": "0a2ea4d14b4c026756253f6413685959098087c183c0d9d2455f9209cc5325d0",
-      "reason": "Git LF normalization only; working source and committed bytes compared exactly after CRLF replacement"
+  "experimentalCoupledCurvature": {
+    "enabledByDefault": false,
+    "flatSewnInterfaceTest": {
+      "oldMaximumDrift": 0.0573148,
+      "joinedMaximumDrift": 6.35283e-17,
+      "units": "synthetic fixture units"
     },
-    {
-      "path": "src/surface/graft_runtime.cpp",
-      "previousSHA256": "9f29efd1128957fe8a416d7f4803d3211adf70f9becf9e143d0b99efde01a98c",
-      "reason": "Git LF normalization only; working source and committed bytes compared exactly after CRLF replacement"
-    }
-  ]
+    "orientationRegressionPassed": true,
+    "defaultReplay": {
+      "fixtureCount": 4,
+      "bothObservedLODs": true,
+      "shapeAndUpdatedFrameOutputsByteIdentical": true,
+      "reportSHA256": "5b89ebc7e0cef0a97823b0174fc9b674901322a3667f1baa3ef2fa69f358a4e4"
+    },
+    "witcherGeometryAccepted": false,
+    "adapterPinUpdated": false,
+    "installed": false,
+    "observedGameplay": false,
+    "notes": "Verified numerical operator correction only. Candidate geometry still has saddle/ridge or new folds; do not enable as a completed repair."
+  },
+  "angleArcRelease": {
+    "defaultEnabled": false,
+    "installed": false,
+    "attachmentGatePassed": false,
+    "documentation": "docs/COLLAR-ARC-RELEASE.md",
+    "verification": "Scalar-law and sewn-surface tests; private adapter static preview; remaining oblique crease; no native acceptance."
+  }
 }

@@ -3203,5 +3203,133 @@
       "process-relocated parallel surface variant fails extreme shape parity; diagnostic only"
     ],
     "characterCalibration": "Optional measured collision envelope and SDK-free coordinate/lineage/coupled target collar; see provenance/graft-runtime.json and docs/FULL-RUNTIME-ADOPTION.md"
+  },
+  "authoredAttachmentCorrective": {
+    "provenance": "provenance/attachment-corrective.json",
+    "files": [
+      {
+        "path": "include/malemod/surface/attachment_corrective.hpp",
+        "sha256": "9adcd14ed7fb9f3e410a3a04b83d61879d22f9a97798c1d860e72c8702a69346"
+      },
+      {
+        "path": "malemod_base/attachment_fields.py",
+        "sha256": "39b424ab45614bf353767a7ebbb1673a09779526fe8c535f1b9a0ed221674f80"
+      },
+      {
+        "path": "malemod_base/surface_bending.py",
+        "sha256": "43dfe80096e95bfc514ab11f9dd98ecf0798dd1cb347f5db043f55ac9e6341a2"
+      },
+      {
+        "path": "tests/attachment_corrective_test.cpp",
+        "sha256": "f66e8e27090f91ed87bce4fbd96f17acb4070256664ec691642469ff83018ee5"
+      },
+      {
+        "path": "tests/test_attachment_fields.py",
+        "sha256": "4df79a1024f688e834587059ca581dfa4945bba8f65a9c29e6f9ef1dc588fe0d"
+      },
+      {
+        "path": "tests/test_surface_bending.py",
+        "sha256": "b31bd56bd4b8410f5df13b8bf16b0305c885d8474d19092dc2a6ae4da759d5c3"
+      }
+    ],
+    "importedSnapshotChanged": false,
+    "gameInstalled": false
+  },
+  "scrotalCompliance20261014": {
+    "sharedRecord": "provenance/scrotal-compliance.json",
+    "sourceCommit": "985f94755d7a5e039ef6e79e3fdfc4ee36885724",
+    "sourceFiles": [
+      {
+        "path": "CMakeLists.txt",
+        "sha256": "dcdfa16954fcef13022475ad22d1407b02a87a0e7f90fb87a2570bcd79df10ea"
+      },
+      {
+        "path": "include/malemod/surface/scrotal_compliance.hpp",
+        "sha256": "2335241eb53c03d4ec76b196ec8b41e6f7c34ae17aacda8d53b2c3558daa214f"
+      },
+      {
+        "path": "include/malemod/surface/runtime.hpp",
+        "sha256": "077f92da16665538bda70c713c8156a06fcf46d78261dee88c9cec4b0c85917d"
+      },
+      {
+        "path": "src/surface/runtime.cpp",
+        "sha256": "caa8e616d2dbb7241b4f68259da97a371f346a95fff01ed682bacd5998ddc821"
+      },
+      {
+        "path": "tools/extract_surface_runtime.py",
+        "sha256": "f5f0904369ddca606c8430801f86b6004c6343930211eae332fecb597b28920a"
+      },
+      {
+        "path": "tests/scrotal_compliance_test.cpp",
+        "sha256": "d7e6f1bc2ffb66730285918f1cc2c91804f34132e6a3bb0f6074ede34c664e0f"
+      },
+      {
+        "path": "tests/scrotal_surface_test.cpp",
+        "sha256": "72cea5782044b090603aec2d817e640a51ecaa56f227d0f7911756e81eaac974"
+      },
+      {
+        "path": "tools/render_mechanical_partition.py",
+        "sha256": "68fa67017f71ed5ed791f862322cb0b17294a393256bf7c48dc2d33d555c650a"
+      },
+      {
+        "path": "docs/SCROTAL-COMPLIANCE.md",
+        "sha256": "07e991b41d97d198a15cd428d78ca86be483690811b71d354544502c1bc9418e"
+      }
+    ],
+    "importedSnapshotChanged": false,
+    "gameInstalled": false,
+    "omissions": [
+      "Licensed geometry",
+      "Native screenshots and local receipts",
+      "User settings and save data",
+      "Compiled workers and libraries"
+    ]
+  },
+  "relativeDynamics20261014": {
+    "sharedRecord": "provenance/relative-dynamics.json",
+    "sourceFiles": [
+      {
+        "path": "CMakeLists.txt",
+        "sha256": "66a349c3ffc47b3a0fbaf245f437e52e1307c82a13405b45f24cfa2feeaf9fcc"
+      },
+      {
+        "path": "tools/extract_surface_runtime.py",
+        "sha256": "abe80e77dda10878960e03301d8a92a31e1be0c9b6ecc3ed283eb3cec9e56cb0"
+      },
+      {
+        "path": "include/malemod/surface/scrotal_compliance.hpp",
+        "sha256": "4a601ec9da96f90236d69ff453834d32d769b4b8c04b2b248d3fb06fa6d6620e"
+      },
+      {
+        "path": "src/surface/runtime.cpp",
+        "sha256": "caa8e616d2dbb7241b4f68259da97a371f346a95fff01ed682bacd5998ddc821"
+      },
+      {
+        "path": "include/malemod/surface/runtime.hpp",
+        "sha256": "077f92da16665538bda70c713c8156a06fcf46d78261dee88c9cec4b0c85917d"
+      },
+      {
+        "path": "tests/relative_dynamics_test.cpp",
+        "sha256": "9a045d075a113e5bad3efc641c3b38d667275b176e353f0531451806f1b1276f"
+      },
+      {
+        "path": "tests/scrotal_surface_test.cpp",
+        "sha256": "72cea5782044b090603aec2d817e640a51ecaa56f227d0f7911756e81eaac974"
+      },
+      {
+        "path": "tests/scrotal_compliance_test.cpp",
+        "sha256": "d7e6f1bc2ffb66730285918f1cc2c91804f34132e6a3bb0f6074ede34c664e0f"
+      },
+      {
+        "path": "tools/compare_relative_dynamics.py",
+        "sha256": "e00577ce6c3c14908175d445eaec4ae8cfbad361ebeb40fa64acb4aed0db2ed2"
+      },
+      {
+        "path": "docs/SCROTAL-COMPLIANCE.md",
+        "sha256": "fa2ed6b1d422b9d8413bf40565e1d49322f217b06ebae2d8ead93b3650154137"
+      }
+    ],
+    "importedSnapshotChanged": false,
+    "gameInstalled": false
   }
 }

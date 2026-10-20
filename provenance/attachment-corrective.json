@@ -1,0 +1,53 @@
+{
+  "contractVersion": 1,
+  "sourceCommit": "985f94755d7a5e039ef6e79e3fdfc4ee36885724",
+  "sourceIsDirty": true,
+  "geometryBindingRevision": "431e626cae6fb6720b552f8b20206727fe809c80",
+  "files": [
+    {
+      "path": "include/malemod/surface/attachment_corrective.hpp",
+      "sha256": "9665576b701b89762bb5a289f7f1fa5b124a115d0927bce3a29332d4d5078069"
+    },
+    {
+      "path": "malemod_base/attachment_fields.py",
+      "sha256": "39b424ab45614bf353767a7ebbb1673a09779526fe8c535f1b9a0ed221674f80"
+    },
+    {
+      "path": "malemod_base/surface_bending.py",
+      "sha256": "c2b4130e4aa92660be71a568bd6b773302a84d49e6492dd8ef033330c2fcfd22"
+    },
+    {
+      "path": "tests/attachment_corrective_test.cpp",
+      "sha256": "203c7399a2e83ea921b8ea77c22d3b1bd2d9d2ef7aa2de7b3013f7612071c699"
+    },
+    {
+      "path": "tests/test_attachment_fields.py",
+      "sha256": "4df79a1024f688e834587059ca581dfa4945bba8f65a9c29e6f9ef1dc588fe0d"
+    },
+    {
+      "path": "tests/test_surface_bending.py",
+      "sha256": "b31bd56bd4b8410f5df13b8bf16b0305c885d8474d19092dc2a6ae4da759d5c3"
+    },
+    {
+      "path": "include/malemod/surface/endpoint_constraints.hpp",
+      "sha256": "8c26a39e5ba8befd37bfc52950ad3a7082fa0bc8db7ebddbba6886a87815a8cd"
+    },
+    {
+      "path": "include/malemod/surface/section_clearance.hpp",
+      "sha256": "ee5abbb8644f2f113360c93cab000d14f9602e38acb72bb499b4d21edd34c83e"
+    }
+  ],
+  "omissions": [
+    "Private licensed geometry and profile knots",
+    "Captured native vertices and screenshots",
+    "Game packages, settings and saves"
+  ],
+  "sharedCPPTestsPassed": true,
+  "sharedPythonTestsPassed": 31,
+  "nativeAttachmentGatePassed": false,
+  "adoption": "Commit a clean Base revision after the full attachment gate; explicitly pin every spoke; generate character-specific measured fields",
+  "nativePreviewViews": 57,
+  "offlineCases": 63,
+  "offlineLODResults": 126,
+  "evidence": "docs/COLLAR-NATIVE-20261014.md"
+}
