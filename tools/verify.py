@@ -32,7 +32,10 @@ def main():
     subprocess.run([sys.executable,str(ROOT/'tools/extract_motion_filter.py')],check=True)
     motion=json.loads((ROOT/'provenance/motion-filter.json').read_text())
     for item in motion['files']:
-        if hashlib.sha256((ROOT/item['path']).read_bytes()).hexdigest()!=item['sha256']:
+        payload=(ROOT/item['path']).read_bytes()
+        if item.get('hashNormalization')=='LF':payload=payload.replace(b'\r\n',b'\n')
+        elif item.get('hashNormalization') is not None:raise ValueError('Unknown motion file hash normalization')
+        if hashlib.sha256(payload).hexdigest()!=item['sha256']:
             raise ValueError('Motion/calibration provenance differs: '+item['path'])
     graft_runtime=json.loads((ROOT/'provenance/graft-runtime.json').read_text())
     if graft_runtime['sourceCommit']!=json.loads((ROOT/'provenance/wolverine.json').read_text())['commit']:

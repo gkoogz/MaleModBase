@@ -81,15 +81,20 @@ inline bool Equal(const malemod::motion::Tracker::State& a,const malemod::motion
 def run(write=False):
     raw,function,header,oracle=generate()
     if write:HEADER.write_bytes(header)
-    elif not HEADER.exists() or HEADER.read_bytes()!=header:raise ValueError('Motion header differs from source extraction')
+    elif not HEADER.exists() or HEADER.read_bytes().replace(b'\r\n',b'\n')!=header:raise ValueError('Motion header differs from source extraction')
     directory=ROOT/'build/motion-filter';directory.mkdir(parents=True,exist_ok=True)
     (directory/'original-reference.inc').write_bytes(oracle)
-    result=dict(contractVersion=1,sourceCommit=json.loads((ROOT/'provenance/wolverine.json').read_text())['commit'],
+    result=dict(contractVersion=2,generatedHashNormalization='LF',sourceCommit=json.loads((ROOT/'provenance/wolverine.json').read_text())['commit'],
         sourcePath=SOURCE.relative_to(ROOT).as_posix(),sourceSHA256=sha(raw),sourceFunctionSHA256=sha(function.encode()),
-        headerSHA256=sha(header),recipeSHA256=sha(Path(__file__).read_bytes()),oracleSHA256=sha(oracle),
+        headerSHA256=sha(header),recipeSHA256=sha(Path(__file__).read_bytes().replace(b'\r\n',b'\n')),oracleSHA256=sha(oracle),
         changes=['Clock supplied as uint32 milliseconds','Diagnostics removed','Per-instance source state','Nonfinite inputs rejected before state changes'],
         numericalExpressionsUnchanged=True,actorLocalToWorldExcluded=True,installed=False,observedGameplay=False)
-    if write:(ROOT/'provenance/motion-filter.json').write_text(json.dumps(result,indent=2)+'\n')
+    if write:
+        target=ROOT/'provenance/motion-filter.json'
+        existing=json.loads(target.read_text()) if target.exists() else {}
+        # Retain independent test records and downstream file contracts.
+        existing.update(result)
+        target.write_text(json.dumps(existing,indent=2)+'\n')
     else:
         existing=json.loads((ROOT/'provenance/motion-filter.json').read_text())
         if any(existing.get(k)!=v for k,v in result.items()):raise ValueError('Motion provenance differs')

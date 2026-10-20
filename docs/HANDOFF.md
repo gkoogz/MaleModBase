@@ -1,5 +1,9 @@
 ## October 20 - storage consolidation
 
+Latest architecture checkpoint: see **October 20 - direct live controls in
+Witcher** at the end of this file and `docs/LIVE-CONTROL-PRESENTATION.md`.
+Final native slider intervals are 148/146 ms; the candidate remains uninstalled.
+
 Canonical repositories now live under D:/MaleMod; all generated/private working data belongs in D:/MaleMod/Work. Read docs/STORAGE-LAYOUT.md before generating output. Current source is backed up on GitHub branch codex/storage-consolidation-20261020. Historical backup images, preview games and diagnostic banks were explicitly retired by the user; old evidence paths below are historical, not retained files. No new runtime was installed by this storage operation.
 
 ## 2026-10-19: live pulse / slider cadence repair, Candidate14 (not installed)
@@ -3828,4 +3832,23 @@ its diagnostic material-mask correction is not a shipped repair. Reject the
 radius, loft/profile and owned-arc15 studies; constrained continuous/spatial
 profile studies stopped short. No worker is running and no candidate installed.
 All37 installed managed hashes matched. Preserve existing runtime/rollback.
+
+## October 20 - direct live controls in Witcher
+
+Read `docs/LIVE-CONTROL-PRESENTATION.md`. The new shared prepared-mesh deformation
+and Witcher independent presentation path bypass the slow shape-authoring queue
+for ordinary slider edits. Native width/angle acknowledgement intervals are
+147/147 ms in a driver with a 100 ms hold, compared with prior 958/688 ms.
+Large jumps remain bounded previews until exact authoring completes; pulse and
+numerical physics cadence are unchanged. Candidate is not installed and full
+attachment/campaign/LOD acceptance is not claimed. Current evidence stays in
+`D:/MaleMod/Work/witcher/live-controls`. The user selected the latest collar
+preview earlier; the historical scope question below is answered.
+
+Final normal DLL `22355b42791b1ba3b1cec157d836cd6f380915cfe46fd668b1707f1f33aa9502`
+completed 18 focused native shape checkpoints and 40 cadence edits. A prior broad
+sweep crashed after 78 checkpoints with a corrupted triangle index. Bounds
+validation now rejects that read; repeated offline and instrumented native
+checks did not reproduce the corruption, whose cause remains unidentified.
+Do not relabel those follow-up successes as a complete attachment gate.
 

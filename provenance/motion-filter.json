@@ -1,12 +1,12 @@
 {
-  "contractVersion": 1,
+  "contractVersion": 2,
   "sourceCommit": "dc64bdc44e75fd5521f066cdb2975277e9c34302",
   "sourcePath": "legacy/wolverine/src/runtime/d3d9_proxy.cpp",
   "sourceSHA256": "20779d89b389ca315a27f77d7e804d9fa290129fe7b2137e896149c344467e30",
   "sourceFunctionSHA256": "a2bfdc5aea824a45394974dab3b617025f7a6befee78b02d2cbc11e51e7bdd3d",
-  "headerSHA256": "180955a83eed09fb550c1bf6543b7f545c2889b400ed452370d0223276d13368",
-  "recipeSHA256": "904f23b1cc23a904e56684d34887beac85b58cae80d3dd4fc6eabeb903fae422",
-  "oracleSHA256": "994a6a7bdda9e60a3b402254fd633545852aa0109dc7bfe9b73d9d1004bee70e",
+  "headerSHA256": "e60999a6badcd05f17d59f519ef638849bdca0844ac2edf1bcfb3736a7521da9",
+  "recipeSHA256": "3b8e38a24e8daccb6a70d76f1c481d22f43335d513717710093025e5ad44064e",
+  "oracleSHA256": "d719329e430354214a639f1b8f58138a284898e88eadef25160afa10819d8583",
   "changes": [
     "Clock supplied as uint32 milliseconds",
     "Diagnostics removed",
@@ -52,7 +52,8 @@
     },
     {
       "path": "CMakeLists.txt",
-      "sha256": "86ee743a6f9fa9d2644b85c8a98af7fec70220e34641a6045e67842833e67a10"
+      "sha256": "dc497cfae12dcc10a2f028d2b8e781c3ad1f71fc7c4d47e7ed5331a6563a671b",
+      "hashNormalization": "LF"
     },
     {
       "path": "docs/FRAME-CALIBRATION.md",
@@ -68,11 +69,16 @@
     {
       "previousCMakeSHA256": "5bf498e17fd7716a1efcc41a5f67dc277574b6b5b5efb2aa9db4b93214c0ba96",
       "meaning": "Registered SDK-free meridian anatomy-follow test; runtime/source physics hashes unchanged and no native acceptance inferred."
+    },
+    {
+      "previousCMakeSHA256": "86ee743a6f9fa9d2644b85c8a98af7fec70220e34641a6045e67842833e67a10",
+      "meaning": "Registered SDK-free live-control deformation regression; no numerical solver change."
     }
   ],
   "attachmentTestRegistration": {
     "change": "Added standalone SDK-free root transition test only",
     "sourcePhysicsChanged": false,
     "sourceGarmentChanged": false
-  }
+  },
+  "generatedHashNormalization": "LF"
 }
