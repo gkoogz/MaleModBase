@@ -1,6 +1,7 @@
 #pragma once
 #include "convex_surface_cut.hpp"
 #include "modular_motion.hpp"
+#include <limits>
 
 namespace malemod::surface {
 // Impose the retained surface's shading direction with a zero-slope boundary
@@ -51,6 +52,8 @@ inline std::vector<unsigned> RefineSurfaceLoop(SurfaceCut& mesh,const SurfaceLoo
  for(auto& entry:insertions)std::sort(entry.second.begin(),entry.second.end(),[](auto a,auto b){return a.t<b.t;});
  std::vector<SurfaceCutFace> faces;faces.reserve(mesh.faces.size()+knots.size()*3);
  for(auto face:mesh.faces){
+  bool split=false;for(unsigned k=0;k<3;k++)split|=insertions.count(std::minmax(face.corners[k].vertex,face.corners[(k+1)%3].vertex))!=0;
+  if(!split){faces.push_back(face);continue;}
   std::vector<SurfaceCutCorner> poly;
   for(unsigned k=0;k<3;k++){
    const auto a=face.corners[k],b=face.corners[(k+1)%3];poly.push_back(a);auto found=insertions.find(std::minmax(a.vertex,b.vertex));if(found==insertions.end())continue;
@@ -70,6 +73,66 @@ struct SurfaceJoin {
  std::vector<std::array<SurfaceJoinCorner,3>> faces;
  std::vector<std::vector<unsigned>> rings;
  std::vector<PresentationPoint> firstTangents;
+ // Rest-space correction measured on the original body, cached once per
+ // morphology. Live reposing must retain the same geometric boundary field.
+ std::vector<PresentationPoint> bodyDisplacements;
+ std::vector<PresentationPoint> bodyGradients;
+ PresentationPoint bodyAxis{};
+ std::vector<PresentationPoint> entryPoints,entryNormals;
+};
+// Project onto the front surface of the measured body along the mount axis.
+// A shading normal is not the plane of the triangle that is actually retained.
+inline PresentationPoint BodySurfacePoint(PresentationPoint p,PresentationPoint axis,const std::vector<PresentationPoint>& points,const std::vector<std::array<unsigned,3>>& faces,PresentationPoint* normal=nullptr,const std::vector<unsigned>* candidates=nullptr){
+ bool found=false;double front=-std::numeric_limits<double>::infinity();PresentationPoint result{};
+ for(unsigned index=0;index<(candidates?candidates->size():faces.size());index++){
+  const auto f=faces[candidates?(*candidates)[index]:index];
+  const auto a=points[f[0]],e=Sub(points[f[1]],a),g=Sub(points[f[2]],a),n=Cross(e,g);const double facing=Dot(n,axis);
+  if(facing<=1e-12)continue;
+  const auto q=Sub(p,Scale(axis,Dot(Sub(p,a),n)/facing)),v=Sub(q,a);
+  const double ee=Dot(e,e),eg=Dot(e,g),gg=Dot(g,g),det=ee*gg-eg*eg;if(det<=1e-20)continue;
+  const double u=(Dot(v,e)*gg-Dot(v,g)*eg)/det,w=(Dot(v,g)*ee-Dot(v,e)*eg)/det;
+  if(u< -1e-8||w< -1e-8||u+w>1+1e-8)continue;
+  const double depth=Dot(q,axis);if(depth>front){front=depth;result=q;found=true;if(normal)*normal=Unit(n);}
+ }
+ if(!found)throw std::runtime_error("Root ramp leaves the measured body chart");
+ return result;
+}
+// Index only the two coordinates perpendicular to the projection ray. The
+// exact triangle test above remains authoritative, including original face
+// ordering for coplanar ties. This avoids a full body scan for every ramp row
+// whenever a shape/angle change rebuilds the attachment.
+class BodySurfaceChart {
+ static constexpr unsigned resolution=64;
+ using Vec=PresentationPoint;using UV=std::array<double,2>;
+ std::array<Vec,2> basis_;UV low_{},high_{};
+ std::vector<std::vector<unsigned>> cells_{resolution*resolution};
+ std::vector<unsigned> empty_;
+ UV Project(Vec p)const{return {Dot(p,basis_[0]),Dot(p,basis_[1])};}
+ unsigned Cell(double x,unsigned d)const{return unsigned(std::clamp((x-low_[d])/(high_[d]-low_[d])*resolution,0.,double(resolution-1)));}
+public:
+ BodySurfaceChart(Vec axis,const std::vector<Vec>& points,const std::vector<std::array<unsigned,3>>& faces){
+  Vec reference=std::abs(axis[2])<.9?Vec{0,0,1}:Vec{0,1,0};
+  basis_[0]=Unit(Cross(reference,axis));basis_[1]=Unit(Cross(axis,basis_[0]));
+  const double inf=std::numeric_limits<double>::infinity();low_={inf,inf};high_={-inf,-inf};
+  struct Box{unsigned face;UV low,high;};std::vector<Box> boxes;
+  for(unsigned i=0;i<faces.size();i++){
+   auto f=faces[i];if(Dot(Cross(Sub(points[f[1]],points[f[0]]),Sub(points[f[2]],points[f[0]])),axis)<=1e-12)continue;
+   Box b{i,{inf,inf},{-inf,-inf}};
+   for(auto id:f){auto uv=Project(points[id]);for(unsigned d=0;d<2;d++){b.low[d]=(std::min)(b.low[d],uv[d]);b.high[d]=(std::max)(b.high[d],uv[d]);}}
+   for(unsigned d=0;d<2;d++){
+    // Include the same barycentric tolerance as the exact test, even at an
+    // original edge or a spatial-cell boundary.
+    const double pad=(std::max)(1e-10,2e-8*(b.high[d]-b.low[d]));b.low[d]-=pad;b.high[d]+=pad;
+    low_[d]=(std::min)(low_[d],b.low[d]);high_[d]=(std::max)(high_[d],b.high[d]);
+   }boxes.push_back(b);
+  }
+  if(boxes.empty())throw std::invalid_argument("Measured body has no forward chart");
+  for(const auto& b:boxes)for(unsigned y=Cell(b.low[1],1);y<=Cell(b.high[1],1);y++)for(unsigned x=Cell(b.low[0],0);x<=Cell(b.high[0],0);x++)cells_[y*resolution+x].push_back(b.face);
+ }
+ const std::vector<unsigned>& Candidates(Vec p)const{
+  const auto q=Project(p);for(unsigned d=0;d<2;d++)if(q[d]<low_[d]||q[d]>high_[d])return empty_;
+  return cells_[Cell(q[1],1)*resolution+Cell(q[0],0)];
+ }
 };
 // A Hermite derivative can pull the connecting skin inside BOTH endpoints,
 // even when the aperture and shaft diameters are correct. Bound its Bezier
@@ -86,6 +149,9 @@ inline std::array<PresentationPoint,2> BoundRampTangents(PresentationPoint a,Pre
  };
  return {limit(first,da,1),limit(last,db,-1)};
 }
+inline PresentationPoint CrossSectionRadial(PresentationPoint radial,PresentationPoint shaftAxis){
+ shaftAxis=Unit(shaftAxis);return Sub(radial,Scale(shaftAxis,Dot(radial,shaftAxis)));
+}
 // Raise only the joining annulus. A compact C2 shoulder leaves both sewn rims
 // and their tangent planes exact; its height follows the local radial size and
 // available forward clearance rather than a fixed world-space displacement.
@@ -99,9 +165,22 @@ inline PresentationPoint RaisedRampPoint(PresentationPoint a,PresentationPoint b
  const double q=t*(1-t),shoulder=64*q*q*q;
  return Add(p,Scale(mountAxis,height*shoulder));
 }
-inline SurfaceJoin StitchSurfaces(SurfaceCut body,SurfaceCut module,const SurfaceLoopChart& bodyChart,const SurfaceLoopChart& moduleChart,PresentationPoint origin,PresentationPoint mountAxis,PresentationPoint shaftAxis,const std::vector<PresentationPoint>& bodyNormals,const std::vector<std::array<unsigned,3>>& bodyParents,double radialMargin=.18,double undersideExtra=.08,unsigned rows=12){
+// Match the retained measured body surface at the outer rim, then release
+// that constraint smoothly over the complete connector. Position, slope and
+// curvature corrections vanish at the shaft rim. This changes the actual mesh.
+inline PresentationPoint RampEntryPoint(PresentationPoint p,PresentationPoint bodyPoint,PresentationPoint bodyNormal,PresentationPoint axis,double t){
+ const double facing=Dot(bodyNormal,axis);if(facing<=.15)return p;
+ // The residual is already zero at the body rim. A quartic release therefore
+ // preserves its position, tangent and curvature while starting the turn
+ // earlier than a quintic weight (which unnecessarily pins a fourth order
+ // contact). At the module rim w, w' and w'' still vanish exactly.
+ const double u=std::clamp(t,0.,1.),v=1-u,w=v*v*v*(1+3*u);
+ return Sub(p,Scale(axis,w*Dot(Sub(p,bodyPoint),bodyNormal)/facing));
+}
+inline SurfaceJoin StitchSurfaces(SurfaceCut body,SurfaceCut module,const SurfaceLoopChart& bodyChart,const SurfaceLoopChart& moduleChart,PresentationPoint origin,PresentationPoint mountAxis,PresentationPoint shaftAxis,const std::vector<PresentationPoint>& bodyNormals,const std::vector<std::array<unsigned,3>>& bodyParents,double radialMargin=.18,double undersideExtra=.08,unsigned rows=12,const std::vector<PresentationPoint>* originalBody=nullptr){
  using Vec=PresentationPoint;const auto knots=CommonLoopKnots(bodyChart,moduleChart);auto outer=RefineSurfaceLoop(body,bodyChart,knots),inner=RefineSurfaceLoop(module,moduleChart,knots);
  if(rows<2||rows>128)throw std::invalid_argument("Invalid joining ramp density");
+
  // Boundary normals come from the intact source surface, not the remaining
  // one-sided cut triangles. Exact position/skin donors survive independently.
  std::vector<Vec> outerNormals(body.points.size());
@@ -111,6 +190,8 @@ inline SurfaceJoin StitchSurfaces(SurfaceCut body,SurfaceCut module,const Surfac
  SurfaceJoin out;out.points=body.points;const unsigned offset=unsigned(body.points.size());out.points.insert(out.points.end(),module.points.begin(),module.points.end());
  for(unsigned domain=0;domain<2;domain++)for(auto f:domain?module.faces:body.faces){std::array<SurfaceJoinCorner,3> row;for(unsigned k=0;k<3;k++){auto c=f.corners[k];row[k]={c.vertex+(domain?offset:0),domain,f.parent,c.donor,{}};}out.faces.push_back(row);}
  for(auto& i:inner)i+=offset;out.rings.push_back(outer);
+ out.bodyDisplacements.resize(out.points.size());out.bodyGradients.resize(out.points.size());out.bodyAxis=mountAxis;
+
  std::vector<Vec> first(outer.size()),last(outer.size());double firstScale=1,lastScale=1;
  for(unsigned i=0;i<outer.size();i++){
   auto a=out.points[outer[i]],b=out.points[inner[i]],d=Sub(b,a),radial=Sub(Sub(a,origin),Scale(mountAxis,Dot(Sub(a,origin),mountAxis)));const double distance=std::sqrt(Dot(d,d)),radius=std::sqrt(Dot(radial,radial));
@@ -119,7 +200,7 @@ inline SurfaceJoin StitchSurfaces(SurfaceCut body,SurfaceCut module,const Surfac
   const double ventral=std::pow((std::max)(0.,-std::sin(knots[reversed?knots.size()-1-i:i])),4);
   first[i]=Scale(Unit(tangent),(std::min)(distance,2*(radialMargin+undersideExtra*ventral)*radius/(1+radialMargin)));
   last[i]=Scale(shaftAxis,distance);
-  auto bounded=BoundRampTangents(a,b,first[i],last[i],radial,.005*radius);
+  auto bounded=BoundRampTangents(a,b,first[i],last[i],CrossSectionRadial(radial,shaftAxis),.005*radius);
   if(Dot(first[i],first[i])>1e-20)firstScale=(std::min)(firstScale,std::sqrt(Dot(bounded[0],bounded[0])/Dot(first[i],first[i])));
   if(Dot(last[i],last[i])>1e-20)lastScale=(std::min)(lastScale,std::sqrt(Dot(bounded[1],bounded[1])/Dot(last[i],last[i])));
  }
@@ -137,6 +218,22 @@ inline SurfaceJoin StitchSurfaces(SurfaceCut body,SurfaceCut module,const Surfac
    SurfaceJoinCorner a{previous[i],2,0,{}, {u0,before}},b{previous[j],2,0,{}, {u1,before}},c{ring[i],2,0,{}, {u0,t}},d{ring[j],2,0,{}, {u1,t}};
    out.faces.push_back({b,a,c});out.faces.push_back({b,c,d});
   }out.rings.push_back(std::move(ring));
+ }
+ out.bodyDisplacements.resize(out.points.size());
+ out.bodyGradients.resize(out.points.size());
+ out.entryPoints.resize(out.points.size());out.entryNormals.resize(out.points.size());
+ if(originalBody){BodySurfaceChart chart(mountAxis,*originalBody,bodyParents);
+ for(unsigned row=1;row+1<out.rings.size();row++){
+  const double t=.5*(1-std::cos(3.14159265358979323846*row/rows));
+  for(unsigned column=0;column<outer.size();column++){
+   const auto id=out.rings[row][column];auto p=out.points[id];Vec n{},q{};
+   try{q=BodySurfacePoint(p,mountAxis,*originalBody,bodyParents,&n,&chart.Candidates(p));}
+   catch(const std::runtime_error&){q=out.points[outer[column]];n=outerNormals[outer[column]];}
+   if(Dot(n,mountAxis)<=.15)continue;
+   out.entryPoints[id]=q;out.entryNormals[id]=n;
+   out.points[id]=RampEntryPoint(p,q,n,mountAxis,t);
+  }
+ }
  }
  return out;
 }

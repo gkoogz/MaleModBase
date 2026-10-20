@@ -70,6 +70,9 @@ class ConvexSurfaceCut {
    if(Dot(area,area)<=tolerance_*tolerance_*tolerance_*tolerance_)return;
    pieces.push_back({parent,poly});auto f=faces_[parent];
    for(const auto& v:poly){
+    // Original corners cannot introduce an interior split on their own edges.
+    // Keep only new cut intersections in the conformance lookup.
+    if(v.b==Vec{1,0,0}||v.b==Vec{0,1,0}||v.b==Vec{0,0,1})continue;
     parentVertices[parent].push_back(v);
     for(unsigned k=0;k<3;k++)if(std::abs(v.b[k])<1e-10)edgeVertices[std::minmax(f[(k+1)%3],f[(k+2)%3])].push_back(v.p);
    }
@@ -97,13 +100,17 @@ class ConvexSurfaceCut {
   // original neighbors before triangulation, otherwise those are T-junctions.
   for(const auto& piece:pieces){
    const unsigned parent=piece.parent;const auto source=faces_[parent];std::vector<Vertex> boundary;
+   if(piece.vertices.size()==3&&piece.vertices[0].b==Vec{1,0,0}&&piece.vertices[1].b==Vec{0,1,0}&&piece.vertices[2].b==Vec{0,0,1}){
+    bool split=false;for(unsigned k=0;k<3;k++)split|=edgeVertices.count(std::minmax(source[k],source[(k+1)%3]))!=0;
+    if(!split){SurfaceCutFace face;face.parent=parent;for(unsigned k=0;k<3;k++)face.corners[k]={source[k],piece.vertices[k].b};result.faces.push_back(face);continue;}
+   }
    for(unsigned k=0;k<piece.vertices.size();k++){
     const auto& a=piece.vertices[k];const auto& b=piece.vertices[(k+1)%piece.vertices.size()];const auto edge=Sub(b.p,a.p);const double length2=Dot(edge,edge);if(length2<=tolerance_*tolerance_)continue;
     std::vector<double> knots{0};
     auto add=[&](Vec p){const double t=Dot(Sub(p,a.p),edge)/length2;if(t<=1e-10||t>=1-1e-10)return;const auto delta=Sub(p,Add(a.p,Scale(edge,t)));if(Dot(delta,delta)<tolerance_*tolerance_)knots.push_back(t);};
     bool originalEdge=false;
-    for(unsigned j=0;j<3;j++)if(std::abs(a.b[j])<1e-10&&std::abs(b.b[j])<1e-10){originalEdge=true;for(auto p:edgeVertices[std::minmax(source[(j+1)%3],source[(j+2)%3])])add(p);}
-    if(!originalEdge)for(const auto& v:parentVertices[parent])add(v.p);
+    for(unsigned j=0;j<3;j++)if(std::abs(a.b[j])<1e-10&&std::abs(b.b[j])<1e-10){originalEdge=true;auto found=edgeVertices.find(std::minmax(source[(j+1)%3],source[(j+2)%3]));if(found!=edgeVertices.end())for(auto p:found->second)add(p);}
+    if(!originalEdge){auto found=parentVertices.find(parent);if(found!=parentVertices.end())for(const auto& v:found->second)add(v.p);}
     std::sort(knots.begin(),knots.end());knots.erase(std::unique(knots.begin(),knots.end(),[](double a,double b){return std::abs(a-b)<1e-10;}),knots.end());
     for(double t:knots)boundary.push_back(Mix(a,b,t));
    }

@@ -1,5 +1,6 @@
 #include <malemod/surface/convex_surface_cut.hpp>
 #include <iostream>
+#include <malemod/surface/triangle_ray_index.hpp>
 using namespace malemod::surface;
 void Check(bool ok,const char* message){if(!ok)throw std::runtime_error(message);}
 int main(){try{
@@ -15,6 +16,20 @@ int main(){try{
   }
   const double removed=.5*count*radius*radius*std::sin(2*pi/count);Check(std::abs(area+removed-16)<1e-8,"Cut area is not conservative");Check(cut.opening.size()>=count,"Opening lost polygon corners");
   for(unsigned i=0;i<p.size();i++)Check(cut.points[i]==p[i],"Original surface moved");
+ }
+ {
+  std::vector<PresentationPoint> points;std::vector<std::array<unsigned,3>> faces;
+  for(unsigned layer=0;layer<3;layer++)for(unsigned y=0;y<12;y++)for(unsigned x=0;x<12;x++){
+   unsigned n=unsigned(points.size());double z=layer==2?0.:double(layer);
+   points.insert(points.end(),{{double(x),double(y),z},{double(x+1),double(y),z},{double(x),double(y+1),z}});faces.push_back({n,n+1,n+2});
+  }
+  std::vector<bool> eligible(faces.size(),true);TriangleRayIndex tree(points,faces,eligible);
+  for(unsigned trial=0;trial<1000;trial++){
+   PresentationPoint start{double(trial%31)*.4-1,double((trial*17)%31)*.4-1,4},direction{trial%3==0?.13:0.,trial%5==0?-.17:0.,-1};
+   double nearest=1e300;bool found=false;PresentationPoint expected{},actual{};
+   for(auto f:faces){auto a=Sub(points[f[1]],points[f[0]]),b=Sub(points[f[2]],points[f[0]]),h=Cross(direction,b);double det=Dot(a,h);if(std::abs(det)<1e-12)continue;auto r=Sub(start,points[f[0]]);double u=Dot(r,h)/det;if(u< -1e-9||u>1+1e-9)continue;auto q=Cross(r,a);double v=Dot(direction,q)/det;if(v< -1e-9||u+v>1+1e-9)continue;double t=Dot(b,q)/det;if(t>=0&&t<nearest){found=true;nearest=t;expected=Add(start,Scale(direction,t));}}
+   bool hit=tree.Ray(points,faces,start,direction,actual,{0,0,1});Check(hit==found&&(!hit||actual==expected),"Ray broad phase changed exact measured hit");
+  }
  }
  bool rejected=false;try{plan.Cut({{-3,-3},{3,-3},{3,3},{-3,3}});}catch(const std::runtime_error&){rejected=true;}Check(rejected,"Removed entire surface without rejection");
  std::cout<<"PASS exact original surface, winding, area, shared intersections, donors and boundary protection\n";

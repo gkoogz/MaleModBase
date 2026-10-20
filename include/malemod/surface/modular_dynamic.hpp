@@ -7,6 +7,9 @@
 namespace malemod::surface::modular {
 struct DynamicResult {SurfaceJoin surface;Vec anchor{},axis{};double rootAdvance=0;std::vector<SurfaceJoinCorner> moduleVertices;std::vector<double> advances;Vec fitTranslation{},suspensionTranslation{};std::shared_ptr<const std::vector<Binding>> clearedBindings;double materialRoot=0;};
 struct DynamicMount {
+ // Recruit a compact measured annulus, with extra ventral clearance. Keep the
+ // aperture and its tangent construction on the same dimensionless contract.
+ static constexpr double rampMargin=.24,undersideRampExtra=.08;
  std::vector<Vec> body,normals,section;std::vector<std::array<unsigned,3>> faces;
  std::vector<unsigned> moduleFaces,inner;Vec origin;PresentationBasis basis;
  std::string geometryHash;
@@ -62,15 +65,18 @@ struct DynamicMount {
   const auto& rings=cached.surface.rings;auto first=cached.surface.firstTangents;std::vector<Vec> last(first.size());double firstScale=1,lastScale=1;
   for(unsigned i=0;i<first.size();i++){
    auto a=points[rings.front()[i]],b=points[rings.back()[i]];const double distance=std::sqrt(Dot(Sub(a,b),Sub(a,b)));last[i]=Scale(state.frames[1].basis[0],distance);
-   auto radial=Sub(Sub(a,cached.anchor),Scale(basis[0],Dot(Sub(a,cached.anchor),basis[0])));auto bounded=BoundRampTangents(a,b,first[i],last[i],radial,.005*std::sqrt(Dot(radial,radial)));
+   auto radial=Sub(Sub(a,cached.anchor),Scale(basis[0],Dot(Sub(a,cached.anchor),basis[0])));auto bounded=BoundRampTangents(a,b,first[i],last[i],CrossSectionRadial(radial,state.frames[1].basis[0]),.005*std::sqrt(Dot(radial,radial)));
    if(Dot(first[i],first[i])>1e-20)firstScale=(std::min)(firstScale,std::sqrt(Dot(bounded[0],bounded[0])/Dot(first[i],first[i])));
    if(Dot(last[i],last[i])>1e-20)lastScale=(std::min)(lastScale,std::sqrt(Dot(bounded[1],bounded[1])/Dot(last[i],last[i])));
   }
   for(unsigned i=0;i<first.size();i++){first[i]=Scale(first[i],firstScale);last[i]=Scale(last[i],lastScale);}
   for(unsigned row=1;row+1<rings.size();row++){
    const double t=.5*(1-std::cos(3.14159265358979323846*row/(rings.size()-1)));
-   for(unsigned i=0;i<rings[0].size();i++){auto a=points[rings.front()[i]],b=points[rings.back()[i]];points[rings[row][i]]=RaisedRampPoint(a,b,first[i],last[i],cached.anchor,basis[0],t);}
-  }return points;
+   for(unsigned i=0;i<rings[0].size();i++){auto a=points[rings.front()[i]],b=points[rings.back()[i]];auto p=RaisedRampPoint(a,b,first[i],last[i],cached.anchor,basis[0],t);const auto id=rings[row][i];
+    if(id<cached.surface.entryNormals.size())p=RampEntryPoint(p,cached.surface.entryPoints[id],cached.surface.entryNormals[id],basis[0],t);
+    points[id]=p;}
+  }
+  return points;
  }
  DynamicResult Evaluate(const Asset& asset,const Plan& plan,const State& state)const{
   if(!asset.mount)throw std::invalid_argument("Dynamic mount needs semantic shaft ownership");
@@ -78,7 +84,7 @@ struct DynamicMount {
   const auto& mount=*asset.mount;auto axis=state.frames[1].basis[0];const double scale=state.scales[1][1]/asset.reference.scales[1][1];
   auto localAnchor=Unrotate(asset.reference.frames[1].basis,Sub(origin,asset.reference.frames[1].origin));
   auto requestedAnchor=Add(state.frames[1].origin,Rotate(state.frames[1].basis,Components(localAnchor,state.scales[1])));
-  PelvicAperturePlan aperturePlan(body,faces,requestedAnchor,basis,section,1e-8);auto aperture=aperturePlan.Solve(axis,scale);
+  PelvicAperturePlan aperturePlan(body,faces,requestedAnchor,basis,section,1e-8);auto aperture=aperturePlan.Solve(axis,scale,rampMargin,undersideRampExtra);
   const auto apertureChart=ChartLoop(aperture.body,aperture.anchor,{{basis[1],basis[2]}});
   auto moved=state;for(unsigned i=1;i<15;i++)moved.frames[i].origin=Add(moved.frames[i].origin,aperture.translation);
   double advance=0;std::vector<double> advances(asset.rest.size());Vec suspension{};
@@ -99,6 +105,9 @@ struct DynamicMount {
     angular.emplace_back(angle,local);advance=(std::max)(advance,local);
    }
    std::sort(angular.begin(),angular.end());
+   // Zero supports cannot affect a nonnegative maximum; skip their expensive
+   // trigonometry without changing the original nonzero evaluation order.
+   angular.erase(std::remove_if(angular.begin(),angular.end(),[](auto sample){return sample.second==0;}),angular.end());
    for(unsigned i=0;i<points.size();i++)if(mount.shaftWeight[i]>0){
     const auto radial=Sub(asset.rest[i],origin);double angle=std::atan2(Dot(radial,basis[2]),Dot(radial,basis[1]));if(angle<0)angle+=6.2831853071795864769;
     // A nonnegative periodic support envelope is at least every measured
@@ -127,7 +136,7 @@ struct DynamicMount {
   SurfaceCut module;module.points=std::move(posed);module.opening=inner;
   for(auto id:moduleFaces){SurfaceCutFace face;face.parent=id;for(unsigned k=0;k<3;k++){face.corners[k].vertex=asset.faces[id][k];face.corners[k].donor[k]=1;}module.faces.push_back(face);}
   auto bodyChart=ChartLoop(aperture.body,aperture.anchor,{{basis[1],basis[2]}}),moduleChart=ChartLoop(module,origin,{{basis[1],basis[2]}},&asset.rest);
-  auto surface=StitchSurfaces(std::move(aperture.body),std::move(module),bodyChart,moduleChart,aperture.anchor,basis[0],axis,normals,faces);
+  auto surface=StitchSurfaces(std::move(aperture.body),std::move(module),bodyChart,moduleChart,aperture.anchor,basis[0],axis,normals,faces,rampMargin,undersideRampExtra,24,&body);
   std::vector<SurfaceJoinCorner> mappings;std::vector<bool> visited(surface.points.size());for(auto face:surface.faces)for(auto c:face)if(c.domain==1&&!visited[c.vertex]){visited[c.vertex]=true;mappings.push_back(c);}
   // Clearance changes the final material coordinates. Keeping the pre-clearance
   // station makes an advanced root vertex follow a frame behind its location,

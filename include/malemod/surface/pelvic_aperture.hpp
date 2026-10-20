@@ -1,6 +1,7 @@
 #pragma once
 #include "convex_surface_cut.hpp"
 #include <limits>
+#include "triangle_ray_index.hpp"
 
 namespace malemod::surface {
 struct PelvicAperture {
@@ -12,6 +13,7 @@ struct PelvicAperture {
 class PelvicAperturePlan {
  using Vec=PresentationPoint;using UV=std::array<double,2>;
  std::vector<Vec> body_,section_;std::vector<std::array<unsigned,3>> faces_;std::vector<bool> front_;
+ TriangleRayIndex rays_;
  Vec origin_;PresentationBasis basis_;double tolerance_,extent_,depth_;
  static double Cross2(UV a,UV b,UV c){return (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);}
  static std::vector<UV> Hull(std::vector<UV> p){
@@ -20,13 +22,7 @@ class PelvicAperturePlan {
   for(auto i=p.rbegin()+1;i!=p.rend();i++){while(h.size()>lower&&Cross2(h[h.size()-2],h.back(),*i)<=1e-12)h.pop_back();h.push_back(*i);}h.pop_back();return h;
  }
  bool Ray(Vec start,Vec direction,Vec& point,double* facing=nullptr)const{
-  double nearest=std::numeric_limits<double>::infinity();bool found=false;
-  for(unsigned i=0;i<faces_.size();i++)if(front_[i]){
-   auto f=faces_[i];auto edge1=Sub(body_[f[1]],body_[f[0]]),edge2=Sub(body_[f[2]],body_[f[0]]),h=Cross(direction,edge2);const double determinant=Dot(edge1,h);if(std::abs(determinant)<1e-12)continue;
-   auto s=Sub(start,body_[f[0]]);const double u=Dot(s,h)/determinant;if(u< -1e-9||u>1+1e-9)continue;
-   auto q=Cross(s,edge1);const double v=Dot(direction,q)/determinant;if(v< -1e-9||u+v>1+1e-9)continue;
-   const double t=Dot(edge2,q)/determinant;if(t>=0&&t<nearest){nearest=t;point=Add(start,Scale(direction,t));found=true;if(facing)*facing=Dot(Unit(Cross(edge1,edge2)),basis_[0]);}
-  }return found;
+  return rays_.Ray(body_,faces_,start,direction,point,basis_[0],facing);
  }
  public:
  PelvicAperturePlan(std::vector<Vec> body,std::vector<std::array<unsigned,3>> faces,Vec origin,PresentationBasis basis,std::vector<Vec> section,double tolerance)
@@ -34,6 +30,7 @@ class PelvicAperturePlan {
   if(body_.empty()||section_.size()<8||tolerance<=0)throw std::invalid_argument("Invalid measured aperture domain");Quaternion(basis_);
   Vec low=body_[0],high=body_[0];for(auto p:body_)for(unsigned k=0;k<3;k++){low[k]=(std::min)(low[k],p[k]);high[k]=(std::max)(high[k],p[k]);}extent_=2*std::sqrt(Dot(Sub(high,low),Sub(high,low)));
   for(auto f:faces_){for(auto v:f)if(v>=body_.size())throw std::invalid_argument("Aperture face leaves original body");front_.push_back(Dot(Cross(Sub(body_[f[1]],body_[f[0]]),Sub(body_[f[2]],body_[f[0]])),basis_[0])>1e-10);}
+  rays_=TriangleRayIndex(body_,faces_,front_);
   Vec hit;if(!Ray(Add(origin_,Scale(basis_[0],extent_)),Scale(basis_[0],-1),hit))throw std::invalid_argument("Reference anchor has no measured original body surface");depth_=Dot(Sub(hit,origin_),basis_[0]);
  }
  PelvicAperture Solve(Vec axis,double scale,double margin=.18,double underside=.08,double minimumChartFacing=.35)const{

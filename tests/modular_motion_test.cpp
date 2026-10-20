@@ -111,6 +111,21 @@ int main(){try{
   Check(socket.frames[1].origin==socket.shapeFrames[1].origin&&socket.frames[1].basis==socket.shapeFrames[1].basis,"Socket motion moved the attached rim");
   Check(socket.frames[2].origin[1]!=0,"Socket resampling froze the free material rod");
  }
+ {
+  State pulse;pulse.hasShapeFrames=true;pulse.materialScale={1.12,1.3,1.3};
+  for(unsigned i=1;i<=12;i++)pulse.frames[i].origin=pulse.shapeFrames[i].origin={double(i-1),0,0};
+  auto original=pulse.shapeFrames;PreserveMaterialLengths(pulse);PreserveMaterialLengths(pulse);
+  Check(pulse.shapeFrames[12].origin==original[12].origin,"Pulse modified immutable morphology");
+  Check(std::abs(pulse.frames[12].origin[0]-12.32)<1e-10,"Pulse length missing or compounded on repeated constraints");
+  Binding root;root.influences={Influence{1,1,{}},Influence{2,0,{}}};
+  Check(MaterialPoint(root,pulse,{-.2,1,0})==Vec{-.2,1,0},"Pulse moved the attached circumference");
+  Binding middle;middle.influences={Influence{6,.5,{}},Influence{7,.5,{}}};
+  auto a=MaterialPoint(middle,pulse,{5.5,1,0}),b=MaterialPoint(middle,pulse,{5.5,-1,0});
+  Check(std::abs(std::sqrt(Dot(Sub(a,b),Sub(a,b)))-2.6)<1e-10,"Live pulse failed to dilate the material surface");
+  auto socket=SocketMaterialState(pulse,1.25);
+  Check(socket.frames[1].origin==socket.shapeFrames[1].origin,"Pulsed socket detached from body");
+  Check(std::abs(std::sqrt(Dot(Sub(socket.frames[12].origin,socket.frames[1].origin),Sub(socket.frames[12].origin,socket.frames[1].origin)))-9.75*1.12)<1e-9,"Socket compounded pulse length");
+ }
  bool rejected=false;try{moved.scales[1][1]=0;plan.Evaluate(moved);}catch(const std::invalid_argument&){rejected=true;}Check(rejected,"Collapsed morphology accepted");
  std::cout<<"PASS independent shaft/lobe ownership, live connecting skin, exact rest and invalid-scale rejection\n";
  return 0;

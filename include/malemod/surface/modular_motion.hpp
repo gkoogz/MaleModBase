@@ -24,6 +24,9 @@ struct State {
  std::shared_ptr<const std::vector<Vec>> shaftMaterial;
  std::shared_ptr<const std::vector<Binding>> materialBindings;
  std::shared_ptr<const std::vector<double>> crownWeights;
+ // Live pulse strain relative to the immutable control morphology.
+ // It deforms material sections without recutting the body opening.
+ Vec materialScale{1,1,1};
  double sectionRadius=0,hangControl=50;
  bool suspensionProfile=false;
  std::array<Vec,15> scales{};
@@ -83,6 +86,7 @@ inline void ValidateBinding(const Binding& b){
  if(std::abs(sum-1)>1e-8)throw std::invalid_argument("Unnormalized modular mechanical ownership");
 }
 inline void ValidateState(const State& state){
+ for(double x:state.materialScale)if(!std::isfinite(x)||x<=0)throw std::invalid_argument("Invalid live material strain");
  for(const auto& s:state.scales)for(double x:s)if(!std::isfinite(x)||x<=0)throw std::invalid_argument("Invalid modular morphology scale");
  for(const auto& f:state.frames){for(const auto& a:f.basis)for(double x:a)if(!std::isfinite(x))throw std::invalid_argument("Nonfinite modular frame");Quaternion(f.basis);for(double x:f.origin)if(!std::isfinite(x))throw std::invalid_argument("Nonfinite modular pose");}
 }
@@ -95,7 +99,7 @@ inline void PreserveMaterialLengths(State& s){
  for(unsigned i=2;i<=12;i++){
   auto d=Sub(original[i].origin,original[i-1].origin);
   const auto r=Sub(s.shapeFrames[i].origin,s.shapeFrames[i-1].origin);
-  const double length=std::sqrt(Dot(r,r));
+  const double length=std::sqrt(Dot(r,r))*s.materialScale[0];
   if(Dot(d,d)<1e-16)d=r;
   auto direction=Unit(d),restDirection=Unit(r);
   if(s.sectionRadius>0){
@@ -121,7 +125,7 @@ inline void PreserveMaterialLengths(State& s){
 }
 inline State Interpolate(const State& a,const State& b,double t){
  if(!std::isfinite(t)||t<0||t>1)throw std::invalid_argument("Invalid modular interpolation phase");
- State s;s.materialBindings=b.materialBindings;s.shaftMaterial=b.shaftMaterial;s.crownWeights=b.crownWeights;s.sectionRadius=a.sectionRadius*(1-t)+b.sectionRadius*t;s.hangControl=b.hangControl;s.suspensionProfile=b.suspensionProfile;
+ State s;s.materialScale=Add(Scale(a.materialScale,1-t),Scale(b.materialScale,t));s.materialBindings=b.materialBindings;s.shaftMaterial=b.shaftMaterial;s.crownWeights=b.crownWeights;s.sectionRadius=a.sectionRadius*(1-t)+b.sectionRadius*t;s.hangControl=b.hangControl;s.suspensionProfile=b.suspensionProfile;
  if(a.offsets&&b.offsets){if(a.offsets->size()!=b.offsets->size())throw std::invalid_argument("Modular shape transfer size changed");auto values=std::make_shared<std::vector<Vec>>(a.offsets->size());for(unsigned i=0;i<values->size();i++)(*values)[i]=Add(Scale((*a.offsets)[i],1-t),Scale((*b.offsets)[i],t));s.offsets=std::move(values);}
  else s.offsets=t<1?a.offsets:b.offsets;
  if(a.surfaceNormals&&b.surfaceNormals){if(a.surfaceNormals->size()!=b.surfaceNormals->size())throw std::invalid_argument("Modular normal transfer size changed");auto values=std::make_shared<std::vector<Vec>>(a.surfaceNormals->size());for(unsigned i=0;i<values->size();i++){auto n=Add(Scale((*a.surfaceNormals)[i],1-t),Scale((*b.surfaceNormals)[i],t));(*values)[i]=Dot(n,n)>1e-12?Unit(n):Vec{};}s.surfaceNormals=std::move(values);}else s.surfaceNormals=t<1?a.surfaceNormals:b.surfaceNormals;
@@ -222,7 +226,7 @@ inline State SocketMaterialState(const State& original,double start){
   out.shapeFrames[i+1]=MaterialSection(original.shapeFrames,k,k+1,t);
   out.frames[i+1]=MaterialSection(original.frames,k,k+1,t);
  }
- out.frames[1]=out.shapeFrames[1];auto neutral=out;neutral.frames=neutral.shapeFrames;
+ out.frames[1]=out.shapeFrames[1];auto neutral=out;neutral.frames=neutral.shapeFrames;neutral.materialScale={1,1,1};
  PreserveMaterialLengths(out);PreserveMaterialLengths(neutral);
  for(unsigned i=1;i<=12;i++){auto basis=out.frames[i].basis;for(unsigned k=0;k<3;k++)out.frames[i].basis[k]=Rotate(basis,Unrotate(neutral.frames[i].basis,out.shapeFrames[i].basis[k]));}
  return out;
@@ -234,8 +238,13 @@ inline Vec MaterialPoint(const Binding& binding,const State& state,Vec p,double 
  const unsigned i=a.weight>0?a.frame:b.frame,j=b.weight>0?b.frame:i;
  const double t=i==j?0:b.weight;
  auto rest=MaterialSection(state.shapeFrames,i,j,t),live=MaterialSection(state.frames,i,j,t);
- auto result=Add(live.origin,Rotate(live.basis,Unrotate(rest.basis,Sub(p,rest.origin))));
- if(crown>0){const auto& r=state.shapeFrames[12];const auto& f=state.frames[12];auto rigid=Add(f.origin,Rotate(f.basis,Unrotate(r.basis,Sub(p,r.origin))));result=Add(Scale(result,1-crown),Scale(rigid,crown));}
+ // Keep the complete attached circumference fixed. Release transient strain
+ // smoothly over the first two free material intervals, rather than expanding
+ // a pulse beyond the control-sized opening and folding its annulus.
+ const double u=std::clamp((double(i)-1+t)/2.,0.,1.),w=u*u*u*(10+u*(-15+6*u));
+ Vec strain;for(unsigned k=0;k<3;k++)strain[k]=1+(state.materialScale[k]-1)*w;
+ auto result=Add(live.origin,Rotate(live.basis,Components(Unrotate(rest.basis,Sub(p,rest.origin)),strain)));
+ if(crown>0){const auto& r=state.shapeFrames[12];const auto& f=state.frames[12];auto rigid=Add(f.origin,Rotate(f.basis,Components(Unrotate(r.basis,Sub(p,r.origin)),state.materialScale)));result=Add(Scale(result,1-crown),Scale(rigid,crown));}
  return result;
 }
 class Plan {
