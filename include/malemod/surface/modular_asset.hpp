@@ -59,11 +59,11 @@ struct Asset {
    skin.emplace(rest,faces,active,center,PresentationBasis{forward,side,Unit(Cross(forward,side))},radius);
   }
  }
- SkinRelief::Result Relieve(std::vector<Vec>& points,const State& state,std::vector<Vec>* normalDelta=nullptr)const{
+ SkinRelief::Result Relieve(std::vector<Vec>& points,const State& state,std::vector<Vec>* normalDelta=nullptr,TaskArena* arena=nullptr)const{
   if(normalDelta)normalDelta->assign(points.size(),{});
-  return skin?skin->Apply(points,.5*(state.scales[13][0]+state.scales[14][0]),normalDelta):SkinRelief::Result{};
+  return skin?skin->Apply(points,.5*(state.scales[13][0]+state.scales[14][0]),normalDelta,arena):SkinRelief::Result{};
  }
- Plan MakePlan()const{return Plan(rest,bindings,lofts,reference);}
+ Plan MakePlan(std::shared_ptr<TaskArena> arena={})const{return Plan(rest,bindings,lofts,reference,std::move(arena));}
  std::vector<Vec> Evaluate(const Plan& plan,const State& state)const{
   if(!mount){auto points=plan.Evaluate(state);Relieve(points,state);return points;}
   MountPlan recruitment(*mount,rest);

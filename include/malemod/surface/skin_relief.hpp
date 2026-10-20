@@ -3,6 +3,8 @@
 #include <queue>
 #include <limits>
 #include <map>
+#include <numeric>
+#include <malemod/task_arena.hpp>
 
 namespace malemod::surface {
 // Material-space skin relief. This changes display geometry only: mechanical
@@ -13,6 +15,8 @@ class SkinRelief {
  std::vector<Sample> samples_;
  std::vector<std::array<unsigned,3>> faces_;
  std::vector<std::array<unsigned,2>> edges_;
+ std::vector<unsigned> contributors_,active_;
+ std::vector<unsigned> faceRows_,faceIDs_;
  struct Stencil {std::array<unsigned,8> nodes{};std::array<double,8> weights{};};
  std::vector<Stencil> stencils_;std::vector<double> gridMetric_;
  double radius_=1;
@@ -92,24 +96,42 @@ class SkinRelief {
   gridMetric_.resize(nodes.size());std::vector<Vec> gridNormals(nodes.size());
   for(unsigned i=0;i<rest.size();i++)for(unsigned k=0;k<8;k++){auto node=stencils_[i].nodes[k];auto w=stencils_[i].weights[k];gridMetric_[node]+=samples_[i].metric*w;gridNormals[node]=Add(gridNormals[node],Scale(normals[i],w));}
   for(unsigned i=0;i<rest.size();i++)if(active[i]){Vec normal{};for(unsigned k=0;k<8;k++){auto node=stencils_[i].nodes[k];if(Dot(gridNormals[node],gridNormals[node])>1e-24)normal=Add(normal,Scale(Unit(gridNormals[node]),stencils_[i].weights[k]));}samples_[i].front=Smooth((Dot(Unit(normal),chart[0])+.15)/.8);auto pattern=Pattern(samples_[i]);samples_[i].detail=pattern[0];samples_[i].web=pattern[1];}
-
+  // Only faces in the skin field can contribute live normals or metrics.
+  // Keep original vertex order so omitting zero deposits preserves sums.
+  std::vector<bool> contributes(rest.size());
+  for(const auto& face:faces_)for(auto i:face)contributes[i]=true;
+  for(unsigned i=0;i<rest.size();i++){
+   if(contributes[i])contributors_.push_back(i);
+   if(Active(i))active_.push_back(i);
+  }
+  faceRows_.resize(rest.size()+1);
+  for(const auto& f:faces_)for(auto i:f)++faceRows_[i+1];
+  std::partial_sum(faceRows_.begin(),faceRows_.end(),faceRows_.begin());
+  faceIDs_.resize(faceRows_.back());auto cursor=faceRows_;
+  for(unsigned f=0;f<faces_.size();f++)for(auto i:faces_[f])faceIDs_[cursor[i]++]=f;
  }
  bool Active(unsigned i)const{return i<samples_.size()&&samples_[i].fade>0;}
  struct Result {double amplitude=1,maximumDisplacement=0,attemptedMaximum=0;unsigned changed=0;std::array<unsigned,3> limitingFace{};};
- Result Apply(std::vector<Vec>& points,double scale=1,std::vector<Vec>* normalDelta=nullptr)const{
+ Result Apply(std::vector<Vec>& points,double scale=1,std::vector<Vec>* normalDelta=nullptr,TaskArena* arena=nullptr)const{
   if(samples_.empty())return {};
   if(points.size()!=samples_.size()||!std::isfinite(scale)||scale<=0)throw std::invalid_argument("Invalid posed skin relief");
   std::vector<Vec> normals(points.size()),delta(points.size());std::vector<double> metric(points.size()),detail(points.size()),webHeight(points.size());
-  for(auto f:faces_){auto n=Cross(Sub(points[f[1]],points[f[0]]),Sub(points[f[2]],points[f[0]]));for(auto i:f)normals[i]=Add(normals[i],n);}
+  struct FaceGeometry {Vec e,v,n;double area2;};
+  std::vector<FaceGeometry> geometry;
+  if(arena){
+   geometry.resize(faces_.size());
+   arena->For(unsigned(faces_.size()),[&](unsigned index){auto f=faces_[index];auto& g=geometry[index];g.e=Sub(points[f[1]],points[f[0]]);g.v=Sub(points[f[2]],points[f[0]]);g.n=Cross(g.e,g.v);g.area2=Dot(g.n,g.n);});
+   arena->For(unsigned(contributors_.size()),[&](unsigned index){auto i=contributors_[index];for(unsigned j=faceRows_[i];j<faceRows_[i+1];j++)normals[i]=Add(normals[i],geometry[faceIDs_[j]].n);});
+  }else for(auto f:faces_){auto n=Cross(Sub(points[f[1]],points[f[0]]),Sub(points[f[2]],points[f[0]]));for(auto i:f)normals[i]=Add(normals[i],n);}
   for(auto e:edges_){auto d=Sub(points[e[0]],points[e[1]]);double length=std::sqrt(Dot(d,d));for(auto i:e)metric[i]+=length;}
   std::vector<Vec> gridNormals(gridMetric_.size());std::vector<double> gridMetric(gridMetric_.size());
-  for(unsigned i=0;i<points.size();i++)for(unsigned k=0;k<8;k++){auto node=stencils_[i].nodes[k];auto w=stencils_[i].weights[k];gridNormals[node]=Add(gridNormals[node],Scale(normals[i],w));gridMetric[node]+=metric[i]*w;}
+  for(unsigned i:contributors_)for(unsigned k=0;k<8;k++){auto node=stencils_[i].nodes[k];auto w=stencils_[i].weights[k];gridNormals[node]=Add(gridNormals[node],Scale(normals[i],w));gridMetric[node]+=metric[i]*w;}
   for(auto& n:gridNormals)if(Dot(n,n)>1e-24)n=Unit(n);
-  for(unsigned i=0;i<points.size();i++)if(Active(i)){Vec normal{};double strain=0;
+  for(unsigned i:active_){Vec normal{};double strain=0;
    for(unsigned k=0;k<8;k++){auto node=stencils_[i].nodes[k];auto w=stencils_[i].weights[k];if(Dot(gridNormals[node],gridNormals[node])>1e-24)normal=Add(normal,Scale(gridNormals[node],w));if(gridMetric_[node]>0)strain+=w*gridMetric[node]/gridMetric_[node];}
    normals[i]=normal;metric[i]=strain*samples_[i].metric;
   }
-  for(unsigned i=0;i<points.size();i++)if(Active(i)&&Dot(normals[i],normals[i])>1e-24){
+  for(unsigned i:active_)if(Dot(normals[i],normals[i])>1e-24){
    const auto& s=samples_[i];const double stretch=metric[i]/(s.metric*scale);
    // No time-dependent noise: a feature is fixed to the same skin material.
    // Compression gathers folds; extension relaxes them without erasing them.
@@ -124,28 +146,38 @@ class SkinRelief {
   // Continuous common amplitude: bound the full oriented-area polynomial,
   // not a discrete halving ladder that could make relief pop during motion.
   double constraint=0;Result result;
-  for(auto f:faces_){auto e=Sub(points[f[1]],points[f[0]]),v=Sub(points[f[2]],points[f[0]]),n=Cross(e,v);double area2=Dot(n,n);if(area2<1e-24)continue;
+  auto faceBound=[&](unsigned index){auto f=faces_[index];auto e=arena?geometry[index].e:Sub(points[f[1]],points[f[0]]),v=arena?geometry[index].v:Sub(points[f[2]],points[f[0]]),n=arena?geometry[index].n:Cross(e,v);double area2=Dot(n,n);if(area2<1e-24)return 0.;
    auto de=Sub(delta[f[1]],delta[f[0]]),dv=Sub(delta[f[2]],delta[f[0]]);
    double linear=Dot(n,Add(Cross(de,v),Cross(e,dv)))/area2,quadratic=Dot(n,Cross(de,dv))/area2;
-   double bound=((std::max)(0.,-linear)+std::abs(quadratic))/.8;
-   if(bound>constraint){constraint=bound;result.limitingFace=f;}
-  }
+   return ((std::max)(0.,-linear)+std::abs(quadratic))/.8;
+  };
+  std::vector<double> bounds;if(arena){bounds.resize(faces_.size());arena->For(unsigned(faces_.size()),[&](unsigned i){bounds[i]=faceBound(i);});}
+  for(unsigned i=0;i<faces_.size();i++){double bound=arena?bounds[i]:faceBound(i);if(bound>constraint){constraint=bound;result.limitingFace=faces_[i];}}
   const double amplitude=1/(1+constraint);
   result.amplitude=amplitude;
   // Carry the unrepresented broad relief in the normal field when strained
   // geometry needs protection. Its appearance therefore does not disappear.
-  for(unsigned i=0;i<detail.size();i++)detail[i]+=(1-amplitude)*webHeight[i];
+  for(unsigned i:active_)detail[i]+=(1-amplitude)*webHeight[i];
   if(normalDelta){
    normalDelta->assign(points.size(),{});std::vector<Vec> gradients(points.size()),geometric(points.size());std::vector<double> areas(points.size());
-   for(auto f:faces_){auto e=Sub(points[f[1]],points[f[0]]),v=Sub(points[f[2]],points[f[0]]),n=Cross(e,v);double det=Dot(n,n),area=std::sqrt(det);if(det<1e-24)continue;
+   std::vector<Vec> faceGradient;std::vector<double> faceArea;
+   if(arena){faceGradient.resize(faces_.size());faceArea.resize(faces_.size());}
+   auto gradientFor=[&](unsigned index){auto f=faces_[index];auto e=arena?geometry[index].e:Sub(points[f[1]],points[f[0]]),v=arena?geometry[index].v:Sub(points[f[2]],points[f[0]]),n=arena?geometry[index].n:Cross(e,v);double det=Dot(n,n),area=std::sqrt(det);if(det<1e-24)return;
     double h=detail[f[1]]-detail[f[0]],j=detail[f[2]]-detail[f[0]],a=Dot(e,e),b=Dot(e,v),c=Dot(v,v);
     auto gradient=Scale(Add(Scale(e,h*c-j*b),Scale(v,j*a-h*b)),1/det);double length=std::sqrt(Dot(gradient,gradient));if(length>.65)gradient=Scale(gradient,.65/length);
-    for(auto i:f){gradients[i]=Add(gradients[i],Scale(gradient,area));geometric[i]=Add(geometric[i],n);areas[i]+=area;}
-   }
-   for(unsigned i=0;i<points.size();i++)if(Active(i)&&areas[i]>0&&Dot(geometric[i],geometric[i])>1e-24){auto n=Unit(geometric[i]),g=Scale(gradients[i],1/areas[i]);g=Sub(g,Scale(n,Dot(g,n)));(*normalDelta)[i]=Sub(Unit(Sub(n,g)),n);}
+    if(arena){faceGradient[index]=Scale(gradient,area);faceArea[index]=area;}
+    else for(auto i:f){gradients[i]=Add(gradients[i],Scale(gradient,area));geometric[i]=Add(geometric[i],n);areas[i]+=area;}
+   };
+   if(arena){
+    arena->For(unsigned(faces_.size()),gradientFor);
+    arena->For(unsigned(contributors_.size()),[&](unsigned index){auto i=contributors_[index];
+     for(unsigned j=faceRows_[i];j<faceRows_[i+1];j++){auto f=faceIDs_[j];if(faceArea[f]==0)continue;gradients[i]=Add(gradients[i],faceGradient[f]);geometric[i]=Add(geometric[i],geometry[f].n);areas[i]+=faceArea[f];}
+    });
+   }else for(unsigned i=0;i<faces_.size();i++)gradientFor(i);
+   for(unsigned i:active_)if(areas[i]>0&&Dot(geometric[i],geometric[i])>1e-24){auto n=Unit(geometric[i]),g=Scale(gradients[i],1/areas[i]);g=Sub(g,Scale(n,Dot(g,n)));(*normalDelta)[i]=Sub(Unit(Sub(n,g)),n);}
   }
 
-  for(unsigned i=0;i<points.size();i++)if(Active(i)){
+  for(unsigned i:active_){
    result.attemptedMaximum=(std::max)(result.attemptedMaximum,std::sqrt(Dot(delta[i],delta[i])));auto d=Scale(delta[i],amplitude);double length=std::sqrt(Dot(d,d));
    if(length>0){points[i]=Add(points[i],d);++result.changed;result.maximumDisplacement=(std::max)(result.maximumDisplacement,length);}}
   return result;

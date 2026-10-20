@@ -38,6 +38,31 @@ int main(){
   if(legacy[0]!=points[0]||legacy[3]!=Add(points[3],Vec{2,0,0}))throw std::runtime_error("Legacy live axial isolation changed");
   State independent;transfer.Apply(asset,plan,independent,source,identity,false);
   if(plan.Evaluate(independent)!=points)throw std::runtime_error("Live legacy shaft skin leaked into material-owned motion");
+  {
+   std::ofstream f(dir/"skin-transfer",std::ios::binary);
+   auto u=[&](unsigned n){f.write(reinterpret_cast<char*>(&n),4);};
+   auto d=[&](double n){f.write(reinterpret_cast<char*>(&n),8);};
+   f.write("MMXFER02",8);f<<std::string(64,'0');u(4);u(4);u(4);
+   for(unsigned i=0;i<4;i++){u(i);u(2);u(1);d(0);u(i);d(1);}
+  }
+  SurfaceTransfer skin(dir/"skin-transfer");
+  for(unsigned i=0;i<4;i++)asset.bindings[i].influences={Influence{13+i%2,1,points[i]},Influence{}};
+  auto skinPlan=asset.MakePlan();State skinMaterial,skinLive;
+  skinMaterial.surfaceNormals=std::make_shared<const std::vector<Vec>>(4,Unit(Vec{1,0,1}));
+  skin.ApplyPrepared(asset,skinLive,skinMaterial,points);
+  if(skinPlan.Evaluate(skinLive)!=points)throw std::runtime_error("Prepared skin loses authored rest shape");
+  skinLive.frames[13].origin={2,-1,3};skinLive.frames[14].origin={-1,2,-3};
+  skinLive.scales[13]={1.2,.8,1};skinLive.scales[14]={.9,1,1.1};
+  skin.ApplyPrepared(asset,skinLive,skinMaterial,points);
+  auto posed=skinPlan.Evaluate(skinLive);
+  for(unsigned i=0;i<4;i++){
+   const auto frame=13+i%2;
+   const auto expected=Add(skinLive.frames[frame].origin,Components(points[i],skinLive.scales[frame]));
+   if(Dot(Sub(posed[i],expected),Sub(posed[i],expected))>1e-24)throw std::runtime_error("Independent prepared skin follows wrong body");
+   auto normal=(*skinMaterial.surfaceNormals)[i];for(unsigned k=0;k<3;k++)normal[k]/=skinLive.scales[frame][k];
+   auto error=Sub((*skinLive.surfaceNormals)[i],Unit(normal));
+   if(Dot(error,error)>1e-24)throw std::runtime_error("Prepared skin normal ignores anisotropic scale");
+  }
   std::filesystem::remove_all(dir);
   std::cout<<"PASS rest morphology exact across crown blend; legacy live and independent motion isolated\n";
  }catch(const std::exception& e){std::filesystem::remove_all(dir);std::cerr<<e.what()<<'\n';return 1;}

@@ -3,6 +3,7 @@
 #include "pelvic_aperture.hpp"
 #include "surface_stitch.hpp"
 #include "suspension_hang.hpp"
+#include <chrono>
 
 namespace malemod::surface::modular {
 struct DynamicResult {SurfaceJoin surface;Vec anchor{},axis{};double rootAdvance=0;std::vector<SurfaceJoinCorner> moduleVertices;std::vector<double> advances;Vec fitTranslation{},suspensionTranslation{};std::shared_ptr<const std::vector<Binding>> clearedBindings;double materialRoot=0;};
@@ -56,12 +57,16 @@ struct DynamicMount {
   auto points=plan.Evaluate(moved,[&](auto& points){for(unsigned i=0;i<points.size();i++)if(mount.shaftWeight[i]>0&&!(state.shaftMaterial&&ShaftBinding(asset.bindings[i])))points[i]=Add(points[i],Scale(state.frames[1].basis[0],clearance(i)));plan.TranslateSuspension(points,suspension);},state.shaftMaterial?&materialState:nullptr);
   if(relief)asset.Relieve(points,state);return points;
  }
- std::vector<Vec> Repose(const DynamicResult& cached,const Asset& asset,const Plan& plan,const State& state,std::vector<Vec>* beforeRelief=nullptr,std::vector<Vec>* detailNormals=nullptr)const{
+ std::vector<Vec> Repose(const DynamicResult& cached,const Asset& asset,const Plan& plan,const State& state,std::vector<Vec>* beforeRelief=nullptr,std::vector<Vec>* detailNormals=nullptr,std::array<double,4>* timings=nullptr)const{
+  const auto begin=std::chrono::steady_clock::now();
   auto source=Pose(asset,plan,state,cached.fitTranslation,cached.advances,cached.suspensionTranslation,cached.clearedBindings,cached.materialRoot,false);auto points=cached.surface.points;
+  const auto posed=std::chrono::steady_clock::now();
   if(beforeRelief){*beforeRelief=points;for(auto c:cached.moduleVertices){Vec p{};for(unsigned k=0;k<3;k++)p=Add(p,Scale(source[asset.faces[c.parent][k]],c.donor[k]));(*beforeRelief)[c.vertex]=p;}}
-  std::vector<Vec> detail;asset.Relieve(source,state,detailNormals?&detail:nullptr);
+  std::vector<Vec> detail;asset.Relieve(source,state,detailNormals?&detail:nullptr,plan.Arena());
+  const auto relieved=std::chrono::steady_clock::now();
   if(detailNormals){detailNormals->assign(points.size(),{});for(auto c:cached.moduleVertices){Vec n{};for(unsigned k=0;k<3;k++)n=Add(n,Scale(detail[asset.faces[c.parent][k]],c.donor[k]));(*detailNormals)[c.vertex]=n;}}
   for(auto c:cached.moduleVertices){Vec p{};for(unsigned k=0;k<3;k++)p=Add(p,Scale(source[asset.faces[c.parent][k]],c.donor[k]));points[c.vertex]=p;}
+  const auto mapped=std::chrono::steady_clock::now();
   const auto& rings=cached.surface.rings;auto first=cached.surface.firstTangents;std::vector<Vec> last(first.size());double firstScale=1,lastScale=1;
   for(unsigned i=0;i<first.size();i++){
    auto a=points[rings.front()[i]],b=points[rings.back()[i]];const double distance=std::sqrt(Dot(Sub(a,b),Sub(a,b)));last[i]=Scale(state.frames[1].basis[0],distance);
@@ -76,6 +81,7 @@ struct DynamicMount {
     if(id<cached.surface.entryNormals.size())p=RampEntryPoint(p,cached.surface.entryPoints[id],cached.surface.entryNormals[id],basis[0],t);
     points[id]=p;}
   }
+  if(timings){const auto end=std::chrono::steady_clock::now();auto ms=[](auto a,auto b){return std::chrono::duration<double,std::milli>(b-a).count();};*timings={ms(begin,posed),ms(posed,relieved),ms(relieved,mapped),ms(mapped,end)};}
   return points;
  }
  DynamicResult Evaluate(const Asset& asset,const Plan& plan,const State& state)const{

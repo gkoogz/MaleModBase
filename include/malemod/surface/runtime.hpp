@@ -102,6 +102,18 @@ class Session {
   Session& operator=(const Session&)=delete;
   void SetControls(const Controls& controls);
   void Step(const Frame& frame={});
+  // Advance the same mechanics and authored rest inputs without evaluating
+  // the reference character's rendered surface. Consumers must own geometry.
+  // ReadMechanical omits surface vertices, collar data and nozzle geometry.
+  // The adapter must pose features from its prepared material. Read() rejects
+  // a stale rendered surface until the next full Step().
+  void StepMechanical(const Frame& frame={});
+  Output ReadMechanical();
+  // Preserve reference skin contact, support and fairing for a consumer that
+  // owns its body attachment. Omits unused body/collar export; the final
+  // reference solve remains because its corrections also affect retained skin.
+  void StepRetainedSkin(const Frame& frame={});
+  Output ReadRetainedSkin();
   Output Read();
   Diagnostics ReadDiagnostics();
  private:

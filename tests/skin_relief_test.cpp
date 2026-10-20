@@ -17,6 +17,13 @@ int main(){try{
  for(unsigned i=0;i<p.size();i++)if(p[i][2]<=.05&&std::abs(p[i][1])>=.45)
   Check(a[i]==p[i],"Medial envelope altered a lateral support");
  auto same=p;skin.Apply(same);Check(same==a,"Relief is nondeterministic");
+ malemod::TaskArena arena(4);
+ for(double stretch:{.6,1.,1.5}){
+  auto serial=p;for(auto& v:serial)v[2]*=stretch;auto parallel=serial;
+  std::vector<V> ns,np;auto rs=skin.Apply(serial,1,&ns),rp=skin.Apply(parallel,1,&np,&arena);
+  Check(serial==parallel&&ns==np,"Parallel skin field differs from ordered reference");
+  Check(rs.amplitude==rp.amplitude&&rs.limitingFace==rp.limitingFace,"Parallel relief changed its fold safeguard");
+ }
  for(unsigned i=0;i<p.size();i++)if(!active[i])Check(p[i]==a[i],"Protected attachment changed");
  auto scaled=p;for(auto& v:scaled)v=Add(Scale(v,3),V{100,-200,11});skin.Apply(scaled,3);
  for(unsigned i=0;i<p.size();i++)Check(Dot(Sub(scaled[i],Add(Scale(a[i],3),V{100,-200,11})),Sub(scaled[i],Add(Scale(a[i],3),V{100,-200,11})))<1e-20,"Relief is not scale/translation covariant");

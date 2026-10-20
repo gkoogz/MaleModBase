@@ -23,8 +23,11 @@ def git(*args):
 
 def verify(executable, library, output, legacy_executable=None):
     executable, library, output = [Path(p).resolve() for p in (executable, library, output)]
-    if any(not p.is_relative_to(ROOT / 'build') for p in (executable, library, output)):
+    owned_build = (ROOT / 'build').resolve()
+    if any(not p.is_relative_to(owned_build) for p in (executable, library, output)):
         raise ValueError('Use owned build binaries and report directory')
+    def owned_name(path):
+        return (Path('build') / path.relative_to(owned_build)).as_posix()
     if not executable.is_file() or not library.is_file():
         raise ValueError('The actual source CLI and library must exist')
     output.mkdir(parents=True, exist_ok=True)
@@ -55,7 +58,7 @@ def verify(executable, library, output, legacy_executable=None):
                     pendingNoSubstepExactParity=True, pendingCoalescingExactParity=True)
         if legacy_executable:
             legacy_executable = Path(legacy_executable).resolve()
-            if not legacy_executable.is_relative_to(ROOT/'build') or not legacy_executable.is_file():
+            if not legacy_executable.is_relative_to(owned_build) or not legacy_executable.is_file():
                 raise ValueError('Use an owned immutable legacy source binary')
             path = output/f'legacy-state{state}-mode0.bin'
             subprocess.run([str(legacy_executable), '0', str(state), str(path)],
@@ -81,11 +84,11 @@ def verify(executable, library, output, legacy_executable=None):
                    sourceCommit=git('rev-parse', 'HEAD'),
                    sourceDirty=git('status', '--porcelain', '--untracked-files=all', '--', *source_paths),
                    workspaceDirty=git('status', '--porcelain', '--untracked-files=all'),
-                   executable=dict(path=str(executable.relative_to(ROOT)), sha256=digest(executable)),
-                   library=dict(path=str(library.relative_to(ROOT)), sha256=digest(library)),
+                   executable=dict(path=owned_name(executable), sha256=digest(executable)),
+                   library=dict(path=owned_name(library), sha256=digest(library)),
                    sourceHashes={p:digest(ROOT/p) for p in paths}, cases=proof)
     if legacy_executable:
-        receipt['legacyExecutable'] = dict(path=str(legacy_executable.relative_to(ROOT)),
+        receipt['legacyExecutable'] = dict(path=owned_name(legacy_executable),
                                            sha256=digest(legacy_executable))
     (output/'proof.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(output/'proof.json')

@@ -28,6 +28,33 @@ class SurfaceTransfer {
   if(in.peek()!=EOF)throw std::invalid_argument("Trailing surface transfer bytes");
  }
  std::shared_ptr<const std::vector<double>> CrownWeights()const{auto w=std::make_shared<std::vector<double>>(targetCount_);for(auto& r:rows_)if(r.kind==1)(*w)[r.target]=r.axialShapeWeight;return w;}
+ // The adapter-owned mesh can follow compact mechanics directly. Retained
+ // suspended skin starts from its fully authored material, then follows the
+ // two independently simulated bodies through its original semantic weights.
+ void ApplyPrepared(const Asset& asset,State& state,const State& material,
+                    const std::vector<Vec>& points)const{
+  if(points.size()!=targetCount_||asset.bindings.size()!=targetCount_)
+   throw std::invalid_argument("Prepared transfer topology differs");
+  auto offsets=std::make_shared<std::vector<Vec>>(targetCount_);
+  auto normals=std::make_shared<std::vector<Vec>>(targetCount_);
+  for(const auto& row:rows_)if(row.kind==2){
+   const auto& binding=asset.bindings[row.target];Vec desired{},normal{};
+   const auto restNormal=material.surfaceNormals?material.surfaceNormals->at(row.target):Vec{};
+   for(const auto& owner:binding.influences)if(owner.weight>0){
+    if(owner.frame<13)throw std::invalid_argument("Prepared suspended skin has non-lobe ownership");
+    const auto& a=material.frames[owner.frame];const auto& b=state.frames[owner.frame];
+    Vec scale{};for(unsigned k=0;k<3;k++)scale[k]=state.scales[owner.frame][k]/material.scales[owner.frame][k];
+    desired=Add(desired,Scale(Add(b.origin,Rotate(b.basis,Components(Unrotate(a.basis,Sub(points[row.target],a.origin)),scale))),owner.weight));
+    if(Dot(restNormal,restNormal)>1e-12){
+     auto local=Unrotate(a.basis,restNormal);for(unsigned k=0;k<3;k++)local[k]/=scale[k];
+     normal=Add(normal,Scale(Rotate(b.basis,local),owner.weight));
+    }
+   }
+   (*offsets)[row.target]=Sub(desired,Point(binding,state));
+   if(Dot(normal,normal)>1e-12)(*normals)[row.target]=Unit(normal);
+  }
+  state.offsets=offsets;state.surfaceNormals=normals;
+ }
  void Apply(const Asset& asset,const Plan& plan,State& state,const Output& source,const std::function<Vec(Vec)>& shaftTransform,bool transferShaft=true,bool restMorphology=false)const{
   if(asset.rest.size()!=targetCount_||source.anatomy.positions.size()!=sourceCount_)throw std::invalid_argument("Surface transfer topology differs");
   auto offsets=std::make_shared<std::vector<Vec>>(targetCount_),normals=std::make_shared<std::vector<Vec>>(targetCount_);auto sourceFrames=MaterialFrames(source);auto shaftShift=Sub(state.frames[1].origin,sourceFrames[1].origin);

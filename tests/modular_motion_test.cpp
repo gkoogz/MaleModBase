@@ -126,6 +126,28 @@ int main(){try{
   Check(socket.frames[1].origin==socket.shapeFrames[1].origin,"Pulsed socket detached from body");
   Check(std::abs(std::sqrt(Dot(Sub(socket.frames[12].origin,socket.frames[1].origin),Sub(socket.frames[12].origin,socket.frames[1].origin)))-9.75*1.12)<1e-9,"Socket compounded pulse length");
  }
+ {
+  // Cached sections must reproduce the uncached field across quaternion
+  // hemisphere changes, curved guides, material strain and crown blending.
+  State s;s.materialScale={1.12,.85,1.3};
+  for(unsigned sample=0;sample<24;sample++){
+   for(unsigned i=1;i<=12;i++){
+    double a=sample*.29+i*.13;
+    s.frames[i].origin={double(i),std::sin(a),.2*std::cos(a)};
+    s.frames[i].basis={Vec{std::cos(a),std::sin(a),0},Vec{-std::sin(a),std::cos(a),0},Vec{0,0,1}};
+    s.shapeFrames[i].origin={double(i),0,0};
+   }
+   PreparedMaterialSections rest(s.shapeFrames),live(s.frames);
+   for(unsigned i=1;i<12;i++)for(unsigned step=0;step<=16;step++){
+    const double t=step/16.;Binding b;b.influences={Influence{i,1-t,{}},Influence{i+1,t,{}}};
+    const Vec p{double(i)+t,.7,-.3};
+    for(double crown:{0.,.4,1.}){
+     auto a=MaterialPoint(b,s,p,crown),c=MaterialPoint(b,s,p,crown,&rest,&live);
+     Check(Dot(Sub(a,c),Sub(a,c))<1e-24,"Prepared material field changed the surface");
+    }
+   }
+  }
+ }
  bool rejected=false;try{moved.scales[1][1]=0;plan.Evaluate(moved);}catch(const std::invalid_argument&){rejected=true;}Check(rejected,"Collapsed morphology accepted");
  std::cout<<"PASS independent shaft/lobe ownership, live connecting skin, exact rest and invalid-scale rejection\n";
  return 0;

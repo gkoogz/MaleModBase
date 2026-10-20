@@ -54,7 +54,7 @@ struct Session::Impl {
  std::mutex submitMutex,mutex;
  std::condition_variable cv;
  std::function<void()> job;
- bool stop=false;
+ bool stop=false,surfaceCurrent=true,retainedSkinCurrent=true;
  std::thread worker;
  std::vector<unsigned char> seed;
  std::vector<Point> collarQueries;
@@ -92,7 +92,8 @@ struct Session::Impl {
   for(unsigned i=0;i<kernel::graftCount;i++)std::memcpy(seed.data()+(47050+i)*32,kernel::morph_base+i*3,12);
   kernel::ResetCompliantDynamics();kernel::ResetPelvicAttachmentBody(seed.data());kernel::EvaluateAnatomy(seed.data(),47050);
  }
- void Advance(const Frame& frame){
+ void Advance(const Frame& frame,bool mechanicalOnly=false,bool retainedSkinOnly=false){
+  if((mechanicalOnly||retainedSkinOnly)&&!frame.collarQueries.empty())throw std::invalid_argument("Geometry-owned samples cannot request reference collar geometry");
   auto validateSupport=[](Point p,float limit){if(!std::isfinite(p.x)||!std::isfinite(p.y)||!std::isfinite(p.z)||double(p.x)*p.x+double(p.y)*p.y+double(p.z)*p.z>double(limit)*limit+1e-5)throw std::invalid_argument("Garment support exceeds source acceleration budget");};
   validateSupport(frame.garment.shaftAcceleration,maximumShaftSupportAcceleration);for(auto p:frame.garment.lobeAcceleration)validateSupport(p,maximumLobeSupportAcceleration);
   kernel::surfaceGarmentEnabled=frame.garment.enabled;
@@ -152,10 +153,25 @@ struct Session::Impl {
   }
   kernel::UpdateConstraintSolver(frame.seconds,frame.pitchForce,frame.yawForce);
   kernel::ResetPelvicAttachmentBody(seed.data());
-  kernel::EvaluateAnatomy(seed.data(),47050);
+  surfaceCurrent=retainedSkinCurrent=false;
+  if(!mechanicalOnly){
+   kernel::EvaluateAnatomy(seed.data(),47050);
+   retainedSkinCurrent=true;surfaceCurrent=!retainedSkinOnly;
+  }
+  else{
+   // EvaluateAnatomy's authoring prefix and length feedback are mechanical
+   // inputs. Keep their exact order/arithmetic; omit only rendered skin work.
+   kernel::V3 tip{};int count=0;
+   kernel::PrepareShape(seed.data()+kernel::pelvisControlFirstVertex*kernel::graftStride,47050,tip,count);
+   if(!kernel::constraintSolverReady)kernel::InitializeConstraintSolver();
+   if(count){const auto center=tip/float(count);const float length=std::max(8.f,std::min(60.f,kernel::Length(center-kernel::ShaftRoot())));
+    kernel::constraintRestLength=(kernel::constraintRestLength*.1656f+length*.08f)/.2456f;
+   }
+  }
  }
- Output Capture(){
-  if(const char* directory=std::getenv("MALEMOD_SOURCE_TRACE_DIRECTORY")){
+ Output Capture(bool mechanicalOnly=false,bool retainedSkinOnly=false){
+  if(!mechanicalOnly&&!(retainedSkinOnly?retainedSkinCurrent:surfaceCurrent))throw std::logic_error("Requested rendered surface is stale; use the matching read or perform a full Step");
+  if(const char* directory=mechanicalOnly?nullptr:std::getenv("MALEMOD_SOURCE_TRACE_DIRECTORY")){
    auto dump=[&](const char* stage,const auto& points,const auto& indices){
     std::ofstream v(std::filesystem::path(directory)/(std::string(stage)+"-points.bin"),std::ios::binary);
     v.write(reinterpret_cast<const char*>(points),sizeof(points));
@@ -171,9 +187,12 @@ struct Session::Impl {
    dump("neck",kernel::nrPositions,kernel::nrIndices);
   }
   if(!kernel::UnifiedCollar::solved.allFinite())throw std::runtime_error("Non-finite collar solve");
-  Output out;out.anatomy=Decode(kernel::nrPacked,kernel::nrCount,0);
-  for(unsigned i=0;i<2;i++)out.body[i]=Decode(kernel::sharedBodyOutput[i],kernel::sharedBodyCount[i],kernel::sharedBodyFirst[i]);
-  out.anatomyIndices.assign(kernel::nrIndices,kernel::nrIndices+kernel::nrIndexCount);
+  Output out;
+  if(!mechanicalOnly){
+   out.anatomy=Decode(kernel::nrPacked,kernel::nrCount,0);
+   if(!retainedSkinOnly)for(unsigned i=0;i<2;i++)out.body[i]=Decode(kernel::sharedBodyOutput[i],kernel::sharedBodyCount[i],kernel::sharedBodyFirst[i]);
+   out.anatomyIndices.assign(kernel::nrIndices,kernel::nrIndices+kernel::nrIndexCount);
+  }
   out.proximalRadius=kernel::logicalShaftBodyRadius;out.restLength=kernel::constraintRestLength;
   auto point=[](kernel::V3 p){return Point{p.x,p.y,p.z};};
   for(unsigned i=0;i<12;i++){
@@ -187,14 +206,17 @@ struct Session::Impl {
    for(unsigned j=0;j<3;j++)out.lobeAxes[i][j]=point(kernel::cpBasis[i][j]);
   }
   out.rootDirection=point(kernel::LiveRootDirection());
+  if(!mechanicalOnly){
   auto ring=[](unsigned id){kernel::V3 sum{};for(unsigned i=0;i<kernel::r14SegmentCount;i++)sum=sum+kernel::r14Positions[kernel::r14NewStart+id*kernel::r14SegmentCount+i];return sum/float(kernel::r14SegmentCount);};
   auto lip=ring(kernel::r14RingCount-6),back=ring(kernel::r14CrownRing+(kernel::r14RingCount-kernel::r14CrownRing)/2);auto direction=kernel::Unit(lip-back);
   out.nozzlePosition=point(lip+direction*.06f);out.nozzleDirection=point(direction);
+  }
   for(unsigned i=0;i<10;i++)out.bendMultipliers[i]=kernel::RapheTubeBendMultiplier((i+1)/11.f);
   const auto* metric=kernel::UnifiedCollar::surfaceMetricFrame;
   out.collarMetric={{metric[0],metric[1],metric[2]},{metric[3],metric[4],metric[5]},
    {metric[6],metric[7],metric[8]},metric[9],metric[10],kernel::UnifiedCollar::surfaceMetricGeneration};
   if(!out.collarMetric.generation)throw std::runtime_error("Source collar metric not built");
+  if(mechanicalOnly||retainedSkinOnly){out.collarMetric={};return out;}
   // Exact active source target expressions on the target character samples.
   // The cached metric masks and the moving guide are separate, as in Wolverine.
   const auto pelvic=kernel::UnifiedCollar::StablePelvicRecruitmentFrame();
@@ -203,7 +225,7 @@ struct Session::Impl {
   float length=0;auto previous=root;
   for(unsigned k=1;k<=100;k++){kernel::V3 p,t;kernel::SampleShaftChain(k*.01f,p,t);length+=kernel::Length(p-previous);previous=p;}
   length=std::max(.01f,length);const float radius=kernel::logicalShaftBodyRadius,growth=kernel::Smoother01((radius-2.9f)/4.72f);
-  for(auto query:collarQueries){
+  for(auto query:mechanicalOnly?std::vector<Point>{}:collarQueries){
    kernel::V3 p{query.x,query.y,query.z},q=p-root;float s=kernel::Dot(q,axis),y=q.y,z=kernel::Dot(q,up),radial=sqrtf(y*y+z*z);
    auto cv=[](Point p){return malemod::V3{p.x,p.y,p.z};};
    const double mask=collar::EvaluateMetricRow({p.x,p.y,p.z},cv(out.collarMetric.root),cv(out.collarMetric.axis),cv(out.collarMetric.up),out.collarMetric.radius,out.collarMetric.length,1).mask;
@@ -237,6 +259,10 @@ Session::~Session(){
 }
 void Session::SetControls(const Controls& controls){impl_->Call([&]{Map(controls);impl_->controls=controls;});}
 void Session::Step(const Frame& frame){impl_->Call([&]{impl_->Advance(frame);});}
+void Session::StepMechanical(const Frame& frame){impl_->Call([&]{impl_->Advance(frame,true);});}
+Output Session::ReadMechanical(){Output output;impl_->Call([&]{output=impl_->Capture(true);});return output;}
+void Session::StepRetainedSkin(const Frame& frame){impl_->Call([&]{impl_->Advance(frame,false,true);});}
+Output Session::ReadRetainedSkin(){Output output;impl_->Call([&]{output=impl_->Capture(false,true);});return output;}
 Output Session::Read(){Output output;impl_->Call([&]{output=impl_->Capture();});return output;}
 Diagnostics Session::ReadDiagnostics(){
  Diagnostics result;

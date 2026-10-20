@@ -5,6 +5,7 @@
 #include <memory>
 #include <map>
 #include "suspension_profile.hpp"
+#include <malemod/task_arena.hpp>
 
 namespace malemod::surface::modular {
 // Semantic mechanical ownership is authored once, never inferred from posed
@@ -212,6 +213,42 @@ inline PresentationFrame MaterialSection(const PresentationFrames& f,unsigned i,
  for(auto& x:q)x/=std::sqrt(norm);
  return {Hermite(f[i].origin,f[j].origin,Scale(f[i].basis[0],length),Scale(f[j].basis[0],length),t),Basis(q)};
 }
+// Frame-only work belongs to the pose, not to every vertex. Keep the same
+// Hermite arithmetic and hemisphere choices as MaterialSection.
+class PreparedMaterialSections {
+ const PresentationFrames& frames_;
+ std::array<PresentationQuaternion,15> rotations_{};
+ std::array<PresentationQuaternion,15> derivatives_{};
+ std::array<double,15> lengths_{};
+ static PresentationQuaternion Aligned(PresentationQuaternion q,const PresentationQuaternion& reference){
+  double dot=0;for(unsigned k=0;k<4;k++)dot+=q[k]*reference[k];
+  if(dot<0)for(auto& x:q)x=-x;return q;
+ }
+public:
+ explicit PreparedMaterialSections(const PresentationFrames& f):frames_(f){
+  for(unsigned i=1;i<=12;i++)rotations_[i]=Quaternion(f[i].basis);
+  for(unsigned i=1;i<12;i++){auto d=Sub(f[i+1].origin,f[i].origin);lengths_[i]=std::sqrt(Dot(d,d));}
+  for(unsigned i=2;i<12;i++){
+   const auto q=rotations_[i],before=Aligned(rotations_[i-1],q),after=Aligned(rotations_[i+1],q);
+   const double span=lengths_[i-1]+lengths_[i];if(span<1e-12)continue;
+   auto& v=derivatives_[i];double normal=0;
+   for(unsigned k=0;k<4;k++){v[k]=(after[k]-before[k])/span;normal+=v[k]*q[k];}
+   for(unsigned k=0;k<4;k++)v[k]-=normal*q[k];
+  }
+ }
+ PresentationFrame Section(unsigned i,unsigned j,double t)const{
+  if(i==j)return frames_[i];
+  if(i<1||j!=i+1||j>12)return MaterialSection(frames_,i,j,t);
+  auto qa=rotations_[i],qb=Aligned(rotations_[j],qa),va=derivatives_[i],vb=derivatives_[j];
+  double alignment=0;for(unsigned k=0;k<4;k++)alignment+=qb[k]*rotations_[j][k];
+  if(alignment<0)for(auto& x:vb)x=-x;
+  const double length=lengths_[i],t2=t*t,t3=t2*t;PresentationQuaternion q{};double norm=0;
+  for(unsigned k=0;k<4;k++){q[k]=(2*t3-3*t2+1)*qa[k]+(t3-2*t2+t)*length*va[k]+(-2*t3+3*t2)*qb[k]+(t3-t2)*length*vb[k];norm+=q[k]*q[k];}
+  if(norm<1e-16)throw std::invalid_argument("Collapsed prepared material orientation");
+  for(auto& x:q)x/=std::sqrt(norm);
+  return {Hermite(frames_[i].origin,frames_[j].origin,Scale(frames_[i].basis[0],length),Scale(frames_[j].basis[0],length),t),Basis(q)};
+ }
+};
 // The actual socket can be ahead of the source solver's hidden root after
 // clearance. Start the material rod at that socket, preserving the selected
 // rest surface and retaining twelve free-section samples through the tip.
@@ -233,11 +270,13 @@ inline State SocketMaterialState(const State& original,double start){
 }
 // Rotate one material section instead of blending rotated vertex positions.
 // Its orthonormal frame preserves diameter; the crown preserves its shape.
-inline Vec MaterialPoint(const Binding& binding,const State& state,Vec p,double crown=0){
+inline Vec MaterialPoint(const Binding& binding,const State& state,Vec p,double crown=0,
+ const PreparedMaterialSections* preparedRest=nullptr,const PreparedMaterialSections* preparedLive=nullptr){
  const auto a=binding.influences[0],b=binding.influences[1];
  const unsigned i=a.weight>0?a.frame:b.frame,j=b.weight>0?b.frame:i;
  const double t=i==j?0:b.weight;
- auto rest=MaterialSection(state.shapeFrames,i,j,t),live=MaterialSection(state.frames,i,j,t);
+ auto rest=preparedRest?preparedRest->Section(i,j,t):MaterialSection(state.shapeFrames,i,j,t);
+ auto live=preparedLive?preparedLive->Section(i,j,t):MaterialSection(state.frames,i,j,t);
  // Keep the complete attached circumference fixed. Release transient strain
  // smoothly over the first two free material intervals, rather than expanding
  // a pulse beyond the control-sized opening and folding its annulus.
@@ -248,9 +287,12 @@ inline Vec MaterialPoint(const Binding& binding,const State& state,Vec p,double 
  return result;
 }
 class Plan {
+ std::shared_ptr<TaskArena> arena_;
  std::vector<Vec> rest_;std::vector<Binding> bindings_;std::vector<Loft> lofts_;State reference_;
  std::vector<SuspensionSection> suspensionSections_;
  public:
+ TaskArena* Arena()const{return arena_.get();}
+ template<class Function> void For(unsigned count,Function&& fn)const{if(arena_)arena_->For(count,std::forward<Function>(fn));else for(unsigned i=0;i<count;i++)fn(i);}
  void TranslateSuspension(std::vector<Vec>& points,Vec offset)const{
   if(points.size()!=bindings_.size())throw std::invalid_argument("Suspended translation topology differs");
   for(unsigned i=0;i<points.size();i++){
@@ -274,8 +316,8 @@ class Plan {
   center=Scale(center,1/total);auto lobes=Scale(Add(rest.frames[13].origin,rest.frames[14].origin),.5);
   auto offset=Sub(center,lobes);up=Unit(up);return Sub(offset,Scale(up,Dot(offset,up)));
  }
- Plan(std::vector<Vec> rest,std::vector<Binding> bindings,std::vector<Loft> lofts,State reference)
- :rest_(std::move(rest)),bindings_(std::move(bindings)),lofts_(std::move(lofts)),reference_(reference){
+ Plan(std::vector<Vec> rest,std::vector<Binding> bindings,std::vector<Loft> lofts,State reference,std::shared_ptr<TaskArena> arena={})
+ :arena_(std::move(arena)),rest_(std::move(rest)),bindings_(std::move(bindings)),lofts_(std::move(lofts)),reference_(reference){
   if(rest_.empty()||rest_.size()!=bindings_.size())throw std::invalid_argument("Modular topology/binding count differs");
   ValidateState(reference_);
   for(const auto& b:bindings_)ValidateBinding(b);
@@ -300,11 +342,14 @@ class Plan {
  }
  std::vector<Vec> Evaluate(const State& state,const std::function<void(std::vector<Vec>&)>& moveOwners={},const State* materialState=nullptr)const{
   ValidateState(state);
-  std::vector<Vec> out;out.reserve(rest_.size());for(const auto& b:bindings_)out.push_back(Point(b,state));
+  std::vector<Vec> out(rest_.size());For(unsigned(out.size()),[&](unsigned i){out[i]=Point(bindings_[i],state);});
   if(state.offsets){if(state.offsets->size()!=out.size())throw std::invalid_argument("Modular shape transfer size differs");for(unsigned i=0;i<out.size();i++){for(double x:(*state.offsets)[i])if(!std::isfinite(x))throw std::invalid_argument("Nonfinite modular shape transfer");out[i]=Add(out[i],(*state.offsets)[i]);}}
-  if(state.shaftMaterial){if(!state.hasShapeFrames||state.shaftMaterial->size()!=out.size())throw std::invalid_argument("Invalid shaft material field");const auto& motion=materialState?*materialState:state;for(unsigned i=0;i<out.size();i++)if(ShaftBinding(bindings_[i]))out[i]=MaterialPoint(motion.materialBindings?motion.materialBindings->at(i):bindings_[i],motion,(*state.shaftMaterial)[i],state.crownWeights?state.crownWeights->at(i):0);}
+  if(state.shaftMaterial){if(!state.hasShapeFrames||state.shaftMaterial->size()!=out.size())throw std::invalid_argument("Invalid shaft material field");const auto& motion=materialState?*materialState:state;
+   const PreparedMaterialSections rest(motion.shapeFrames),live(motion.frames);
+   For(unsigned(out.size()),[&](unsigned i){if(ShaftBinding(bindings_[i]))out[i]=MaterialPoint(motion.materialBindings?motion.materialBindings->at(i):bindings_[i],motion,(*state.shaftMaterial)[i],state.crownWeights?state.crownWeights->at(i):0,&rest,&live);});
+  }
   if(moveOwners)moveOwners(out);
-  for(const auto& l:lofts_){
+  For(unsigned(lofts_.size()),[&](unsigned index){const auto& l=lofts_[index];
    auto a=Direction(l.first,l.firstOwner,reference_,state),b=Direction(l.last,l.lastOwner,reference_,state);
    if(state.surfaceNormals){
     auto tangent=[&](Vec v,unsigned index){auto n=state.surfaceNormals->at(index);if(Dot(n,n)<1e-12)return v;n=Unit(n);auto projected=Sub(v,Scale(n,Dot(n,v)));return Dot(projected,projected)>1e-12?Scale(Unit(projected),std::sqrt(Dot(v,v))):v;};
@@ -318,7 +363,7 @@ class Plan {
    const auto ra=Direction(residual,l.firstOwner,reference_,state),rb=Direction(residual,l.lastOwner,reference_,state);
    const double w=l.t*l.t*l.t*(10+l.t*(-15+6*l.t));
    out[l.vertex]=Add(after,Add(Scale(ra,1-w),Scale(rb,w)));
-  }
+  });
   if(state.suspensionProfile)ShapeSuspensionSections(out,suspensionSections_,state.hangControl);
   return out;
  }
