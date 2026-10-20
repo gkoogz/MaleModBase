@@ -1463,5 +1463,27 @@
     "attachmentGatePassed": false,
     "documentation": "docs/COLLAR-ARC-RELEASE.md",
     "verification": "Scalar-law and sewn-surface tests; private adapter static preview; remaining oblique crease; no native acceptance."
+  },
+  "currentBuild": {
+    "sourceRevision": "14a6f241372b2e7b82ba621211a0ceb87ac5b764",
+    "librarySHA256": "aec10cffb4b8ac8df131a58740acc7ca49ae0dbdadbee54d474056def1368e59",
+    "recipe": "x64 MSVC Release /fp:precise, build/live-controls",
+    "sourceFiles": {
+      "src/surface/graft_runtime.cpp": "1da0d8ec7f54f0532f1bdcf21d3e4189ac8552207ce20a9166af972ef0d80f94",
+      "src/surface/root_articulation.cpp": "23db426e79339c7565ad2912becdb2fb25df02bde0d524b5706826bcfea1aeec",
+      "include/malemod/surface/graft_runtime.hpp": "3ccf24f0f5ffffd20ebe78905aa6e5646048bd05692a9a511b69b8827059a4c1",
+      "include/malemod/surface/root_articulation.hpp": "5dfa0a9d1d7521d08a2a8ddfec270b9553bfe726b3737a393db6790331caf688",
+      "include/malemod/surface/collar_arc_release.hpp": "ab580c74ce2f68f1d9629a1bc7eddd92e736c192699fb7aa5065f7dae1022557",
+      "include/malemod/surface/binding.hpp": "1d4ba94a14e2f7ffa3ea21334748f9937d31c4a37e449544497c9c2a5749da8d"
+    },
+    "tests": [
+      "root_articulation",
+      "graft_sewn_curvature",
+      "collar_support"
+    ],
+    "testsPassed": true,
+    "historicalFixtureReplaysRemainHistorical": true,
+    "nativeAcceptance": false,
+    "note": "Storage consolidation rebuild; historical library hash and fixture receipts retained. Current source and library identities are explicit; native attachment acceptance is separate."
   }
 }
