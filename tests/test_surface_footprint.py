@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from malemod_base.surface_footprint import ContactArea, transfer_chart
+from malemod_base.surface_footprint import ContactArea, transfer_chart, underside_rear_footprint
 
 
 class ContactAreaTest(unittest.TestCase):
@@ -54,6 +54,40 @@ class ContactAreaTest(unittest.TestCase):
         result,report=area.expand_rear(footprint,1,2)
         np.testing.assert_array_equal(result,footprint)
         self.assertEqual(report['rearExtension'],0)
+
+    def test_underside_recruitment_preserves_front_and_measured_area(self):
+        p,f,xy=self.surface();area=ContactArea(p,f,xy,np.ones(len(f),bool))
+        # Wide shaft-side wrap is allowed at the unchanged front. Rear support
+        # must instead lie entirely inside the supplied lower sector.
+        footprint=np.array([[0,-1.8],[3,-1.8],[3,1.8],[0,1.8]],float)
+        propose=lambda extension:underside_rear_footprint(footprint,extension,-1,.9)
+        result,report=area.expand_rear(footprint,2,5,proposal=propose)
+        self.assertAlmostEqual(report['areaRatio'],2,delta=2e-5)
+        np.testing.assert_array_equal(result[1:3],footprint[1:3])
+        self.assertTrue(np.all(abs(result[[0,3],1])<=.9+1e-12))
+        self.assertTrue(np.all(result[[0,3],0]<-1))
+        np.testing.assert_array_equal(propose(0),footprint)
+        # Check the entire clipped support, including vertices that are not
+        # footprint samples. Rim-only checks miss extrema on the source mesh.
+        minimum=area.minimum_projection(result,[0,0,0],[0,0,1],np.array([1,1,0,0],bool))
+        self.assertAlmostEqual(minimum,0,delta=1e-12)
+        self.assertIsNone(area.minimum_projection(result,[0,0,0],[0,0,1],np.zeros(len(f),bool)))
+        self.assertAlmostEqual(area.minimum_projection(result,[0,0,2],[0,0,1],np.ones(len(f),bool)),-2,delta=1e-12)
+
+    def test_underside_warp_does_not_fold_chart_or_allow_upper_sector(self):
+        from shapely import Polygon
+        theta=np.linspace(0,2*np.pi,256,endpoint=False)
+        footprint=np.c_[3+3*np.cos(theta),2.2*np.sin(theta)]
+        for extension in [.01,1,5,10]:
+            result=underside_rear_footprint(footprint,extension,-2,np.deg2rad(75))
+            self.assertTrue(Polygon(result).is_valid)
+            fixed=footprint[:,0]>=3
+            np.testing.assert_array_equal(result[fixed],footprint[fixed])
+            pelvic=result[:,0]<=-2
+            self.assertTrue(np.all(abs(result[pelvic,1])<=np.deg2rad(75)+1e-12))
+        for angle in [0,np.pi/2,np.pi,float('nan')]:
+            with self.assertRaisesRegex(ValueError,'sector'):
+                underside_rear_footprint(footprint,1,-2,angle)
 
 
 if __name__=='__main__':unittest.main()

@@ -5,6 +5,17 @@ keeping its front edge fixed and adding the area toward the pelvis. The user
 explicitly authorized including the root transition and pelvic surface. The
 previous Witcher `rearExtension=0.25` change did not meet that requested size.
 
+The subsequent correction forbids high lateral pelvic attachments. The first
+2x preview is rejected: it carried the old 125-degree shaft wrap rearward onto
+the pelvis. The current map narrows only rear recruitment into a lower sector,
+finishing the transition before the measured outer root boundary. The default
+pelvic sector is +/-75 degrees about the underside. Existing front shaft
+contact does not move. The area solve measures the new restricted footprint;
+it does not silently sacrifice the requested 2x area. A half-space check over
+every clipped pelvic contact polygon, as well as rim knots, rejects upper
+pelvic recruitment. This is a source authoring constraint; live adapter
+adoption still has to reevaluate it across control settings and motion.
+
 This implementation is shared authoring geometry and an SDK-free motion
 evaluator. It is **not yet adopted by Witcher's renderer or installed**. The
 existing native attachment gate has not been run for this topology.
@@ -61,22 +72,28 @@ This evaluator is not a collision solver or an observed game integration.
 
 ## Current evidence and remaining adoption
 
-The measured Witcher candidate covers 240.771487 source square units versus
-120.385397 before: ratio 2.00000576. All 192 fixed front samples differ by at
-most 6.4e-14 source units. The rim has 210 body, 104 ramp and 703 shaft knots.
+The current Witcher candidate covers 240.770028 source square units versus
+120.385397 before: ratio 1.99999364. All 192 fixed front samples differ by at
+most 6.4e-14 source units. The rim has 203 body, 402 ramp and 702 shaft knots.
 The retained pelvis has zero displacement and retains its five original open
 boundary loops. Private generated evidence lives under
-`D:/MaleMod/Work/witcher/rear-attachment/expanded-support`.
+`D:/MaleMod/Work/witcher/rear-attachment/expanded-support/underside-preview`.
+The entire clipped pelvic contact has a minimum underside offset of 1.274804
+source units from the root plane. No pelvic rim point is above that plane;
+the rejected preview had 100 such points, reaching 2.582004 units above it.
 
-The final offline preview moves the retained sac 2.112795 source units toward
-the pelvis, bounded from a centroid target of 3.933640. Its minimum adjacent
-facet cosine is 0.500270 and its minimum boundary-normal cosine is 0.935665.
+The offline preview moves the retained sac 2.419396 source units toward
+the pelvis, bounded from a centroid target of 4.301148. Its minimum adjacent
+facet cosine is 0.500302 and its minimum boundary-normal cosine is 0.853960.
 The full-surface audit of this preview found no new crossings;
 77 distal source crossings were identical to the untouched complete-shaft
-support. Its 95,510 triangles have no degenerate faces under the auditor's
-recorded tolerance. True side, front and oblique offline views were reviewed;
-the lateral shoulder shape remains visible and is not a native acceptance
-claim. This does not certify the glans or waive native visual review. All 53
+support. Among 113,456 triangles, eight positive-area cut/refinement slivers
+fall below the auditor's scale-relative degeneracy threshold. Their minimum
+double area is 1.2155e-8 versus the 3.8446e-8 audit threshold. Resolve these
+before claiming production topology acceptance; do not suppress the audit.
+True side, front and oblique offline views were reviewed; the former upper
+pelvic shoulders are lowered. The preserved front shaft-side contact remains.
+This does not certify the glans or waive native visual review. All 53
 installed files still match the current receipt. Later candidates must receive
 their own audit and renders.
 
@@ -106,7 +123,7 @@ runtimes as part of this authoring work.
    source crossings explicitly. Inspect true side, front and oblique renders.
 5. Native adoption and its acceptance evidence are separate steps.
 
-The focused Python suite covers 29 tests. The SDK-free modular CMake suite
+The focused Python suite covers 31 tests. The SDK-free modular CMake suite
 covers 10 tests, including the intersection auditor fixtures. General
 `tools/verify.py` still fails the existing motion-filter hash for the root
 `CMakeLists.txt`; this work has not changed that file or waived that mismatch.

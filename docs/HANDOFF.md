@@ -1,4 +1,21 @@
-## October 21 - doubled compound attachment (authoring, not installed)
+## October 21 - underside-only pelvic recruitment (authoring, not installed)
+
+The user rejected the raised lateral attachments of the first 2x preview.
+Pelvic recruitment must stay below the shaft, not climb onto the pelvis beside
+it. `underside_rear_footprint` now contracts only the rear angular extent as
+it crosses the root ramp; existing front contact stays exact. The new preview
+measures 1.99999364x physical contact area, with every covered pelvic point
+below the root's underside plane (minimum offset 1.274804 source units).
+The prior preview had 100 pelvic rim points above that plane; the new one has
+zero. Private current candidate: `expanded-support/underside-preview`.
+
+31 focused Python and 10 SDK-free C++ tests pass. No new surface crossings;
+the whole-mesh auditor flags eight tiny positive-area cut/refinement triangles
+below its scale-relative degeneracy threshold. This is not native attachment
+acceptance. No runtime adoption or installation; all 53 installed files match.
+See `docs/COMPOUND-CONTACT.md` for source evidence and remaining integration.
+
+## October 21 - doubled compound attachment (superseded authoring preview)
 
 Read `docs/COMPOUND-CONTACT.md`. The user rejected the prior 0.25 rear extension
 as too small and explicitly authorized recruitment across the root transition

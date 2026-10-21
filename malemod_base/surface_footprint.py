@@ -8,6 +8,29 @@ import numpy as np
 from .modular_anatomy import rear_extended_stations
 
 
+def underside_rear_footprint(footprint, extension, transition_end, half_angle):
+    """Recruit rear contact into a lower support sector, preserving the front.
+
+    Chart coordinates are axial/radial station and angle from the underside.
+    The caller supplies the last ramp station before body contact. Angular
+    contraction finishes there, so body recruitment cannot inherit the upper
+    shaft's side wrap. This is an injective chart deformation, not smoothing
+    of the body or a global reduction of the original attachment width.
+    """
+    p=np.asarray(footprint,float).copy()
+    if p.ndim!=2 or p.shape[1]!=2 or not np.isfinite(p).all():
+        raise ValueError('Invalid underside footprint')
+    start=float(p[:,0].min())
+    if not np.isfinite([transition_end,half_angle]).all() or transition_end>=start or not 0<half_angle<np.pi/2:
+        raise ValueError('Invalid underside recruitment sector')
+    p[:,0]=rear_extended_stations(p[:,0],extension)
+    t=np.clip((start-p[:,0])/(start-transition_end),0,1)
+    blend=t*t*t*(10+t*(-15+6*t))
+    angular_scale=min(1.,half_angle/max(float(abs(p[:,1]).max()),1e-12))
+    p[:,1]*=1-blend*(1-angular_scale)
+    return p
+
+
 def transfer_chart(points, source_points, source_faces, source_chart, tolerance=1e-7, periodic_axes=()):
     """Interpolate a chart from exact source triangles after edge refinement.
 
@@ -90,15 +113,36 @@ class ContactArea:
         points=np.einsum('ni,nij->nj',bary,self.points[faces])
         return np.sum(points*weights[:,None],axis=0)/weights.sum()
 
-    def expand_rear(self, footprint, ratio, maximum_extension, tolerance=1e-5):
+    def minimum_projection(self, footprint, origin, direction, selected_faces):
+        """Exact half-space check over clipped contact, not just rim knots."""
+        from shapely import Polygon, get_coordinates
+        selected=np.asarray(selected_faces,bool)
+        origin=np.asarray(origin,float);direction=np.asarray(direction,float)
+        if selected.shape!=(len(self.faces),) or origin.shape!=(3,) or direction.shape!=(3,) or not np.isfinite([origin,direction]).all() or np.linalg.norm(direction)<=0:
+            raise ValueError('Invalid contact half-space')
+        self.area(footprint)
+        region=Polygon(footprint);minimum=None
+        for index in self.tree.query(region,predicate='intersects'):
+            fi=self.face_ids[index]
+            if not selected[fi]:continue
+            part=self.polygons[index].intersection(region)
+            if part.area<=1e-14:continue
+            coords=get_coordinates(part);face=self.faces[fi]
+            weights=np.c_[coords,np.ones(len(coords))]@np.linalg.inv(np.vstack([self.chart[face].T,np.ones(3)])).T
+            value=float(np.min((weights@self.points[face]-origin)@direction))
+            minimum=value if minimum is None else min(minimum,value)
+        return minimum
+
+    def expand_rear(self, footprint, ratio, maximum_extension, tolerance=1e-5, proposal=None):
         """Solve a physical-area target with the original distal half exact."""
         footprint=np.asarray(footprint,float)
         if not np.isfinite([ratio,maximum_extension,tolerance]).all() or ratio<1 or maximum_extension<=0 or tolerance<=0:
             raise ValueError('Invalid contact-area target')
         baseline=self.area(footprint);target=baseline*ratio
-        def proposal(extension):
-            p=footprint.copy();p[:,0]=rear_extended_stations(p[:,0],extension)
-            return p
+        if proposal is None:
+            def proposal(extension):
+                p=footprint.copy();p[:,0]=rear_extended_stations(p[:,0],extension)
+                return p
         low=0.;high=float(maximum_extension)
         if ratio==1:
             return footprint.copy(),dict(baselineArea=baseline,targetArea=baseline,

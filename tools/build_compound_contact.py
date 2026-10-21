@@ -18,10 +18,10 @@ from assemble_modular_pelvis import load
 from build_modular_anatomy import save
 from malemod_base.modular_anatomy import SurfaceAttachment,directed_boundary,radial_attachment
 from malemod_base.modular_union import charted_trumpet_union
-from malemod_base.surface_footprint import ContactArea,transfer_chart
+from malemod_base.surface_footprint import ContactArea,transfer_chart,underside_rear_footprint
 
 
-def build(body, support, module, output, maximum_extension, ratio=2., suspension_shift=None):
+def build(body, support, module, output, maximum_extension, ratio=2., suspension_shift=None, pelvic_half_angle=75.):
     if output.exists():raise ValueError('Use a fresh compound-contact output directory')
     original,body_donors=load(body)
     target,target_donors=load(support/'body-union.npz')
@@ -68,7 +68,21 @@ def build(body, support, module, output, maximum_extension, ratio=2., suspension
     eligible=(abs(angle[target.faces]).max(1)<angular_limit)&(xy[:,:,0].min(1)>-limit)&(xy[:,:,0].max(1)<baseline[:,0].max()+1)
     eligible&=(bw[target.faces].min(1)<1-1e-12)|(normal@axis>0)
     measure=ContactArea(target.points,target.faces,chart,eligible)
-    footprint,area=measure.expand_rear(baseline,ratio,maximum_extension)
+    # Finish the sector restriction before the closest measured body boundary.
+    # Existing shaft-side/front contact stays put; only newly recruited rear
+    # contact narrows as it crosses the root ramp onto the lower pelvis.
+    outer=chart[rings[0]]
+    valid_outer=(outer[:,0]<0)&(abs(outer[:,1])<angular_limit)
+    transition_end=float(outer[valid_outer,0].max())
+    half_angle=np.deg2rad(pelvic_half_angle)
+    footprint,area=measure.expand_rear(baseline,ratio,maximum_extension,
+        proposal=lambda extension:underside_rear_footprint(baseline,extension,transition_end,half_angle))
+    area['pelvicHalfAngleDegrees']=float(pelvic_half_angle)
+    area['sectorTransitionEnd']=transition_end
+    pelvic_offset=measure.minimum_projection(footprint,root,down,(bw[target.faces].min(1)>1-1e-10))
+    if pelvic_offset is not None and pelvic_offset<=0:
+        raise ValueError('Compound contact includes pelvis above the underside half-space')
+    area['minimumPelvicContactUndersideOffset']=pelvic_offset
     before=measure.centroid(baseline);after=measure.centroid(footprint)
     shift_mode='explicit source-coordinate displacement'
     if suspension_shift is None:
@@ -99,6 +113,11 @@ def build(body, support, module, output, maximum_extension, ratio=2., suspension
     if front_error>1e-7:raise ValueError('Compound recruitment moved the front boundary')
     area['frontMaximumPositionError']=front_error
     support_weights=np.einsum('ij,ij->i',info['support_barycentric'],bw[info['support_triangles']])
+    body_knots=support_weights>1-1e-10
+    body_down=(end[body_knots]-root)@down
+    if len(body_down) and body_down.min()<=0:
+        raise ValueError('Compound attachment recruits pelvis above the underside half-space')
+    area['minimumPelvicRimUndersideOffset']=float(body_down.min()) if len(body_down) else None
     output.mkdir(parents=True)
     save(union,output/'body-union');save(neck,output/'scrotum-attached')
     np.savez_compressed(output/'neck.npz',**info)
@@ -130,4 +149,5 @@ if __name__=='__main__':
     p.add_argument('--maximum-extension',type=float,required=True)
     p.add_argument('--ratio',type=float,default=2.)
     p.add_argument('--suspension-shift',type=float,help='Explicit source-unit override; default follows the measured contact centroid')
+    p.add_argument('--pelvic-half-angle',type=float,default=75.,help='Rear pelvic sector about the underside; must be below 90 degrees')
     build(**vars(p.parse_args()))
