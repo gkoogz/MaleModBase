@@ -446,7 +446,40 @@ def periodic_boundary_field(points,values,harmonics=12):
     return basis@coef
 
 
-def trumpet_neck(source, attachment, shaft, rows=24, source_normals=None, shaft_normals=None):
+def compound_loft_orientation(points,rings,start_normals,end_normals):
+    """Intrinsic strip audit for a support wrapping across perpendicular surfaces.
+
+    Endpoint normal interpolation is not an outward field for this geometry.
+    Check actual adjacent facets and both prescribed boundary orientations.
+    Global self intersections require the separate whole-surface auditor.
+    """
+    p=np.asarray(points)[np.asarray(rings)]
+    a=p[:-1];b=np.roll(a,-1,axis=1);c=p[1:];d=np.roll(c,-1,axis=1)
+    n=np.stack([np.cross(a-b,c-b),np.cross(c-b,d-b)],axis=2)
+    area=np.linalg.norm(n,axis=3)
+    n=n/np.maximum(area[:,:,:,None],1e-30)
+    pairs=[np.sum(n[:,:,0]*n[:,:,1],axis=2),
+           np.sum(n[:,:,1]*np.roll(n[:,:,0],-1,axis=1),axis=2),
+           np.sum(n[:-1,:,1]*n[1:,:,0],axis=2)]
+    first=start_normals+np.roll(start_normals,-1,axis=0)
+    last=end_normals+np.roll(end_normals,-1,axis=0)
+    first/=np.maximum(np.linalg.norm(first,axis=1)[:,None],1e-30)
+    last/=np.maximum(np.linalg.norm(last,axis=1)[:,None],1e-30)
+    boundary=np.r_[np.sum(n[0,:,0]*first,axis=1),np.sum(n[-1,:,1]*last,axis=1)]
+    extent=np.linalg.norm(np.ptp(p.reshape(-1,3),axis=0))
+    invalid=area<=extent*extent*1e-14;collapsed=int(invalid.sum())
+    invalid[:,:,0]|=pairs[0]<=0;invalid[:,:,1]|=pairs[0]<=0
+    invalid[:,:,1]|=pairs[1]<=0;invalid[:,:,0]|=np.roll(pairs[1]<=0,1,axis=1)
+    invalid[:-1,:,1]|=pairs[2]<=0;invalid[1:,:,0]|=pairs[2]<=0
+    invalid[0,:,0]|=boundary[:len(start_normals)]<=0
+    invalid[-1,:,1]|=boundary[len(start_normals):]<=0
+    return dict(reversedFaces=int(invalid.sum()),minimumOutwardCosine=float(boundary.min()),
+                minimumAdjacentCosine=float(min(x.min() for x in pairs)),
+                collapsedFaces=collapsed,triangles=int(area.size),
+                audit='boundary orientation and intrinsic adjacent facets; global intersections separate')
+
+
+def trumpet_neck(source, attachment, shaft, rows=24, source_normals=None, shaft_normals=None, surface_conormal=False):
     """Extend the detached sack to a wider, tangent-matched shaft footprint.
 
     Original sack vertices, triangles and corner UVs are untouched. A Hermite
@@ -492,6 +525,21 @@ def trumpet_neck(source, attachment, shaft, rows=24, source_normals=None, shaft_
     last=end-end.mean(0)
     last-=np.einsum('ij,ij->i',last,end_normal)[:,None]*end_normal
     last/=np.maximum(np.linalg.norm(last,axis=1)[:,None],1e-15)
+    if surface_conormal:
+        # A compound body/root support is not a convex cylinder. Its outgoing
+        # conormal follows the actual boundary tangent, not a centroid ray
+        # that may point back into a concave part of the covered footprint.
+        ahead=np.roll(end,-1,axis=0)-end;behind=end-np.roll(end,1,axis=0)
+        tangent=ahead/np.linalg.norm(ahead,axis=1)[:,None]+behind/np.linalg.norm(behind,axis=1)[:,None]
+        conormal=np.cross(tangent,end_normal)
+        conormal/=np.maximum(np.linalg.norm(conormal,axis=1)[:,None],1e-15)
+        if np.sum(conormal*last)<0:conormal=-conormal
+        smooth=periodic_boundary_field(end,conormal,24)
+        smooth-=np.einsum('ij,ij->i',smooth,end_normal)[:,None]*end_normal
+        smooth/=np.maximum(np.linalg.norm(smooth,axis=1)[:,None],1e-15)
+        if np.min(np.sum(smooth*conormal,axis=1))<=0:
+            raise ValueError('Compound footprint has a reversing boundary conormal')
+        last=smooth
     distance=np.linalg.norm(end-start,axis=1)
     first*=distance[:,None];last*=distance[:,None]
     smooth_first=periodic_boundary_field(start,first)
@@ -502,6 +550,7 @@ def trumpet_neck(source, attachment, shaft, rows=24, source_normals=None, shaft_
     # of each ring; never repair individual columns by flipping derivatives.
     samples=.5*(1-np.cos(np.pi*np.arange(rows+1)/rows))
     scales=[1.,.8,.6,.4,.25,.15,.08,.04,.02]
+    audit_loft=compound_loft_orientation if surface_conormal else loft_orientation
     for start_scale in scales:
         for end_scale in scales:
             candidate=[]
@@ -511,10 +560,12 @@ def trumpet_neck(source, attachment, shaft, rows=24, source_normals=None, shaft_
                 q+=end_scale*(t**3-t*t)*last
                 candidate.append(q)
             candidate=np.asarray(candidate)
-            check=loft_orientation(candidate.reshape(-1,3),np.arange(candidate.shape[0]*candidate.shape[1]).reshape(candidate.shape[:2]),initial_normal,end_normal)
-            if not check['reversedFaces']:break
-        if not check['reversedFaces']:break
-    else:raise ValueError('No orientation-preserving tangent length for neck footprint')
+            check=audit_loft(candidate.reshape(-1,3),np.arange(candidate.shape[0]*candidate.shape[1]).reshape(candidate.shape[:2]),initial_normal,end_normal)
+            acceptable=not check['reversedFaces'] and (not surface_conormal or check['minimumAdjacentCosine']>=.5)
+            if acceptable:break
+        if acceptable:break
+    else:
+        raise ValueError('No orientation-preserving tangent length for neck footprint')
     first*=start_scale;smooth_first*=start_scale;last*=end_scale
     points=[source.points];faces=[source.faces];uvs=[source.corner_uv]
     donors=[source.donors];generated=[source.generated];sources=[source.source_faces]
@@ -530,6 +581,7 @@ def trumpet_neck(source, attachment, shaft, rows=24, source_normals=None, shaft_
         # No retained vertex or source normal is moved or replaced.
         local=t*max(1-t/.1,0)**3
         p+=local*(first-smooth_first)
+        if surface_conormal:p=candidate[row].copy()
         if row==rows:p=end.copy()
         ring=np.arange(offset,offset+count);offset+=count;points.append(p);rings.append(ring)
         donors.append(source.donors[loop]);generated.append(np.ones(count,bool))
@@ -542,7 +594,7 @@ def trumpet_neck(source, attachment, shaft, rows=24, source_normals=None, shaft_
         faces.append(np.array(fs));uvs.append(np.array(uv));sources.append(np.full(len(fs),-1));previous=ring
     result=Mesh(np.vstack(points),np.vstack(faces),np.concatenate(uvs),sparse.vstack(donors,format='csr'),np.concatenate(sources),np.concatenate(generated))
     result.validate()
-    audit=loft_orientation(result.points,rings,initial_normal,end_normal)
+    audit=audit_loft(result.points,rings,initial_normal,end_normal)
     if audit['reversedFaces']:
         raise ValueError(f"Neck loft reverses {audit['reversedFaces']} faces; boundary closure is insufficient")
     from .modular_shading import loft_normal_field
@@ -557,7 +609,8 @@ def trumpet_neck(source, attachment, shaft, rows=24, source_normals=None, shaft_
                           start_handle_scale=start_scale,end_handle_scale=end_scale,
                           shaft_normals=end_normal,source_normals=initial_normal,
                           outward_minimum_cosine=audit['minimumOutwardCosine'],
-                          reversed_faces=audit['reversedFaces'],retained_vertices=len(source.points))
+                          reversed_faces=audit['reversedFaces'],retained_vertices=len(source.points),
+                          **({'minimum_adjacent_cosine':audit['minimumAdjacentCosine']} if surface_conormal else {}))
 
 
 def attach_neck(source, attachment, shaft, fixed_below):

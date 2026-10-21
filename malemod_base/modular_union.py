@@ -106,7 +106,7 @@ def _refine_rim(scrotum,loop,records):
     return refined,seam,matrix
 
 
-def _join(opened,scrotum,seam,shaft_seam):
+def _join(opened,scrotum,seam,shaft_seam,closed=True):
     if opened.donors.shape[1]!=scrotum.donors.shape[1]:
         raise ValueError('Both objects must name the same explicit source donor bank')
     if np.max(np.linalg.norm(scrotum.points[seam]-opened.points[shaft_seam],axis=1))>1e-7:
@@ -125,8 +125,106 @@ def _join(opened,scrotum,seam,shaft_seam):
     used,inverse=np.unique(union.faces,return_inverse=True)
     union=Mesh(union.points[used],inverse.reshape(-1,3),union.corner_uv,union.donors[used],union.source_faces,union.generated[used],
                None if field is None else field[used])
-    union.validate(closed=True)
+    union.validate(closed=closed)
     return union
+
+
+def charted_trumpet_union(target,detached,loop,chart,footprint,eligible,rows=24,source_shift=None):
+    """Exact graft across a measured compound support, preserving old holes.
+
+    Unlike the cylindrical shaft-only cutter, this supports a chart spanning
+    a root transition and retained body. Both inputs use the same donor bank.
+    """
+    original_boundaries=directed_boundary(target)
+    protected={int(i) for boundary in original_boundaries for i in boundary}
+    opened,cut_chart,cut_donors=chart_cut(target,chart,footprint,eligible)
+    boundaries=directed_boundary(opened)
+    candidates=[boundary for boundary in boundaries if not any(int(i) in protected for i in boundary)]
+    if len(candidates)!=1 or len(boundaries)!=len(original_boundaries)+1:
+        raise ValueError('Expanded contact must preserve existing body boundaries')
+    edge=np.roll(footprint,-1,axis=0)-footprint;length2=(edge*edge).sum(1)
+    records=[]
+    for vertex in candidates[0]:
+        xy=cut_chart[vertex]
+        t=np.clip(np.einsum('ij,ij->i',xy-footprint,edge)/length2,0,1)
+        error=np.linalg.norm(xy-footprint-t[:,None]*edge,axis=1);j=int(error.argmin())
+        if error[j]>1e-7:raise ValueError('Contact cut left its measured curve')
+        if t[j]>1-1e-8:j=(j+1)%len(edge);u=0.
+        elif t[j]<1e-8:u=0.
+        else:u=float(t[j])
+        face,weights=cut_donors[int(vertex)]
+        records.append((j+u,int(vertex),j,u,face,weights))
+    records.sort(key=lambda row:row[0])
+    refined,seam,matrix=_refine_rim(detached,np.asarray(loop),records)
+    binding=SurfaceAttachment(seam,np.array([r[4] for r in records]),np.array([r[5] for r in records]))
+    baseline=refined.points.copy();translation=np.zeros(3);applied_shift=0.
+    def loft(shift=0.):
+        refined.points=baseline-shift*direction if source_shift is not None else baseline
+        return trumpet_neck(refined,binding,target,rows=rows,
+            source_normals=refined.normal_field,shaft_normals=target.normal_field,surface_conormal=True)
+    if source_shift is None:
+        neck,rim,info=loft()
+    else:
+        direction,requested_shift=source_shift;direction=np.asarray(direction,float)
+        if direction.shape!=(3,) or not np.isfinite(direction).all() or abs(np.linalg.norm(direction)-1)>1e-8 or not np.isfinite(requested_shift) or requested_shift<0:
+            raise ValueError('Invalid compound source translation')
+        # Follow the newly measured support centroid as far as the retained
+        # skin can reach without folding. This changes no contact-area samples.
+        def try_loft(shift):
+            try:return loft(shift)
+            except ValueError as error:
+                if str(error)!='No orientation-preserving tangent length for neck footprint':raise
+                return None
+        best=try_loft(requested_shift)
+        if best is not None:applied_shift=float(requested_shift)
+        else:
+            best=loft(0.);low=0.;high=float(requested_shift)
+            for _ in range(9):
+                mid=(low+high)*.5;candidate=try_loft(mid)
+                if candidate is None:high=mid
+                else:low=mid;best=candidate
+            applied_shift=low
+        neck,rim,info=best;translation=-applied_shift*direction
+    info['source_translation']=translation
+    info['geometry_binding_revision']=np.asarray(1,dtype=np.uint32)
+    # These are donors on the compound support, NOT shaft-frame assignments.
+    # Evaluate the recruited body/root surface before evaluating this rim.
+    # Keeping them explicit prevents downstream authoring from accidentally
+    # making the rear rim rigid or assigning pelvic points to shaft frames.
+    info['support_triangles']=target.faces[rim.target_faces].copy()
+    info['support_barycentric']=rim.barycentric.copy()
+    info['support_face_ids']=rim.target_faces.copy()
+    info['source_refinement_indptr']=matrix.indptr.copy()
+    info['source_refinement_indices']=matrix.indices.copy()
+    info['source_refinement_data']=matrix.data.copy()
+    info['source_refinement_shape']=np.asarray(matrix.shape)
+    incident=[set() for _ in detached.points]
+    for fi,face in enumerate(detached.faces):
+        for v in face:incident[int(v)].add(fi)
+    source_triangles=[];source_barycentric=[]
+    for vertex in info['rings'][0]:
+        donor=matrix.getrow(int(vertex));ids=donor.indices[donor.data>1e-12]
+        candidates=set.intersection(*(incident[int(v)] for v in ids))
+        if not candidates:raise ValueError('Refined source rim has no retained triangle owner')
+        face=detached.faces[min(candidates)]
+        weights=donor[:,face].toarray().ravel()
+        if abs(weights.sum()-1)>1e-10:raise ValueError('Source rim donor lost weight')
+        source_triangles.append(face);source_barycentric.append(weights)
+    info['source_triangles']=np.asarray(source_triangles)
+    info['source_barycentric']=np.asarray(source_barycentric)
+    source_order={int(v):i for i,v in enumerate(seam)}
+    ordered=[records[source_order[int(v)]] for v in info['rings'][0]]
+    target_seam=np.array([record[1] for record in ordered])
+    info['source_curve_parameter']=np.asarray([record[0] for record in ordered])
+    union=_join(opened,neck,rim.vertices,target_seam,closed=not original_boundaries)
+    final_boundaries=directed_boundary(union)
+    if len(final_boundaries)!=len(original_boundaries):raise ValueError('Expanded graft changed body boundaries')
+    report=union.validate(closed=not original_boundaries)
+    report.update(originalBoundaryLoops=len(original_boundaries),finalBoundaryLoops=len(final_boundaries),
+        neckReversedFaces=int(info['reversed_faces']),neckMinimumOutwardCosine=float(info['outward_minimum_cosine']),
+        neckMinimumAdjacentCosine=float(info['minimum_adjacent_cosine']),
+        retainedTargetDisplacement=0.,sharedSeamVertices=len(target_seam),appliedSourceShift=applied_shift)
+    return union,neck,rim,info,report
 
 
 def visible_union(shaft,scrotum,binding,shaft_rings,root,center):

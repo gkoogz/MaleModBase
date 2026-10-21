@@ -1,3 +1,14 @@
+## October 21 - doubled compound attachment (authoring, not installed)
+
+Read `docs/COMPOUND-CONTACT.md`. The user rejected the prior 0.25 rear extension
+as too small and explicitly authorized recruitment across the root transition
+onto the pelvic surface. Shared authoring now measures 2.00000576x actual contact
+area with the front fixed, and exports exact body/root/shaft endpoint donors.
+An SDK-free compound graft evaluator is tested; Witcher's current renderer has
+not adopted its support-cut/graft phase. Do not install this offline result or
+reuse the prior runtime's attachment-gate evidence. Preserve the accepted game
+and rollback. All private work is under Work/witcher/rear-attachment/expanded-support.
+
 ## October 20 - storage consolidation
 
 Latest root-motion correction: `docs/ROOT-PARTICIPATION.md`. Two geometry
