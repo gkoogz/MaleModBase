@@ -1,5 +1,26 @@
 # Rear-only compound contact
 
+Latest preview: the user explicitly clarified that the side attachments should
+move inward, rather than translating the whole sac backward. The selected
+offline parameters are `ratio=1.7`, `pelvic_half_angle=45`,
+`maximum_extension=11.25`. Pelvic contact width decreases from 13.010835 to
+8.529515 source units (34.44%); the 192 front samples remain exact within
+6.4e-14. All pelvic contact stays below the root plane, with minimum offset
+2.476910. The retained body remains unchanged. Private current output is
+`expanded-support/inward-preview`; the adapter-owned parameter record is
+`characters/geralt-compound-contact-preview.json`.
+
+This preview covers 204.653567 source square units, ratio 1.69998664. It does
+not meet the earlier 2x numerical target; the narrower-area tradeoff was
+disclosed and must not be represented as an approved requirement change.
+Its local orientation check has zero reversed faces and minimum adjacent
+cosine 0.500950. The global audit reports the same 77 original distal crossings,
+no new crossing, 13 tiny positive-area slivers below its degeneracy threshold,
+and one tolerance-level touch. Whole-mesh cleanup and native adoption remain
+required before installation. True front/side/oblique offline views were
+reviewed; all 53 installed files match. The evidence below describes the prior
+75-degree, 2x preview and is retained for comparison only.
+
 The current request is to double the **surface area covered by the attachment**,
 keeping its front edge fixed and adding the area toward the pelvis. The user
 explicitly authorized including the root transition and pelvic surface. The

@@ -1,4 +1,25 @@
-## October 21 - underside-only pelvic recruitment (authoring, not installed)
+## October 21 - side attachments pulled inward (offline preview)
+
+The user rejected the remaining lateral flare and explicitly clarified: pull
+the side attachments inward toward the shaft underside, not move the whole sac
+back. Current preview uses a +/-45-degree rear sector (previously 75), with the
+front fixed. Actual pelvic contact width is 8.529515 versus 13.010835 source
+units: 34.44% narrower. Minimum underside offset increases from 1.274804 to
+2.476910. No retained body vertex moves. Source geometry uses the unchanged
+Base d2ea483 authoring implementation; rejected hard-width and alternate-chart
+experiments were removed from maintained code.
+
+Private output: `Work/witcher/rear-attachment/expanded-support/inward-preview`.
+The Witcher `characters/geralt-compound-contact-preview.json` records parameters.
+This narrower preview measures 1.69998664x original contact area, not the earlier
+requested 2x. That numerical tradeoff was disclosed, not approved as a replacement
+requirement. Front, side and oblique offline comparisons were reviewed. Local
+fold checks pass and no new crossings were found; the global audit flags 13 tiny
+positive-area slivers and one tolerance-level touch. Do not claim production
+topology or native attachment acceptance. All 53 installed files remain exact;
+the compound runtime integration is still outstanding.
+
+## October 21 - underside-only pelvic recruitment (superseded preview)
 
 The user rejected the raised lateral attachments of the first 2x preview.
 Pelvic recruitment must stay below the shaft, not climb onto the pelvis beside
