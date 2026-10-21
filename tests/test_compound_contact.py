@@ -37,6 +37,13 @@ class CompoundContactTest(unittest.TestCase):
         self.assertEqual(report['neckReversedFaces'],0)
         np.testing.assert_allclose(np.einsum('ij,ijk->ik',info['source_barycentric'],source.points[info['source_triangles']]),neck.points[info['rings'][0]],atol=1e-10)
         np.testing.assert_allclose(np.einsum('ij,ijk->ik',info['support_barycentric'],target.points[info['support_triangles']]),neck.points[info['rings'][-1]],atol=1e-10)
+        # The native assembly map is authored through the weld/compaction,
+        # rather than recovered later by proximity (which aliases close skin).
+        np.testing.assert_allclose(result.points[info['union_support_vertices']],
+            np.einsum('ij,ijk->ik',info['union_support_barycentric'],
+                      target.points[info['union_support_triangles']]),atol=1e-10)
+        used=info['union_neck_vertices']>=0
+        np.testing.assert_allclose(result.points[info['union_neck_vertices'][used]],neck.points[used],atol=1e-10)
         _,moved,_,contract,bounded=charted_trumpet_union(target,source,loop,xy,footprint,np.ones(len(f),bool),source_shift=(np.array([1.,0,0]),3.))
         self.assertGreater(bounded['appliedSourceShift'],0)
         self.assertLessEqual(bounded['appliedSourceShift'],3)

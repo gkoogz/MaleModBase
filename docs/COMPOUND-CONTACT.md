@@ -1,5 +1,43 @@
 # Rear-only compound contact
 
+## October 21 - selected preview cleanup and native cut preparation
+
+The user requested "clean up and install" after the inward preview, authorizing
+the selected 45-degree, 1.7x geometry. Do not ask for that tradeoff again.
+`build_compound_contact.py` now removes sub-tolerance cut slivers with bounded
+topology-only edge contractions. It protects original samples, resource
+boundaries and the fixed front knots, enforces the link condition and rejects
+normal reversals. Surviving positions and their source donors do not move;
+each affected face retains its own UV chart and source-face lineage.
+
+The selected cleaned output is private `expanded-support/clean-bound`.
+Ten contractions remove all 13 flagged sliver triangles and the extra contact
+touch; 126,708 triangles remain. Maximum removed edge is 0.000123199235 source
+units. The whole-surface audit has zero degenerate faces, zero extra touches,
+zero new crossings and the same 77 untouched distal source crossings. Front,
+side and oblique offline renders were reviewed. All 53 installed files match.
+
+Authoring contract revision 2 retains exact support and neck vertex maps through
+welding/compaction, plus a separate display topology map. Deformation samples
+are not deleted when a microscopic display edge is collapsed. Consumers must
+honor that distinction; the current Witcher renderer does not yet consume it.
+
+`ConvexSurfaceCut::CutSimple` adds explicit compound charts and concave openings.
+It merges convex ear partitions before clipping. The SDK-free full-source
+diagnostic (`evaluate_compound_cut`) cuts the actual support in 2.26 seconds,
+retaining exact source donors to 1.15e-11 and one 1,613-vertex opening. This is
+not the game engine. Its separate *open support* audit reports 168 tiny faces
+and the existing 77 crossings/two touches. It is not an accepted replacement
+for the cleaned closed assembly. The live graft/refinement phase, display
+cleanup after welding, adapter material/control adoption and native attachment
+matrix remain required. No installation or adoption-pin change occurred.
+
+33 focused Python tests and 10 SDK-free C++ tests pass. The newly added cleanup
+tests cover topology, exact retained samples, UV aliases and protected-front
+rejection; the compound tests verify the authored assembly ownership maps.
+Wolverine/other spokes can adopt the same versioned cut/graft/cleanup contracts
+after independent runtime validation; their installed runtimes are unchanged.
+
 Latest preview: the user explicitly clarified that the side attachments should
 move inward, rather than translating the whole sac backward. The selected
 offline parameters are `ratio=1.7`, `pelvic_half_angle=45`,
@@ -11,8 +49,8 @@ offline parameters are `ratio=1.7`, `pelvic_half_angle=45`,
 `characters/geralt-compound-contact-preview.json`.
 
 This preview covers 204.653567 source square units, ratio 1.69998664. It does
-not meet the earlier 2x numerical target; the narrower-area tradeoff was
-disclosed and must not be represented as an approved requirement change.
+not meet the earlier 2x numerical target; the user subsequently requested
+cleanup and installation of this selected narrower preview (see above).
 Its local orientation check has zero reversed faces and minimum adjacent
 cosine 0.500950. The global audit reports the same 77 original distal crossings,
 no new crossing, 13 tiny positive-area slivers below its degeneracy threshold,

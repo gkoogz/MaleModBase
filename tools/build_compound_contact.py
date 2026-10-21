@@ -19,6 +19,7 @@ from build_modular_anatomy import save
 from malemod_base.modular_anatomy import SurfaceAttachment,directed_boundary,radial_attachment
 from malemod_base.modular_union import charted_trumpet_union
 from malemod_base.surface_footprint import ContactArea,transfer_chart,underside_rear_footprint
+from malemod_base.surface_cleanup import collapse_cut_slivers
 
 
 def build(body, support, module, output, maximum_extension, ratio=2., suspension_shift=None, pelvic_half_angle=75.):
@@ -112,6 +113,18 @@ def build(body, support, module, output, maximum_extension, ratio=2., suspension
         front_error=max(front_error,float(np.linalg.norm(end[knot]-baseline_points[index])))
     if front_error>1e-7:raise ValueError('Compound recruitment moved the front boundary')
     area['frontMaximumPositionError']=front_error
+    # Cut intersections arbitrarily close to existing vertices must not leave
+    # microscopic display triangles. Keep the deformation graph intact, retain
+    # exact front samples and export the display-only topology map alongside it.
+    fixed_columns=np.flatnonzero(np.isin(np.round(info['source_curve_parameter'],8),fixed))
+    protected=info['union_neck_vertices'][info['rings'][-1,fixed_columns]]
+    union,cleanup=collapse_cut_slivers(union,protected)
+    info['display_vertex_map']=cleanup['vertex_map']
+    info['display_face_origins']=cleanup['face_origins']
+    info['geometry_binding_revision']=np.asarray(2,dtype=np.uint32)
+    report.update(union.validate(),cleanupCollapsedEdges=len(cleanup['collapsed_edges']),
+        cleanupMaximumRemovedEdge=float(cleanup['maximum_removed_edge']),
+        cleanupSurvivingVertexDisplacement=0.)
     support_weights=np.einsum('ij,ij->i',info['support_barycentric'],bw[info['support_triangles']])
     body_knots=support_weights>1-1e-10
     body_down=(end[body_knots]-root)@down
@@ -121,12 +134,13 @@ def build(body, support, module, output, maximum_extension, ratio=2., suspension
     output.mkdir(parents=True)
     save(union,output/'body-union');save(neck,output/'scrotum-attached')
     np.savez_compressed(output/'neck.npz',**info)
+    np.savez_compressed(output/'cleanup.npz',**cleanup)
     np.savez_compressed(output/'attachment.npz',vertices=binding.vertices,target_faces=binding.target_faces,barycentric=binding.barycentric)
     np.savez_compressed(output/'contact.npz',chart=chart,eligible=eligible,baseline=baseline,footprint=footprint,source_loop=source_loop)
     inputs=[body,body_donors,support/'body-union.npz',target_donors,support/'pelvic-ramp.npz',
             module/'shaft.npz',shaft_donors,module/'scrotum-detached.npz',source_donors,
             module/'scrotum-attached.npz',module/'attachment.npz',module/'manifest.json']
-    report.update(schema='malemod.compound-contact-authoring/1',area=area,
+    report.update(schema='malemod.compound-contact-authoring/2',area=area,
         supportBindingError=error,suspensionShift=float(suspension_shift),
         requestedSuspensionShift=requested_shift,suspensionShiftMode=shift_mode,contactCentroidBefore=before.tolist(),contactCentroidAfter=after.tolist(),
         supportKnots=dict(body=int(sum(support_weights>1-1e-10)),

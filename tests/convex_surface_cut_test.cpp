@@ -18,6 +18,29 @@ int main(){try{
   for(unsigned i=0;i<p.size();i++)Check(cut.points[i]==p[i],"Original surface moved");
  }
  {
+  // The rear footprint narrows into a concave waist in a compound chart.
+  // Cutting its convex hull would remove surrounding tissue incorrectly.
+  std::vector<std::array<double,2>> footprint{{-1,-1},{1,-1},{.3,0},{1,1},{-1,1},{-.3,0}};
+  std::vector<std::array<double,2>> chart;for(auto v:p)chart.push_back({v[0],v[1]});
+  auto curved=p;curved[2][2]=.7;
+  ConvexSurfaceCut compound(curved,f,{true,true},chart,1e-9);
+  auto cut=compound.CutSimple(footprint);
+  double chartArea=0;
+  for(const auto& face:cut.faces){
+   std::array<PresentationPoint,3> xy{};
+   for(unsigned j=0;j<3;j++){
+    auto c=face.corners[j];PresentationPoint expected{};
+    for(unsigned k=0;k<3;k++){auto id=f[face.parent][k];expected=Add(expected,Scale(curved[id],c.donor[k]));xy[j]=Add(xy[j],Scale(p[id],c.donor[k]));}
+    Check(Dot(Sub(expected,cut.points[c.vertex]),Sub(expected,cut.points[c.vertex]))<1e-18,"Compound cut lost exact support donor");
+   }
+   double area=Cross(Sub(xy[1],xy[0]),Sub(xy[2],xy[0]))[2]*.5;
+   Check(area>0,"Compound cut reversed a chart triangle");chartArea+=area;
+  }
+  Check(std::abs(chartArea-13.4)<1e-8,"Concave compound cut removed the convex hull");
+  Check(cut.opening.size()>=footprint.size(),"Compound cut lost rim knots");
+  for(unsigned i=0;i<curved.size();i++)Check(cut.points[i]==curved[i],"Compound cut moved retained support");
+ }
+ {
   std::vector<PresentationPoint> points;std::vector<std::array<unsigned,3>> faces;
   for(unsigned layer=0;layer<3;layer++)for(unsigned y=0;y<12;y++)for(unsigned x=0;x<12;x++){
    unsigned n=unsigned(points.size());double z=layer==2?0.:double(layer);

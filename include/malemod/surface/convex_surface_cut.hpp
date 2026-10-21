@@ -22,6 +22,7 @@ class ConvexSurfaceCut {
  using Vec=PresentationPoint;using UV=std::array<double,2>;
  struct Vertex {Vec p{},b{};UV uv{};};
  std::vector<Vec> rest_;std::vector<std::array<unsigned,3>> faces_;
+ std::vector<UV> coordinates_;
  std::vector<bool> eligible_;Vec origin_;std::array<Vec,2> chart_;double tolerance_;
  static double Cross2(UV a,UV b){return a[0]*b[1]-a[1]*b[0];}
  static UV Sub2(UV a,UV b){return {a[0]-b[0],a[1]-b[1]};}
@@ -35,6 +36,69 @@ class ConvexSurfaceCut {
   for(auto p:rest_)for(double x:p)if(!std::isfinite(x))throw std::invalid_argument("Nonfinite surface cut point");
   for(auto f:faces_)for(auto v:f)if(v>=rest_.size())throw std::invalid_argument("Surface cut face leaves domain");
  }
+ // Explicit charts let one cut span independently owned curved surfaces.
+ ConvexSurfaceCut(std::vector<Vec> rest,std::vector<std::array<unsigned,3>> faces,
+     std::vector<bool> eligible,std::vector<UV> coordinates,double tolerance)
+ :ConvexSurfaceCut(std::move(rest),std::move(faces),std::move(eligible),Vec{},{{{1,0,0},{0,1,0}}},tolerance){
+  if(coordinates.size()!=rest_.size())throw std::invalid_argument("Surface chart dimensions differ");
+  for(auto uv:coordinates)for(auto x:uv)if(!std::isfinite(x))throw std::invalid_argument("Nonfinite surface chart");
+  coordinates_=std::move(coordinates);
+ }
+ SurfaceCut CutSimple(std::vector<UV> polygon)const{
+  if(polygon.size()<3||polygon.size()>4096)throw std::invalid_argument("Invalid opening polygon");
+  double area=0;for(unsigned i=0;i<polygon.size();i++){
+   for(double x:polygon[i])if(!std::isfinite(x))throw std::invalid_argument("Nonfinite opening polygon");
+   auto d=Sub2(polygon[(i+1)%polygon.size()],polygon[i]);
+   if(std::hypot(d[0],d[1])<=tolerance_)throw std::invalid_argument("Duplicate opening knot");
+   area+=Cross2(polygon[i],polygon[(i+1)%polygon.size()]);
+  }
+  if(std::abs(area)<=tolerance_*tolerance_)throw std::invalid_argument("Degenerate opening polygon");
+  if(area<0)std::reverse(polygon.begin(),polygon.end());
+  std::vector<unsigned> active;for(unsigned i=0;i<polygon.size();i++)active.push_back(i);
+  std::vector<std::vector<unsigned>> partition;
+  while(active.size()>3){bool removed=false;
+   for(unsigned i=0;i<active.size();i++){
+    const unsigned a=active[(i+active.size()-1)%active.size()],b=active[i],c=active[(i+1)%active.size()];
+    if(Cross2(Sub2(polygon[b],polygon[a]),Sub2(polygon[c],polygon[a]))<=tolerance_*tolerance_)continue;
+    bool contains=false;
+    for(auto j:active)if(j!=a&&j!=b&&j!=c){
+     const auto p=polygon[j];
+     if(Cross2(Sub2(polygon[b],polygon[a]),Sub2(p,polygon[a]))>=-tolerance_*tolerance_&&
+        Cross2(Sub2(polygon[c],polygon[b]),Sub2(p,polygon[b]))>=-tolerance_*tolerance_&&
+        Cross2(Sub2(polygon[a],polygon[c]),Sub2(p,polygon[c]))>=-tolerance_*tolerance_){contains=true;break;}
+    }
+    if(contains)continue;
+    partition.push_back({a,b,c});active.erase(active.begin()+i);removed=true;break;
+   }
+   if(!removed)throw std::invalid_argument("Opening is not a triangulable simple polygon");
+  }
+  partition.push_back(active);
+  // Merge adjacent ears before subtraction. Cutting hundreds of narrow ear
+  // triangles separately creates unnecessary interior partitions and makes a
+  // live control rebuild dramatically more expensive than the actual rim.
+  bool merged=true;
+  while(merged){merged=false;
+   using Edge=std::pair<unsigned,unsigned>;
+   std::map<Edge,std::pair<unsigned,unsigned>> owner;
+   for(unsigned i=0;i<partition.size()&&!merged;i++)for(unsigned j=0;j<partition[i].size()&&!merged;j++){
+    const auto a=partition[i][j],b=partition[i][(j+1)%partition[i].size()];
+    auto other=owner.find({b,a});
+    if(other!=owner.end()){
+     unsigned oi=other->second.first,oj=other->second.second;
+     const auto& p=partition[i];const auto& q=partition[oi];std::vector<unsigned> join;
+     for(unsigned k=0;k<p.size();k++)join.push_back(p[(j+1+k)%p.size()]);
+     for(unsigned k=0;k+2<q.size();k++)join.push_back(q[(oj+2+k)%q.size()]);
+     bool convex=true;
+     for(unsigned k=0;k<join.size();k++)if(Cross2(Sub2(polygon[join[(k+1)%join.size()]],polygon[join[k]]),Sub2(polygon[join[(k+2)%join.size()]],polygon[join[(k+1)%join.size()]])) < -tolerance_*tolerance_){convex=false;break;}
+     if(convex){partition[oi]=std::move(join);partition.erase(partition.begin()+i);merged=true;break;}
+    }
+    owner[{a,b}]={i,j};
+   }
+  }
+  std::vector<std::vector<UV>> regions;
+  for(const auto& piece:partition){std::vector<UV> p;for(auto id:piece)p.push_back(polygon[id]);regions.push_back(std::move(p));}
+  return CutRegions(regions);
+ }
  SurfaceCut Cut(const std::vector<UV>& polygon)const{
   if(polygon.size()<3||polygon.size()>4096)throw std::invalid_argument("Invalid opening polygon");
   for(unsigned i=0;i<polygon.size();i++){
@@ -43,6 +107,10 @@ class ConvexSurfaceCut {
    if(std::hypot(edge[0],edge[1])<=tolerance_)throw std::invalid_argument("Duplicate opening knot");
    for(auto p:polygon)if(Cross2(edge,Sub2(p,polygon[i])) < -tolerance_)throw std::invalid_argument("Opening must be convex and counterclockwise");
   }
+  return CutRegions({polygon});
+ }
+ private:
+ SurfaceCut CutRegions(const std::vector<std::vector<UV>>& regions)const{
   SurfaceCut result;result.points=rest_;
   // Shared original edges get one intersection ID. Interior corners of a
   // clipped triangle are shared by all pieces of that same triangle.
@@ -77,12 +145,20 @@ class ConvexSurfaceCut {
     for(unsigned k=0;k<3;k++)if(std::abs(v.b[k])<1e-10)edgeVertices[std::minmax(f[(k+1)%3],f[(k+2)%3])].push_back(v.p);
    }
   };
-  UV low=polygon[0],high=polygon[0];for(auto p:polygon)for(unsigned k=0;k<2;k++){low[k]=(std::min)(low[k],p[k]);high[k]=(std::max)(high[k],p[k]);}
+  UV low=regions[0][0],high=low;for(const auto& polygon:regions)for(auto p:polygon)for(unsigned k=0;k<2;k++){low[k]=(std::min)(low[k],p[k]);high[k]=(std::max)(high[k],p[k]);}
   for(unsigned parent=0;parent<faces_.size();parent++){
-   std::vector<Vertex> remaining;for(unsigned k=0;k<3;k++){Vertex v;v.p=rest_[faces_[parent][k]];v.b[k]=1;v.uv=Project(v.p);remaining.push_back(v);}
+   std::vector<Vertex> remaining;for(unsigned k=0;k<3;k++){Vertex v;v.p=rest_[faces_[parent][k]];v.b[k]=1;v.uv=coordinates_.empty()?Project(v.p):coordinates_[faces_[parent][k]];remaining.push_back(v);}
    bool disjoint=false;for(unsigned k=0;k<2;k++)disjoint|=(remaining[0].uv[k]<low[k]&&remaining[1].uv[k]<low[k]&&remaining[2].uv[k]<low[k])||(remaining[0].uv[k]>high[k]&&remaining[1].uv[k]>high[k]&&remaining[2].uv[k]>high[k]);
    if(!eligible_[parent]||disjoint){emit(remaining,parent);continue;}
-   for(unsigned plane=0;plane<polygon.size()&&!remaining.empty();plane++){
+   std::vector<std::vector<Vertex>> fragments{remaining};
+   for(const auto& polygon:regions){
+    UV regionLow=polygon[0],regionHigh=polygon[0];for(auto p:polygon)for(unsigned k=0;k<2;k++){regionLow[k]=(std::min)(regionLow[k],p[k]);regionHigh[k]=(std::max)(regionHigh[k],p[k]);}
+    std::vector<std::vector<Vertex>> next;
+    for(auto fragment:fragments){
+     bool apart=false;for(unsigned k=0;k<2;k++){bool below=true,above=true;for(auto v:fragment){below&=v.uv[k]<regionLow[k];above&=v.uv[k]>regionHigh[k];}apart|=below||above;}
+     if(apart){next.push_back(std::move(fragment));continue;}
+     remaining=std::move(fragment);
+     for(unsigned plane=0;plane<polygon.size()&&!remaining.empty();plane++){
     const auto start=polygon[plane],edge=Sub2(polygon[(plane+1)%polygon.size()],start);
     std::vector<Vertex> inside,outside;
     for(unsigned k=0;k<remaining.size();k++){
@@ -92,8 +168,12 @@ class ConvexSurfaceCut {
      if(da>=0)inside.push_back(a);if(da<=0)outside.push_back(a);
      if((da<0&&db>0)||(da>0&&db<0)){auto v=Mix(a,b,da/(da-db));inside.push_back(v);outside.push_back(v);}
     }
-    emit(outside,parent);remaining=std::move(inside);
+      if(outside.size()>=3)next.push_back(std::move(outside));remaining=std::move(inside);
+     }
+    }
+    fragments=std::move(next);if(fragments.empty())break;
    }
+   for(const auto& fragment:fragments)emit(fragment,parent);
   }
   // Difference clipping emits several convex pieces per source face. Later
   // planes can subdivide their common edges; conform all pieces AND their

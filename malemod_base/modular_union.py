@@ -106,7 +106,7 @@ def _refine_rim(scrotum,loop,records):
     return refined,seam,matrix
 
 
-def _join(opened,scrotum,seam,shaft_seam,closed=True):
+def _join(opened,scrotum,seam,shaft_seam,closed=True,return_mapping=False):
     if opened.donors.shape[1]!=scrotum.donors.shape[1]:
         raise ValueError('Both objects must name the same explicit source donor bank')
     if np.max(np.linalg.norm(scrotum.points[seam]-opened.points[shaft_seam],axis=1))>1e-7:
@@ -126,6 +126,12 @@ def _join(opened,scrotum,seam,shaft_seam,closed=True):
     union=Mesh(union.points[used],inverse.reshape(-1,3),union.corner_uv,union.donors[used],union.source_faces,union.generated[used],
                None if field is None else field[used])
     union.validate(closed=closed)
+    if return_mapping:
+        # Keep exact ownership through the shared-rim weld and compaction.
+        # Native consumers must not recover this with a nearest-point search.
+        compact=np.full(len(opened.points)+len(scrotum.points),-1,dtype=np.int64)
+        compact[used]=np.arange(len(used))
+        return union,compact[:len(opened.points)],compact[mapping]
     return union
 
 
@@ -216,7 +222,20 @@ def charted_trumpet_union(target,detached,loop,chart,footprint,eligible,rows=24,
     ordered=[records[source_order[int(v)]] for v in info['rings'][0]]
     target_seam=np.array([record[1] for record in ordered])
     info['source_curve_parameter']=np.asarray([record[0] for record in ordered])
-    union=_join(opened,neck,rim.vertices,target_seam,closed=not original_boundaries)
+    union,support_vertices,neck_vertices=_join(opened,neck,rim.vertices,target_seam,
+        closed=not original_boundaries,return_mapping=True)
+    support_ids=np.flatnonzero(support_vertices>=0)
+    parents=np.full(len(opened.points),-1,dtype=np.int64)
+    weights=np.zeros((len(opened.points),3))
+    for fi,face in enumerate(target.faces):
+        for corner,vertex in enumerate(face):
+            parents[vertex]=fi;weights[vertex]=np.eye(3)[corner]
+    for vertex,(fi,w) in cut_donors.items():parents[vertex]=fi;weights[vertex]=w
+    if np.any(parents[support_ids]<0):raise ValueError('Retained compound support lost its donor')
+    info['union_support_vertices']=support_vertices[support_ids]
+    info['union_support_triangles']=target.faces[parents[support_ids]]
+    info['union_support_barycentric']=weights[support_ids]
+    info['union_neck_vertices']=neck_vertices
     final_boundaries=directed_boundary(union)
     if len(final_boundaries)!=len(original_boundaries):raise ValueError('Expanded graft changed body boundaries')
     report=union.validate(closed=not original_boundaries)
