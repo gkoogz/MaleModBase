@@ -175,6 +175,24 @@ int main(){try{
    }
   }
  }
+ {
+  // Rest construction must not inherit displacement residuals measured in a
+  // different live frame. The suspended material is immutable across motion.
+  Binding skin;skin.influences={Influence{13,.35,{1,2,3}},Influence{14,.65,{2,-1,4}}};
+  for(double angle:{-.9,0.,.9})for(double scale:{.25,1.,3.}){
+   State live;live.hasShapeFrames=true;live.materialScale={1.1,1.2,1.2};live.sectionRadius=2.4;
+   live.frames[13].origin={4,-3,2};live.frames[14].origin={-2,3,-1};
+   live.frames[13].basis={Vec{std::cos(angle),std::sin(angle),0},Vec{-std::sin(angle),std::cos(angle),0},Vec{0,0,1}};
+   live.scales[13]=live.scales[14]={scale,scale,scale};
+   auto material=std::make_shared<std::vector<Vec>>(1,Vec{2,3,4});live.shaftMaterial=material;
+   auto offsets=std::make_shared<std::vector<Vec>>(1,Sub(Vec{7,8,9},malemod::surface::modular::Point(skin,live)));live.offsets=offsets;
+   auto rest=RestMaterialState({skin},live);auto reconstructed=Add(malemod::surface::modular::Point(skin,rest),rest.offsets->front());
+   Check(Dot(Sub(reconstructed,material->front()),Sub(reconstructed,material->front()))<1e-24,"Live offsets contaminated immutable rest material");
+   auto stillLive=Add(malemod::surface::modular::Point(skin,live),live.offsets->front());
+   Check(Dot(Sub(stillLive,Vec{7,8,9}),Sub(stillLive,Vec{7,8,9}))<1e-24,"Rest reconstruction changed live motion");
+   Check(rest.materialScale==Vec{1,1,1}&&std::abs(rest.sectionRadius-2)<1e-12,"Rest state retained transient strain");
+  }
+ }
  bool rejected=false;try{moved.scales[1][1]=0;plan.Evaluate(moved);}catch(const std::invalid_argument&){rejected=true;}Check(rejected,"Collapsed morphology accepted");
  std::cout<<"PASS independent shaft/lobe ownership, live connecting skin, exact rest and invalid-scale rejection\n";
  return 0;

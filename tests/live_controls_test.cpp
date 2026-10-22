@@ -36,5 +36,27 @@ int main(){try{
  std::vector<LiveControlBinding> bindings(3,shaft);
  DeformLiveControlLofts(identity,bindings,{{2,0,1,.5}},{{{4,0,0},{4,0,0}}},before,after);
  check(error(after[2],before[2])<1e-8,"Identity erased loft residual detail");
+ // A connector can start on another loft, with an affine edge subdivision
+ // between them. Independent point morphing must not bend that shared edge.
+ before={{4,0,80},{8,2,80},{6,1,81},{7,1.5,80.5},{8,0,84},{7.5,.75,82.25}};
+ bindings.assign(before.size(),shaft);bindings[2]={0,1,0,0,false};
+ std::vector<LiveControlLoft> staged{{2,0,1,.5},{5,3,4,.5}};
+ std::vector<LiveControlTangents> handles{{{4,2,0},{4,2,0}},{{1,-1.5,3.5},{1,-1.5,3.5}}};
+ after=before;for(unsigned i=0;i<after.size();i++)after[i]=width.Point(before[i],bindings[i]);
+ const auto untouched=after[5];malemod::TaskArena arena(2);
+ DeformLiveControlLofts(width,bindings,staged,handles,before,after,&arena,0,1);
+ check(after[5]==untouched,"First loft stage wrote a later stage");
+ DeformLiveControlDonors({{3,{2,1,0},{.5,.5,0}}},before,after);
+ check(error(after[3],Scale(Add(after[2],after[1]),.5))<1e-12,"Dependent split left the updated edge");
+ const auto endpoint=after[3];
+ DeformLiveControlLofts(width,bindings,staged,handles,before,after,&arena,1);
+ check(after[3]==endpoint,"Second loft stage moved its shared endpoint");
+ auto serial=before;for(unsigned i=0;i<serial.size();i++)serial[i]=width.Point(before[i],bindings[i]);
+ DeformLiveControlLofts(width,bindings,{staged[0]},{handles[0]},before,serial);
+ DeformLiveControlDonors({{3,{2,1,0},{.5,.5,0}}},before,serial);
+ DeformLiveControlLofts(width,bindings,{staged[1]},{handles[1]},before,serial);
+ for(unsigned i=0;i<serial.size();i++)check(error(after[i],serial[i])<1e-12,"Staged parallel result differs from dependency order");
+ bool rejected=false;try{DeformLiveControlLofts(width,bindings,staged,handles,before,after,&arena,2,1);}catch(const std::invalid_argument&){rejected=true;}
+ check(rejected,"Invalid loft stage range was accepted");
  std::cout<<"PASS live controls: root pivot, protected boundary, dilation, normal differentials, source-edge donors and loft detail\n";
 }catch(const std::exception& e){std::cerr<<e.what()<<'\n';return 1;}}

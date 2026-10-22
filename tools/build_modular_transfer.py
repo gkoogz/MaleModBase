@@ -53,8 +53,9 @@ def build(assembly,runtime,output):
     retained=np.unique(mesh['faces'][mesh['source_faces']>=body_faces]);rows=[]
     axial=axial_shape_weights(Path(__file__).resolve().parents[1])
     if len(axial)!=donors.shape[1]-body_count:raise ValueError('Crown field differs from source topology')
+    owner_frames=owners['frames'];owner_weights=owners['weights']
     for i in retained:
-        ids=owners['frames'][i];weights=owners['weights'][i]
+        ids=owner_frames[i];weights=owner_weights[i]
         active=ids[weights>1e-10]
         if np.all((active>=1)&(active<=12)):kind=1
         elif np.all(active>=13):kind=2

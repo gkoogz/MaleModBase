@@ -55,6 +55,43 @@ class CompoundGraftPlan {
   return Add(Add(Scale(a,2*t*t*t-3*t*t+1),Scale(b,-2*t*t*t+3*t*t)),
              Add(Scale(first,t*t*t-2*t*t+t),Scale(last,t*t*t-t*t)));
  }
+ void PreserveStripOrientation(std::vector<Vec>& points)const{
+  if(count_<3)return;
+  std::vector<Vec> ruled(points.size());
+  for(unsigned row=0;row<parameters_.size();row++)for(unsigned j=0;j<count_;j++)
+   ruled[row*count_+j]=Add(Scale(points[j],1-parameters_[row]),Scale(points[points.size()-count_+j],parameters_[row]));
+  auto triangles=[&](auto&& visit){for(unsigned row=0;row+1<parameters_.size();row++)for(unsigned j=0;j<count_;j++){
+   unsigned k=(j+1)%count_,a=row*count_+j,b=row*count_+k,c=(row+1)*count_+j,d=(row+1)*count_+k;
+   visit(b,a,c);visit(b,c,d);
+  }};
+  auto normal=[](const std::vector<Vec>& p,unsigned a,unsigned b,unsigned c){return Cross(Sub(p[b],p[a]),Sub(p[c],p[a]));};
+  // Keep both endpoint positions and endpoint derivatives. Only the interior
+  // curvature is limited when a transported Hermite strip reverses its local
+  // parameterization. A compact quintic boundary field has zero derivative
+  // at each rim; it is not a smoothing pass over either retained surface.
+  auto base=ruled;std::vector<Vec> delta(points.size());
+  for(unsigned row=0;row<parameters_.size();row++){
+   double t=parameters_[row],u=(std::min)(1.,(std::min)(t,1-t)/.2),w=1-u*u*u*(10+u*(-15+6*u));
+   for(unsigned j=0;j<count_;j++){unsigned i=row*count_+j;base[i]=Add(ruled[i],Scale(Sub(points[i],ruled[i]),w));delta[i]=Sub(points[i],base[i]);}
+  }
+  bool valid=true;
+  triangles([&](unsigned a,unsigned b,unsigned c){auto n=normal(base,a,b,c);const double nn=Dot(n,n);if(nn>1e-28&&Dot(normal(points,a,b,c),n)<.02*nn)valid=false;});
+  if(valid)return;
+  double fraction=1;
+  triangles([&](unsigned i,unsigned j,unsigned k){
+   auto n=normal(base,i,j,k);double nn=Dot(n,n);if(nn<=1e-28)return;
+   auto a=Sub(base[j],base[i]),b=Sub(base[k],base[i]),da=Sub(delta[j],delta[i]),db=Sub(delta[k],delta[i]);
+   double c=Dot(Cross(a,b),n)-.02*nn;
+   if(c<0)throw std::runtime_error("Compound boundary strip reverses its parameterization");
+   double linear=Dot(Add(Cross(da,b),Cross(a,db)),n),quadratic=Dot(Cross(da,db),n);
+   auto root=[&](double x){if(x>=0&&x<fraction)fraction=x;};
+   double scale=(std::max)({std::abs(c),std::abs(linear),std::abs(quadratic),1e-300});
+   if(std::abs(quadratic)<1e-14*scale){if(linear<0)root(-c/linear);}
+   else{double discriminant=linear*linear-4*quadratic*c;if(discriminant>0){double q=-.5*(linear+std::copysign(std::sqrt(discriminant),linear));root(q/quadratic);if(q!=0)root(c/q);}}
+  });
+  fraction*=.98;
+  for(unsigned i=0;i<points.size();i++)points[i]=Add(base[i],Scale(delta[i],fraction));
+ }
 public:
  CompoundGraftPlan(const std::vector<Vec>& source,const std::vector<Vec>& support,
      const std::vector<CompoundSurfaceDonor>& first,const std::vector<CompoundSurfaceDonor>& last,
@@ -75,19 +112,41 @@ public:
    }
   }
  }
- std::vector<Vec> Evaluate(const std::vector<Vec>& source,const std::vector<Vec>& support)const{
+ std::vector<Vec> Evaluate(const std::vector<Vec>& source,const std::vector<Vec>& support,std::vector<Vec>* hermiteTrace=nullptr,
+     std::vector<Vec>* firstHandles=nullptr,std::vector<Vec>* lastHandles=nullptr)const{
   std::vector<Vec> out(reference_.size());
+  if(hermiteTrace)hermiteTrace->resize(reference_.size());
+  if(firstHandles)firstHandles->resize(count_);if(lastHandles)lastHandles->resize(count_);
   for(unsigned j=0;j<count_;j++){
    const auto a=first_[j].Point(source),b=last_[j].Point(support);
-   const auto first=first_[j].Direction(firstTangent_[j],source),last=last_[j].Direction(lastTangent_[j],support);
+   auto first=first_[j].Direction(firstTangent_[j],source),last=last_[j].Direction(lastTangent_[j],support);
+   // A surface differential's parameter density is not the length of skin
+   // spanning between surfaces. Preserve its tangent direction (and hence
+   // the join's tangent plane), but scale each authored handle by the actual
+   // endpoint separation. Otherwise a compressed gap can receive a handle
+   // several times longer than the gap and fold back through the retained skin.
+   auto span=Sub(b,a),referenceSpan=Sub(end_[j],start_[j]);
+   double distance=std::sqrt(Dot(span,span)),referenceDistance=std::sqrt(Dot(referenceSpan,referenceSpan));
+   if(referenceDistance<=1e-14||distance<=1e-14)throw std::runtime_error("Compound connection span collapsed");
+   auto matchLength=[&](Vec direction,Vec authored){double length=std::sqrt(Dot(direction,direction)),restLength=std::sqrt(Dot(authored,authored));if(restLength==0)return Vec{};if(length<=1e-14)throw std::runtime_error("Compound tangent collapsed");return Scale(direction,(std::min)(1.,restLength/referenceDistance*distance/length));};
+   first=matchLength(first,firstTangent_[j]);last=matchLength(last,lastTangent_[j]);
+   if(firstHandles)(*firstHandles)[j]=first;if(lastHandles)(*lastHandles)[j]=last;
    out[j]=a;out[out.size()-count_+j]=b;
+   if(hermiteTrace){(*hermiteTrace)[j]=a;(*hermiteTrace)[out.size()-count_+j]=b;}
    for(unsigned row=1;row+1<parameters_.size();row++){
     const double t=parameters_[row],w=t*t*t*(10+t*(-15+6*t));
     const auto residual=Sub(reference_[row*count_+j],Hermite(start_[j],end_[j],firstTangent_[j],lastTangent_[j],t));
+    if(hermiteTrace)(*hermiteTrace)[row*count_+j]=Hermite(a,b,first,last,t);
     out[row*count_+j]=Add(Hermite(a,b,first,last,t),Add(Scale(first_[j].Direction(residual,source),1-w),Scale(last_[j].Direction(residual,support),w)));
    }
   }
+  PreserveStripOrientation(out);
   return out;
+ }
+ CompoundGraftPlan Rebased(const std::vector<Vec>& source,const std::vector<Vec>& support)const{
+  std::vector<Vec> first,last;auto patch=Evaluate(source,support,nullptr,&first,&last);
+  std::vector<CompoundSurfaceDonor> starts,ends;for(const auto& endpoint:first_)starts.push_back(endpoint.donor);for(const auto& endpoint:last_)ends.push_back(endpoint.donor);
+  return CompoundGraftPlan(source,support,starts,ends,std::move(first),std::move(last),parameters_,std::move(patch));
  }
 };
 }

@@ -14,13 +14,15 @@ struct DynamicMount {
  std::vector<Vec> body,normals,section;std::vector<std::array<unsigned,3>> faces;
  std::vector<unsigned> moduleFaces,inner;Vec origin;PresentationBasis basis;
  std::string geometryHash;
+ std::vector<unsigned char> compoundData;
  explicit DynamicMount(const std::filesystem::path& path){
   if(std::filesystem::file_size(path)>64*1024*1024)throw std::invalid_argument("Oversize dynamic mount");std::ifstream in(path,std::ios::binary);
   auto read=[&](void* p,std::size_t n){if(!in.read(static_cast<char*>(p),n))throw std::invalid_argument("Truncated dynamic mount");};auto text=[&](unsigned n){std::string s(n,'\0');read(s.data(),n);return s;};auto u=[&]{unsigned n;read(&n,4);return n;};
-  if(text(8)!="MMMDYN01")throw std::invalid_argument("Dynamic mount version differs");geometryHash=text(64);
+  const auto version=text(8);if(version!="MMMDYN01"&&version!="MMMDYN02")throw std::invalid_argument("Dynamic mount version differs");geometryHash=text(64);
   auto nv=u(),nf=u(),nr=u(),nm=u(),ni=u();if(!nv||nv>500000||!nf||nf>1000000||nr<8||nr>4096||!nm||nm>1000000||ni<8||ni>50000)throw std::invalid_argument("Invalid dynamic mount counts");
   body.resize(nv);normals.resize(nv);faces.resize(nf);section.resize(nr);moduleFaces.resize(nm);inner.resize(ni);
   read(body.data(),nv*24);read(normals.data(),nv*24);read(faces.data(),nf*12);read(section.data(),nr*24);read(&origin,24);read(&basis,72);read(moduleFaces.data(),nm*4);read(inner.data(),ni*4);
+  if(version=="MMMDYN02"){auto n=u();if(!n||n>32*1024*1024)throw std::invalid_argument("Invalid compound payload size");compoundData.resize(n);read(compoundData.data(),n);}
   if(in.peek()!=EOF)throw std::invalid_argument("Trailing dynamic mount bytes");
   for(const auto* values:{&body,&normals,&section})for(auto p:*values)for(double x:p)if(!std::isfinite(x))throw std::invalid_argument("Nonfinite dynamic source");
   Quaternion(basis);for(auto f:faces)for(auto i:f)if(i>=nv)throw std::invalid_argument("Dynamic body index leaves original surface");
@@ -57,7 +59,7 @@ struct DynamicMount {
   auto points=plan.Evaluate(moved,[&](auto& points){for(unsigned i=0;i<points.size();i++)if(mount.shaftWeight[i]>0&&!(state.shaftMaterial&&ShaftBinding(asset.bindings[i])))points[i]=Add(points[i],Scale(state.frames[1].basis[0],clearance(i)));plan.TranslateSuspension(points,suspension);},state.shaftMaterial?&materialState:nullptr);
   if(relief)asset.Relieve(points,state);return points;
  }
- std::vector<Vec> Repose(const DynamicResult& cached,const Asset& asset,const Plan& plan,const State& state,std::vector<Vec>* beforeRelief=nullptr,std::vector<Vec>* detailNormals=nullptr,std::array<double,4>* timings=nullptr)const{
+ std::vector<Vec> Repose(const DynamicResult& cached,const Asset& asset,const Plan& plan,const State& state,std::vector<Vec>* beforeRelief=nullptr,std::vector<Vec>* detailNormals=nullptr,std::array<double,4>* timings=nullptr,std::vector<Vec>* posedAsset=nullptr)const{
   const auto begin=std::chrono::steady_clock::now();
   auto source=Pose(asset,plan,state,cached.fitTranslation,cached.advances,cached.suspensionTranslation,cached.clearedBindings,cached.materialRoot,false);auto points=cached.surface.points;
   const auto posed=std::chrono::steady_clock::now();
@@ -83,6 +85,7 @@ struct DynamicMount {
     points[id]=p;}
   }
   if(timings){const auto end=std::chrono::steady_clock::now();auto ms=[](auto a,auto b){return std::chrono::duration<double,std::milli>(b-a).count();};*timings={ms(begin,posed),ms(posed,relieved),ms(relieved,mapped),ms(mapped,end)};}
+  if(posedAsset)*posedAsset=std::move(source);
   return points;
  }
  DynamicResult Evaluate(const Asset& asset,const Plan& plan,const State& state)const{

@@ -1,3 +1,54 @@
+## October 22 - rest-pose contamination and control dependencies repaired; candidate not accepted
+
+Continue the educational technical repair; the earlier blanket refusal was
+incorrectly broad. The user's selected 45-degree / 1.7x inward preview remains
+authorized for installation once its replacement passes the attachment gate.
+
+Two causal defects were reproduced and repaired:
+
+- `RestMaterialState` rebases suspended displacement offsets onto the immutable
+  material when constructing the rest mesh. Previously the adapter substituted
+  rest frames but retained live-frame offsets. In the maximum-size angle-15,
+  Hang-95 capture, this stretched boundary edges up to 45.65x reference; the
+  immutable material and corrected boundary both remain within 2.454x. Live
+  physics continues to use the original incoming state. Rest rebasing runs
+  only during topology construction, not every presentation frame.
+- Compound live controls now evaluate original lofts, their affine cut/refined
+  donors, then the dependent connector. One width step previously failed at
+  prepared triangle 630. Width, hang and angle one-step replay checks now pass
+  at captured angles 15 and 20 with unchanged native index buffers. Angle 1
+  still fails at a connector triangle; do not report the whole slider matrix
+  as passing.
+
+The compound graft also has an experimental interior orientation limiter and
+rebase onto the corrected control-sized rest patch. The latest exact angle-15
+replay (`expanded-support/runtime-compound-v2/rebased-current-*`) has 177,086
+faces. Rest: zero degenerate faces and zero connector intersections. Motion:
+16 degenerate faces and 56 connector self-crossings remain. Both have 101
+intersections confined to the distant retained support. These are separate
+from the connector result, not a whole-mesh pass. The earlier native candidate
+also had unacceptable material stripes. No installation, pin update, native
+visual acceptance or campaign pass is claimed for this source checkpoint.
+
+All 12 modular CTest fixtures pass, including rest/live isolation, dependency
+ordering, rest identity and strip orientation/rebase. `tools/verify.py` still
+fails its pre-existing `Motion/calibration provenance differs: CMakeLists.txt`
+check. Do not rewrite the provenance to disguise that failure.
+
+Rejected motion experiments (removed from maintained code): local affine skin
+blending, averaged endpoint differentials, and global rigid-boundary blending.
+They left crossings or regressed a live control. Do not reintroduce them as
+accepted fixes. Original broad tangent smoothing was not the principal cause:
+the mixed rest/live state was. Remaining motion folds need a separate repair.
+
+The shared code is SDK-free; Witcher consumes it directly in its diagnostic
+build. Wolverine and other spokes should adopt the rest-state and dependency
+contracts through a tested Base pin, without changing their installed runtimes.
+All private sessions from the previous iteration are closed; the last receipt
+is `sealed-session-20261021-210706`, with audio and 24 saves restored. This turn
+used replay only. Preserve the accepted installation and its exact active
+rollback `Work/witcher/previews/preview-1792541051157297300/game`.
+
 ## October 21 - inward preview cleaned; installation still pending native adoption
 
 The user explicitly requested cleanup and installation of the displayed 45-degree,

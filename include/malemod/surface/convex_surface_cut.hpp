@@ -116,7 +116,22 @@ class ConvexSurfaceCut {
   // clipped triangle are shared by all pieces of that same triangle.
   using Key=std::array<std::int64_t,3>;std::map<Key,std::vector<unsigned>> inserted;
   auto cell=[&](Vec p){Key key;for(unsigned k=0;k<3;k++)key[k]=std::int64_t(std::floor(p[k]/tolerance_));return key;};
-  for(unsigned i=0;i<rest_.size();i++)inserted[cell(rest_[i])].push_back(i);
+  // A compound support may carry hidden deformation samples. They are not
+  // surface vertices and must never win a spatial weld against a visible edge.
+  std::vector<bool> referenced(rest_.size());for(auto f:faces_)for(auto id:f)referenced[id]=true;
+  for(unsigned i=0;i<rest_.size();i++)if(referenced[i])inserted[cell(rest_[i])].push_back(i);
+  std::vector<std::pair<unsigned,Vec>> insertedOwners;
+  auto compatible=[&](const Vertex& v,unsigned parent,unsigned id){
+   const auto f=faces_[parent];
+   if(id<rest_.size())return std::find(f.begin(),f.end(),id)!=f.end();
+   const auto& owner=insertedOwners.at(id-rest_.size());if(owner.first==parent)return true;
+   const auto other=faces_[owner.first];unsigned common=0;
+   for(unsigned k=0;k<3;k++){
+    bool shared=std::find(other.begin(),other.end(),f[k])!=other.end();common+=shared;
+    if(!shared&&std::abs(v.b[k])>1e-8)return false;
+    if(std::find(f.begin(),f.end(),other[k])==f.end()&&std::abs(owner.second[k])>1e-8)return false;
+   }return common>=2;
+  };
   auto index=[&](const Vertex& v,unsigned parent){
    auto f=faces_[parent];for(unsigned k=0;k<3;k++)if(v.b[k]>1-1e-12)return f[k];
    const auto key=cell(v.p);
@@ -125,17 +140,29 @@ class ConvexSurfaceCut {
    // tolerance instead of rounding a barycentric fraction into different bins.
    for(int x=-1;x<=1;x++)for(int y=-1;y<=1;y++)for(int z=-1;z<=1;z++){
     auto found=inserted.find({key[0]+x,key[1]+y,key[2]+z});if(found==inserted.end())continue;
-    for(auto id:found->second){auto d=Sub(v.p,result.points[id]);if(Dot(d,d)<=tolerance_*tolerance_)return id;}
+    for(auto id:found->second){auto d=Sub(v.p,result.points[id]);if(Dot(d,d)<=tolerance_*tolerance_&&compatible(v,parent,id))return id;}
    }
-   unsigned id=unsigned(result.points.size());result.points.push_back(v.p);inserted[key].push_back(id);return id;
+   unsigned id=unsigned(result.points.size());result.points.push_back(v.p);insertedOwners.push_back({parent,v.b});inserted[key].push_back(id);return id;
   };
   struct Piece {unsigned parent;std::vector<Vertex> vertices;};std::vector<Piece> pieces;
   std::map<unsigned,std::vector<Vertex>> parentVertices;
   std::map<std::pair<unsigned,unsigned>,std::vector<Vec>> edgeVertices;
+  auto hasArea=[&](const std::vector<Vertex>& poly){
+   if(poly.size()<3)return false;
+   // Coincident clipping planes can leave a line with several distinct knots.
+   // Roundoff in world-space cross products does not make it a polygon. Test
+   // its width against the same tolerance used to identify intersection knots
+   // before conformance adds yet more collinear vertices and a fan center.
+   unsigned end=1;double longest=0;
+   for(unsigned k=1;k<poly.size();k++){auto d=Sub(poly[k].p,poly[0].p);double l=Dot(d,d);if(l>longest){longest=l;end=k;}}
+   if(longest<=tolerance_*tolerance_)return false;
+   const auto axis=Sub(poly[end].p,poly[0].p);double width2=0;
+   for(const auto& v:poly){auto n=Cross(axis,Sub(v.p,poly[0].p));width2=(std::max)(width2,Dot(n,n)/longest);}
+   if(width2<=tolerance_*tolerance_)return false;
+   return true;
+  };
   auto emit=[&](const std::vector<Vertex>& poly,unsigned parent){
-   if(poly.size()<3)return;
-   Vec area{};for(unsigned k=1;k+1<poly.size();k++)area=Add(area,Cross(Sub(poly[k].p,poly[0].p),Sub(poly[k+1].p,poly[0].p)));
-   if(Dot(area,area)<=tolerance_*tolerance_*tolerance_*tolerance_)return;
+   if(!hasArea(poly))return;
    pieces.push_back({parent,poly});auto f=faces_[parent];
    for(const auto& v:poly){
     // Original corners cannot introduce an interior split on their own edges.
@@ -168,7 +195,7 @@ class ConvexSurfaceCut {
      if(da>=0)inside.push_back(a);if(da<=0)outside.push_back(a);
      if((da<0&&db>0)||(da>0&&db<0)){auto v=Mix(a,b,da/(da-db));inside.push_back(v);outside.push_back(v);}
     }
-      if(outside.size()>=3)next.push_back(std::move(outside));remaining=std::move(inside);
+      if(hasArea(outside))next.push_back(std::move(outside));if(hasArea(inside))remaining=std::move(inside);else remaining.clear();
      }
     }
     fragments=std::move(next);if(fragments.empty())break;
@@ -195,20 +222,35 @@ class ConvexSurfaceCut {
     for(double t:knots)boundary.push_back(Mix(a,b,t));
    }
    if(boundary.size()<3)continue;
-   Vertex center{};for(const auto& v:boundary){center.p=Add(center.p,v.p);center.b=Add(center.b,v.b);}center.p=Scale(center.p,1./boundary.size());center.b=Scale(center.b,1./boundary.size());center.uv=Project(center.p);
-   // Preserve untouched original triangles byte for byte. Otherwise an
-   // interior fan preserves every collinear edge donor without zero-area ears.
-   const unsigned count=boundary.size()==3?1:unsigned(boundary.size());
-   for(unsigned k=0;k<count;k++){
-    std::array<Vertex,3> tri=boundary.size()==3?std::array<Vertex,3>{boundary[0],boundary[1],boundary[2]}:std::array<Vertex,3>{center,boundary[k],boundary[(k+1)%boundary.size()]};
-    SurfaceCutFace face;face.parent=parent;for(unsigned j=0;j<3;j++)face.corners[j]={index(tri[j],parent),tri[j].b};
-    if(face.corners[0].vertex==face.corners[1].vertex||face.corners[0].vertex==face.corners[2].vertex||face.corners[1].vertex==face.corners[2].vertex)continue;
-    result.faces.push_back(face);
+   // Convex clipping pieces need no extra center vertex. A center fan makes
+   // thin strips even thinner and can strand long near-zero-area ears. Choose
+   // the triangulation with the largest minimum triangle area while preserving
+   // every conformed boundary knot and its exact source-triangle donor.
+   const unsigned count=unsigned(boundary.size());
+   if(count>512)throw std::runtime_error("Clipped polygon exceeds triangulation bound");
+   std::vector<double> quality(count*count,-1);std::vector<unsigned> split(count*count,~0u);
+   for(unsigned i=0;i+1<count;i++)quality[i*count+i+1]=std::numeric_limits<double>::infinity();
+   for(unsigned gap=2;gap<count;gap++)for(unsigned i=0;i+gap<count;i++){
+    unsigned j=i+gap;
+    for(unsigned k=i+1;k<j;k++){
+     auto n=Cross(Sub(boundary[k].p,boundary[i].p),Sub(boundary[j].p,boundary[i].p));
+     double score=(std::min)({Dot(n,n),quality[i*count+k],quality[k*count+j]});
+     if(score>quality[i*count+j]){quality[i*count+j]=score;split[i*count+j]=k;}
+    }
+   }
+   std::vector<std::pair<unsigned,unsigned>> pending{{0,count-1}};
+   while(!pending.empty()){
+    auto [i,j]=pending.back();pending.pop_back();if(j<=i+1)continue;
+    unsigned k=split[i*count+j];if(k==~0u)throw std::runtime_error("Clipped polygon cannot be triangulated");
+    std::array<Vertex,3> tri{boundary[i],boundary[k],boundary[j]};
+    SurfaceCutFace face;face.parent=parent;for(unsigned d=0;d<3;d++)face.corners[d]={index(tri[d],parent),tri[d].b};
+    if(face.corners[0].vertex!=face.corners[1].vertex&&face.corners[0].vertex!=face.corners[2].vertex&&face.corners[1].vertex!=face.corners[2].vertex)result.faces.push_back(face);
+    pending.push_back({i,k});pending.push_back({k,j});
    }
   }
   // Distinguish the new hole from every pre-existing open resource boundary.
   using Edge=std::pair<unsigned,unsigned>;std::map<Edge,std::pair<unsigned,Edge>> edges;
-  for(const auto& f:result.faces)for(unsigned k=0;k<3;k++){Edge directed{f.corners[k].vertex,f.corners[(k+1)%3].vertex},key=std::minmax(directed.first,directed.second);auto& e=edges[key];e.first++;e.second=directed;if(e.first>2)throw std::runtime_error("Cut generated nonmanifold edge");}
+  for(const auto& f:result.faces)for(unsigned k=0;k<3;k++){Edge directed{f.corners[k].vertex,f.corners[(k+1)%3].vertex},key=std::minmax(directed.first,directed.second);auto& e=edges[key];e.first++;e.second=directed;if(e.first>2){std::string detail="Cut generated nonmanifold edge "+std::to_string(key.first)+","+std::to_string(key.second)+" parents";for(const auto& face:result.faces){bool a=false,b=false;for(auto c:face.corners){a|=c.vertex==key.first;b|=c.vertex==key.second;}if(a&&b){detail+=" "+std::to_string(face.parent)+"[";for(auto c:face.corners){detail+=std::to_string(c.vertex)+"(";for(auto w:c.donor)detail+=std::to_string(w)+",";detail+=")";}detail+="]";}}auto p=result.points[key.first],q=result.points[key.second];detail+=" length="+std::to_string(std::sqrt(Dot(Sub(p,q),Sub(p,q))));throw std::runtime_error(detail);}}
   std::map<Edge,unsigned> original;
   for(auto f:faces_)for(unsigned k=0;k<3;k++)original[std::minmax(f[k],f[(k+1)%3])]++;
   std::vector<Edge> originalBoundary;for(auto e:original)if(e.second==1)originalBoundary.push_back(e.first);
@@ -219,7 +261,7 @@ class ConvexSurfaceCut {
    }return false;
   };
   std::map<unsigned,unsigned> next;
-  for(const auto& item:edges)if(item.second.first==1){if(originalBoundaryChild(item.first))continue;const auto e=item.second.second;if(!next.emplace(e.first,e.second).second)throw std::runtime_error("Opening branches at a vertex");}
+  for(const auto& item:edges)if(item.second.first==1){if(originalBoundaryChild(item.first))continue;const auto e=item.second.second;if(!next.emplace(e.first,e.second).second){auto p=result.points[e.first];throw std::runtime_error("Opening branches at vertex "+std::to_string(e.first)+" at "+std::to_string(p[0])+","+std::to_string(p[1])+","+std::to_string(p[2])+" to "+std::to_string(e.second)+" and "+std::to_string(next[e.first]));}}
   if(next.empty())throw std::runtime_error("Opening did not intersect the eligible surface");
   unsigned start=next.begin()->first,current=start;
   do{result.opening.push_back(current);auto found=next.find(current);if(found==next.end())throw std::runtime_error("Opening meets an existing boundary");current=found->second;if(result.opening.size()>next.size())throw std::runtime_error("Opening does not close");}while(current!=start);

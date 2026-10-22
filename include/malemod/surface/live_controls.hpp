@@ -130,8 +130,11 @@ inline void DeformLiveControlDonors(const std::vector<LiveControlDonor>& donors,
 inline void DeformLiveControlLofts(const LiveControlDeformation& morph,
  const std::vector<LiveControlBinding>& bindings,const std::vector<LiveControlLoft>& lofts,
  const std::vector<LiveControlTangents>& tangents,
- const std::vector<PresentationPoint>& before,std::vector<PresentationPoint>& after,TaskArena* arena=nullptr){
+ const std::vector<PresentationPoint>& before,std::vector<PresentationPoint>& after,TaskArena* arena=nullptr,
+ unsigned first=0,unsigned end=~0u){
  if(lofts.size()!=tangents.size()||before.size()!=after.size()||before.size()!=bindings.size())throw std::invalid_argument("Live loft layout differs");
+ if(end==~0u)end=unsigned(lofts.size());
+ if(first>end||end>lofts.size())throw std::invalid_argument("Live loft range differs");
  auto hermite=[](PresentationPoint a,PresentationPoint b,PresentationPoint u,PresentationPoint v,double t){
   const double t2=t*t,t3=t2*t;return Add(Add(Scale(a,2*t3-3*t2+1),Scale(b,-2*t3+3*t2)),Add(Scale(u,t3-2*t2+t),Scale(v,t3-t2)));
  };
@@ -139,8 +142,8 @@ inline void DeformLiveControlLofts(const LiveControlDeformation& morph,
  auto jacobian=[&](unsigned i)->const PresentationBasis&{auto& value=jacobians.at(i);if(!value)value=morph.Differential(before[i],bindings[i]);return *value;};
  if(arena){
   std::vector<bool> generated(before.size());
-  for(const auto& l:lofts){if(generated.at(l.vertex))throw std::invalid_argument("Duplicate live loft vertex");generated[l.vertex]=true;}
-  for(const auto& l:lofts){
+  for(unsigned i=first;i<end;i++){const auto& l=lofts[i];if(generated.at(l.vertex))throw std::invalid_argument("Duplicate live loft vertex");generated[l.vertex]=true;}
+  for(unsigned i=first;i<end;i++){const auto& l=lofts[i];
    if(generated.at(l.start)||generated.at(l.end))throw std::invalid_argument("Parallel live loft endpoints must be independent");
    jacobian(l.start);jacobian(l.end);
   }
@@ -152,6 +155,6 @@ inline void DeformLiveControlLofts(const LiveControlDeformation& morph,
   const auto transported=Add(Scale(Rotate(a,residual),1-ControlSmooth(l.t)),Scale(Rotate(b,residual),ControlSmooth(l.t)));
   after.at(l.vertex)=Add(hermite(after[l.start],after[l.end],Rotate(a,tangent.first),Rotate(b,tangent.last),l.t),transported);
  };
- if(arena)arena->For(unsigned(lofts.size()),evaluate);else for(unsigned i=0;i<lofts.size();i++)evaluate(i);
+ if(arena)arena->For(end-first,[&](unsigned i){evaluate(first+i);});else for(unsigned i=first;i<end;i++)evaluate(i);
 }
 }

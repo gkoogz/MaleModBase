@@ -289,6 +289,26 @@ inline Vec MaterialPoint(const Binding& binding,const State& state,Vec p,double 
  if(crown>0){const auto& r=state.shapeFrames[12];const auto& f=state.frames[12];auto rigid=Add(f.origin,Rotate(f.basis,Components(Unrotate(r.basis,Sub(p,r.origin)),state.materialScale)));result=Add(Scale(result,1-crown),Scale(rigid,crown));}
  return result;
 }
+inline State RestMaterialState(const std::vector<Binding>& bindings,const State& live){
+ State rest=live;if(live.hasShapeFrames)rest.frames=live.shapeFrames;
+ if(!live.shaftMaterial)return rest;
+ if(!live.hasShapeFrames||live.shaftMaterial->size()!=bindings.size())throw std::invalid_argument("Rest material topology differs");
+ for(unsigned i=1;i<=12;i++)for(unsigned k=0;k<3;k++)rest.scales[i][k]/=live.materialScale[k];
+ rest.sectionRadius/=live.materialScale[1];rest.materialScale={1,1,1};
+ // Offsets are relative to the frames used when they were calculated. Live
+ // suspended offsets cannot be reused after replacing those frames with the
+ // rest frames: that mixes two poses and can fold an otherwise smooth rim.
+ // The immutable material contains the complete retained surface, not just
+ // the shaft. Rebase suspended offsets against that exact shape. Live physics
+ // continues to use the untouched incoming state during Repose.
+ auto offsets=std::make_shared<std::vector<Vec>>(bindings.size());
+ if(live.offsets){if(live.offsets->size()!=bindings.size())throw std::invalid_argument("Rest offset topology differs");*offsets=*live.offsets;}
+ for(unsigned i=0;i<bindings.size();i++){
+  bool suspended=true;for(auto owner:bindings[i].influences)if(owner.weight>0&&owner.frame<13)suspended=false;
+  if(suspended)(*offsets)[i]=Sub(live.shaftMaterial->at(i),Point(bindings[i],rest));
+ }
+ rest.offsets=std::move(offsets);return rest;
+}
 class Plan {
  std::shared_ptr<TaskArena> arena_;
  std::vector<Vec> rest_;std::vector<Binding> bindings_;std::vector<Loft> lofts_;State reference_;
