@@ -257,10 +257,12 @@ struct CompoundContactCache {
   for(auto s:supportSamples)points[s.vertex]=SamplePoint(support,supportFaces.at(s.parent),s.donor);
   for(auto s:sourceSamples)points[s.vertex]=SamplePoint(source,sourceFaces.at(s.parent),s.donor);
   auto sourceFrames=SourceDifferentialPoints(source);auto patch=graft->Evaluate(sourceFrames,DifferentialPoints(support));
-  const double applied=suspensionHang>0?ShapeSuspensionStrip(patch,parameters,unsigned(rings.front().size()),1,suspensionHang,1,suspensionForward):1;
-  if(profileFraction)*profileFraction=applied;
   std::vector<Vec> entryNormals;for(unsigned j=0;j<rings.front().size();j++)entryNormals.push_back(Cross(Sub(sourceFrames[3*j+1],sourceFrames[3*j]),Sub(sourceFrames[3*j+2],sourceFrames[3*j])));
   graft->ConformSourceEntry(patch,parameters,entryNormals);
+  // Fit the source tangent before the reversible Hang profile. A conformity
+  // pass afterwards would silently alter the profile's authored fraction.
+  const double applied=suspensionHang>0?ShapeSuspensionStrip(patch,parameters,unsigned(rings.front().size()),1,suspensionHang,1,suspensionForward):1;
+  if(profileFraction)*profileFraction=applied;
   for(unsigned row=0;row<rings.size();row++)for(unsigned j=0;j<rings[row].size();j++)points[rings[row][j]]=patch[row*rings[row].size()+j];
   return points;
  }
@@ -389,9 +391,9 @@ public:
   auto sourceFrame=out.SourceDifferentialPoints(source),supportFrame=out.DifferentialPoints(support);
   out.graft=std::make_unique<CompoundGraftPlan>(out.graft->Rebased(sourceFrame,supportFrame));
   auto livePatch=out.graft->Evaluate(sourceFrame,supportFrame);
-  if(suspensionHang>0)ShapeSuspensionStrip(livePatch,r.parameters,unsigned(knots.size()),1,suspensionHang,1,suspensionForward);
   std::vector<Vec> entryNormals;for(unsigned j=0;j<knots.size();j++)entryNormals.push_back(Cross(Sub(sourceFrame[3*j+1],sourceFrame[3*j]),Sub(sourceFrame[3*j+2],sourceFrame[3*j])));
   out.graft->ConformSourceEntry(livePatch,r.parameters,entryNormals);
+  if(suspensionHang>0)ShapeSuspensionStrip(livePatch,r.parameters,unsigned(knots.size()),1,suspensionHang,1,suspensionForward);
   for(unsigned row=1;row+1<out.rings.size();row++)for(unsigned j=0;j<knots.size();j++){out.rings[row][j]=unsigned(out.rest.size());out.rest.push_back(livePatch[row*knots.size()+j]);}
   // Match the directed source rim: its retained surface runs in sourceLoop
   // order, so the connecting strip traverses that seam in the opposite order.

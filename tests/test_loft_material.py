@@ -1,9 +1,66 @@
 import unittest
+from unittest.mock import patch
 import numpy as np
-from malemod_base.loft_material import chart, bake_patch, periodic_samples, surface_density, retained_skin_tile, surface_uv_gradients, sampled_uv_directions
+import malemod_base.loft_material as loft_material
+from malemod_base.loft_material import chart, bake_patch, periodic_samples, surface_density, retained_skin_tile, surface_uv_gradients, sampled_uv_directions, sample_skin_detail, blend_skin_fields
 
 
 class LoftMaterialTest(unittest.TestCase):
+    def test_reflected_normal_detail_follows_reflected_height_gradient(self):
+        x,y=np.meshgrid(np.linspace(-1,1,17),np.linspace(-1,1,17))
+        height=x*x+2*y*y
+        slopes=np.stack([2*x,4*y],axis=2)
+        captured=[]
+        original_sample=loft_material.sample
+        def capture(source,uv):
+            if not captured:captured.append(source.copy())
+            return original_sample(source,uv)
+        with patch.object(loft_material,'sample',side_effect=capture):
+            result=sample_skin_detail(slopes,129,65,[4,2],slopes=True)
+        mirrored=np.concatenate([height,height[:,::-1]],axis=1)
+        mirrored=np.concatenate([mirrored,mirrored[::-1]],axis=0)
+        dy,dx=np.gradient(mirrored,2/16)
+        interior=np.ones(mirrored.shape,bool)
+        interior[[0,16,17,33],:]=False;interior[:,[0,16,17,33]]=False
+        np.testing.assert_allclose(captured[0][interior],np.stack([dx,dy],axis=2)[interior],atol=1e-12)
+        self.assertLessEqual(np.linalg.norm(result,axis=2).max(),np.linalg.norm(slopes,axis=2).max()+1e-12)
+        np.testing.assert_allclose(result.mean(axis=(0,1)),[0,0],atol=1e-12)
+
+    def test_skin_sampling_removes_stamp_period_without_erasing_relief(self):
+        from scipy.ndimage import gaussian_filter
+        tile=gaussian_filter(np.random.default_rng(42).normal(size=(64,64,3)),(1.5,1.5,0))
+        original=tile.copy()
+        result=sample_skin_detail(tile,1025,513,[8,4])
+        f=result[:,:-1,0]
+        # A repeated source tile has correlation 1 at this exact displacement.
+        correlation=np.corrcoef(f[:,:-128].ravel(),f[:,128:].ravel())[0,1]
+        self.assertLess(abs(correlation),.15)
+        self.assertGreater(result.std()/tile.std(),.85)
+        self.assertLess(result.std()/tile.std(),1.15)
+        np.testing.assert_array_equal(result[:,0],result[:,-1])
+        np.testing.assert_array_equal(tile,original)
+
+    def test_skin_sampling_shares_offsets_across_channels_and_resolutions(self):
+        scalar=np.random.default_rng(7).normal(size=(16,16,1))
+        tile=np.concatenate([scalar,scalar*2,scalar*3],axis=2)
+        coarse=sample_skin_detail(tile,129,65,[4,2.3])
+        fine=sample_skin_detail(tile,257,129,[4,2.3])
+        np.testing.assert_allclose(coarse,fine[::2,::2],atol=1e-12)
+        np.testing.assert_allclose(coarse[:,:,1],coarse[:,:,0]*2,atol=1e-12)
+        np.testing.assert_allclose(coarse[:,:,2],coarse[:,:,0]*3,atol=1e-12)
+
+    def test_detail_handover_preserves_contrast_without_amplifying_shared_detail(self):
+        from scipy.ndimage import gaussian_filter
+        rng=np.random.default_rng(42)
+        a=gaussian_filter(rng.normal(size=(129,257,3)),(1,1,0))
+        b=gaussian_filter(rng.normal(size=(129,257,3)),(1,1,0))
+        w=np.full((129,1,1),.5)
+        result=blend_skin_fields(a,b,w,(4,4))
+        self.assertGreater(result.std()/np.sqrt((a.var()+b.var())*.5),.93)
+        np.testing.assert_allclose(blend_skin_fields(a,a,w,(4,4)),a,atol=1e-12)
+        np.testing.assert_allclose(blend_skin_fields(a,b,w*0,(4,4)),a,atol=1e-12)
+        np.testing.assert_allclose(blend_skin_fields(a,b,w*0+1,(4,4)),b,atol=1e-12)
+
     def test_quantized_tiny_ears_do_not_control_material_derivative(self):
         x,y=np.meshgrid(np.linspace(-.02,.02,21),np.linspace(-.02,.02,21))
         p=np.c_[x.ravel(),y.ravel(),np.zeros(x.size)]
@@ -52,8 +109,9 @@ class LoftMaterialTest(unittest.TestCase):
         normal=np.zeros((512,1024,3),dtype='u1');normal[:]=[128,128,255]
         yy,xx=np.mgrid[60:140,575:625]
         normal[60:140,575:625,0]=np.where((xx+yy)%4<2,105,151)
-        textured,_,_,_=retained_skin_tile(p,f,v,np.zeros(len(f),bool),[0],1024,512,normal)
+        textured,skin_half,_,_=retained_skin_tile(p,f,v,np.zeros(len(f),bool),[0],1024,512,normal)
         self.assertTrue(575<textured[0]<625 and 60<textured[1]<140)
+        self.assertTrue((skin_half>=8).all())
 
     def test_density_tracks_surface_scale_and_ignores_collapsed_uv(self):
         p=np.array([[0.,0,0],[2,0,0],[0,2,0],[2,2,0]])

@@ -101,27 +101,44 @@ public:
  static void ConformSourceEntry(std::vector<Vec>& points,const std::vector<double>& parameters,const std::vector<Vec>& normals){
   const unsigned count=unsigned(normals.size());
   if(count<3||parameters.size()<3||points.size()!=count*parameters.size())throw std::invalid_argument("Compound entry dimensions differ");
+  const unsigned rows=unsigned(parameters.size());
   const auto base=points;std::vector<Vec> delta(points.size());std::vector<double> weights(count,1.);
-  unsigned rows=0;
-  for(unsigned row=1;row+1<parameters.size()&&parameters[row]<.2;row++){
-   rows=row;double t=parameters[row]/.2,fade=1-t*t*t*(10+t*(-15+6*t));
-   for(unsigned j=0;j<count;j++){auto n=normals[j];double nn=Dot(n,n);if(nn<=1e-20)throw std::invalid_argument("Collapsed compound entry normal");delta[row*count+j]=Scale(n,-Dot(Sub(base[row*count+j],base[j]),n)*fade/nn);}
+  std::vector<double> station(rows);
+  for(unsigned j=0;j<count;j++){
+   auto n=normals[j];const double nn=Dot(n,n);if(nn<=1e-20)throw std::invalid_argument("Collapsed compound entry normal");
+   station[0]=0;for(unsigned row=1;row<rows;row++){auto d=Sub(base[row*count+j],base[(row-1)*count+j]);station[row]=station[row-1]+std::sqrt(Dot(d,d));}
+   const double length=station.back();if(length<=1e-12)throw std::invalid_argument("Collapsed compound entry meridian");
+   // Resolve a derivative over real skin distance, not the spacing of a
+   // nearly coincident cut knot. Extrapolate two resolved secants to the rim
+   // so authored curvature is not mistaken for the boundary's direction.
+   unsigned first=1;while(first+1<rows&&station[first]<length*1e-5)first++;
+   if(station[first]<=1e-12)continue;
+   auto derivative=Scale(Sub(base[first*count+j],base[j]),1/station[first]);
+   unsigned second=first+1;while(second<rows&&station[second]-station[first]<length*1e-5)second++;
+   if(second<rows){auto next=Scale(Sub(base[second*count+j],base[first*count+j]),1/(station[second]-station[first]));derivative=Add(derivative,Scale(Sub(derivative,next),station[first]/station[second]));}
+   const auto correction=Scale(n,-Dot(derivative,n)/nn);
+   // Integrate the boundary derivative instead of projecting every point
+   // onto one tangent plane and abruptly releasing it at 20% of the neck.
+   // s*(1-s/L)^3 has derivative 1 at the source and value/first/second
+   // derivative 0 at the support. Its rebound derivative is bounded by 1/4
+   // of the entry correction, avoiding the old transverse shoulder.
+   for(unsigned row=1;row+1<rows;row++){double t=station[row]/length;delta[row*count+j]=Scale(correction,station[row]*(1-t)*(1-t)*(1-t));}
   }
-  // This fillet changes only the source end of the generated skin. It keeps
-  // the retained sac and the support end exact, and restores the source's
-  // tangent plane without projecting the opposite end into its support.
-  auto triangles=[&](auto&& visit){for(unsigned row=0;row<=rows;row++)for(unsigned j=0;j<count;j++){unsigned k=(j+1)%count,a=row*count+j,b=row*count+k,c=(row+1)*count+j,d=(row+1)*count+k;visit(b,a,c);visit(b,c,d);}};
+  auto triangles=[&](auto&& visit){for(unsigned row=0;row+1<rows;row++)for(unsigned j=0;j<count;j++){unsigned k=(j+1)%count,a=row*count+j,b=row*count+k,c=(row+1)*count+j,d=(row+1)*count+k;visit(b,a,c);visit(b,c,d);}};
   bool settled=false;
   for(unsigned iteration=0;iteration<48;iteration++){
    std::vector<bool> reduce(count);bool valid=true;
    triangles([&](unsigned i,unsigned j,unsigned k){auto a=Sub(base[j],base[i]),b=Sub(base[k],base[i]),n=Cross(a,b);double nn=Dot(n,n);if(nn<=1e-28)return;
     auto di=Scale(delta[i],weights[i%count]),dj=Scale(delta[j],weights[j%count]),dk=Scale(delta[k],weights[k%count]);
-    if(Dot(Cross(Add(a,Sub(dj,di)),Add(b,Sub(dk,di))),n)<.1*nn){valid=false;reduce[i%count]=reduce[j%count]=reduce[k%count]=true;}
+    auto da=Sub(dj,di),db=Sub(dk,di);const double c=.9*nn,linear=Dot(Add(Cross(da,b),Cross(a,db)),n),quadratic=Dot(Cross(da,db),n);
+    auto area=[&](double t){return c+linear*t+quadratic*t*t;};double minimum=(std::min)(c,area(1));
+    if(quadratic>0){double t=-linear/(2*quadratic);if(t>0&&t<1)minimum=(std::min)(minimum,area(t));}
+    if(minimum<0){valid=false;reduce[i%count]=reduce[j%count]=reduce[k%count]=true;}
    });
    if(valid){settled=true;break;}for(unsigned j=0;j<count;j++)if(reduce[j])weights[j]*=.7;
   }
   if(!settled)return;
-  for(unsigned row=1;row<=rows;row++)for(unsigned j=0;j<count;j++)points[row*count+j]=Add(base[row*count+j],Scale(delta[row*count+j],weights[j]));
+  for(unsigned row=1;row+1<rows;row++)for(unsigned j=0;j<count;j++)points[row*count+j]=Add(base[row*count+j],Scale(delta[row*count+j],weights[j]));
  }
  CompoundGraftPlan(const std::vector<Vec>& source,const std::vector<Vec>& support,
      const std::vector<CompoundSurfaceDonor>& first,const std::vector<CompoundSurfaceDonor>& last,

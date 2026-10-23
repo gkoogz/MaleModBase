@@ -69,6 +69,67 @@ public:
   // Body chart parents are supplied by the mount rather than a parallel copy.
   return BuildChart(support,asset,std::move(chart),std::move(faces),scale);
  }
+ // The historical loft endpoints are no longer the compound attachment rim.
+ // Bound the rigid suspension translation using the actual matched columns,
+ // before a short low-Hang neck can be lifted through its support surface.
+ static double BoundSuspensionLift(const std::vector<Vec>& sourceRim,const std::vector<Vec>& supportRim,
+     double radius,double requestedCapacity,double appliedLift,Vec up={0,0,1}){
+  if(sourceRim.size()<3||sourceRim.size()!=supportRim.size()||!std::isfinite(radius)||radius<=0||
+     !std::isfinite(requestedCapacity)||requestedCapacity<0||!std::isfinite(appliedLift)||appliedLift<0)
+   throw std::invalid_argument("Invalid compound suspension clearance");
+  up=Unit(up);double freeSpan=std::numeric_limits<double>::infinity();
+  for(unsigned i=0;i<sourceRim.size();i++){
+   const double span=Dot(Sub(supportRim[i],sourceRim[i]),up)+appliedLift;
+   if(!std::isfinite(span))throw std::invalid_argument("Nonfinite compound suspension clearance");
+   freeSpan=(std::min)(freeSpan,span);
+  }
+  return (std::min)(requestedCapacity,.85*(std::max)(0.,freeSpan-.2*radius));
+ }
+ double SuspensionLiftLimit(const modular::DynamicResult& support,const modular::Asset& asset,
+     const modular::State& state,const std::vector<Vec>& posed,Vec up={0,0,1})const{
+  if(support.suspensionLiftCapacity==0)return 0;
+  const auto input=PrepareSupport(support,asset,state);
+  const auto cut=ConvexSurfaceCut(support.surface.points,input.faces,input.eligible,input.chart,1e-8).CutSimple(reference.footprint);
+  std::vector<UV> coordinates(cut.points.size());std::vector<bool> seen(cut.points.size());
+  for(const auto& f:cut.faces)for(auto c:f.corners)if(!seen[c.vertex]){
+   seen[c.vertex]=true;const auto face=input.faces[f.parent];
+   for(unsigned k=0;k<3;k++)for(unsigned d=0;d<2;d++)coordinates[c.vertex][d]+=input.chart[face[k]][d]*c.donor[k];
+  }
+  const auto source=Source(posed,state);std::vector<Vec> first,last;first.reserve(cut.opening.size());last.reserve(cut.opening.size());
+  for(auto id:cut.opening){
+   if(!seen[id])throw std::runtime_error("Compound suspension rim has no support donor");
+   const auto q=coordinates[id];double best=std::numeric_limits<double>::infinity(),parameter=0;
+   // Match the SAME authored edge parameter used by CompoundContactPlan;
+   // world-space nearest points would jump between the narrow opposing arcs.
+   for(unsigned j=0;j<reference.footprint.size();j++){
+    const auto a=reference.footprint[j],b=reference.footprint[(j+1)%reference.footprint.size()];
+    const double x=b[0]-a[0],y=b[1]-a[1],dx=q[0]-a[0],dy=q[1]-a[1];
+    const double t=std::clamp((dx*x+dy*y)/(x*x+y*y),0.,1.),error=std::hypot(dx-t*x,dy-t*y);
+    if(error<best){best=error;parameter=j+t;}
+   }
+   if(best>1e-6)throw std::runtime_error("Compound suspension rim left its footprint");
+   if(parameter>=reference.footprint.size()-1e-9)parameter=0;
+   const unsigned segment=unsigned(parameter);const double t=parameter-segment;
+   first.push_back(Add(Scale(source.at(reference.sourceLoop[segment]),1-t),Scale(source.at(reference.sourceLoop[(segment+1)%reference.sourceLoop.size()]),t)));
+   last.push_back(cut.points[id]);
+  }
+  const double applied=support.suspensionLiftCapacity*modular::SuspensionLiftWeight(state.hangControl);
+  return BoundSuspensionLift(first,last,state.sectionRadius,support.suspensionLiftCapacity,applied,up);
+ }
+ modular::DynamicResult EvaluateMount(const modular::DynamicMount& mount,const modular::Asset& asset,
+     const modular::Plan& plan,const modular::State& state)const{
+  auto support=mount.Evaluate(asset,plan,state);
+  const auto posed=mount.Pose(asset,plan,state,support.fitTranslation,support.advances,
+      support.suspensionTranslation,support.clearedBindings,support.materialRoot);
+  const double limit=SuspensionLiftLimit(support,asset,state,posed);
+  if(limit<support.suspensionLiftCapacity){
+   if(modular::SuspensionLiftWeight(state.hangControl)>0)support=mount.Evaluate(asset,plan,state,limit);
+   // Even neutral/high Hang must publish the bounded capacity: the immediate
+   // control path can enter the low range before the next geometry rebuild.
+   else support.suspensionLiftCapacity=limit;
+  }
+  return support;
+ }
  CompoundContactCache Build(const modular::DynamicResult& support,const modular::Asset& asset,const modular::State& state,const std::vector<Vec>& posed)const{
   auto input=PrepareSupport(support,asset,state);
   return contact->Build(Source(posed,state),support.surface.points,input.faces,input.chart,input.eligible,input.protect,state.suspensionProfile?state.hangControl:0,referenceAxis);

@@ -88,7 +88,8 @@ struct DynamicMount {
   if(posedAsset)*posedAsset=std::move(source);
   return points;
  }
- DynamicResult Evaluate(const Asset& asset,const Plan& plan,const State& state)const{
+ DynamicResult Evaluate(const Asset& asset,const Plan& plan,const State& state,double suspensionLiftLimit=std::numeric_limits<double>::infinity())const{
+  if(std::isnan(suspensionLiftLimit)||suspensionLiftLimit<0)throw std::invalid_argument("Invalid suspension lift capacity limit");
   if(!asset.mount)throw std::invalid_argument("Dynamic mount needs semantic shaft ownership");
   for(auto i:moduleFaces)if(i>=asset.faces.size())throw std::invalid_argument("Dynamic module face leaves bound source");for(auto i:inner)if(i>=asset.rest.size())throw std::invalid_argument("Dynamic inner loop leaves bound source");
   const auto& mount=*asset.mount;auto axis=state.frames[1].basis[0];const double scale=state.scales[1][1]/asset.reference.scales[1][1];
@@ -138,7 +139,7 @@ struct DynamicMount {
     if(state.shaftMaterial)for(const auto& l:asset.lofts)
      if(ShaftBinding(l.lastOwner)&&!ShaftBinding(l.firstOwner))
       measured[l.start]=Add(state.shaftMaterial->at(l.start),aperture.translation);
-    suspensionLiftCapacity=SuspensionLift(measured,asset.lofts,state.sectionRadius,1);
+    suspensionLiftCapacity=(std::min)(SuspensionLift(measured,asset.lofts,state.sectionRadius,1),suspensionLiftLimit);
     suspension[2]+=suspensionLiftCapacity*SuspensionLiftWeight(state.hangControl);
    }
    plan.TranslateSuspension(points,suspension);

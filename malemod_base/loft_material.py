@@ -63,6 +63,87 @@ def surface_density(points,faces,corner_uv):
     return float(density[order[np.searchsorted(np.cumsum(area[valid][order]),area[valid].sum()/2)]])
 
 
+def sample_skin_detail(tile,width,height,repeats,slopes=False):
+    """Sample measured skin without exposing a repeated rectangular stamp.
+
+    Four smoothly overlapping source translations share deterministic offsets
+    between diffuse and normal channels. Reflected slope lookups also reflect
+    their corresponding tangent components; translations leave them unchanged.
+    The hash lattice wraps around the closed circumference, and normalization
+    preserves the variance of uncorrelated detail instead of blurring it where
+    source samples overlap. No retained texels or boundary vectors are changed.
+    ``repeats`` retains the historical mirrored-tile physical density contract.
+    """
+    tile=np.asarray(tile,dtype=float)
+    mean=tile.mean(axis=(0,1),keepdims=True)
+    # Mirroring is confined to source access, not visibly stamped across the
+    # chart. It keeps every lookup inside the measured retained skin region.
+    centered=tile-mean
+    reflected=centered[:,::-1].copy()
+    if slopes:
+        if tile.shape[-1]!=2:raise ValueError('Expected two tangent slope components')
+        reflected[:,:,0]*=-1
+    source=np.concatenate([centered,reflected],axis=1)
+    reflected=source[::-1].copy()
+    if slopes:reflected[:,:,1]*=-1
+    source=np.concatenate([source,reflected],axis=0)
+    circumference=max(1,round(repeats[0]))
+    nx=2*circumference
+    x,y=np.meshgrid(np.linspace(0,circumference,width),np.linspace(0,repeats[1],height))
+    gx,gy=x*2,y*2
+    ix,iy=np.floor(gx).astype(np.int64),np.floor(gy).astype(np.int64)
+    wx,wy=smooth(gx-ix),smooth(gy-iy)
+    result=np.zeros((*x.shape,tile.shape[-1]));energy=np.zeros(x.shape)
+    for dx,dy in ((0,0),(1,0),(0,1),(1,1)):
+        # Integer arithmetic makes source offsets repeatable across channels,
+        # independent of image dimensions and Python's randomized hash seed.
+        key=((ix+dx)%nx).astype(np.uint64)*np.uint64(0x9e3779b1)
+        key+=(iy+dy).astype(np.uint64)*np.uint64(0x85ebca77)
+        key=(key^(key>>16))*np.uint64(0xc2b2ae3d)
+        key=key^(key>>13)
+        ox=(key&np.uint64(65535)).astype(float)/65536
+        oy=((key>>16)&np.uint64(65535)).astype(float)/65536
+        weight=(wx if dx else 1-wx)*(wy if dy else 1-wy)
+        value=sample(source,np.stack([(x+ox)%1,(y+oy)%1],axis=-1))
+        result+=value*weight[:,:,None];energy+=weight*weight
+    result/=np.maximum(np.sqrt(energy)[:,:,None],1e-12)
+    if slopes:
+        # Variance compensation must not introduce deeper relief than exists
+        # anywhere in the measured source sample.
+        maximum=np.max(np.linalg.norm(centered,axis=2))
+        result-=result.mean(axis=(0,1),keepdims=True)
+        result*=np.minimum(1,maximum/np.maximum(np.linalg.norm(result,axis=2,keepdims=True),1e-12))
+        # Finite stochastic coverage and peak limiting must not tilt the whole
+        # generated chart. A final uniform limit preserves the zero-mean field.
+        result-=result.mean(axis=(0,1),keepdims=True)
+        result*=min(1.,maximum/max(np.linalg.norm(result,axis=2).max(),1e-12))
+    return result+mean
+
+
+def blend_skin_fields(a,b,weight,sigma):
+    """Crossfade pigment/direction while retaining measured relief contrast.
+
+    Ordinary alpha blending halves the variance of unrelated crease fields at
+    mid-transition, producing a smooth cuff. Measure their covariance per chart
+    row so correlated detail is not amplified; preserve the interpolated source
+    variance with a bounded gain on detail only. Broad fields blend normally.
+    """
+    a=np.asarray(a);b=np.asarray(b);w=np.asarray(weight)
+    low_a=gaussian_filter(a,sigma=(*sigma,0),mode=('nearest','wrap','nearest'))
+    low_b=gaussian_filter(b,sigma=(*sigma,0),mode=('nearest','wrap','nearest'))
+    da=a-low_a;db=b-low_b
+    detail=da*(1-w)+db*w
+    expected=(1-w)*np.mean(da*da,axis=(1,2),keepdims=True)+w*np.mean(db*db,axis=(1,2),keepdims=True)
+    observed=np.mean(detail*detail,axis=(1,2),keepdims=True)
+    gain=np.sqrt((expected+1e-14)/(observed+1e-14))
+    gain=np.clip(gain,.7,1.6)
+    source_peak=np.maximum(np.max(np.linalg.norm(da,axis=2),axis=1),
+                           np.max(np.linalg.norm(db,axis=2),axis=1))[:,None,None]
+    mixed_peak=np.max(np.linalg.norm(detail,axis=2),axis=1)[:,None,None]
+    gain=np.minimum(gain,np.maximum(1,source_peak/np.maximum(mixed_peak,1e-12)))
+    return low_a*(1-w)+low_b*w+detail*gain
+
+
 def bake_patch(lower,upper,s,tile,width,height,repeats,normal=False,continuations=None):
     """Boundary-exact patch with gradual pigment and consistent fine detail.
 
@@ -73,27 +154,20 @@ def bake_patch(lower,upper,s,tile,width,height,repeats,normal=False,continuation
     u=np.linspace(0,1,width);t=np.linspace(0,1,height)[:,None,None]
     a=periodic_samples(lower,s,u);b=periodic_samples(upper,s,u)
     tile=np.asarray(tile,dtype=float)
-    # Mirror the supplied tile to make a repeat with matching edge values.
-    tile=np.concatenate([tile,tile[:,::-1]],axis=1)
-    tile=np.concatenate([tile,tile[::-1]],axis=0)
-    # The circumference is closed. An integer repeat count makes the detail
-    # meet on both sides of its seam, rather than fixing only the final column.
-    x,y=np.meshgrid((u*max(1,round(repeats[0])))%1,(np.linspace(0,1,height)*repeats[1])%1)
-    detail=sample(tile,np.stack([x,y],axis=-1))
     if normal:
         # A source tile's mean slope belongs to its original surface, not to
         # the newly generated chart. Reuse its relief without imposing that
         # directional bias on the whole neck (a separate shaded patch).
         slopes=tile[:,:,:2]/np.maximum(tile[:,:,2,None],.1)
         slopes-=slopes.mean(axis=(0,1),keepdims=True)
-        detail=sample(slopes,np.stack([x,y],axis=-1))
+        detail=sample_skin_detail(slopes,width,height,repeats,slopes=True)
         mid=np.concatenate([detail,np.ones((*detail.shape[:2],1))],axis=2)
         mid/=np.maximum(np.linalg.norm(mid,axis=2,keepdims=True),1e-12)
     else:
         # Retain the source skin's visible creases as well as its pore detail.
         # A tiny high-pass radius erased those folds on the generated strip.
-        low=gaussian_filter(tile,sigma=(20,20,0),mode='wrap')
-        detail=sample(tile-low,np.stack([x,y],axis=-1))
+        low=gaussian_filter(tile,sigma=(20,20,0),mode='reflect')
+        detail=sample_skin_detail(tile-low,width,height,repeats)
         aa=gaussian_filter(a,sigma=(max(1,width*.04),0),mode='wrap')
         bb=gaussian_filter(b,sigma=(max(1,width*.04),0),mode='wrap')
         blend=smooth(t)
@@ -121,11 +195,15 @@ def bake_patch(lower,upper,s,tile,width,height,repeats,normal=False,continuation
         # when the adapter can supply its original chart differential.
         if len(continuations)!=2:raise ValueError('Expected both material continuations')
         result=mid.copy()
+        # Four original texels define detail, independent of output resolution
+        # and the selected tile size. Preserve the inherited density contract.
+        sigma=(max(1.,height/max(2*repeats[1]*tile.shape[0],1)*4),
+               max(1.,width/(2*max(1,round(repeats[0]))*tile.shape[1])*4))
         for field,weight in zip(continuations,(1-start,1-end)):
             field=np.asarray(field)
             if field.shape!=result.shape or not np.isfinite(field).all():
                 raise ValueError('Invalid material continuation')
-            result=result*(1-weight)+field*weight
+            result=blend_skin_fields(result,field,weight,sigma)
     if normal:result/=np.maximum(np.linalg.norm(result,axis=2,keepdims=True),1e-12)
     result[0]=a;result[-1]=b;result[:,-1]=result[:,0]
     return result
@@ -178,7 +256,7 @@ def retained_skin_tile(points,faces,uv,patch,seeds,width,height,normal_image=Non
     from PIL import Image,ImageDraw
     from scipy import sparse
     from scipy.sparse.csgraph import connected_components
-    from scipy.ndimage import distance_transform_edt,uniform_filter,minimum_filter
+    from scipy.ndimage import distance_transform_edt,uniform_filter
     _,weld=np.unique(np.round(points,5),axis=0,return_inverse=True)
     triangles=faces[~patch];edges=weld[triangles]
     a=edges.ravel();b=np.roll(edges,-1,axis=1).ravel()
@@ -198,18 +276,29 @@ def retained_skin_tile(points,faces,uv,patch,seeds,width,height,normal_image=Non
     center=np.array([x/1023,y/511]);pixel=np.rint(center*[width-1,height-1]).astype(int)
     half=np.maximum(4,np.floor(radius*np.array([width/1024,height/512])).astype(int))
     if normal_image is not None:
-        # The widest UV interior may contain a flat band in a repeated source
-        # normal map. Repeating that band creates rectangular smooth panels.
-        # Choose a compact retained tile whose entire neighborhood contains
-        # measured relief, rather than choosing a strong single crease.
+        # The former strongest 5x5 neighborhood forced a 32x32-texel source
+        # stamp in an 8K atlas. Select the widest safe, broadly textured region,
+        # rather than the highest-energy crease. This preserves the source's
+        # range of fold sizes instead of repeating one microscopic motif.
         small=np.asarray(Image.fromarray(np.asarray(normal_image,dtype='u1')[:,:,:3]).resize(mask.size,Image.Resampling.BOX),dtype=float)
         energy=np.sum((small[:,:,:2]-127.5)**2,axis=2)
-        score=minimum_filter(uniform_filter(energy,size=3),size=5)
-        score=np.where(distance>=4,score,-1)
-        y,x=np.unravel_index(np.argmax(score),score.shape)
-        if score[y,x]<=0:raise ValueError('No consistently detailed retained normal tile')
+        measured=energy[(distance>=3)&(energy>1)]
+        if not len(measured):raise ValueError('No consistently detailed retained normal tile')
+        threshold=max(1.,np.percentile(measured,25)*.1)
+        selected=None
+        for radius in range(12,1,-1):
+            size=2*radius+1
+            coverage=uniform_filter((energy>threshold).astype(float),size=size)
+            average=uniform_filter(energy,size=size)
+            safe=(distance>=radius*np.sqrt(2)+1)&(coverage>=.85)
+            if safe.any():
+                score=np.where(safe,coverage+average/(average+np.median(measured))*.1,-1)
+                y,x=np.unravel_index(np.argmax(score),score.shape)
+                selected=radius
+                break
+        if selected is None:raise ValueError('No consistently detailed retained normal tile')
         pixel=np.rint(np.array([x/1023,y/511])*[width-1,height-1]).astype(int)
-        half=np.maximum(4,np.rint(np.array([width/1024,height/512])*2).astype(int))
+        half=np.maximum(4,np.floor(np.array([width/1024,height/512])*selected).astype(int))
     area=np.linalg.norm(np.cross(points[triangles[:,1]]-points[triangles[:,0]],points[triangles[:,2]]-points[triangles[:,0]]),axis=1)
     tex=coords*np.array([width-1,height-1]);du=tex[:,1]-tex[:,0];dv=tex[:,2]-tex[:,0]
     texarea=np.abs(du[:,0]*dv[:,1]-du[:,1]*dv[:,0]);valid=(area>1e-10)&(texarea>1e-10)

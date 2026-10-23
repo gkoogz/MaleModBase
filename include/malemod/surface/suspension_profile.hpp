@@ -42,8 +42,8 @@ inline void ShapeSuspensionSections(std::vector<PresentationPoint>& points,
 inline double SuspensionStripScale(double t,double hang,double aspect){
  if(!std::isfinite(t)||t<0||t>1||!std::isfinite(hang)||hang<1||hang>100||!std::isfinite(aspect)||aspect<0)
   throw std::invalid_argument("Invalid compound suspension profile");
- // ConformSourceEntry owns t<.20. Keep its whole tangent fillet outside the
- // profile so a later conformity pass cannot change the authored contraction.
+ // Keep the lower join and upper mounting tangent bands outside the waist.
+ // The source derivative is fitted before this reversible width profile.
  if(t<=.20||t>=.90)return 1;
  auto smooth=[](double x){x=std::clamp(x,0.,1.);return x*x*x*(10+x*(-15+6*x));};
  const double u=(t-.20)/.70;

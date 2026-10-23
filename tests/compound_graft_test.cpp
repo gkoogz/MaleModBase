@@ -55,7 +55,7 @@ int main(){try{
  {
   // A tilted generated meridian must leave a cylindrical retained surface
   // in its tangent plane, while the remote join and both rims stay exact.
-  constexpr unsigned count=32;std::vector<double> parameters{0,.005,.025,.08,.15,.2,.5,1};
+  constexpr unsigned count=32;std::vector<double> parameters{0,.00001,.0001,.005,.025,.08,.15,.2,.5,.9,.99,1};
   std::vector<V> skin,normals;
   for(unsigned j=0;j<count;j++){double a=6.283185307179586*j/count;normals.push_back({std::cos(a),std::sin(a),0});}
   for(double t:parameters)for(auto n:normals)skin.push_back(Add(Scale(n,1+.3*t),V{0,0,t}));
@@ -65,10 +65,38 @@ int main(){try{
    auto entry=Sub(corrected[count+j],corrected[j]);
    Check(std::abs(Dot(entry,normals[j]))<1e-6,"Entry tangent still has a visible radial step");
   }
-  for(unsigned i=5*count;i<skin.size();i++)Check(Near(corrected[i],skin[i]),"Entry fillet moved remote surface");
+  for(unsigned j=0;j<count;j++)Check(Near(corrected[corrected.size()-count+j],skin[skin.size()-count+j]),"Entry fillet moved support boundary");
+  for(unsigned j=0;j<count;j++){auto before=Sub(skin[skin.size()-count+j],skin[skin.size()-2*count+j]),after=Sub(corrected[corrected.size()-count+j],corrected[corrected.size()-2*count+j]);Check(std::sqrt(Dot(Sub(after,before),Sub(after,before)))/std::sqrt(Dot(before,before))<.0001,"Entry correction changed upper tangent");}
   auto moved=skin,rotated=normals;for(auto& p:moved)p=Add(Scale(V{p[2],p[1],-p[0]},3),{20,30,40});for(auto& n:rotated)n={n[2],n[1],-n[0]};
   CompoundGraftPlan::ConformSourceEntry(moved,parameters,rotated);
   for(unsigned i=0;i<skin.size();i++){auto p=corrected[i];Check(Near(moved[i],Add(Scale(V{p[2],p[1],-p[0]},3),{20,30,40})),"Entry fillet lost pose/scale covariance");}
+ }
+ {
+  // The old tangent-plane projection was released over a fixed 20% band.
+  // A constant initial slope therefore rebounded to nearly twice the
+  // intended slope just above that band. Bound the derivative correction
+  // instead, across short/long and strongly oblique nonplanar contours.
+  constexpr unsigned count=24,rows=101;std::vector<double> t;
+  for(unsigned row=0;row<rows;row++)t.push_back(double(row)/(rows-1));
+  for(double height:{.08,1.,5.}){
+   std::vector<V> skin,normals;
+   for(unsigned j=0;j<count;j++){double a=6.283185307179586*j/count;normals.push_back({std::cos(a),std::sin(a),0});}
+   for(double u:t)for(unsigned j=0;j<count;j++){auto n=normals[j];double a=6.283185307179586*j/count;skin.push_back(Add(Scale(n,1+.3*height*u),V{0,0,height*u+.35*std::cos(a)+.2*std::sin(2*a)}));}
+   auto revised=skin;CompoundGraftPlan::ConformSourceEntry(revised,t,normals);
+   double newPeak=0,oldPeak=0;
+   auto old=skin;for(unsigned row=1;row+1<rows&&t[row]<.2;row++)for(unsigned j=0;j<count;j++){double u=t[row]/.2,w=1-u*u*u*(10+u*(-15+6*u));old[row*count+j]=Sub(old[row*count+j],Scale(normals[j],Dot(Sub(skin[row*count+j],skin[j]),normals[j])*w));}
+   for(unsigned row=0;row+1<rows;row++)for(unsigned j=0;j<count;j++){
+    auto derivative=[&](const auto& points){return Dot(Sub(points[(row+1)*count+j],points[row*count+j]),normals[j])/(height*(t[row+1]-t[row]));};
+    newPeak=(std::max)(newPeak,derivative(revised));oldPeak=(std::max)(oldPeak,derivative(old));
+   }
+   Check(oldPeak>.5,"Synthetic regression does not reproduce old shoulder");
+   Check(newPeak<.376&&newPeak<oldPeak*.75,"Derivative continuation retains projection-release shoulder");
+   for(unsigned j=0;j<count;j++){Check(revised[j]==skin[j],"Shoulder repair moved retained lobe rim");Check(revised[(rows-1)*count+j]==skin[(rows-1)*count+j],"Shoulder repair moved support rim");}
+   for(unsigned row=0;row+1<rows;row++)for(unsigned j=0;j<count;j++){
+    unsigned k=(j+1)%count,a=row*count+j,b=row*count+k,c=(row+1)*count+j,d=(row+1)*count+k;
+    for(auto f:{std::array<unsigned,3>{a,b,c},std::array<unsigned,3>{b,d,c}}){auto normal=[&](const auto& p){return Cross(Sub(p[f[1]],p[f[0]]),Sub(p[f[2]],p[f[0]]));};auto n=normal(skin),m=normal(revised);Check(Dot(n,m)>=.099999*Dot(n,n),"Derivative repair overturned nonplanar skin");}
+   }
+  }
  }
  {
   std::vector<V> field;std::vector<double> coordinate;
