@@ -1,9 +1,19 @@
 import unittest
 import numpy as np
-from malemod_base.loft_material import chart, bake_patch, periodic_samples, surface_density, retained_skin_tile, surface_uv_gradients
+from malemod_base.loft_material import chart, bake_patch, periodic_samples, surface_density, retained_skin_tile, surface_uv_gradients, sampled_uv_directions
 
 
 class LoftMaterialTest(unittest.TestCase):
+    def test_quantized_tiny_ears_do_not_control_material_derivative(self):
+        x,y=np.meshgrid(np.linspace(-.02,.02,21),np.linspace(-.02,.02,21))
+        p=np.c_[x.ravel(),y.ravel(),np.zeros(x.size)]
+        p=np.vstack([p,[[1e-9,0,0],[0,1e-9,0]]])
+        uv=(.7+p[:,:2]*.6).astype('f2').astype(float)
+        uv[-2:]+=[.00049,0]
+        index=int(np.argmin(np.linalg.norm(p,axis=1)))
+        result=sampled_uv_directions(p,uv,np.arange(len(p)),[index],[[.2,.1,0]],.001,.03,.03)
+        np.testing.assert_allclose(result,[[.12,.06]],atol=.001)
+
     def test_retained_chart_continues_folds_across_rim(self):
         p=np.array([[0.,0,0],[2,0,0],[0,3,0]])
         uv=np.array([[.1,.2],[.5,.2],[.1,.5]])

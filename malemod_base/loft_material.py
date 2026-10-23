@@ -147,6 +147,28 @@ def surface_uv_gradients(points,faces,uv):
     return result/np.maximum(weight[:,None,None],1e-20)
 
 
+def sampled_uv_directions(points,uv,retained,indices,directions,minimum_distance,maximum_distance,uv_radius):
+    """Resolve quantized cut-vertex UVs over a retained surface neighborhood.
+
+    Tiny clipping ears amplify packed-coordinate rounding. A local rank-two
+    fit measures the original chart without using those ears as derivatives.
+    Distances use caller-supplied source units; UV aliases remain distinct.
+    """
+    from scipy.spatial import cKDTree
+    p=np.asarray(points);uv=np.asarray(uv);retained=np.asarray(retained)
+    distances,neighbors=cKDTree(p[retained]).query(p[indices],k=min(512,len(retained)))
+    result=[]
+    for j,index in enumerate(indices):
+        near=retained[neighbors[j]];delta=p[near]-p[index];tex=uv[near]-uv[index]
+        valid=(distances[j]>minimum_distance)&(distances[j]<maximum_distance)&(np.linalg.norm(tex,axis=1)<uv_radius)
+        if np.count_nonzero(valid)<6:raise ValueError('Unresolved retained material neighborhood')
+        delta=delta[valid];tex=tex[valid]
+        weight=1/np.maximum(np.linalg.norm(delta,axis=1),3*minimum_distance)
+        fit=np.linalg.lstsq(delta*weight[:,None],tex*weight[:,None],rcond=.05)[0]
+        result.append(directions[j]@fit)
+    return np.asarray(result)
+
+
 def retained_skin_tile(points,faces,uv,patch,seeds,width,height,normal_image=None):
     """Measure the retained component reached from the source-side rim.
 
