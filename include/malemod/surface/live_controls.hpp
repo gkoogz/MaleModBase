@@ -127,6 +127,20 @@ inline void DeformLiveControlDonors(const std::vector<LiveControlDonor>& donors,
  for(const auto& d:donors){PresentationPoint delta{};for(unsigned k=0;k<3;k++)delta=Add(delta,Scale(Sub(after.at(d.parents[k]),before.at(d.parents[k])),d.weights[k]));deltas.push_back(delta);}
  for(unsigned i=0;i<donors.size();i++)after.at(donors[i].vertex)=Add(before.at(donors[i].vertex),deltas[i]);
 }
+// Immediate presentation of an already fitted connection. Endpoint ownership
+// can change at a cut parent edge even when its affine displacement is smooth.
+// Extend the actual endpoint displacements through the retained material,
+// instead of transporting it with those discontinuous ownership derivatives.
+// The worker still rebuilds the exact shape for the requested controls.
+inline void TranslateLiveControlLofts(const std::vector<LiveControlLoft>& lofts,
+ const std::vector<PresentationPoint>& before,std::vector<PresentationPoint>& after,
+ unsigned first=0,TaskArena* arena=nullptr){
+ if(first>lofts.size()||before.size()!=after.size())throw std::invalid_argument("Live translation layout differs");
+ auto evaluate=[&](unsigned i){auto l=lofts[i];double w=l.t*l.t*(3-2*l.t);
+  after.at(l.vertex)=Add(before.at(l.vertex),Add(Scale(Sub(after.at(l.start),before.at(l.start)),1-w),Scale(Sub(after.at(l.end),before.at(l.end)),w)));
+ };
+ if(arena)arena->For(unsigned(lofts.size())-first,[&](unsigned i){evaluate(first+i);});else for(unsigned i=first;i<lofts.size();i++)evaluate(i);
+}
 inline void DeformLiveControlLofts(const LiveControlDeformation& morph,
  const std::vector<LiveControlBinding>& bindings,const std::vector<LiveControlLoft>& lofts,
  const std::vector<LiveControlTangents>& tangents,

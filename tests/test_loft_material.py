@@ -1,9 +1,50 @@
 import unittest
 import numpy as np
-from malemod_base.loft_material import chart, bake_patch, periodic_samples, surface_density
+from malemod_base.loft_material import chart, bake_patch, periodic_samples, surface_density, retained_skin_tile, surface_uv_gradients
 
 
 class LoftMaterialTest(unittest.TestCase):
+    def test_retained_chart_continues_folds_across_rim(self):
+        p=np.array([[0.,0,0],[2,0,0],[0,3,0]])
+        uv=np.array([[.1,.2],[.5,.2],[.1,.5]])
+        g=surface_uv_gradients(p,[[0,1,2]],uv)
+        np.testing.assert_allclose(g,np.broadcast_to([[.2,0,0],[0,.1,0]],g.shape),atol=1e-12)
+        s=np.linspace(0,1,64,endpoint=False);u=np.linspace(0,1,129)
+        t=np.linspace(0,1,101)[:,None]
+        wave=.2+.05*np.sin(2*np.pi*(u[None]*4+t*7))
+        field=np.repeat(wave[:,:,None],3,axis=2)
+        boundary=np.repeat((.2+.05*np.sin(2*np.pi*s*4))[:,None],3,axis=1)
+        result=bake_patch(boundary,boundary,s,np.full((8,8,3),.2),129,101,[4,2],continuations=(field,field))
+        # Detail moves along the meridian rather than becoming vertical stripes.
+        self.assertLess(np.max(np.abs(result[2]-field[2])),.002)
+        np.testing.assert_array_equal(result[0],periodic_samples(boundary,s,u))
+        np.testing.assert_array_equal(result[:,0],result[:,-1])
+
+    def test_skin_tile_follows_seeded_component_across_vertex_aliases(self):
+        x,y=np.meshgrid(np.linspace(0,1,11),np.linspace(0,1,11))
+        points=np.c_[x.ravel(),y.ravel(),np.zeros(x.size)]
+        ids=np.arange(len(points)).reshape(11,11);faces=[]
+        for row in range(10):
+            for col in range(10):
+                a,b,c,d=ids[row,col],ids[row,col+1],ids[row+1,col],ids[row+1,col+1]
+                faces.extend([[a,b,c],[b,d,c]])
+        faces=np.array(faces);uv=points[:,:2]*[.1,.2]+[.52,.1]
+        # Split all corners into aliases, as native packed buffers do.
+        a=points[faces].reshape(-1,3);ua=uv[faces].reshape(-1,2)
+        b=a+[3,0,0];ub=(a[:,:2]*[.25,.4])+[.7,.5]
+        p=np.vstack([a,b]);v=np.vstack([ua,ub]);f=np.arange(len(p)).reshape(-1,3)
+        center,half,density,count=retained_skin_tile(p,f,v,np.zeros(len(f),bool),[0],1024,512)
+        self.assertEqual(count,200)
+        self.assertTrue(.52<center[0]/1023<.62)
+        self.assertTrue(.1<center[1]/511<.3)
+        self.assertAlmostEqual(density,np.sqrt(1023*.1*511*.2))
+        self.assertTrue((half>=4).all())
+        normal=np.zeros((512,1024,3),dtype='u1');normal[:]=[128,128,255]
+        yy,xx=np.mgrid[60:140,575:625]
+        normal[60:140,575:625,0]=np.where((xx+yy)%4<2,105,151)
+        textured,_,_,_=retained_skin_tile(p,f,v,np.zeros(len(f),bool),[0],1024,512,normal)
+        self.assertTrue(575<textured[0]<625 and 60<textured[1]<140)
+
     def test_density_tracks_surface_scale_and_ignores_collapsed_uv(self):
         p=np.array([[0.,0,0],[2,0,0],[0,2,0],[2,2,0]])
         f=np.array([[0,1,2],[1,3,2]]);uv=p[f,:2]*.03

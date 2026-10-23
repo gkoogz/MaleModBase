@@ -37,6 +37,24 @@ int main(){try{
  for(unsigned i=0;i<r.support.size();i++)require(moved[i]==r.support[i],"Independent suspension moved support");
  auto reject=[&](CompoundContactReference bad){bool failed=false;try{CompoundContactPlan other(std::move(bad));}catch(const std::invalid_argument&){failed=true;}require(failed,"Malformed reference accepted");};
  auto bad=r;bad.sourceLoop[0]=9999;reject(bad);bad=r;bad.curve[1]=bad.curve[0];reject(bad);bad=r;bad.parameters.back()=.9;reject(bad);bad=r;bad.support[0][0]=std::numeric_limits<double>::quiet_NaN();reject(bad);
+ {
+  // A close pair of immutable rim samples needs a coarser interior meridian,
+  // not a displaced rim or a hole. This also exercises generated-strip flips.
+  CompoundContactCache narrow;const std::vector<double> angles{0,1e-5,.8,1.6,2.4,3.2,4,5};
+  constexpr unsigned rows=11;const unsigned columns=unsigned(angles.size());
+  for(unsigned row=0;row<rows;row++)for(auto a:angles)narrow.rest.push_back({std::cos(a),std::sin(a),double(row)/(rows-1)});
+  for(unsigned row=0;row+1<rows;row++)for(unsigned j=0;j<columns;j++){
+   auto corner=[&](unsigned r,unsigned c){return CompoundContactCorner{r*columns+c,2,0,{},double(c),r};};unsigned k=(j+1)%columns;
+   narrow.faces.push_back({corner(row,k),corner(row,j),corner(row+1,j)});narrow.faces.push_back({corner(row,k),corner(row+1,j),corner(row+1,k)});
+  }
+  narrow.rest.push_back({1000,0,0}); // Scene extent sets the area tolerance.
+  std::vector<bool> protect(narrow.rest.size());for(unsigned j=0;j<columns;j++)protect[j]=protect[(rows-1)*columns+j]=true;
+  auto original=narrow.rest;narrow.Clean(protect);require(narrow.rest==original,"Cleanup moved retained geometry");
+  require(narrow.collapsedEdges>0,"Skinny meridian was not conditioned");
+  std::map<std::pair<unsigned,unsigned>,unsigned> usage;for(auto face:narrow.faces)for(unsigned k=0;k<3;k++)usage[std::minmax(face[k].vertex,face[(k+1)%3].vertex)]++;
+  unsigned open=0;for(auto item:usage){require(item.second<=2,"Cleanup made a branched strip");open+=item.second==1;}
+  require(open==2*columns,"Cleanup changed the immutable rim");
+ }
  // A short forged header must be rejected before allocating its claimed mesh.
  std::string bytes="MMCCNT02";std::array<unsigned,7> counts{500000,1000000,500000,1000000,4096,50000,256};bytes.append(reinterpret_cast<const char*>(counts.data()),28);std::istringstream input(bytes);bool rejected=false;try{ReadCompoundContact(input);}catch(const std::runtime_error&){rejected=true;}require(rejected,"Oversize reference allocation accepted");
  std::cout<<"compound assembly, covariance, independent motion and input validation pass\n";

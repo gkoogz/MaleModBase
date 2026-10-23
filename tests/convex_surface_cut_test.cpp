@@ -18,6 +18,35 @@ int main(){try{
   for(unsigned i=0;i<p.size();i++)Check(cut.points[i]==p[i],"Original surface moved");
  }
  {
+  // A valid material chart can cover a nearly flat world-space sliver.
+  // Its opposite edges must not be welded or treated as old boundaries just
+  // because they are physically closer than the spatial tolerance.
+  auto thin=p;std::vector<std::array<double,2>> chart;
+  for(unsigned i=0;i<p.size();i++){chart.push_back({p[i][0],p[i][1]});thin[i][1]*=1e-10;}
+  auto cut=ConvexSurfaceCut(thin,f,{true,true},chart,1e-8).CutSimple({{-.8,-.7},{.8,-.7},{.3,0},{.8,.7},{-.8,.7},{-.3,0}});
+  Check(cut.opening.size()>=6,"Thin world surface lost its chart opening");
+  double retained=0;
+  for(auto face:cut.faces){std::array<PresentationPoint,3> tri{};for(unsigned j=0;j<3;j++)for(unsigned k=0;k<3;k++)tri[j]=Add(tri[j],Scale(p[f[face.parent][k]],face.corners[j].donor[k]));
+   double a=Cross(Sub(tri[1],tri[0]),Sub(tri[2],tri[0]))[2]*.5;Check(a>0,"Thin world cut inverted a chart triangle");retained+=a;}
+  Check(std::abs(retained-14.46)<1e-8,"Thin world cut changed retained chart area");
+ }
+ {
+  auto points=p;points.insert(points.end(),{{10,0,0},{11,0,0},{10,2e-10,0},{10,0,1}});
+  auto faces=f;faces.insert(faces.end(),{{4,6,5},{4,5,7},{5,6,7},{6,4,7}});
+  ConvexSurfaceCut preserved(points,faces,{true,true,false,false,false,false},{0,0,0},{{{1,0,0},{0,1,0}}},1e-8);
+  auto cut=preserved.CutSimple({{-.5,-.5},{.5,-.5},{.5,.5},{-.5,.5}});
+  bool found=false;for(const auto& face:cut.faces)if(face.parent==2){found=true;for(unsigned k=0;k<3;k++)Check(face.corners[k].vertex==faces[2][k],"Untouched thin triangle was changed");}
+  Check(found,"Clipping deleted an unrelated thin source triangle");
+ }
+ {
+  auto points=p;points.insert(points.end(),{{.8,.8,0},{1.,.8,0},{.9,.8+2e-10,0},{.8,.8,1}});
+  auto faces=f;faces.insert(faces.end(),{{4,5,6},{4,7,5},{5,7,6},{6,7,4}});
+  ConvexSurfaceCut preserved(points,faces,{true,true,true,false,false,false},{0,0,0},{{{1,0,0},{0,1,0}}},1e-8);
+  std::vector<std::array<double,2>> loop;for(unsigned j=0;j<37;j++){double a=6.283185307179586*j/37;loop.push_back({std::cos(a),std::sin(a)});}
+  auto cut=preserved.Cut(loop);bool found=false;for(auto face:cut.faces)found|=face.parent==2;
+  Check(found,"Eligible untouched sliver vanished during clipping");
+ }
+ {
   // The rear footprint narrows into a concave waist in a compound chart.
   // Cutting its convex hull would remove surrounding tissue incorrectly.
   std::vector<std::array<double,2>> footprint{{-1,-1},{1,-1},{.3,0},{1,1},{-1,1},{-.3,0}};

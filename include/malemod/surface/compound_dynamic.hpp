@@ -34,6 +34,21 @@ public:
   for(auto id:sourceVertices)if(id>=asset.rest.size())throw std::invalid_argument("Compound source leaves asset");
   for(const auto* field:{&assetChart,&bodyChart})for(auto p:*field)for(double x:p)if(!std::isfinite(x))throw std::invalid_argument("Nonfinite compound dynamic chart");
   for(auto p:{sourceTranslation,referenceAxis})for(auto x:p)if(!std::isfinite(x))throw std::invalid_argument("Nonfinite compound dynamic vector");
+  // Recover the authored polar frame from its measured chart, rather than
+  // assuming the game's axes. The dynamic aperture may translate its anchor;
+  // leaving this chart centered at the old anchor folds the ramp coordinates.
+  double radialLength=0;
+  for(unsigned i=0;i<mount.body.size();i++){
+   auto q=Sub(mount.body[i],mount.origin);q=Sub(q,Scale(referenceAxis,Dot(q,referenceAxis)));
+   const double length=Dot(q,q);if(length<=radialLength)continue;radialLength=length;
+   chartDown_=Unit(Sub(Scale(q,std::cos(bodyChart[i][1])),Scale(Cross(referenceAxis,q),std::sin(bodyChart[i][1]))));
+  }
+  chartSide_=Cross(referenceAxis,chartDown_);
+  chartRadius_=1e300;for(auto p:mount.section)chartRadius_=(std::min)(chartRadius_,std::sqrt(Dot(p,p)));
+  if(!std::isfinite(chartRadius_)||chartRadius_<=0)throw std::invalid_argument("Invalid compound disk scale");
+  for(auto p:reference.footprint){stationLow_=(std::min)(stationLow_,p[0]);stationHigh_=(std::max)(stationHigh_,p[0]);}
+  for(auto p:reference.footprint)reference.protectedKnots.push_back(p[0]>=.5*(stationLow_+stationHigh_));
+  for(auto& p:reference.chart)p=Disk(p);for(auto& p:reference.footprint)p=Disk(p);
   contact=std::make_unique<CompoundContactPlan>(reference);
  }
  std::vector<Vec> Source(const std::vector<Vec>& posed,const modular::State& state)const{
@@ -60,28 +75,53 @@ public:
  }
 private:
  const std::vector<std::array<unsigned,3>>* bodyFaces_=nullptr;
+ Vec chartDown_{},chartSide_{};
+ double chartRadius_=0,stationLow_=1e300,stationHigh_=-1e300;
+ UV Disk(UV p)const{
+  // Outside the socket this is exactly the planar body projection. Inside,
+  // a C1 monotone radius maps shaft stations into the punctured disk without
+  // an angular branch seam or exponentially ill-conditioned coordinates.
+  double radius=p[0]<=-chartRadius_?-p[0]:chartRadius_*chartRadius_/(p[0]+2*chartRadius_);
+  return {radius*std::cos(p[1]),radius*std::sin(p[1])};
+ }
  PreparedSupport BuildChart(const modular::DynamicResult& support,const modular::Asset& asset,std::vector<UV> chart,std::vector<std::array<unsigned,3>> faces,double scale)const{
   if(!bodyFaces_)throw std::logic_error("Compound body faces are not bound");
   const auto& mesh=support.surface;std::vector<bool> eligible,protect(mesh.points.size());
   for(auto face:mesh.faces)for(auto c:face)if(c.domain<2){UV uv{};const auto f=c.domain==0?bodyFaces_->at(c.parent):asset.faces[c.parent];
-   constexpr double tau=6.2831853071795864769;const double branch=(c.domain==0?bodyChart.at(f[0]):assetChart.at(f[0]))[1];
-   for(unsigned j=0;j<3;j++){auto q=c.domain==0?bodyChart.at(f[j]):assetChart.at(f[j]);if(c.domain==0)q[0]/=scale;q[1]+=tau*std::round((branch-q[1])/tau);for(unsigned d=0;d<2;d++)uv[d]+=q[d]*c.donor[j];}
+   if(c.domain==0){
+    // Polar coordinates are nonlinear. Interpolating the original body's
+    // radii/angles through a large triangle maps a small cut rim across the
+    // branch seam. Project the exact recruited point before interpolating
+    // any new contact cuts on the already-refined support.
+    auto q=Sub(mesh.points[c.vertex],support.anchor);auto radial=Sub(q,Scale(referenceAxis,Dot(q,referenceAxis)));
+    chart[c.vertex]={-std::sqrt(Dot(radial,radial))/scale,std::atan2(Dot(q,chartSide_),Dot(q,chartDown_))};
+    for(auto w:c.donor)if(w>1-1e-12)protect[c.vertex]=true;
+    continue;
+   }
+   constexpr double tau=6.2831853071795864769;const double branch=assetChart.at(f[0])[1];
+   for(unsigned j=0;j<3;j++){auto q=assetChart.at(f[j]);q[1]+=tau*std::round((branch-q[1])/tau);for(unsigned d=0;d<2;d++)uv[d]+=q[d]*c.donor[j];}
    uv[1]=std::remainder(uv[1],tau);
-   chart[c.vertex]=uv;if(c.domain==0)for(auto w:c.donor)if(w>1-1e-12)protect[c.vertex]=true;
+   chart[c.vertex]=uv;
   }
   const auto& rings=mesh.rings;
   for(unsigned row=1;row+1<rings.size();row++)for(unsigned j=0;j<rings[row].size();j++){
    double t=.5*(1-std::cos(3.14159265358979323846*row/(rings.size()-1)));auto a=chart[rings.front()[j]],b=chart[rings.back()[j]];constexpr double tau=6.2831853071795864769;b[1]+=tau*std::round((a[1]-b[1])/tau);
    for(unsigned d=0;d<2;d++)chart[rings[row][j]][d]=a[d]*(1-t)+b[d]*t;
   }
-  double low=1e300,high=-1e300;for(auto p:reference.footprint){low=(std::min)(low,p[0]);high=(std::max)(high,p[0]);}
+  const double low=stationLow_,high=stationHigh_;
   for(unsigned i=0;i<faces.size();i++){
-   auto f=faces[i];bool valid=true;for(auto id:f)valid&=std::abs(chart[id][1])<angularLimit;
+   auto f=faces[i];const double amin=(std::min)({chart[f[0]][1],chart[f[1]][1],chart[f[2]][1]}),amax=(std::max)({chart[f[0]][1],chart[f[1]][1],chart[f[2]][1]});
+   // A triangle crossing the angular guard still contains valid support.
+   // Requiring every corner inside leaves the cut on an eligibility edge
+   // instead of the authored footprint, particularly at small root scales.
+   // Exclude periodic seam triangles, whose wrapped chart spans the rear.
+   bool valid=amin<angularLimit&&amax>-angularLimit&&amax-amin<3.14159265358979323846;
    auto normal=Cross(Sub(mesh.points[f[1]],mesh.points[f[0]]),Sub(mesh.points[f[2]],mesh.points[f[0]]));
    if(mesh.faces[i][0].domain==0)valid&=Dot(normal,referenceAxis)>0;
    valid&=(std::min)({chart[f[0]][0],chart[f[1]][0],chart[f[2]][0]})<high+1;
    valid&=(std::max)({chart[f[0]][0],chart[f[1]][0],chart[f[2]][0]})>low-1;eligible.push_back(valid);
   }
+  for(auto& p:chart)p=Disk(p);
   return {std::move(chart),std::move(faces),std::move(eligible),std::move(protect)};
  }
 };

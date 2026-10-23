@@ -55,7 +55,9 @@ class CompoundGraftPlan {
   return Add(Add(Scale(a,2*t*t*t-3*t*t+1),Scale(b,-2*t*t*t+3*t*t)),
              Add(Scale(first,t*t*t-2*t*t+t),Scale(last,t*t*t-t*t)));
  }
- void PreserveStripOrientation(std::vector<Vec>& points)const{
+public:
+ static void PreserveStripOrientation(std::vector<Vec>& points,const std::vector<double>& parameters_,unsigned count_){
+  if(parameters_.size()<3||points.size()!=parameters_.size()*count_)throw std::invalid_argument("Compound strip dimensions differ");
   if(count_<3)return;
   std::vector<Vec> ruled(points.size());
   for(unsigned row=0;row<parameters_.size();row++)for(unsigned j=0;j<count_;j++)
@@ -65,22 +67,23 @@ class CompoundGraftPlan {
    visit(b,a,c);visit(b,c,d);
   }};
   auto normal=[](const std::vector<Vec>& p,unsigned a,unsigned b,unsigned c){return Cross(Sub(p[b],p[a]),Sub(p[c],p[a]));};
-  // Keep both endpoint positions and endpoint derivatives. Only the interior
-  // curvature is limited when a transported Hermite strip reverses its local
-  // parameterization. A compact quintic boundary field has zero derivative
-  // at each rim; it is not a smoothing pass over either retained surface.
-  auto base=ruled;std::vector<Vec> delta(points.size());
-  for(unsigned row=0;row<parameters_.size();row++){
-   double t=parameters_[row],u=(std::min)(1.,(std::min)(t,1-t)/.2),w=1-u*u*u*(10+u*(-15+6*u));
-   for(unsigned j=0;j<count_;j++){unsigned i=row*count_+j;base[i]=Add(ruled[i],Scale(Sub(points[i],ruled[i]),w));delta[i]=Sub(points[i],base[i]);}
-  }
+  // The fallback must not contain the very endpoint overshoot being limited.
+  // A boundary-weighted Hermite fallback can already fold near either rim;
+  // comparing against its normals then certifies the fold as valid. Use the
+  // endpoint-to-endpoint strip as the orientation reference and retain the
+  // largest safe amount of the authored curvature. This changes only the
+  // connecting skin: both retained surfaces and both rim positions stay exact.
+  // Tangency can be relaxed when necessary to prevent a fold. This local
+  // orientation test is not a substitute for whole-surface collision review.
+  const auto& base=ruled;std::vector<Vec> delta(points.size());
+  for(unsigned i=0;i<points.size();i++)delta[i]=Sub(points[i],base[i]);
   bool valid=true;
   triangles([&](unsigned a,unsigned b,unsigned c){auto n=normal(base,a,b,c);const double nn=Dot(n,n);if(nn>1e-28&&Dot(normal(points,a,b,c),n)<.02*nn)valid=false;});
   if(valid)return;
-  double fraction=1;
-  triangles([&](unsigned i,unsigned j,unsigned k){
-   auto n=normal(base,i,j,k);double nn=Dot(n,n);if(nn<=1e-28)return;
-   auto a=Sub(base[j],base[i]),b=Sub(base[k],base[i]),da=Sub(delta[j],delta[i]),db=Sub(delta[k],delta[i]);
+  auto limit=[&](unsigned i,unsigned j,unsigned k,Vec di,Vec dj,Vec dk){
+   double fraction=1;
+   auto n=normal(base,i,j,k);double nn=Dot(n,n);if(nn<=1e-28)return 1.;
+   auto a=Sub(base[j],base[i]),b=Sub(base[k],base[i]),da=Sub(dj,di),db=Sub(dk,di);
    double c=Dot(Cross(a,b),n)-.02*nn;
    if(c<0)throw std::runtime_error("Compound boundary strip reverses its parameterization");
    double linear=Dot(Add(Cross(da,b),Cross(a,db)),n),quadratic=Dot(Cross(da,db),n);
@@ -88,11 +91,38 @@ class CompoundGraftPlan {
    double scale=(std::max)({std::abs(c),std::abs(linear),std::abs(quadratic),1e-300});
    if(std::abs(quadratic)<1e-14*scale){if(linear<0)root(-c/linear);}
    else{double discriminant=linear*linear-4*quadratic*c;if(discriminant>0){double q=-.5*(linear+std::copysign(std::sqrt(discriminant),linear));root(q/quadratic);if(q!=0)root(c/q);}}
-  });
-  fraction*=.98;
+   return fraction;
+  };
+  double fraction=1;
+  triangles([&](unsigned i,unsigned j,unsigned k){fraction=(std::min)(fraction,limit(i,j,k,delta[i],delta[j],delta[k]));});fraction*=.98;
   for(unsigned i=0;i<points.size();i++)points[i]=Add(base[i],Scale(delta[i],fraction));
  }
 public:
+ static void ConformSourceEntry(std::vector<Vec>& points,const std::vector<double>& parameters,const std::vector<Vec>& normals){
+  const unsigned count=unsigned(normals.size());
+  if(count<3||parameters.size()<3||points.size()!=count*parameters.size())throw std::invalid_argument("Compound entry dimensions differ");
+  const auto base=points;std::vector<Vec> delta(points.size());std::vector<double> weights(count,1.);
+  unsigned rows=0;
+  for(unsigned row=1;row+1<parameters.size()&&parameters[row]<.2;row++){
+   rows=row;double t=parameters[row]/.2,fade=1-t*t*t*(10+t*(-15+6*t));
+   for(unsigned j=0;j<count;j++){auto n=normals[j];double nn=Dot(n,n);if(nn<=1e-20)throw std::invalid_argument("Collapsed compound entry normal");delta[row*count+j]=Scale(n,-Dot(Sub(base[row*count+j],base[j]),n)*fade/nn);}
+  }
+  // This fillet changes only the source end of the generated skin. It keeps
+  // the retained sac and the support end exact, and restores the source's
+  // tangent plane without projecting the opposite end into its support.
+  auto triangles=[&](auto&& visit){for(unsigned row=0;row<=rows;row++)for(unsigned j=0;j<count;j++){unsigned k=(j+1)%count,a=row*count+j,b=row*count+k,c=(row+1)*count+j,d=(row+1)*count+k;visit(b,a,c);visit(b,c,d);}};
+  bool settled=false;
+  for(unsigned iteration=0;iteration<48;iteration++){
+   std::vector<bool> reduce(count);bool valid=true;
+   triangles([&](unsigned i,unsigned j,unsigned k){auto a=Sub(base[j],base[i]),b=Sub(base[k],base[i]),n=Cross(a,b);double nn=Dot(n,n);if(nn<=1e-28)return;
+    auto di=Scale(delta[i],weights[i%count]),dj=Scale(delta[j],weights[j%count]),dk=Scale(delta[k],weights[k%count]);
+    if(Dot(Cross(Add(a,Sub(dj,di)),Add(b,Sub(dk,di))),n)<.1*nn){valid=false;reduce[i%count]=reduce[j%count]=reduce[k%count]=true;}
+   });
+   if(valid){settled=true;break;}for(unsigned j=0;j<count;j++)if(reduce[j])weights[j]*=.7;
+  }
+  if(!settled)return;
+  for(unsigned row=1;row<=rows;row++)for(unsigned j=0;j<count;j++)points[row*count+j]=Add(base[row*count+j],Scale(delta[row*count+j],weights[j]));
+ }
  CompoundGraftPlan(const std::vector<Vec>& source,const std::vector<Vec>& support,
      const std::vector<CompoundSurfaceDonor>& first,const std::vector<CompoundSurfaceDonor>& last,
      std::vector<Vec> firstTangents,std::vector<Vec> lastTangents,
@@ -140,7 +170,7 @@ public:
     out[row*count_+j]=Add(Hermite(a,b,first,last,t),Add(Scale(first_[j].Direction(residual,source),1-w),Scale(last_[j].Direction(residual,support),w)));
    }
   }
-  PreserveStripOrientation(out);
+  PreserveStripOrientation(out,parameters_,count_);
   return out;
  }
  CompoundGraftPlan Rebased(const std::vector<Vec>& source,const std::vector<Vec>& support)const{

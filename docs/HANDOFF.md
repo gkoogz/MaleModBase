@@ -1,3 +1,96 @@
+## October 22 late - native matrix completed, final material and campaign iteration
+
+The educational technical scope and authorized 45-degree / 1.7x inward
+attachment continue. Not installed. Preserve the exact accepted runtime.
+
+Shared repairs now include a punctured-disk contact chart recentered on the
+actual socket, lineage-preserving cut cleanup, a retained-source tangent fillet,
+harmonic strip normals and actual endpoint-displacement continuation for live
+controls. The latter avoids discontinuous ownership derivatives and preserves
+an already fitted connector exactly when controls are unchanged. Original
+pelvic samples, source-edge donors and UV aliases remain protected.
+
+Six exact captured failures replay successfully, including minimum size,
+defaults, upward/downward and intermediate widths. Native grey session
+sealed-session-20261022-224502 completed stages 600-695: 96 front/side/oblique
+views, three states, motion and both LODs/resources (mask 15). Closed normally,
+audio and all saves restored. This is native draw evidence, not full acceptance.
+The close-up still showed a lower material cuff. The baker now continues the
+retained two-dimensional UV field through the join instead of extruding a single
+boundary row; the ten material tests pass. This final bake needs native review.
+
+Campaign session 230012 reached 300-329 and exposed one cleanup ear at 75%
+size/width. Its improving diagonal flip gained 0.2%, below the arbitrary old
+1% minimum. A strict numerical improvement threshold permits the required
+sequence without relaxing orientation or surface displacement. Exact capture
+now builds and its width/hang/angle steps pass. Session closed normally and
+save restoration ran; final campaign and grey checks remain required.
+
+Current private inputs: Work/witcher/rear-attachment/expanded-support/
+runtime-compound-v2. Latest material work is material-continuation. Retain
+accepted rollback preview-1792541051157297300; working preview is
+preview-1792628600887622300. Do not call a private refresh installation.
+
+All 12 modular CTests previously passed; rerun after latest cleanup change.
+Full provenance has an existing Motion/calibration CMakeLists.txt hash mismatch;
+do not rewrite historical provenance to imply that it passed. Offline audits
+still contain retained/support and some support/connector crossings at minimum
+and downward controls; they are not a blanket intersection-free result. Native
+visual review is required. Pose cost remains roughly 75-145 ms, not Wolverine
+performance parity. Shared adoption for other spokes requires their own pinned
+native validation; no Wolverine runtime was changed.
+## October 22 evening - cut preservation, strip orientation and lighting repairs
+
+The selected inward attachment remains authorized for installation, but has not
+passed the native attachment gate. Continue the technical educational work.
+Do not mistake a private preview refresh or the improvements below for delivery.
+
+Implemented this iteration:
+- The strip orientation limiter now compares against a plain ruled surface.
+  Its old boundary-weighted fallback could itself fold. The same limiter runs
+  after direct control deformation; both retained rims remain exact.
+- Generated cut subdivisions have a larger area reserve before motion. Original
+  support and protected source triangles retain their original tolerance.
+- The cutter preserves untouched thin triangles, including inside clipping
+  stages, and rejects separated convex regions before partitioning. Previously
+  tolerance filtering punched unrelated holes. The exact native angle-35
+  failure now replays successfully. Broadly retaining every tiny barycentric
+  fragment was rejected: spatial welding produced branched boundaries.
+- Cleanup uses cross-product barycentric coordinates instead of subtracting
+  nearly equal Gram terms. This repairs the captured 75%-size construction
+  failure; its width/hang/angle edits all replay successfully.
+- `strip_lighting.hpp` reconstructs moving tangents and supplies harmonic
+  boundary-normal continuation. Fine normal variation decays with physical
+  distance instead of being extruded into long shading stripes. No positions
+  are changed by this lighting operation.
+- Material sampling follows the retained source component and its measured
+  texel density, choosing a compact detailed region rather than repeating a
+  tile containing a flat normal-map band. Retained atlas pixels stay exact.
+
+All 12 modular CTests and nine Python material tests pass. Full provenance still
+fails its existing `Motion/calibration provenance differs: CMakeLists.txt` check.
+The angle-15 conditioned replay has zero connector intersections and zero tiny
+faces in rest/motion; 101 distant retained-support crossings remain. Angle 35
+has 101 retained crossings, five touches and one tiny face. This is not a global
+geometry pass. Angle 1's earlier motion capture still has support/connector and
+source/support intersections; do not mark its contact problem solved.
+
+Native session `sealed-session-20261022-201529` reached stages 600-647 (48 of 96
+views), then minimum Overall/Width at angle 15 exposed another cut-boundary
+failure. The latest replay gets past the missing component but rejects a rim
+coordinate outside its footprint (`-6.062540,-0.039129`, distance `0.629581`).
+Do not loosen that guard or install this candidate. The current input is
+`Work/witcher/rear-attachment/expanded-support/runtime-compound-v2/`
+`harmonic-native-failure-{source.bin,shape.bin,state.txt}`.
+
+Native constant-texture comparisons isolated lower-join normal streaks from
+material detail. A sharp visible cuff/material join still requires visual
+acceptance. The C1 chord/meridian and membrane diagnostics were rejected for
+folding or nearly zero usable tangent length; they are not maintained fixes.
+Witcher consumes these SDK-free changes directly in a diagnostic build. Adopt
+through a tested Base pin in Wolverine/other spokes; their installs are intact.
+Read the adapter handoff for final native session and cleanup status.
+
 ## October 22 - rest-pose contamination and control dependencies repaired; candidate not accepted
 
 Continue the educational technical repair; the earlier blanket refusal was

@@ -63,7 +63,7 @@ def surface_density(points,faces,corner_uv):
     return float(density[order[np.searchsorted(np.cumsum(area[valid][order]),area[valid].sum()/2)]])
 
 
-def bake_patch(lower,upper,s,tile,width,height,repeats,normal=False):
+def bake_patch(lower,upper,s,tile,width,height,repeats,normal=False,continuations=None):
     """Boundary-exact patch with gradual pigment and consistent fine detail.
 
     Input normals must already use this chart's tangent frame. Caller supplies
@@ -115,6 +115,82 @@ def bake_patch(lower,upper,s,tile,width,height,repeats,normal=False):
     if normal:upper_field/=np.maximum(np.linalg.norm(upper_field,axis=1,keepdims=True),1e-12)
     result=result*end+upper_field[None]*(1-end)
     result+=(b-upper_field)[None]*(1-smooth((1-t)/.03))
+    if continuations is not None:
+        # A one-dimensional rim cannot describe folds crossing that rim.
+        # Use the retained surface's two-dimensional material continuation
+        # when the adapter can supply its original chart differential.
+        if len(continuations)!=2:raise ValueError('Expected both material continuations')
+        result=mid.copy()
+        for field,weight in zip(continuations,(1-start,1-end)):
+            field=np.asarray(field)
+            if field.shape!=result.shape or not np.isfinite(field).all():
+                raise ValueError('Invalid material continuation')
+            result=result*(1-weight)+field*weight
     if normal:result/=np.maximum(np.linalg.norm(result,axis=2,keepdims=True),1e-12)
     result[0]=a;result[-1]=b;result[:,-1]=result[:,0]
     return result
+
+
+def surface_uv_gradients(points,faces,uv):
+    """Area-weighted chart derivatives, preserving split UV vertex aliases."""
+    p=np.asarray(points);f=np.asarray(faces);v=np.asarray(uv)
+    e1=p[f[:,1]]-p[f[:,0]];e2=p[f[:,2]]-p[f[:,0]]
+    n=np.cross(e1,e2);area=np.linalg.norm(n,axis=1)
+    valid=area>1e-12
+    f=f[valid];e1=e1[valid];e2=e2[valid];n=n[valid];area=area[valid]
+    a=v[f[:,1]]-v[f[:,0]];b=v[f[:,2]]-v[f[:,0]]
+    gradients=(a[:,:,None]*np.cross(e2,n)[:,None,:]+b[:,:,None]*np.cross(n,e1)[:,None,:])/area[:,None,None]**2
+    result=np.zeros((len(p),2,3));weight=np.zeros(len(p))
+    for k in range(3):
+        np.add.at(result,f[:,k],gradients*area[:,None,None])
+        np.add.at(weight,f[:,k],area)
+    return result/np.maximum(weight[:,None,None],1e-20)
+
+
+def retained_skin_tile(points,faces,uv,patch,seeds,width,height,normal_image=None):
+    """Measure the retained component reached from the source-side rim.
+
+    UV aliases are welded only for component discovery; their original corner
+    coordinates remain authoritative for the skin mask and texel density.
+    """
+    from PIL import Image,ImageDraw
+    from scipy import sparse
+    from scipy.sparse.csgraph import connected_components
+    from scipy.ndimage import distance_transform_edt,uniform_filter,minimum_filter
+    _,weld=np.unique(np.round(points,5),axis=0,return_inverse=True)
+    triangles=faces[~patch];edges=weld[triangles]
+    a=edges.ravel();b=np.roll(edges,-1,axis=1).ravel()
+    graph=sparse.coo_matrix((np.ones(len(a)),(a,b)),shape=(weld.max()+1,)*2).tocsr()
+    _,components=connected_components(graph,directed=False)
+    selected=np.isin(components[weld[triangles]],np.unique(components[weld[seeds]])).all(1)
+    coords=uv[triangles];selected&=np.ptp(coords[:,:,0],axis=1)<.1
+    selected&=(coords[:,:,0]>.5).all(1)
+    triangles=triangles[selected];coords=coords[selected]
+    if len(triangles)<100:raise ValueError('Retained source skin component is incomplete')
+    mask=Image.new('L',(1024,512));draw=ImageDraw.Draw(mask)
+    for triangle in coords:draw.polygon([tuple(q*[1023,511]) for q in triangle],fill=255)
+    distance=distance_transform_edt(np.asarray(mask)>0)
+    y,x=np.unravel_index(distance.argmax(),distance.shape)
+    radius=min(12.,distance[y,x]*.6)
+    if radius<2:raise ValueError('No safe retained skin tile interior')
+    center=np.array([x/1023,y/511]);pixel=np.rint(center*[width-1,height-1]).astype(int)
+    half=np.maximum(4,np.floor(radius*np.array([width/1024,height/512])).astype(int))
+    if normal_image is not None:
+        # The widest UV interior may contain a flat band in a repeated source
+        # normal map. Repeating that band creates rectangular smooth panels.
+        # Choose a compact retained tile whose entire neighborhood contains
+        # measured relief, rather than choosing a strong single crease.
+        small=np.asarray(Image.fromarray(np.asarray(normal_image,dtype='u1')[:,:,:3]).resize(mask.size,Image.Resampling.BOX),dtype=float)
+        energy=np.sum((small[:,:,:2]-127.5)**2,axis=2)
+        score=minimum_filter(uniform_filter(energy,size=3),size=5)
+        score=np.where(distance>=4,score,-1)
+        y,x=np.unravel_index(np.argmax(score),score.shape)
+        if score[y,x]<=0:raise ValueError('No consistently detailed retained normal tile')
+        pixel=np.rint(np.array([x/1023,y/511])*[width-1,height-1]).astype(int)
+        half=np.maximum(4,np.rint(np.array([width/1024,height/512])*2).astype(int))
+    area=np.linalg.norm(np.cross(points[triangles[:,1]]-points[triangles[:,0]],points[triangles[:,2]]-points[triangles[:,0]]),axis=1)
+    tex=coords*np.array([width-1,height-1]);du=tex[:,1]-tex[:,0];dv=tex[:,2]-tex[:,0]
+    texarea=np.abs(du[:,0]*dv[:,1]-du[:,1]*dv[:,0]);valid=(area>1e-10)&(texarea>1e-10)
+    density=np.sqrt(texarea[valid]/area[valid]);order=np.argsort(density)
+    density=float(density[order[np.searchsorted(np.cumsum(area[valid][order]),area[valid].sum()*.5)]])
+    return pixel,half,density,int(len(triangles))

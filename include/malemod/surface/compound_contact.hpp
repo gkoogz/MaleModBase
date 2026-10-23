@@ -16,6 +16,9 @@ struct CompoundContactReference {
  std::vector<UV> chart,footprint;
  std::vector<bool> eligible;
  std::vector<bool> protectedSupport;
+ // Optional derived boundary constraints when a chart is reparameterized.
+ // These do not alter the serialized authoring contract.
+ std::vector<bool> protectedKnots;
  std::vector<unsigned> sourceLoop;
  std::vector<double> curve,parameters;
 };
@@ -35,7 +38,7 @@ struct CompoundContactCache {
  std::vector<Differential> differentials;
  struct SourceDifferential {unsigned parent,segment;Vec point;double t;};
  std::vector<SourceDifferential> sourceDifferentials;std::vector<unsigned> sourceLoop;
- std::vector<double> curveKnots,frameCoordinates;double framePeriod=0;
+ std::vector<double> curveKnots,frameCoordinates,parameters;double framePeriod=0;
  struct FrameFace {unsigned parent;Vec du,dv;double area;};
  std::vector<FrameFace> frameFaces;std::vector<double> frameWeights;
  std::vector<std::array<unsigned,3>> supportFaces,sourceFaces;
@@ -46,20 +49,33 @@ struct CompoundContactCache {
  void Clean(std::vector<bool> protectedVertices){
   if(protectedVertices.size()!=rest.size())throw std::invalid_argument("Compound cleanup protection differs");
   Vec lo=rest.front(),hi=lo;for(auto p:rest)for(unsigned k=0;k<3;k++){lo[k]=(std::min)(lo[k],p[k]);hi[k]=(std::max)(hi[k],p[k]);}
-  const auto extent=Sub(hi,lo);double threshold=Dot(extent,extent)*1e-12,distanceLimit=std::sqrt(Dot(extent,extent))*1e-5;
+  // A face just above the rest degeneracy threshold can drop below it under
+  // ordinary suspension compression. Condition generated subdivisions with
+  // an eightfold area reserve; do not move protected original samples.
+  const auto extent=Sub(hi,lo);double threshold=Dot(extent,extent)*8e-12,distanceLimit=std::sqrt(Dot(extent,extent))*1e-5;
   const double minimumEdge2=Dot(extent,extent)*4e-18;
   auto normal=[&](const std::array<CompoundContactCorner,3>& f){return Cross(Sub(rest[f[1].vertex],rest[f[0].vertex]),Sub(rest[f[2].vertex],rest[f[0].vertex]));};
-  auto needsCleanup=[&](const std::array<CompoundContactCorner,3>& f,double area){if(area<threshold)return true;for(unsigned k=0;k<3;k++){auto d=Sub(rest[f[k].vertex],rest[f[(k+1)%3].vertex]);if(Dot(d,d)<minimumEdge2)return true;}return false;};
+  auto needsCleanup=[&](const std::array<CompoundContactCorner,3>& f,double area){
+   bool original=true;for(auto c:f)original&=protectedVertices[c.vertex];
+   if(area<(f[0].domain==0||original?threshold/8:threshold))return true;
+   for(unsigned k=0;k<3;k++){auto d=Sub(rest[f[k].vertex],rest[f[(k+1)%3].vertex]);if(Dot(d,d)<minimumEdge2)return true;}return false;
+  };
   std::vector<bool> active(faces.size(),true);std::vector<double> areas(faces.size());std::vector<std::set<unsigned>> incident(rest.size());
   std::multimap<double,unsigned> bad;
   for(unsigned i=0;i<faces.size();i++){auto n=normal(faces[i]);areas[i]=std::sqrt(Dot(n,n));if(needsCleanup(faces[i],areas[i]))bad.emplace(areas[i],i);for(auto c:faces[i])incident[c.vertex].insert(i);}
   auto neighbors=[&](unsigned vertex,unsigned other){std::set<unsigned> result;for(auto fi:incident[vertex])for(auto c:faces[fi])if(c.vertex!=vertex&&c.vertex!=other)result.insert(c.vertex);return result;};
-  auto bary=[](Vec p,const std::array<Vec,3>& q){auto a=Sub(q[1],q[0]),b=Sub(q[2],q[0]),v=Sub(p,q[0]);double aa=Dot(a,a),ab=Dot(a,b),bb=Dot(b,b),den=aa*bb-ab*ab;if(den<=1e-30)throw std::runtime_error("Collapsed cleanup attribute triangle");double u=(Dot(v,a)*bb-Dot(v,b)*ab)/den,w=(Dot(v,b)*aa-Dot(v,a)*ab)/den;return Vec{1-u-w,u,w};};
+  // Clipped slivers are precisely where the Gram determinant aa*bb-ab*ab
+  // loses all significant digits. Cross-product coordinates retain their
+  // signed area and preserve the face's own attribute chart during cleanup.
+  auto bary=[](Vec p,const std::array<Vec,3>& q){auto a=Sub(q[1],q[0]),b=Sub(q[2],q[0]),v=Sub(p,q[0]),n=Cross(a,b);double den=Dot(n,n);if(den<=1e-30)throw std::runtime_error("Collapsed cleanup attribute triangle");double u=Dot(Cross(v,b),n)/den,w=Dot(Cross(a,v),n)/den;return Vec{1-u-w,u,w};};
   unsigned attempts=0,passCollapses=0;std::vector<std::pair<double,unsigned>> deferred;std::string rejection;
   auto nextPass=[&]{
    if(!bad.empty()||deferred.empty())return;
    const unsigned progress=collapsedEdges+flippedEdges+dissolvedFans;
-   if(progress==passCollapses)throw std::runtime_error("Compound cleanup cannot safely remove "+std::to_string(deferred.size())+" faces; first="+std::to_string(deferred.front().second)+rejection);
+   if(progress==passCollapses){
+
+    throw std::runtime_error("Compound cleanup cannot safely remove "+std::to_string(deferred.size())+" faces; first="+std::to_string(deferred.front().second)+rejection);
+   }
    passCollapses=progress;for(auto item:deferred)if(active[item.second]&&needsCleanup(faces[item.second],areas[item.second]))bad.emplace(areas[item.second],item.second);deferred.clear();
   };
   while(!bad.empty()){
@@ -67,7 +83,16 @@ struct CompoundContactCache {
    auto first=bad.begin();auto fi=first->second;auto value=first->first;bad.erase(first);if(!active[fi]||areas[fi]!=value){nextPass();continue;}
    std::vector<std::pair<double,std::pair<unsigned,unsigned>>> edges;
    for(unsigned k=0;k<3;k++){auto a=faces[fi][k].vertex,b=faces[fi][(k+1)%3].vertex;auto d=Sub(rest[a],rest[b]);edges.push_back({std::sqrt(Dot(d,d)),{a,b}});}
-   std::sort(edges.begin(),edges.end());bool accepted=false;rejection=" face="+std::to_string(fi);
+   // A tiny immutable rim segment cannot be merged across the support's
+   // original crease. Coarsen the adjacent meridian instead: its next-row
+   // neighbor can remove an unnecessary interior sample while preserving
+   // the full rim. The same surface-error and link-condition checks apply.
+   if(faces[fi][0].domain==2)for(auto corner:faces[fi])if(!protectedVertices[corner.vertex])
+    for(auto neighbor:incident[corner.vertex])for(auto other:faces[neighbor])if(other.domain==2&&other.vertex!=corner.vertex){
+     auto edge=std::minmax(corner.vertex,other.vertex);auto d=Sub(rest[edge.first],rest[edge.second]);edges.push_back({std::sqrt(Dot(d,d)),edge});
+    }
+   std::sort(edges.begin(),edges.end());edges.erase(std::unique(edges.begin(),edges.end()),edges.end());
+   bool accepted=false;rejection=" face="+std::to_string(fi);
    for(auto edge:edges){if(edge.first>distanceLimit*100){rejection+=" long="+std::to_string(edge.first);continue;}
     for(unsigned direction=0;direction<2;direction++){
      unsigned remove=direction?edge.second.second:edge.second.first,keep=direction?edge.second.first:edge.second.second;rejection+=" edge="+std::to_string(remove)+"->"+std::to_string(keep);if(protectedVertices[remove]){rejection+=" protected";continue;}
@@ -100,11 +125,11 @@ struct CompoundContactCache {
      collapsedEdges++;maximumRemovedEdge=(std::max)(maximumRemovedEdge,edge.first);accepted=true;break;
     }if(accepted)break;
    }
-   // Clipping can also make a long, almost collinear fan ear. Collapsing its
-   // edge would move the boundary too far. Flip only an internal diagonal of
-   // the SAME source triangle instead: positions, UV chart and surface stay
-   // exact, while the nearly collinear ear gets a well-conditioned diagonal.
-   if(!accepted&&faces[fi][0].domain<2)for(unsigned k=0;k<3&&!accepted;k++){
+   // A long, almost collinear ear can also occur at the generated strip's
+   // finely sampled rim. Flip an internal diagonal within the SAME material
+   // domain/parent, keeping all positions and per-corner charts. Nonplanar
+   // flips still have to satisfy the strict orientation checks below.
+   if(!accepted)for(unsigned k=0;k<3&&!accepted;k++){
     const auto a=faces[fi][k],b=faces[fi][(k+1)%3],c=faces[fi][(k+2)%3];
     std::vector<unsigned> both;std::set_intersection(incident[a.vertex].begin(),incident[a.vertex].end(),incident[b.vertex].begin(),incident[b.vertex].end(),std::back_inserter(both));if(both.size()!=2)continue;
     const unsigned other=both[0]==fi?both[1]:both[0];auto d=faces[other][0];bool compatible=true;
@@ -117,7 +142,23 @@ struct CompoundContactCache {
     // both triangles to clear the final threshold in one step strands valid
     // planar subdivisions. Strictly increase their minimum area to prevent
     // oscillation, and requeue any still-small result.
-    if((std::min)(ax,ay)<=(std::min)(areas[fi],areas[other])*1.01||Dot(nx,before)<.999999*ax*ab||Dot(ny,before)<.999999*ay*ab){rejection+=" flip-quality="+std::to_string(ax/threshold)+","+std::to_string(ay/threshold)+","+std::to_string(Dot(nx,before)/(ax*ab))+","+std::to_string(Dot(ny,before)/(ay*ab));continue;}
+    bool orientation=Dot(nx,before)>=.999999*ax*ab&&Dot(ny,before)>=.999999*ay*ab;
+    if(!orientation&&a.domain==0){
+     // A cut ear may be far thinner than its parent. Its world-space cross
+     // product is then an unreliable plane reference. Use the untouched
+     // parent's plane and the face-specific affine donors instead. This is
+     // bounded by the same surface-error budget as edge contraction.
+     const auto owner=supportFaces.at(a.parent);const auto origin=rest[owner[0]];
+     const auto plane=Cross(Sub(rest[owner[1]],origin),Sub(rest[owner[2]],origin));
+     const double length=std::sqrt(Dot(plane,plane));
+     auto signedDonor=[](const auto& f){auto u=Sub(f[1].donor,f[0].donor),v=Sub(f[2].donor,f[0].donor);return u[1]*v[2]-u[2]*v[1];};
+     orientation=length>0&&signedDonor(x)>0&&signedDonor(y)>0&&Dot(nx,plane)>0&&Dot(ny,plane)>0&&Dot(nx,before)>0&&Dot(ny,before)>0;
+     // Short accepted contractions can leave this parent slightly nonplanar.
+     // Reuse their existing displacement budget rather than treating the
+     // nearly zero-area ear's noisy normal as an exact plane constraint.
+     for(auto corner:{a,b,c,d})orientation&=std::abs(Dot(Sub(rest[corner.vertex],origin),plane))<=distanceLimit*length;
+    }
+    if((std::min)(ax,ay)<=(std::min)(areas[fi],areas[other])*(1+1e-8)||!orientation){rejection+=" flip-quality="+std::to_string(ax/threshold)+","+std::to_string(ay/threshold)+","+std::to_string(Dot(nx,before)/(ax*ab))+","+std::to_string(Dot(ny,before)/(ay*ab))+" gain="+std::to_string((std::min)(ax,ay)/(std::min)(areas[fi],areas[other]));continue;}
     for(auto f:{fi,other})for(auto corner:faces[f])incident[corner.vertex].erase(f);
     faces[fi]=x;faces[other]=y;areas[fi]=ax;areas[other]=ay;
     for(auto f:{fi,other})for(auto corner:faces[f])incident[corner.vertex].insert(f);
@@ -203,7 +244,9 @@ struct CompoundContactCache {
   auto points=rest;std::copy(support.begin(),support.end(),points.begin());
   for(auto s:supportSamples)points[s.vertex]=SamplePoint(support,supportFaces.at(s.parent),s.donor);
   for(auto s:sourceSamples)points[s.vertex]=SamplePoint(source,sourceFaces.at(s.parent),s.donor);
-  auto patch=graft->Evaluate(SourceDifferentialPoints(source),DifferentialPoints(support));
+  auto sourceFrames=SourceDifferentialPoints(source);auto patch=graft->Evaluate(sourceFrames,DifferentialPoints(support));
+  std::vector<Vec> entryNormals;for(unsigned j=0;j<rings.front().size();j++)entryNormals.push_back(Cross(Sub(sourceFrames[3*j+1],sourceFrames[3*j]),Sub(sourceFrames[3*j+2],sourceFrames[3*j])));
+  graft->ConformSourceEntry(patch,parameters,entryNormals);
   for(unsigned row=0;row<rings.size();row++)for(unsigned j=0;j<rings[row].size();j++)points[rings[row][j]]=patch[row*rings[row].size()+j];
   return points;
  }
@@ -235,7 +278,7 @@ class CompoundContactPlan {
    double t=std::clamp((delta[0]*edge[0]+delta[1]*edge[1])/(edge[0]*edge[0]+edge[1]*edge[1]),0.,1.);
    double error=std::hypot(delta[0]-t*edge[0],delta[1]-t*edge[1]);if(error<best){best=error;value=j+t;}
   }
-  if(best>1e-6)throw std::runtime_error("Compound cut boundary left its footprint");
+  if(best>1e-6)throw std::runtime_error("Compound cut boundary left its footprint: chart="+std::to_string(q[0])+","+std::to_string(q[1])+" distance="+std::to_string(best));
   if(value>=reference_.footprint.size()-1e-9)value=0;return value;
  }
  Vec Field(const std::vector<Vec>& values,unsigned row,double u)const{
@@ -262,9 +305,10 @@ public:
      const std::vector<std::array<unsigned,3>>& faces,const std::vector<UV>& chart,const std::vector<bool>& eligible,
      const std::vector<bool>& protectedSupport={})const{
   const auto& r=reference_;if(source.size()!=r.source.size())throw std::invalid_argument("Compound source topology differs");
+  if(!r.protectedKnots.empty()&&r.protectedKnots.size()!=r.footprint.size())throw std::invalid_argument("Compound boundary protection differs");
   if(!protectedSupport.empty()&&protectedSupport.size()!=support.size())throw std::invalid_argument("Compound support protection differs");
   auto cut=ConvexSurfaceCut(support,faces,eligible,chart,1e-8).CutSimple(r.footprint);
-  CompoundContactCache out;out.rest=cut.points;out.supportCount=unsigned(support.size());out.supportFaces=faces;out.sourceFaces=r.sourceFaces;out.sourceLoop=r.sourceLoop;
+  CompoundContactCache out;out.rest=cut.points;out.supportCount=unsigned(support.size());out.supportFaces=faces;out.sourceFaces=r.sourceFaces;out.sourceLoop=r.sourceLoop;out.parameters=r.parameters;
   out.PrepareFrames(support,chart,eligible);
   CompoundContactCache referenceFrames;referenceFrames.supportFaces=r.supportFaces;referenceFrames.PrepareFrames(r.support,r.chart,r.eligible);const auto smoothReference=referenceFrames.Frames(r.support);
   std::vector<bool> seen(cut.points.size());std::vector<CompoundContactCache::Sample> owners(cut.points.size());
@@ -278,7 +322,7 @@ public:
   for(auto knot:knots)out.curveKnots.push_back(knot.u);
   std::vector<double> sourceArc{0};for(unsigned j=0;j<r.sourceLoop.size();j++){auto d=Sub(r.source[r.sourceLoop[(j+1)%r.sourceLoop.size()]],r.source[r.sourceLoop[j]]);sourceArc.push_back(sourceArc.back()+std::sqrt(Dot(d,d)));}out.framePeriod=sourceArc.back();
   for(auto knot:knots){unsigned j=unsigned(knot.u);double t=knot.u-j;out.frameCoordinates.push_back(sourceArc[j]*(1-t)+sourceArc[j+1]*t);}
-  for(unsigned j=1;j<knots.size();j++)if(knots[j].u-knots[j-1].u<1e-9)throw std::runtime_error("Duplicate compound rim parameter");
+  for(unsigned j=1;j<knots.size();j++)if(knots[j].u-knots[j-1].u<1e-9)throw std::runtime_error("Duplicate compound rim parameter: "+std::to_string(knots[j-1].end)+","+std::to_string(knots[j].end)+" at "+std::to_string(knots[j].u)+" parents "+std::to_string(knots[j-1].parent)+","+std::to_string(knots[j].parent));
   // Source rim refinement uses exact original edges. Retained source vertices
   // and face-specific corner donors survive; no spatial nearest-neighbor bind.
   const unsigned sourceOffset=unsigned(out.rest.size());out.rest.insert(out.rest.end(),source.begin(),source.end());
@@ -329,6 +373,8 @@ public:
   auto sourceFrame=out.SourceDifferentialPoints(source),supportFrame=out.DifferentialPoints(support);
   out.graft=std::make_unique<CompoundGraftPlan>(out.graft->Rebased(sourceFrame,supportFrame));
   auto livePatch=out.graft->Evaluate(sourceFrame,supportFrame);
+  std::vector<Vec> entryNormals;for(unsigned j=0;j<knots.size();j++)entryNormals.push_back(Cross(Sub(sourceFrame[3*j+1],sourceFrame[3*j]),Sub(sourceFrame[3*j+2],sourceFrame[3*j])));
+  out.graft->ConformSourceEntry(livePatch,r.parameters,entryNormals);
   for(unsigned row=1;row+1<out.rings.size();row++)for(unsigned j=0;j<knots.size();j++){out.rings[row][j]=unsigned(out.rest.size());out.rest.push_back(livePatch[row*knots.size()+j]);}
   // Match the directed source rim: its retained surface runs in sourceLoop
   // order, so the connecting strip traverses that seam in the opposite order.
@@ -340,7 +386,7 @@ public:
   for(unsigned i=0;i<support.size();i++)protect[i]=protectedSupport.empty()?true:protectedSupport.at(i);
   for(unsigned i=0;i<source.size();i++)protect[sourceOffset+i]=true;
   double minStation=1e300,maxStation=-1e300;for(auto p:r.footprint){minStation=(std::min)(minStation,p[0]);maxStation=(std::max)(maxStation,p[0]);}
-  for(auto knot:knots)if(std::abs(knot.u-std::round(knot.u))<1e-8&&r.footprint[unsigned(std::round(knot.u))%r.footprint.size()][0]>=.5*(minStation+maxStation))protect[knot.end]=true;
+  for(auto knot:knots)if(std::abs(knot.u-std::round(knot.u))<1e-8){auto j=unsigned(std::round(knot.u))%r.footprint.size();if(r.protectedKnots.empty()?r.footprint[j][0]>=.5*(minStation+maxStation):r.protectedKnots.at(j))protect[knot.end]=true;}
   out.Clean(std::move(protect));
   return out;
  }

@@ -58,5 +58,17 @@ int main(){try{
  for(unsigned i=0;i<serial.size();i++)check(error(after[i],serial[i])<1e-12,"Staged parallel result differs from dependency order");
  bool rejected=false;try{DeformLiveControlLofts(width,bindings,staged,handles,before,after,&arena,2,1);}catch(const std::invalid_argument&){rejected=true;}
  check(rejected,"Invalid loft stage range was accepted");
+ // Adjacent cut samples can have different ownership derivatives despite
+ // sharing the same continuous boundary displacement. The immediate bridge
+ // must use that displacement without injecting a transverse step.
+ before={{0,0,0},{0,0,2},{0,1e-6,0},{0,1e-6,2},{.1,0,1},{.1,1e-6,1}};
+ after=before;after[1][0]=after[3][0]=.02;
+ const auto rims=after;
+ TranslateLiveControlLofts({{4,0,1,.5},{5,2,3,.5}},before,after,0,&arena);
+ for(unsigned i=0;i<4;i++)check(after[i]==rims[i],"Immediate bridge moved its retained rim");
+ check(error(Sub(after[5],after[4]),Sub(before[5],before[4]))<1e-12,"Immediate bridge split nearby material columns");
+ check(error(after[4],{.11,0,1})<1e-12,"Immediate bridge lost sculpted detail");
+ after=before;TranslateLiveControlLofts({{4,0,1,.5},{5,2,3,.5}},before,after);
+ check(after==before,"Identity bridge changed the fitted surface");
  std::cout<<"PASS live controls: root pivot, protected boundary, dilation, normal differentials, source-edge donors and loft detail\n";
 }catch(const std::exception& e){std::cerr<<e.what()<<'\n';return 1;}}
