@@ -1,5 +1,6 @@
 #pragma once
 #include "presentation.hpp"
+#include "suspension_hang.hpp"
 #include <algorithm>
 #include <vector>
 #include <optional>
@@ -18,6 +19,7 @@ struct LiveControlFrame {
  PresentationPoint root{},tip{},lobes{},bodyOrigin{};
  PresentationBasis basis{};
  double radius=1,bodyRadius=1;
+ double suspensionLiftCapacity=0;
 };
 inline double ControlCurve(double u,double low,double middle,double high){
  u=(std::max)(1.,u);
@@ -72,6 +74,7 @@ public:
   radial_=overall*ControlCurve(to.values[3],.95,1.59,2)/ControlCurve(from.values[3],.95,1.59,2);
   lobe_=Ball(to)/Ball(from);crown_=ControlCrown(to.values[4])/ControlCrown(from.values[4]);
   angle_=ControlAngle(to.values[7])-ControlAngle(from.values[7]);hang_=Hang(to)-Hang(from);
+  hang_+=frame.suspensionLiftCapacity*(modular::SuspensionLiftWeight(to.values[6])-modular::SuspensionLiftWeight(from.values[6]));
   angleCos_=std::cos(angle_);angleSin_=std::sin(angle_);
   shift_={ControlCurve(to.values[8],-2,-.7,6)-ControlCurve(from.values[8],-2,-.7,6),0,
           ControlCurve(to.values[9],-3,.400001,3)-ControlCurve(from.values[9],-3,.400001,3)};

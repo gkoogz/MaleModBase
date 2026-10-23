@@ -6,7 +6,7 @@
 #include <chrono>
 
 namespace malemod::surface::modular {
-struct DynamicResult {SurfaceJoin surface;Vec anchor{},axis{};double rootAdvance=0;std::vector<SurfaceJoinCorner> moduleVertices;std::vector<double> advances;Vec fitTranslation{},suspensionTranslation{};std::shared_ptr<const std::vector<Binding>> clearedBindings;double materialRoot=0;};
+struct DynamicResult {SurfaceJoin surface;Vec anchor{},axis{};double rootAdvance=0;std::vector<SurfaceJoinCorner> moduleVertices;std::vector<double> advances;Vec fitTranslation{},suspensionTranslation{};std::shared_ptr<const std::vector<Binding>> clearedBindings;double materialRoot=0,suspensionLiftCapacity=0;};
 struct DynamicMount {
  // Recruit a compact measured annulus, with extra ventral clearance. Keep the
  // aperture and its tangent construction on the same dimensionless contract.
@@ -97,7 +97,7 @@ struct DynamicMount {
   PelvicAperturePlan aperturePlan(body,faces,requestedAnchor,basis,section,1e-8);auto aperture=aperturePlan.Solve(axis,scale,rampMargin,undersideRampExtra);
   const auto apertureChart=ChartLoop(aperture.body,aperture.anchor,{{basis[1],basis[2]}});
   auto moved=state;for(unsigned i=1;i<15;i++)moved.frames[i].origin=Add(moved.frames[i].origin,aperture.translation);
-  double advance=0;std::vector<double> advances(asset.rest.size());Vec suspension{};
+  double advance=0,suspensionLiftCapacity=0;std::vector<double> advances(asset.rest.size());Vec suspension{};
   auto posed=plan.Evaluate(moved,[&](auto& points){
    const auto tilt=Sub(axis,Scale(basis[0],Dot(axis,basis[0])));const double tilt2=Dot(tilt,tilt);
    double tiltActivation=std::clamp((std::sqrt(tilt2)-.1)/.2,0.,1.);tiltActivation=tiltActivation*tiltActivation*(3-2*tiltActivation);
@@ -131,14 +131,15 @@ struct DynamicMount {
    // Evaluate is control/rest-only; Repose reuses this constant offset and
    // therefore retains the source solver's complete live swing.
    suspension=plan.SuspensionRestOffset(points,moved);
-   if(state.hangControl<50){
+   {
     auto measured=points;
     // Source offsets can contain live soft-tissue motion. Measure the lower
     // endpoints from the immutable zero-motion shape used by this cache.
     if(state.shaftMaterial)for(const auto& l:asset.lofts)
      if(ShaftBinding(l.lastOwner)&&!ShaftBinding(l.firstOwner))
       measured[l.start]=Add(state.shaftMaterial->at(l.start),aperture.translation);
-    suspension[2]+=SuspensionLift(measured,asset.lofts,state.sectionRadius,state.hangControl);
+    suspensionLiftCapacity=SuspensionLift(measured,asset.lofts,state.sectionRadius,1);
+    suspension[2]+=suspensionLiftCapacity*SuspensionLiftWeight(state.hangControl);
    }
    plan.TranslateSuspension(points,suspension);
   });
@@ -154,7 +155,7 @@ struct DynamicMount {
   // then reuse these immutable stations throughout live motion.
   std::shared_ptr<const std::vector<Binding>> clearedBindings;double materialRoot=0;
   if(auto material=ClearedMaterial(asset,state,advances)){auto socket=SocketBindings(asset,state,*material);materialRoot=socket.first;clearedBindings=socket.second;}
-  return {std::move(surface),aperture.anchor,axis,advance,std::move(mappings),std::move(advances),aperture.translation,suspension,clearedBindings,materialRoot};
+  return {std::move(surface),aperture.anchor,axis,advance,std::move(mappings),std::move(advances),aperture.translation,suspension,clearedBindings,materialRoot,suspensionLiftCapacity};
  }
 };
 }

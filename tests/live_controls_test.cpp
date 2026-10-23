@@ -18,6 +18,16 @@ int main(){try{
   check(std::abs(Dot(normal,tangent))<1e-9,"Nonuniform scale broke the tangent plane");
  }
  b=a;LiveControlDeformation identity(f,a,b);
+ // The immediate slider must include the same measured compact-neck lift
+ // as settled authoring, while preserving the lobe's shape and volume.
+ {auto lifted=f;lifted.suspensionLiftCapacity=5;auto low=a;low.values[6]=1;
+  LiveControlBinding lobe{0,1,0,0,false};
+  LiveControlDeformation plain(f,a,low),compact(lifted,a,low);
+  auto delta=Sub(compact.Point(f.lobes,lobe),plain.Point(f.lobes,lobe));
+  check(error(delta,{0,0,5})<1e-12,"Immediate low Hang omitted measured suspension lift");
+  auto p=Add(f.lobes,{2,1,-1});
+  check(error(Sub(compact.Point(p,lobe),compact.Point(f.lobes,lobe)),Sub(p,f.lobes))<1e-12,"Hang changed retained lobe shape");
+ }
  check(error(identity.Point({13,1,84},shaft),{13,1,84})==0,"Equal controls changed geometry");
  b.values[3]=100;LiveControlDeformation width(f,a,b);
  check(width.Point({4,3,80},body)[1]>3,"Body opening failed to dilate with width");

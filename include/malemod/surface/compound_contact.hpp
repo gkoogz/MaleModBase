@@ -1,5 +1,6 @@
 #pragma once
 #include "compound_graft.hpp"
+#include "suspension_profile.hpp"
 #include "convex_surface_cut.hpp"
 #include <memory>
 #include <numeric>
@@ -45,6 +46,7 @@ struct CompoundContactCache {
  std::vector<std::vector<unsigned>> rings;
  std::unique_ptr<CompoundGraftPlan> graft;
  unsigned supportCount=0;
+ double suspensionHang=0;
  unsigned collapsedEdges=0,flippedEdges=0,dissolvedFans=0;double maximumRemovedEdge=0;
  void Clean(std::vector<bool> protectedVertices){
   if(protectedVertices.size()!=rest.size())throw std::invalid_argument("Compound cleanup protection differs");
@@ -239,12 +241,14 @@ struct CompoundContactCache {
    auto meridian=Cross(Scale(normal,1/n),tangent);result.push_back(p);result.push_back(Add(p,tangent));result.push_back(Add(p,meridian));
   }return StabilizeFrames(result);
  }
- std::vector<Vec> Evaluate(const std::vector<Vec>& source,const std::vector<Vec>& support)const{
+ std::vector<Vec> Evaluate(const std::vector<Vec>& source,const std::vector<Vec>& support,double* profileFraction=nullptr)const{
   if(support.size()!=supportCount)throw std::invalid_argument("Compound support topology changed without rebuilding");
   auto points=rest;std::copy(support.begin(),support.end(),points.begin());
   for(auto s:supportSamples)points[s.vertex]=SamplePoint(support,supportFaces.at(s.parent),s.donor);
   for(auto s:sourceSamples)points[s.vertex]=SamplePoint(source,sourceFaces.at(s.parent),s.donor);
   auto sourceFrames=SourceDifferentialPoints(source);auto patch=graft->Evaluate(sourceFrames,DifferentialPoints(support));
+  const double applied=suspensionHang>0?ShapeSuspensionStrip(patch,parameters,unsigned(rings.front().size()),1,suspensionHang):1;
+  if(profileFraction)*profileFraction=applied;
   std::vector<Vec> entryNormals;for(unsigned j=0;j<rings.front().size();j++)entryNormals.push_back(Cross(Sub(sourceFrames[3*j+1],sourceFrames[3*j]),Sub(sourceFrames[3*j+2],sourceFrames[3*j])));
   graft->ConformSourceEntry(patch,parameters,entryNormals);
   for(unsigned row=0;row<rings.size();row++)for(unsigned j=0;j<rings[row].size();j++)points[rings[row][j]]=patch[row*rings[row].size()+j];
@@ -303,12 +307,13 @@ public:
  }
  CompoundContactCache Build(const std::vector<Vec>& source,const std::vector<Vec>& support,
      const std::vector<std::array<unsigned,3>>& faces,const std::vector<UV>& chart,const std::vector<bool>& eligible,
-     const std::vector<bool>& protectedSupport={})const{
+     const std::vector<bool>& protectedSupport={},double suspensionHang=0)const{
   const auto& r=reference_;if(source.size()!=r.source.size())throw std::invalid_argument("Compound source topology differs");
   if(!r.protectedKnots.empty()&&r.protectedKnots.size()!=r.footprint.size())throw std::invalid_argument("Compound boundary protection differs");
   if(!protectedSupport.empty()&&protectedSupport.size()!=support.size())throw std::invalid_argument("Compound support protection differs");
   auto cut=ConvexSurfaceCut(support,faces,eligible,chart,1e-8).CutSimple(r.footprint);
   CompoundContactCache out;out.rest=cut.points;out.supportCount=unsigned(support.size());out.supportFaces=faces;out.sourceFaces=r.sourceFaces;out.sourceLoop=r.sourceLoop;out.parameters=r.parameters;
+  out.suspensionHang=suspensionHang;
   out.PrepareFrames(support,chart,eligible);
   CompoundContactCache referenceFrames;referenceFrames.supportFaces=r.supportFaces;referenceFrames.PrepareFrames(r.support,r.chart,r.eligible);const auto smoothReference=referenceFrames.Frames(r.support);
   std::vector<bool> seen(cut.points.size());std::vector<CompoundContactCache::Sample> owners(cut.points.size());
@@ -373,6 +378,7 @@ public:
   auto sourceFrame=out.SourceDifferentialPoints(source),supportFrame=out.DifferentialPoints(support);
   out.graft=std::make_unique<CompoundGraftPlan>(out.graft->Rebased(sourceFrame,supportFrame));
   auto livePatch=out.graft->Evaluate(sourceFrame,supportFrame);
+  if(suspensionHang>0)ShapeSuspensionStrip(livePatch,r.parameters,unsigned(knots.size()),1,suspensionHang);
   std::vector<Vec> entryNormals;for(unsigned j=0;j<knots.size();j++)entryNormals.push_back(Cross(Sub(sourceFrame[3*j+1],sourceFrame[3*j]),Sub(sourceFrame[3*j+2],sourceFrame[3*j])));
   out.graft->ConformSourceEntry(livePatch,r.parameters,entryNormals);
   for(unsigned row=1;row+1<out.rings.size();row++)for(unsigned j=0;j<knots.size();j++){out.rings[row][j]=unsigned(out.rest.size());out.rest.push_back(livePatch[row*knots.size()+j]);}
