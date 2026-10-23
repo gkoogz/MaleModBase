@@ -39,6 +39,7 @@ struct CompoundContactCache {
  std::vector<Differential> differentials;
  struct SourceDifferential {unsigned parent,segment;Vec point;double t;};
  std::vector<SourceDifferential> sourceDifferentials;std::vector<unsigned> sourceLoop;
+ std::vector<double> sourceReferenceSideLength;
  std::vector<double> curveKnots,frameCoordinates,parameters;double framePeriod=0;
  struct FrameFace {unsigned parent;Vec du,dv;double area;};
  std::vector<FrameFace> frameFaces;std::vector<double> frameWeights;
@@ -241,7 +242,12 @@ struct CompoundContactCache {
  }
  std::vector<Vec> SourceDifferentialPoints(const std::vector<Vec>& source)const{
   std::vector<Vec> normals(source.size());for(auto f:sourceFaces){auto n=Cross(Sub(source[f[1]],source[f[0]]),Sub(source[f[2]],source[f[0]]));for(auto id:f)normals[id]=Add(normals[id],n);}
-  std::vector<Vec> side(sourceLoop.size());for(unsigned j=0;j<sourceLoop.size();j++)side[j]=Scale(Sub(source[sourceLoop[(j+1)%sourceLoop.size()]],source[sourceLoop[(j+sourceLoop.size()-1)%sourceLoop.size()]]),.5);
+  // Remove reference tessellation density before interpolating the frame.
+  // The divisor stays fixed during motion: live strain and uniform scaling
+  // remain part of the differential, unlike normalizing every live vector.
+  if(sourceReferenceSideLength.size()!=sourceLoop.size())throw std::invalid_argument("Compound source frame gauge differs");
+  std::vector<Vec> side(sourceLoop.size());for(unsigned j=0;j<sourceLoop.size();j++)
+   side[j]=Scale(Sub(source[sourceLoop[(j+1)%sourceLoop.size()]],source[sourceLoop[(j+sourceLoop.size()-1)%sourceLoop.size()]]),.5/sourceReferenceSideLength[j]);
   std::vector<Vec> result;result.reserve(sourceDifferentials.size()*3);
   for(auto d:sourceDifferentials){auto f=sourceFaces.at(d.parent);auto p=SamplePoint(source,f,d.point);Vec normal{};for(unsigned k=0;k<3;k++)normal=Add(normal,Scale(normals[f[k]],d.point[k]));
    auto tangent=Add(Scale(side[d.segment],1-d.t),Scale(side[(d.segment+1)%side.size()],d.t));
@@ -325,6 +331,11 @@ public:
   if(!protectedSupport.empty()&&protectedSupport.size()!=support.size())throw std::invalid_argument("Compound support protection differs");
   auto cut=ConvexSurfaceCut(support,faces,eligible,chart,1e-8).CutSimple(r.footprint);
   CompoundContactCache out;out.rest=cut.points;out.supportCount=unsigned(support.size());out.supportFaces=faces;out.sourceFaces=r.sourceFaces;out.sourceLoop=r.sourceLoop;out.parameters=r.parameters;
+  for(unsigned j=0;j<r.sourceLoop.size();j++){
+   auto side=Scale(Sub(r.source[r.sourceLoop[(j+1)%r.sourceLoop.size()]],r.source[r.sourceLoop[(j+r.sourceLoop.size()-1)%r.sourceLoop.size()]]),.5);
+   const double square=Dot(side,side);if(square<=1e-20)throw std::invalid_argument("Collapsed compound reference source side");
+   out.sourceReferenceSideLength.push_back(std::sqrt(square));
+  }
   out.suspensionHang=suspensionHang;
   out.suspensionForward=suspensionForward;
   out.PrepareFrames(support,chart,eligible);

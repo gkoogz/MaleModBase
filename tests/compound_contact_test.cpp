@@ -22,7 +22,44 @@ CompoundContactReference fixture(){
   auto p=r.source[r.sourceLoop[j]];PresentationPoint q{r.footprint[j][0],r.footprint[j][1],0};r.patch.push_back(Add(Scale(p,1-t),Scale(q,t)));
  }return r;
 }
+// Two meshes describe the same planar boundary. The second adds a tiny
+// cluster of collinear samples; this must not change the frame's density.
+struct SourceGaugeFixture {std::vector<PresentationPoint> source;CompoundContactCache cache;};
+SourceGaugeFixture sourceGaugeFixture(bool clustered){
+ SourceGaugeFixture f;auto& c=f.cache;f.source={{-2,0,0},{-1,0,0}};
+ if(clustered)for(double x:{-.0001,0.,.0001})f.source.push_back({x,0,0});else f.source.push_back({0,0,0});
+ for(auto p:std::vector<PresentationPoint>{{1,0,0},{2,0,0},{2,3,0},{-2,3,0}})f.source.push_back(p);
+ const unsigned count=unsigned(f.source.size());for(unsigned i=0;i<count;i++)c.sourceLoop.push_back(i);
+ f.source.push_back({0,1.5,0});std::vector<double> arc{0};
+ for(unsigned i=0;i<count;i++){
+  c.sourceFaces.push_back({count,i,(i+1)%count});auto edge=Sub(f.source[(i+1)%count],f.source[i]);arc.push_back(arc.back()+std::sqrt(Dot(edge,edge)));
+  auto side=Scale(Sub(f.source[(i+1)%count],f.source[(i+count-1)%count]),.5);c.sourceReferenceSideLength.push_back(std::sqrt(Dot(side,side)));
+ }
+ c.framePeriod=arc.back();
+ for(unsigned k=0;k<256;k++){
+  const double u=arc.back()*k/256;auto next=std::upper_bound(arc.begin(),arc.end(),u);const unsigned j=unsigned(next-arc.begin())-1;
+  const double t=(u-arc[j])/(arc[j+1]-arc[j]);c.curveKnots.push_back(j+t);c.frameCoordinates.push_back(u);c.sourceDifferentials.push_back({j,j,{0,1-t,t},t});
+ }return f;
+}
+void sourceGaugeRegression(){
+ auto regular=sourceGaugeFixture(false),clustered=sourceGaugeFixture(true);
+ const auto a=regular.cache.SourceDifferentialPoints(regular.source),b=clustered.cache.SourceDifferentialPoints(clustered.source);
+ unsigned samples=0;
+ for(unsigned i=0;i<256;i++)if(a[3*i][0]>-.5&&a[3*i][0]<.5&&std::abs(a[3*i][1])<1e-10){
+  samples++;for(unsigned k=1;k<3;k++){auto d=Sub(Sub(a[3*i+k],a[3*i]),Sub(b[3*i+k],b[3*i]));require(Dot(d,d)<1e-20,"Source frame depends on collinear tessellation density");}
+ }
+ require(samples>8,"Source gauge regression lacks shared samples");
+ // Fixed reference divisors retain actual live strain. Normalizing each live
+ // vector instead would discard uniform scaling and fail this check.
+ for(double scale:{.25,1.,3.})for(double angle:{-.7,.2,.9}){
+  auto transform=[&](PresentationPoint p){double c=std::cos(angle),s=std::sin(angle);return Add(Scale(PresentationPoint{c*p[0]-s*p[2],p[1],s*p[0]+c*p[2]},scale),{4,2,-3});};
+  auto source=clustered.source;for(auto& p:source)p=transform(p);auto moved=clustered.cache.SourceDifferentialPoints(source);
+  for(unsigned i=0;i<moved.size();i++){auto d=Sub(moved[i],transform(b[i]));require(Dot(d,d)<1e-20,"Source gauge discarded live scale or rotation");}
+ }
+}
+
 int main(){try{
+ sourceGaugeRegression();
  auto r=fixture();CompoundContactPlan plan(r);auto cache=plan.Build(r.source,r.support,r.supportFaces,r.chart,r.eligible,r.protectedSupport);
  auto p=cache.Evaluate(r.source,r.support);double restError=0;for(unsigned i=0;i<p.size();i++){auto d=Sub(p[i],cache.rest[i]);restError=(std::max)(restError,std::sqrt(Dot(d,d)));}require(restError<1e-10,"Rest reproduction differs");
  std::map<std::pair<unsigned,unsigned>,std::pair<unsigned,int>> edges;
