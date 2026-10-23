@@ -4081,3 +4081,38 @@ validation now rejects that read; repeated offline and instrumented native
 checks did not reproduce the corruption, whose cause remains unidentified.
 Do not relabel those follow-up successes as a complete attachment gate.
 
+## October 23 - inward compound attachment installed and observed
+
+The Witcher adapter installed the reviewed educational anatomy repair. Tested
+Base source is dfa0ab7ee6cb632f75c785571707cc52bd72f9e4; adapter runtime source
+is d75a8af6de176cebf8bb2bf9fa9b9bfee35ac59a. Subsequent handoff-only commits do
+not change those build identities or the adapter's tested pin.
+
+Final material continuation uses retained-neighborhood UV directions with
+bounded source texel density. It replaces the rejected unbounded extrapolation
+and preserves original atlas pixels outside the authored patch/gutter. Native
+review found a continuous inward attachment and smoother retained-surface join.
+The neutral pelvis, front attachment edge and source aliases remain protected.
+
+All 12 modular CTests, 11 material tests and six captured-failure control replays
+passed. Final grey session 20261022-234622 completed 96 views (both resources,
+both LODs, sizes, angles, states and motion); campaign 20261022-233951 completed
+39 views. All final images were reviewed. This is a sampled visual gate, not
+every possible slider combination, garment, scene or intersection-free proof.
+Offline support/contact crossings and roughly 75-150 ms pose preparation remain;
+do not claim Wolverine performance parity or full collision clearance. Historical
+Motion/calibration provenance still reports its existing CMakeLists.txt mismatch.
+
+Evidence: D:/MaleMod/Work/witcher/rear-attachment/expanded-support/
+runtime-compound-v2/{final-acceptance.json,final-visual-review.json,
+build-source-resolved.json,installed-check/result.json}. The actual installed
+executable started in an isolated window station, drew both resources, then
+closed with all 24 saves/audio restored; all 53 managed hashes verified.
+Interactive desktop behavior and ray tracing were not tested.
+
+IMPORTANT correction to older entries: the exact 53-file pre-install rollback
+is preview-1792592743439847600/game, NOT preview-1792541051157297300/game.
+No extra backup image was made. Old diagnostic-frame deletion was blocked by
+automatic approval review without a specific reason; leave those files intact.
+Wolverine was not changed. Adoption there requires its own pin/native review.
+
