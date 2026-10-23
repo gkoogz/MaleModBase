@@ -127,8 +127,8 @@ public:
   // Unchanged columns retain the exact orientation polynomial checked in
   // the previous sweep. Revisit their neighboring triangles only when a
   // participating weight changed; retain the full-sweep reduction order.
-  std::vector<bool> active(count,true);
-  auto triangles=[&](auto&& visit){for(unsigned row=0;row+1<rows;row++)for(unsigned j=0;j<count;j++){unsigned k=(j+1)%count,a=row*count+j,b=row*count+k,c=(row+1)*count+j,d=(row+1)*count+k;if(active[j]||active[k]){visit(b,a,c);visit(b,c,d);}}};
+  std::vector<unsigned> activeEdges;activeEdges.reserve(count);for(unsigned j=0;j<count;j++)activeEdges.push_back(j);
+  auto triangles=[&](auto&& visit){for(unsigned row=0;row+1<rows;row++)for(unsigned j:activeEdges){unsigned k=(j+1)%count,a=row*count+j,b=row*count+k,c=(row+1)*count+j,d=(row+1)*count+k;visit(b,a,c);visit(b,c,d);}};
   bool settled=false;
   // A microscopic moving cut ear can require more attenuation than 48
   // multiplicative sweeps. Do not abandon every valid column because of it.
@@ -145,7 +145,8 @@ public:
     if(quadratic>0){double t=-linear/(2*quadratic);if(t>0&&t<1)minimum=(std::min)(minimum,area(t));}
     if(minimum<0){valid=false;reduce[i%count]=reduce[j%count]=reduce[k%count]=true;}
    });
-   if(valid){settled=true;break;}for(unsigned j=0;j<count;j++)if(reduce[j])weights[j]=iteration<48?weights[j]*.7:0.;active=reduce;
+   if(valid){settled=true;break;}for(unsigned j=0;j<count;j++)if(reduce[j])weights[j]=iteration<48?weights[j]*.7:0.;
+   activeEdges.clear();for(unsigned j=0;j<count;j++)if(reduce[j]||reduce[(j+1)%count])activeEdges.push_back(j);
   }
   if(!settled)throw std::runtime_error("Compound entry orientation fallback did not converge");
   for(unsigned row=1;row+1<rows;row++)for(unsigned j=0;j<count;j++)points[row*count+j]=Add(base[row*count+j],Scale(delta[row*count+j],weights[j]));
