@@ -147,6 +147,40 @@ int main(){try{
   }
  }
  {
+  // One nearly coincident contact knot must not discard the tangent repair
+  // around the whole circumference. This recreates the moving cut-ear
+  // failure: the legacy guard exhausted its budget and returned the raw cuff.
+  constexpr unsigned count=32,rows=25;std::vector<double> parameters;std::vector<V> skin,normals;
+  for(unsigned row=0;row<rows;row++)parameters.push_back(double(row)/(rows-1));
+  for(unsigned j=0;j<count;j++){
+   const double a=j?1e-10+6.283185307179586*(j-1)/(count-1):0.;
+   normals.push_back(j==1?Unit(V{1,1,1}):V{std::cos(a),std::sin(a),0});
+  }
+  for(double t:parameters)for(unsigned j=0;j<count;j++){
+   const double a=j?1e-10+6.283185307179586*(j-1)/(count-1):0.;
+   skin.push_back({(1+.3*t)*std::cos(a),(1+.3*t)*std::sin(a),t});
+  }
+  auto old=skin;const auto iterations=FullSweepSourceEntry(old,parameters,normals);
+  Check(iterations==48&&old==skin,"Narrow-cut regression did not reproduce all-strip fallback");
+  auto repaired=skin;CompoundGraftPlan::ConformSourceEntry(repaired,parameters,normals);
+  Check(repaired!=skin,"One cut ear still disabled the entire entry repair");
+  const unsigned opposite=count/2;
+  const auto entry=Sub(repaired[count+opposite],repaired[opposite]);
+  Check(std::abs(Dot(entry,normals[opposite]))<.002,"Distant safe entry lost its tangent correction");
+  for(unsigned j=0;j<count;j++){
+   Check(repaired[j]==skin[j],"Local fallback moved retained source rim");
+   Check(repaired[(rows-1)*count+j]==skin[(rows-1)*count+j],"Local fallback moved mounted rim");
+  }
+  for(unsigned row=0;row+1<rows;row++)for(unsigned j=0;j<count;j++){
+   const unsigned k=(j+1)%count,a=row*count+j,b=row*count+k,c=(row+1)*count+j,d=(row+1)*count+k;
+   for(auto f:{std::array<unsigned,3>{a,b,c},std::array<unsigned,3>{b,d,c}}){
+    const auto n=Cross(Sub(skin[f[1]],skin[f[0]]),Sub(skin[f[2]],skin[f[0]]));
+    const auto m=Cross(Sub(repaired[f[1]],repaired[f[0]]),Sub(repaired[f[2]],repaired[f[0]]));
+    Check(Dot(n,m)>=.099999*Dot(n,n),"Local fallback overturned a narrow cut triangle");
+   }
+  }
+ }
+ {
   std::vector<V> field;std::vector<double> coordinate;
   for(unsigned i=0;i<128;i++){double a=6.283185307179586*i/128;coordinate.push_back(a);field.push_back(Unit(V{.2*std::sin(24*a),0,1}));}
   PeriodicNormalField normalField(field,coordinate,6.283185307179586);
@@ -185,9 +219,9 @@ int main(){try{
     double a=angles[j],radius=1+.7*std::sin(3.141592653589793*t)*std::sin(3*a+trial)+.9*t;
     skin.push_back({radius*std::cos(a)+t*height*.8,radius*std::sin(a),height*t+.3*std::cos(a)});
    }
-   auto full=skin,active=skin;maxIterations=(std::max)(maxIterations,FullSweepSourceEntry(full,parameters,normals));
+   auto full=skin,active=skin;const auto iterations=FullSweepSourceEntry(full,parameters,normals);maxIterations=(std::max)(maxIterations,iterations);
    CompoundGraftPlan::ConformSourceEntry(active,parameters,normals);
-   Check(std::memcmp(full.data(),active.data(),full.size()*sizeof(V))==0,"Active orientation worklist changed full-sweep geometry");
+   if(iterations<48)Check(std::memcmp(full.data(),active.data(),full.size()*sizeof(V))==0,"Active orientation worklist changed settled full-sweep geometry");
   }
   Check(maxIterations>1,"Worklist equivalence cases never reduced an orientation weight");
  }
