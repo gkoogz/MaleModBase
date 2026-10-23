@@ -124,7 +124,11 @@ public:
    // of the entry correction, avoiding the old transverse shoulder.
    for(unsigned row=1;row+1<rows;row++){double t=station[row]/length;delta[row*count+j]=Scale(correction,station[row]*(1-t)*(1-t)*(1-t));}
   }
-  auto triangles=[&](auto&& visit){for(unsigned row=0;row+1<rows;row++)for(unsigned j=0;j<count;j++){unsigned k=(j+1)%count,a=row*count+j,b=row*count+k,c=(row+1)*count+j,d=(row+1)*count+k;visit(b,a,c);visit(b,c,d);}};
+  // Unchanged columns retain the exact orientation polynomial checked in
+  // the previous sweep. Revisit their neighboring triangles only when a
+  // participating weight changed; retain the full-sweep reduction order.
+  std::vector<bool> active(count,true);
+  auto triangles=[&](auto&& visit){for(unsigned row=0;row+1<rows;row++)for(unsigned j=0;j<count;j++){unsigned k=(j+1)%count,a=row*count+j,b=row*count+k,c=(row+1)*count+j,d=(row+1)*count+k;if(active[j]||active[k]){visit(b,a,c);visit(b,c,d);}}};
   bool settled=false;
   for(unsigned iteration=0;iteration<48;iteration++){
    std::vector<bool> reduce(count);bool valid=true;
@@ -135,7 +139,7 @@ public:
     if(quadratic>0){double t=-linear/(2*quadratic);if(t>0&&t<1)minimum=(std::min)(minimum,area(t));}
     if(minimum<0){valid=false;reduce[i%count]=reduce[j%count]=reduce[k%count]=true;}
    });
-   if(valid){settled=true;break;}for(unsigned j=0;j<count;j++)if(reduce[j])weights[j]*=.7;
+   if(valid){settled=true;break;}for(unsigned j=0;j<count;j++)if(reduce[j])weights[j]*=.7;active=reduce;
   }
   if(!settled)return;
   for(unsigned row=1;row+1<rows;row++)for(unsigned j=0;j<count;j++)points[row*count+j]=Add(base[row*count+j],Scale(delta[row*count+j],weights[j]));
