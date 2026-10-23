@@ -55,6 +55,25 @@ int main(){try{
   unsigned open=0;for(auto item:usage){require(item.second<=2,"Cleanup made a branched strip");open+=item.second==1;}
   require(open==2*columns,"Cleanup changed the immutable rim");
  }
+ {
+  // A narrow fan on gently curved generated skin. Its center is farther
+  // along the skin than the point budget, but the retriangulation's normal
+  // error is below one tenth of that budget. The boundary is immutable.
+  CompoundContactCache ear;
+  ear.rest={{0,0,0},{.004,0,0},{.014,.000005,.000002},{.009,.02,.0001},{-.011,.02,0},{-.005,-.02,0},{.005,-.015,.00005},{100,0,0}};
+  for(unsigned j=1;j<=6;j++)ear.faces.push_back({CompoundContactCorner{0,2,0,{},0,1},CompoundContactCorner{j,2,0,{},double(j),0},CompoundContactCorner{j==6?1:j+1,2,0,{},double(j==6?1:j+1),0}});
+  std::vector<bool> protect(ear.rest.size(),true);protect[0]=false;
+  CompoundContactCache retained;retained.rest=ear.rest;retained.faces=ear.faces;for(auto& face:retained.faces)for(auto& c:face)c.domain=1;
+  bool guarded=false;try{retained.Clean(protect);}catch(const std::runtime_error&){guarded=true;}
+  require(guarded||retained.collapsedEdges==0,"Generated skin error budget leaked onto retained source");
+  const auto original=ear.rest;ear.Clean(protect);
+  require(ear.collapsedEdges==1,"Curved generated ear could not collapse within positional budget");
+  require(ear.rest==original,"Curved ear cleanup changed vertex positions");
+  std::map<std::pair<unsigned,unsigned>,unsigned> usage;
+  for(auto face:ear.faces){for(auto c:face)require(c.domain==2&&c.parent==0&&c.vertex!=0,"Cleanup crossed material parent or retained removed center");for(unsigned k=0;k<3;k++)usage[std::minmax(face[k].vertex,face[(k+1)%3].vertex)]++;}
+  unsigned open=0;for(auto item:usage){require(item.second<=2,"Curved ear cleanup became nonmanifold");open+=item.second==1;}
+  require(open==6,"Curved ear cleanup changed protected boundary");
+ }
  // A short forged header must be rejected before allocating its claimed mesh.
  std::string bytes="MMCCNT02";std::array<unsigned,7> counts{500000,1000000,500000,1000000,4096,50000,256};bytes.append(reinterpret_cast<const char*>(counts.data()),28);std::istringstream input(bytes);bool rejected=false;try{ReadCompoundContact(input);}catch(const std::runtime_error&){rejected=true;}require(rejected,"Oversize reference allocation accepted");
  std::cout<<"compound assembly, covariance, independent motion and input validation pass\n";

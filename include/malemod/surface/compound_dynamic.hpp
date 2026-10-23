@@ -71,7 +71,7 @@ public:
  }
  CompoundContactCache Build(const modular::DynamicResult& support,const modular::Asset& asset,const modular::State& state,const std::vector<Vec>& posed)const{
   auto input=PrepareSupport(support,asset,state);
-  return contact->Build(Source(posed,state),support.surface.points,input.faces,input.chart,input.eligible,input.protect,state.suspensionProfile?state.hangControl:0);
+  return contact->Build(Source(posed,state),support.surface.points,input.faces,input.chart,input.eligible,input.protect,state.suspensionProfile?state.hangControl:0,referenceAxis);
  }
 private:
  const std::vector<std::array<unsigned,3>>* bodyFaces_=nullptr;

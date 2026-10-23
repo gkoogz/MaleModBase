@@ -55,11 +55,15 @@ inline double SuspensionStripScale(double t,double hang,double aspect){
  return 1-.22*smooth((hang-1)/99.)*smooth((aspect-.08)/.62)*bell;
 }
 template<class Index> inline double ShapeSuspensionStripIndices(std::vector<PresentationPoint>& points,
- const std::vector<double>& parameters,unsigned count,Index index,double fromHang,double toHang,double fromFraction=1){
+ const std::vector<double>& parameters,unsigned count,Index index,double fromHang,double toHang,double fromFraction=1,PresentationPoint forward={}){
  using Vec=PresentationPoint;
  const unsigned rows=unsigned(parameters.size());
  if(rows<3||count<3||!std::isfinite(fromFraction)||fromFraction<0||fromFraction>1)
   throw std::invalid_argument("Compound suspension strip layout differs");
+ for(auto value:forward)if(!std::isfinite(value))throw std::invalid_argument("Invalid compound suspension forward axis");
+ const double forwardLength=std::hypot(forward[0],forward[1],forward[2]);
+ const bool widthOnly=forwardLength>0;
+ if(widthOnly)forward=Scale(forward,1/forwardLength);
  std::vector<Vec> center(rows);
  for(unsigned row=0;row<rows;row++){
   if(!std::isfinite(parameters[row])||parameters[row]<0||parameters[row]>1||(row&&parameters[row]<=parameters[row-1]))
@@ -85,10 +89,17 @@ template<class Index> inline double ShapeSuspensionStripIndices(std::vector<Pres
   const unsigned a=row?row-1:row,b=row+1<rows?row+1:row;
   auto tangent=Sub(center[b],center[a]);double length=std::sqrt(Dot(tangent,tangent));
   tangent=length>1e-12?Scale(tangent,1/length):axis;
+  auto side=Cross(tangent,forward);const double sideLength=std::sqrt(Dot(side,side));
+  side=sideLength>1e-12?Scale(side,1/sideLength):Vec{};
   const double fromScale=1+(SuspensionStripScale(parameters[row],fromHang,aspect)-1)*fromFraction;
   const double ratio=SuspensionStripScale(parameters[row],toHang,aspect)/fromScale;
   for(unsigned j=0;j<count;j++){auto id=index(row,j);
-   auto p=points[id],q=Sub(p,center[row]);q=Sub(q,Scale(tangent,Dot(q,tangent)));
+   auto p=points[id],q=Sub(p,center[row]);
+   // Compound boundaries are oblique, nonplanar attachment contours, not
+   // transverse tube sections. When a measured forward axis is available,
+   // narrow only lateral width: retain the anterior/posterior silhouette and
+   // height exactly. A parallel centerline has no defined side, so skip it.
+   q=widthOnly?Scale(side,Dot(q,side)):Sub(q,Scale(tangent,Dot(q,tangent)));
    before.push_back(p);delta.push_back(Scale(q,ratio-1));
   }
  }
@@ -120,15 +131,15 @@ template<class Index> inline double ShapeSuspensionStripIndices(std::vector<Pres
 }
 inline double ShapeSuspensionStrip(std::vector<PresentationPoint>& points,
  const std::vector<std::vector<unsigned>>& rings,const std::vector<double>& parameters,
- double fromHang,double toHang,double fromFraction=1){
+ double fromHang,double toHang,double fromFraction=1,PresentationPoint forward={}){
  if(rings.empty()||rings.size()!=parameters.size())throw std::invalid_argument("Compound suspension strip layout differs");
  const unsigned count=unsigned(rings.front().size());
  for(const auto& ring:rings)if(ring.size()!=count)throw std::invalid_argument("Compound suspension ring size differs");
- return ShapeSuspensionStripIndices(points,parameters,count,[&](unsigned row,unsigned col){return rings[row][col];},fromHang,toHang,fromFraction);
+ return ShapeSuspensionStripIndices(points,parameters,count,[&](unsigned row,unsigned col){return rings[row][col];},fromHang,toHang,fromFraction,forward);
 }
 inline double ShapeSuspensionStrip(std::vector<PresentationPoint>& points,
- const std::vector<double>& parameters,unsigned columnCount,double fromHang,double toHang,double fromFraction=1){
+ const std::vector<double>& parameters,unsigned columnCount,double fromHang,double toHang,double fromFraction=1,PresentationPoint forward={}){
  if(points.size()!=parameters.size()*std::size_t(columnCount))throw std::invalid_argument("Compound suspension flat layout differs");
- return ShapeSuspensionStripIndices(points,parameters,columnCount,[&](unsigned row,unsigned col){return row*columnCount+col;},fromHang,toHang,fromFraction);
+ return ShapeSuspensionStripIndices(points,parameters,columnCount,[&](unsigned row,unsigned col){return row*columnCount+col;},fromHang,toHang,fromFraction,forward);
 }
 }

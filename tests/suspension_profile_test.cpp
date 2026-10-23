@@ -65,5 +65,37 @@ int main(){try{
   for(unsigned row=0;row+1<rings.size();row++)for(unsigned j=0;j<24;j++){unsigned k=(j+1)%24;verify(rings[row][j],rings[row][k],rings[row+1][j]);verify(rings[row][k],rings[row+1][k],rings[row+1][j]);}
  }
  Check(limited,"Stress case never exercised orientation limit");
+ {
+  // Strongly nonplanar rings emulate a rear contour following the pelvis
+  // while its front contour follows the shaft. These are not tube sections.
+  auto nonplanar=unprofiled;
+  for(unsigned row=0;row<rings.size();row++)for(unsigned j=0;j<24;j++){
+   double angle=6.283185307179586*j/24;auto& p=nonplanar[rings[row][j]];
+   p[0]+=.2*std::cos(2*angle);p[2]+=1.3*std::cos(angle)+.4*std::sin(2*angle);
+  }
+  const auto rest=nonplanar;
+  Check(ShapeSuspensionStrip(nonplanar,rings,parameters,1,100,1,{1,0,0})==1,"Nonplanar width profile unnecessarily limited");
+  unsigned changedWidth=0;
+  for(unsigned row=0;row<rings.size();row++)for(auto id:rings[row]){
+   Check(nonplanar[id][0]==rest[id][0],"Width profile changed forward depth");
+   Check(nonplanar[id][2]==rest[id][2],"Width profile changed ring height");
+   if(parameters[row]<=.20||parameters[row]>=.9)Check(nonplanar[id]==rest[id],"Nonplanar tangent band moved");
+   changedWidth+=nonplanar[id][1]!=rest[id][1];
+  }
+  Check(changedWidth>0,"Width profile did not change lateral width");
+  auto partial=rest;for(unsigned i=0;i<partial.size();i++)partial[i]=Add(rest[i],Scale(Sub(nonplanar[i],rest[i]),.37));
+  auto restored=partial;ShapeSuspensionStrip(restored,parameters,24,100,1,.37,{1,0,0});
+  for(unsigned i=0;i<rest.size();i++)Check(Dot(Sub(restored[i],rest[i]),Sub(restored[i],rest[i]))<1e-25,"Nonplanar partial width profile did not invert");
+  ShapeSuspensionStrip(partial,rings,parameters,100,100,.37,{1,0,0});
+  for(unsigned i=0;i<rest.size();i++)Check(Dot(Sub(partial[i],nonplanar[i]),Sub(partial[i],nonplanar[i]))<1e-25,"Nonplanar partial width profile did not reach target");
+  const auto rotationAxis=Unit(PresentationPoint{1,2,-1});const double angle=.83;
+  auto rotate=[&](PresentationPoint p){return Add(Add(Scale(p,std::cos(angle)),Scale(Cross(rotationAxis,p),std::sin(angle))),Scale(rotationAxis,Dot(rotationAxis,p)*(1-std::cos(angle))));};
+  auto rotated=rest;for(auto& p:rotated)p=Add(Scale(rotate(p),2.3),{8,-3,7});
+  ShapeSuspensionStrip(rotated,rings,parameters,1,100,1,rotate({1,0,0}));
+  for(unsigned i=0;i<rest.size();i++){auto expected=Add(Scale(rotate(nonplanar[i]),2.3),{8,-3,7});Check(Dot(Sub(rotated[i],expected),Sub(rotated[i],expected))<1e-24,"Width profile depends on coordinate frame");}
+  auto straight=unprofiled;for(unsigned row=0;row<rings.size();row++)for(auto id:rings[row])straight[id][0]-=.25*parameters[row]*parameters[row];
+  const auto unchanged=straight;ShapeSuspensionStrip(straight,rings,parameters,1,100,1,{0,0,1});
+  Check(straight==unchanged,"Parallel forward axis did not skip undefined width contraction");
+ }
  std::cout<<"PASS attachment tangents, bounded monotone Hang waist, retained ownership and scale invariance\n";return 0;
  }catch(const std::exception& e){std::cerr<<e.what()<<'\n';return 1;}}

@@ -47,6 +47,7 @@ struct CompoundContactCache {
  std::unique_ptr<CompoundGraftPlan> graft;
  unsigned supportCount=0;
  double suspensionHang=0;
+ Vec suspensionForward{};
  unsigned collapsedEdges=0,flippedEdges=0,dissolvedFans=0;double maximumRemovedEdge=0;
  void Clean(std::vector<bool> protectedVertices){
   if(protectedVertices.size()!=rest.size())throw std::invalid_argument("Compound cleanup protection differs");
@@ -75,7 +76,6 @@ struct CompoundContactCache {
    if(!bad.empty()||deferred.empty())return;
    const unsigned progress=collapsedEdges+flippedEdges+dissolvedFans;
    if(progress==passCollapses){
-
     throw std::runtime_error("Compound cleanup cannot safely remove "+std::to_string(deferred.size())+" faces; first="+std::to_string(deferred.front().second)+rejection);
    }
    passCollapses=progress;for(auto item:deferred)if(active[item.second]&&needsCleanup(faces[item.second],areas[item.second]))bad.emplace(areas[item.second],item.second);deferred.clear();
@@ -100,6 +100,7 @@ struct CompoundContactCache {
      unsigned remove=direction?edge.second.second:edge.second.first,keep=direction?edge.second.first:edge.second.second;rejection+=" edge="+std::to_string(remove)+"->"+std::to_string(keep);if(protectedVertices[remove]){rejection+=" protected";continue;}
      std::vector<unsigned> both;std::set_intersection(incident[remove].begin(),incident[remove].end(),incident[keep].begin(),incident[keep].end(),std::back_inserter(both));if(both.size()!=2)continue;
      auto na=neighbors(remove,keep),nb=neighbors(keep,remove);std::set<unsigned> common,opposite;std::set_intersection(na.begin(),na.end(),nb.begin(),nb.end(),std::inserter(common,common.end()));for(auto b:both)for(auto c:faces[b])if(c.vertex!=remove&&c.vertex!=keep)opposite.insert(c.vertex);if(common!=opposite)continue;
+     bool generatedFan=true;for(auto f:incident[remove])for(auto c:faces[f])generatedFan&=c.domain==2;
      std::vector<std::pair<unsigned,std::array<CompoundContactCorner,3>>> revised;bool valid=true;
      for(auto f:incident[remove])if(f!=both[0]&&f!=both[1]){
       auto next=faces[f];for(auto& c:next)if(c.vertex==remove)c.vertex=keep;auto a=normal(faces[f]),b=normal(next);double aa=std::sqrt(Dot(a,a)),bb=std::sqrt(Dot(b,b));
@@ -107,10 +108,19 @@ struct CompoundContactCache {
       // error. Permit its contraction only when the retained point stays on
       // every affected face plane within one thousandth of the short-edge
       // budget. Protected source/boundary samples still cannot be removed.
-      if(edge.first>distanceLimit&&std::abs(Dot(Sub(rest[keep],rest[remove]),a))>distanceLimit*.001*aa){valid=false;break;}
+      // A generated meridian can be long along the surface yet have a tiny
+      // normal displacement. Its full closed fan may be retriangulated within
+      // a tenth of the EXISTING positional budget. This exception never
+      // crosses a retained material rim or removes a protected source sample.
+      // Source/support fans retain their original stricter plane budget.
+      if(edge.first>distanceLimit&&std::abs(Dot(Sub(rest[keep],rest[remove]),a))>distanceLimit*(generatedFan?.1:.001)*aa){valid=false;break;}
       // A below-tolerance sliver has an ill-conditioned normal. Preserve its
       // winding, but constrain angular change using the resolved neighbors.
-      if(bb<(std::min)(aa,threshold)*.999||Dot(a,b)<(aa>=threshold?.995:0.)*aa*bb){valid=false;break;}
+      // The cleanup threshold contains an eightfold motion reserve. Faces
+      // only just above it still have unreliable angular normals; their
+      // signed orientation and bounded displacement are the useful guards.
+      const double resolvedArea=threshold*(generatedFan?8:1);
+      if(bb<(std::min)(aa,threshold)*.999||Dot(a,b)<(aa>=resolvedArea?.995:0.)*aa*bb){valid=false;break;}
       // Extend this corner's own material chart to the retained sample.
       const std::array<Vec,3> q{rest[faces[f][0].vertex],rest[faces[f][1].vertex],rest[faces[f][2].vertex]};
       auto weights=bary(rest[keep],q);
@@ -247,7 +257,7 @@ struct CompoundContactCache {
   for(auto s:supportSamples)points[s.vertex]=SamplePoint(support,supportFaces.at(s.parent),s.donor);
   for(auto s:sourceSamples)points[s.vertex]=SamplePoint(source,sourceFaces.at(s.parent),s.donor);
   auto sourceFrames=SourceDifferentialPoints(source);auto patch=graft->Evaluate(sourceFrames,DifferentialPoints(support));
-  const double applied=suspensionHang>0?ShapeSuspensionStrip(patch,parameters,unsigned(rings.front().size()),1,suspensionHang):1;
+  const double applied=suspensionHang>0?ShapeSuspensionStrip(patch,parameters,unsigned(rings.front().size()),1,suspensionHang,1,suspensionForward):1;
   if(profileFraction)*profileFraction=applied;
   std::vector<Vec> entryNormals;for(unsigned j=0;j<rings.front().size();j++)entryNormals.push_back(Cross(Sub(sourceFrames[3*j+1],sourceFrames[3*j]),Sub(sourceFrames[3*j+2],sourceFrames[3*j])));
   graft->ConformSourceEntry(patch,parameters,entryNormals);
@@ -307,13 +317,14 @@ public:
  }
  CompoundContactCache Build(const std::vector<Vec>& source,const std::vector<Vec>& support,
      const std::vector<std::array<unsigned,3>>& faces,const std::vector<UV>& chart,const std::vector<bool>& eligible,
-     const std::vector<bool>& protectedSupport={},double suspensionHang=0)const{
+     const std::vector<bool>& protectedSupport={},double suspensionHang=0,Vec suspensionForward={})const{
   const auto& r=reference_;if(source.size()!=r.source.size())throw std::invalid_argument("Compound source topology differs");
   if(!r.protectedKnots.empty()&&r.protectedKnots.size()!=r.footprint.size())throw std::invalid_argument("Compound boundary protection differs");
   if(!protectedSupport.empty()&&protectedSupport.size()!=support.size())throw std::invalid_argument("Compound support protection differs");
   auto cut=ConvexSurfaceCut(support,faces,eligible,chart,1e-8).CutSimple(r.footprint);
   CompoundContactCache out;out.rest=cut.points;out.supportCount=unsigned(support.size());out.supportFaces=faces;out.sourceFaces=r.sourceFaces;out.sourceLoop=r.sourceLoop;out.parameters=r.parameters;
   out.suspensionHang=suspensionHang;
+  out.suspensionForward=suspensionForward;
   out.PrepareFrames(support,chart,eligible);
   CompoundContactCache referenceFrames;referenceFrames.supportFaces=r.supportFaces;referenceFrames.PrepareFrames(r.support,r.chart,r.eligible);const auto smoothReference=referenceFrames.Frames(r.support);
   std::vector<bool> seen(cut.points.size());std::vector<CompoundContactCache::Sample> owners(cut.points.size());
@@ -378,7 +389,7 @@ public:
   auto sourceFrame=out.SourceDifferentialPoints(source),supportFrame=out.DifferentialPoints(support);
   out.graft=std::make_unique<CompoundGraftPlan>(out.graft->Rebased(sourceFrame,supportFrame));
   auto livePatch=out.graft->Evaluate(sourceFrame,supportFrame);
-  if(suspensionHang>0)ShapeSuspensionStrip(livePatch,r.parameters,unsigned(knots.size()),1,suspensionHang);
+  if(suspensionHang>0)ShapeSuspensionStrip(livePatch,r.parameters,unsigned(knots.size()),1,suspensionHang,1,suspensionForward);
   std::vector<Vec> entryNormals;for(unsigned j=0;j<knots.size();j++)entryNormals.push_back(Cross(Sub(sourceFrame[3*j+1],sourceFrame[3*j]),Sub(sourceFrame[3*j+2],sourceFrame[3*j])));
   out.graft->ConformSourceEntry(livePatch,r.parameters,entryNormals);
   for(unsigned row=1;row+1<out.rings.size();row++)for(unsigned j=0;j<knots.size();j++){out.rings[row][j]=unsigned(out.rest.size());out.rest.push_back(livePatch[row*knots.size()+j]);}
