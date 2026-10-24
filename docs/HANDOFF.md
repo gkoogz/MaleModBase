@@ -1,3 +1,24 @@
+## October 24 - Witcher three-issue repair installed after native acceptance
+
+The user-authorized repair is now installed in Witcher only. Compiled Base revision
+342a15264adc37d050a55a6e0d9b36b323f9a519 and adapter2db0690 passed clean source
+proof18, modular14 and material17 tests, ordered worker adoption5, and actual
+visual review of grey96/campaign39 plus two36-frame Full Floppy walking/settling
+sequences. No broad anterior padding discoloration, prior inward shaft intrusion
+or sharp rear fold is visible in these reviewed cases; flexible motion remains.
+Short-wide head volume/spike regression is also repaired. This finite matrix is
+not every pose/slider combination; original sculpted ridges and texture stretching
+remain at extreme proportions. No new garment/performance-parity claim is made.
+
+Canonical private evidence is Work/witcher/hang-review/volume-review/acceptance.json
+and delivery-verification.json. DLL c1b072cc4a6c79a08da223e4506a666a4586ade4718c034660cace5e02abe5a2;
+worker23c469d4a4ea57b164e6edd137cab342a80155cac829b619d303a397554a17cd.
+Managed-only exact previous53-file runtime is Work/witcher/native-rollback-hang-current.
+All53 installed and rollback files verified;31 protected files preserved. Native
+installed session133839 verified grounded walking and live output; closed normally,
+24 saves and scoped audio restored. Witcher Steam grey-room proof was refreshed
+and play_grey_room.py --check passed. Wolverine is unchanged. See adapter HANDOFF.
+
 ## October 24 - short-wide native regression repair, not installed
 
 The full padding-review grey96 gate failed at stages669..674: stepped shaft,
