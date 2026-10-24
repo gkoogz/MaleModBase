@@ -75,6 +75,7 @@ def verify(executable, library, output, legacy_executable=None):
              'tests/garment_support_runtime_cli.cpp', 'include/malemod/surface/wire.hpp',
              'include/malemod/surface/runtime.hpp', 'include/malemod/surface/garment_impulse.hpp',
              'include/malemod/surface/solid_rod_response.hpp',
+             'include/malemod/surface/crown_material.hpp',
              'include/malemod/garments/reaction_support.hpp',
              'legacy/wolverine/src/runtime/compliant_dynamics.h',
              'provenance/wolverine.json', 'provenance/source-surface.json',

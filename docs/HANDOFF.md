@@ -1,3 +1,20 @@
+## October 24 - short-wide native regression repair, not installed
+
+The full padding-review grey96 gate failed at stages669..674: stepped shaft,
+ventral spikes and a flattened crown. Source donor/rest coordinates and discarded
+axial residuals were inconsistent at short lengths. Target-owned corrections now
+ease in below default Length; authored crown volume uses isotropic scaling with
+an exact first ring and a smoothly faded seam residual. All14 modular tests pass.
+
+The rest-guide material-initialization experiment produced an attachment ridge
+and was removed. An unscoped frame change broke intermediate geometry and was
+replaced by the smooth below-default-length correction. Native-crown session
+130302 completed18 focused views: spikes and flattened crown are absent in the
+reviewed short-wide cases; longer/default/minimum cases also drew. Saves/audio
+restored and53 installed files unchanged. Evidence: Work/witcher/hang-review/
+repair-short-wide. This diagnostic does not authorize installation. Clean worker
+adoption and final coupled grey96/campaign39/motion acceptance remain required.
+
 ## October 24 - resumed Witcher three-issue repair candidate; NOT installed
 
 Latest checkpoint: the coherent-envelope grey run was interrupted at 58 captures;

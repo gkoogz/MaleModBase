@@ -260,6 +260,37 @@ for d in sorted(decl,key=position):
  if d['name']=='BuildShaftRestFrame':
   if s.count('center.y=0.f;')!=1:raise ValueError('Source guide lateral anchor span changed')
   s=s.replace('center.y=0.f;','center.y=ShaftRoot().y;')
+  marker='  for(UINT i=0;i<graftCount;i++){\n    graftRestFlex[i]=ClosestRestShaftFlex(graftDeformedPositions[i]);'
+  if s.count(marker)!=1:raise ValueError('Source rest material station entry changed')
+  s=s.replace(marker,'''  if(physicsState==0&&surfaceTargetOwnsCollar&&sliderUI[1]<50.f){
+    const float blend=SurfaceShortMaterialBlend();const V3 root=ShaftRoot(),span=shaftRestCenters[shaftRestSampleCount-1]-root;
+    for(int i=1;i<shaftRestSampleCount;i++)shaftRestCenters[i]=shaftRestCenters[i]*(1.f-blend)+(root+span*(float(i)/(shaftRestSampleCount-1)))*blend;
+  }
+'''+marker)
+  s='static float SurfaceShortMaterialBlend(){return surfaceTargetOwnsCollar?Smoother01((50.f-sliderUI[1])/50.f):0.f;}\n'+s
+ if d['name']=='UpdateR14':
+  start=s.index('  if(sliderUI[1]<50.f){')
+  end=s.index('  // Fair only the proximal ventral transition.',start)
+  original=s[start:end]
+  corrected=original+'''  if(surfaceTargetOwnsCollar&&sliderUI[1]<50.f){
+    // The independent head is an isotropic material body. Length may shorten
+    // the shaft, but must not flatten the crown through an anisotropic donor
+    // cage. Reuse its authored glans controls, exact topology and root seam.
+    static V3 material[r14Count];
+    for(UINT i=r14NewStart;i<r14Count;i++)material[i]=base[i]+V3{r14LowerDelta[3*i],r14LowerDelta[3*i+1],r14LowerDelta[3*i+2]}*lowerFactor;
+    V3 axis{},center{};SampleShaftChain(.90f,center,axis);
+    ::malemod::surface::RestoreCrownMaterial(r14Positions,material,r14Count,r14NewStart,r14RingCount,r14SegmentCount,r14CrownRing,axis,SurfaceShortMaterialBlend());
+  }
+'''
+  s=s[:start]+corrected+s[end:]
+ if d['name']=='ApplyConstraintCurve':
+  marker='t=t*(1.f-distal)+graftRestFlex[i]*distal;'
+  if s.count(marker)!=1:raise ValueError('Source material station span changed')
+  s=s.replace(marker,marker+'\n  const float materialBlend=SurfaceShortMaterialBlend();if(materialBlend>0.f){t+=(graftRestFlex[i]-t)*materialBlend;distal+=(1.f-distal)*materialBlend;}')
+ if d['name']=='CaptureLogicalShaftSurface':
+  marker='logicalShaftRestRadial[i]=offset-tangent*Dot(offset,tangent);'
+  if s.count(marker)!=1:raise ValueError('Source material residual span changed')
+  s=s.replace(marker,'logicalShaftRestRadial[i]=offset-tangent*(Dot(offset,tangent)*(1.f-SurfaceShortMaterialBlend()));')
  if d['name']=='FlareAttachment':
   if s.count('value[1]*=scale;')!=1:raise ValueError('Source radial origin span changed')
   s=s.replace('value[1]*=scale;','if(root.y==0.f)value[1]*=scale;else value[1]=root.y+(value[1]-root.y)*scale;')

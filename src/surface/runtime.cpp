@@ -9,6 +9,7 @@
 #include <fstream>
 #include <filesystem>
 #include <malemod/surface/solid_rod_response.hpp>
+#include <malemod/surface/crown_material.hpp>
 #include "surface-kernel.inc"
 #include <malemod/surface/collar_field.hpp>
 #include <malemod/surface/garment_support.hpp>
