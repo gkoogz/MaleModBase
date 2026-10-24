@@ -193,6 +193,23 @@ int main(){try{
    Check(rest.materialScale==Vec{1,1,1}&&std::abs(rest.sectionRadius-2)<1e-12,"Rest state retained transient strain");
   }
  }
+ {
+  State s;s.hasShapeFrames=true;s.sectionRadius=1.5;
+  for(unsigned i=1;i<=12;i++){
+   s.shapeFrames[i].origin={double(i-1),0,0};
+   s.frames[i].origin={double(i-1),.03*(i-1)*(i-1),0};
+   if(i>1)s.frames[i].basis={Vec{1,0,0},Vec{0,-1,0},Vec{0,0,-1}};
+  }
+  PreserveMaterialLengths(s);
+  for(unsigned i=2;i<=12;i++){
+   Check(s.frames[i].basis[2][2]>.999999,"Unsimulated section roll twisted the rod");
+   Check(std::abs(Dot(s.frames[i].basis[0],s.frames[i].basis[1]))<1e-12,"Material frame lost orthogonality");
+  }
+  auto end=s.frames[12].origin;
+  Check(end[1]>.1&&end[0]>0,"Solid rod lost flexible bending");
+  PreserveMaterialLengths(s);
+  Check(Dot(Sub(s.frames[12].origin,end),Sub(s.frames[12].origin,end))<1e-20,"Solid rod correction accumulated");
+ }
  bool rejected=false;try{moved.scales[1][1]=0;plan.Evaluate(moved);}catch(const std::invalid_argument&){rejected=true;}Check(rejected,"Collapsed morphology accepted");
  std::cout<<"PASS independent shaft/lobe ownership, live connecting skin, exact rest and invalid-scale rejection\n";
  return 0;

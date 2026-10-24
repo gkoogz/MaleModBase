@@ -1,3 +1,84 @@
+## October 24 - resumed Witcher three-issue repair candidate; NOT installed
+
+Latest checkpoint: the coherent-envelope grey run was interrupted at 58 captures;
+its exact orphan receipt was recovered, no private audio session remained, saves
+were restored and all 53 installed files verified. Evidence is final-review/grey/
+interrupted-evidence.json, not acceptance. New tangent-corrected DLL c1b072cc
+completed default Full Floppy walking/decay stages600..635, state2/all sliders50;
+side review shows smooth bending without sharp folding. Native full-angle/size
+review continues in tangent-review. No full gate or installation is claimed.
+
+The remaining pale midline was isolated in the diffuse atlas: retained seam
+triangles sample constant padding between original skin islands. Shared
+fill_color_voids continues adjacent pigment plus same-source detail only over
+the measured compressed padding palette; surrounding texels, UVs and alpha are
+preserved. Offline front comparison removes the pale bands. Native material
+candidate repair-padding-v2 remains pending. All 17 loft-material tests pass.
+
+User authorized correcting scrotal/shaft overlap, front discoloration and excessive
+full-floppy folding, with native verification before installation. Shared changes:
+parallel transported shaft section frames and a tighter material curvature bound;
+target-owned Full Floppy numerical bend compliance x0.4 (legacy ownership and the
+other states retain their previous force law); a coherent common suspension frame
+for the connected outer sac, independent of the two contents' spin; measured
+suspension clearance and compound skin contact against the original uncut support.
+The latter redistributes contact-compressed meridians using original material
+spacing and shares the existing task arena. Texture work fills only broad constant
+normal-map bands inside the measured retained component, using existing detailed
+source texels; diffuse and existing textured pixels remain exact.
+
+The first independent-lobe skin-frame candidate and the contact-only candidate
+were rejected. Captured walking630 had 1159 connector crossings; projecting that
+incoherent rim added crossings. The coherent envelope replay has zero crossings,
+coplanar overlaps and degenerate triangles before AND after measured exterior
+contact (107385 connector triangles). This is offline evidence, not native visual
+acceptance. Results: D:/MaleMod/Work/witcher/hang-review/repair-envelope/.
+A full private grey96 matrix is now running under final-review; visual review,
+campaign, default full-floppy walking and clean adoption remain pending.
+
+The new numerical worker reduced mean accumulated centerline turning by 27.5%
+and peak by 25.8% under paired forces; nonzero movement remains. States 0/1 were
+byte-identical over 480 steps each. Exact current API/worker consistency also
+passed 48 frames. See repair-current/solid-rod-response.jsonl and worker-api.log.
+Source consumption proof must be regenerated at the final clean commit. Wolverine
+has not been adopted or installed; its legacy ownership does not select this force
+change. Preserve all existing installation receipts, saves, and managed runtime.
+
+## October 23 - Hang shaping and live neck continuity, private candidate
+
+Current task is the educational suspension model: compact low Hang, a modest
+waist at long Hang, and continuous thin skin into the retained lobes. No Hang
+candidate is installed. The accepted installed runtime remains unchanged.
+
+Base now has width-only suspension shaping with reversible immediate control
+transport, actual-rim compact-travel limits, a derivative-matched source-entry
+fillet, and nonrepeating measured material continuation. A captured live defect
+was traced to the entry orientation guard abandoning every column after one
+moving cut exhausted 48 sweeps. Local safe fallback keeps valid corrections;
+sparse edge traversal preserves the output and reduces the measured guard from
+69.4 ms to 7.77 ms. Visible front join geometric error falls from median 24.0
+degrees to 0.97 degrees in the exact captured replay. Twelve Base tests pass.
+
+Witcher's worker incorrectly used legacy collar ownership while the modular
+renderer owned the attachment. Its pinned numerical library is unchanged;
+explicit target ownership repairs severe all-minimum source folding. The
+adapter binds this intentional behavior change in a schema-2 worker adoption
+proof rather than claiming parity with the old geometry.
+
+Private native Hang run sealed-session-20261023-055919 (PID 7848) completed all
+36 cases, restored saves/audio and verified all 53 installed files unchanged.
+Front continuity and minimum-size spikes are improved, but walking stages
+630/633 expose an unacceptable posterior triangular connector fold. Visual
+gate FAIL; continue tracing that moving boundary/attachment problem before
+installation. Final 96-view grey and 39-view campaign gates remain pending.
+Evidence is under D:/MaleMod/Work/witcher/hang-review, current candidate-v4.
+The current preview descriptor is hang-review/current-preview.json.
+
+Other spokes must adopt these shared changes through pins and their own native
+attachment gates; Wolverine's runtime is untouched. Source, offline, native,
+visual and installed states remain separate. Do not describe this checkpoint
+as complete, fully smooth, intersection-free or performance parity.
+
 ## October 22 late - native matrix completed, final material and campaign iteration
 
 The educational technical scope and authorized 45-degree / 1.7x inward
@@ -3065,7 +3146,7 @@ collar. Offline only; extreme upward anatomy distortion remains unresolved.
 HEAD stays `19da882`; diagnostic source is dirty. No install or Wolverine change.
 
 
-## October 6 broader bell preview � uncommitted candidate
+## October 6 broader bell preview ï¿½ uncommitted candidate
 
 User requested a larger and smoother ramp, with updated matched renders before
 installation. HEAD remains `19da882`; the current shared header/test/provenance
@@ -3280,18 +3361,18 @@ all actual authored seam residuals still pass. Bending endpoint preservation
 does not imply byte-identical final contact-adjusted vertices.
 
 The independent full-cloth audit now distinguishes all component pairs.
-Candidate23 has no same-component self-crossings, but617â€“944 cross-component
+Candidate23 has no same-component self-crossings, but617Ã¢â‚¬â€œ944 cross-component
 pairs, predominantly sewn hem/sheet, strap/band and underside attachments.
 Their material adjacency and finite-width construction must be certified;
 they are not covered by the passing sheet-only intersection gate. Candidate26
-adds4â€“29 actual same-hem self-crossings per hem. Preserve the complete-pair
+adds4Ã¢â‚¬â€œ29 actual same-hem self-crossings per hem. Preserve the complete-pair
 classification receipts; no blanket neighboring-face exclusion or complete
 garment self-consistency claim is permitted from these source checkpoints.
 
 The stereographic rest chart constrains spherical triangle orientation and
 angular quality before radial casting, with consistent alternate diagonals at
 the two reflex corners. The SDK cube test checks every face, unchanged top
-donors and translated/rotated 100x covariance. Candidates15â€“17 failed actual
+donors and translated/rotated 100x covariance. Candidates15Ã¢â‚¬â€œ17 failed actual
 geometry despite SDK passes; preserve their rejected receipts. Source renders
 use complete native anatomy/body, neutral material and actual cloth faces;
 there is no anatomy visibility mask. Source opacity is not native 95% proof.
@@ -3310,8 +3391,8 @@ These certify rest geometry, not movement or gameplay.
 Frozen candidate16 raw sheets were injective but near singular (aspect up to
 3.59e6); subsequent contact fitting introduced crossings. Candidate17 adds a
 spherical determinant/longest-edge quality constraint, reducing raw aspect to
-107â€“201 with zero raw crossings across eight actual inputs, but full rest
-still fails crossings and upper hem turns (52â€“143 degrees in seven cases).
+107Ã¢â‚¬â€œ201 with zero raw crossings across eight actual inputs, but full rest
+still fails crossings and upper hem turns (52Ã¢â‚¬â€œ143 degrees in seven cases).
 Candidate19 smooths the native-seam radial transition and restricts REST
 contact fitting to chart rays. Its eight actual rest cases pass contact and
 intersection gates but fail hem turns. Candidate22 fixes those hem turns;
@@ -3340,7 +3421,7 @@ and gravity step 70.17 ms versus the required live cadence. Numerical receipt
 is `build/cloth-dynamics-debug/candidate19-dynamics/numerical-conservation-summary.json`.
 Private parallel native point-query batching preserves all eight actual frame
 bytes and physical fields, including 54 stale tickets recomputed after source
-corrections. Its 3â€“8% total improvement is insufficient and is not promoted.
+corrections. Its 3Ã¢â‚¬â€œ8% total improvement is insufficient and is not promoted.
 No new garment build has been installed or observed in gameplay.
 
 Latest requirement includes tilt into the recruited pelvic root ramp. Actual
@@ -3711,7 +3792,7 @@ Read `AUTHORED-SHAPE.md` for the new source-derived early coarse-shape evaluator
 1,300 original-code fixture samples, coupled graft collar domain and protected
 native part boundaries. The checked correction preserves both sides of the
 seam and prevents inverted triangles. An actual-Geralt synthetic stress probe
-passes those invariants in both LODs but accepts only 17Ã¢â‚¬â€œ36% of its requested
+passes those invariants in both LODs but accepts only 17ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“36% of its requested
 correction: the full-range deformation envelope is NOT established. Actual
 guide/rest-stage completion and native output remain required. The spoke has a
 native-cooked isolated scale graph; pose/dangle compatibility is not verified.
@@ -3914,7 +3995,7 @@ or present any study render as an accepted repair. Tests cover the reported
 controls only, not the required complete shape/state/motion matrix. No native
 room or campaign verification occurred. The attachment gate remains unpassed.
 
-## October 11 polygon-level saddle trace — no accepted replacement
+## October 11 polygon-level saddle trace â€” no accepted replacement
 
 User requested one saddle polygon's complete deformation lineage, in service
 of removing the saddle at moderate upward angles. Private evidence:

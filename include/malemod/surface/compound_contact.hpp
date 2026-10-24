@@ -44,6 +44,7 @@ struct CompoundContactCache {
  struct FrameFace {unsigned parent;Vec du,dv;double area;};
  std::vector<FrameFace> frameFaces;std::vector<double> frameWeights;
  std::vector<std::array<unsigned,3>> supportFaces,sourceFaces;
+ std::vector<bool> supportContactEligible;
  std::vector<std::vector<unsigned>> rings;
  std::unique_ptr<CompoundGraftPlan> graft;
  unsigned supportCount=0;
@@ -257,8 +258,28 @@ struct CompoundContactCache {
    auto meridian=Cross(Scale(normal,1/n),tangent);result.push_back(p);result.push_back(Add(p,tangent));result.push_back(Add(p,meridian));
   }return StabilizeFrames(result);
  }
- std::vector<Vec> Evaluate(const std::vector<Vec>& source,const std::vector<Vec>& support,double* profileFraction=nullptr)const{
+ // Resolve compression of the suspended envelope as a single translation.
+ // Internal contents may rotate, but must not push the retained skin through
+ // the moving shaft/support. Use measured rim gaps, capped by the section
+ // radius, so the authored reference remains unchanged at every morphology.
+ Vec SuspensionContactTranslation(const std::vector<Vec>& source,const std::vector<Vec>& support,double radius,Vec up={0,0,1})const{
+  if(!std::isfinite(radius)||radius<=0)throw std::invalid_argument("Invalid suspension contact radius");
+  up=Unit(up);const auto live=SourceDifferentialPoints(source),end=DifferentialPoints(support);
+  double distance=0;
+  for(unsigned j=0;j<rings.front().size();j++){
+   const auto a=live[3*j],b=end[3*j],ra=rest[rings.front()[j]],rb=rest[rings.back()[j]];
+   // Keep enough meridian length to turn into the mounted rim. This is a
+   // unilateral contact: lowering or freely swinging skin remains unaffected.
+   const double minimum=(std::min)((std::max)(0.,Dot(Sub(rb,ra),up)),.4*radius);
+   distance=(std::max)(distance,minimum-Dot(Sub(b,a),up));
+  }
+  return Scale(up,-distance);
+ }
+ std::vector<Vec> Evaluate(const std::vector<Vec>& inputSource,const std::vector<Vec>& support,double* profileFraction=nullptr,double contactRadius=0,Vec* contactTranslation=nullptr)const{
   if(support.size()!=supportCount)throw std::invalid_argument("Compound support topology changed without rebuilding");
+  const auto shift=contactRadius>0?SuspensionContactTranslation(inputSource,support,contactRadius):Vec{};
+  if(contactTranslation)*contactTranslation=shift;
+  auto source=inputSource;for(auto& p:source)p=Add(p,shift);
   auto points=rest;std::copy(support.begin(),support.end(),points.begin());
   for(auto s:supportSamples)points[s.vertex]=SamplePoint(support,supportFaces.at(s.parent),s.donor);
   for(auto s:sourceSamples)points[s.vertex]=SamplePoint(source,sourceFaces.at(s.parent),s.donor);
@@ -330,7 +351,7 @@ public:
   if(!r.protectedKnots.empty()&&r.protectedKnots.size()!=r.footprint.size())throw std::invalid_argument("Compound boundary protection differs");
   if(!protectedSupport.empty()&&protectedSupport.size()!=support.size())throw std::invalid_argument("Compound support protection differs");
   auto cut=ConvexSurfaceCut(support,faces,eligible,chart,1e-8).CutSimple(r.footprint);
-  CompoundContactCache out;out.rest=cut.points;out.supportCount=unsigned(support.size());out.supportFaces=faces;out.sourceFaces=r.sourceFaces;out.sourceLoop=r.sourceLoop;out.parameters=r.parameters;
+  CompoundContactCache out;out.rest=cut.points;out.supportCount=unsigned(support.size());out.supportFaces=faces;out.supportContactEligible=eligible;out.sourceFaces=r.sourceFaces;out.sourceLoop=r.sourceLoop;out.parameters=r.parameters;
   for(unsigned j=0;j<r.sourceLoop.size();j++){
    auto side=Scale(Sub(r.source[r.sourceLoop[(j+1)%r.sourceLoop.size()]],r.source[r.sourceLoop[(j+r.sourceLoop.size()-1)%r.sourceLoop.size()]]),.5);
    const double square=Dot(side,side);if(square<=1e-20)throw std::invalid_argument("Collapsed compound reference source side");

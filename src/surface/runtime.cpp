@@ -8,6 +8,7 @@
 #include <atomic>
 #include <fstream>
 #include <filesystem>
+#include <malemod/surface/solid_rod_response.hpp>
 #include "surface-kernel.inc"
 #include <malemod/surface/collar_field.hpp>
 #include <malemod/surface/garment_support.hpp>

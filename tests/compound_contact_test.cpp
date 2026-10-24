@@ -1,4 +1,5 @@
 #include <malemod/surface/compound_contact_io.hpp>
+#include <malemod/surface/compound_exterior.hpp>
 #include <sstream>
 #include <iostream>
 using namespace malemod::surface;
@@ -59,6 +60,19 @@ void sourceGaugeRegression(){
 }
 
 int main(){try{
+ {
+  // A chord toward the side of a cylindrical support lies inside the solid.
+  // The connector must use the original outer surface while keeping both rims.
+  std::vector<PresentationPoint> support;std::vector<std::array<unsigned,3>> faces;
+  constexpr unsigned n=64;
+  for(double x:{-3.,3.})for(unsigned j=0;j<n;j++){double a=2*3.141592653589793*j/n;support.push_back({x,std::cos(a),std::sin(a)});}
+  for(unsigned j=0;j<n;j++){unsigned k=(j+1)%n;faces.push_back({j,k,n+j});faces.push_back({k,n+k,n+j});}
+  std::vector<PresentationPoint> points{{0,0,-2},{0,.3,-.4},{0,1,0}};auto original=points;
+  auto count=ConformCompoundExterior(points,{{0},{1},{2}},support,faces,std::vector<bool>(faces.size(),true),{{-2,0,0},{2,0,0}});
+  require(count==1&&std::hypot(points[1][1],points[1][2])>.998,"Connector still cuts through shaft volume");
+  require(points[0]==original[0]&&points[2]==original[2],"Exterior contact moved a shared rim");
+  require(ConformCompoundExterior(points,{{0},{1},{2}},support,faces,std::vector<bool>(faces.size(),true),{{-2,0,0},{2,0,0}})==0,"Exterior contact accumulates");
+ }
  sourceGaugeRegression();
  auto r=fixture();CompoundContactPlan plan(r);auto cache=plan.Build(r.source,r.support,r.supportFaces,r.chart,r.eligible,r.protectedSupport);
  auto p=cache.Evaluate(r.source,r.support);double restError=0;for(unsigned i=0;i<p.size();i++){auto d=Sub(p[i],cache.rest[i]);restError=(std::max)(restError,std::sqrt(Dot(d,d)));}require(restError<1e-10,"Rest reproduction differs");
@@ -72,6 +86,18 @@ int main(){try{
  }
  auto source=r.source;for(auto& v:source)v[2]-=.3;auto moved=cache.Evaluate(source,r.support);
  for(unsigned i=0;i<r.support.size();i++)require(moved[i]==r.support[i],"Independent suspension moved support");
+ {
+  auto free=cache.SuspensionContactTranslation(r.source,r.support,1.);
+  require(Dot(free,free)<1e-20,"Contact changed the authored reference");
+  auto compressed=r.source;for(auto& v:compressed)v[2]+=1.9;
+  auto shift=cache.SuspensionContactTranslation(compressed,r.support,1.);
+  require(std::abs(shift[2]+.3)<1e-10&&shift[0]==0&&shift[1]==0,"Suspended rim did not preserve its contact gap");
+  for(auto& v:compressed)v=Add(v,shift);
+  auto again=cache.SuspensionContactTranslation(compressed,r.support,1.);
+  require(Dot(again,again)<1e-20,"Suspension contact accumulates displacement");
+  auto contact=cache.Evaluate(compressed,r.support,nullptr,1.);
+  for(unsigned i=0;i<r.support.size();i++)require(contact[i]==r.support[i],"Suspension contact moved retained support");
+ }
  auto reject=[&](CompoundContactReference bad){bool failed=false;try{CompoundContactPlan other(std::move(bad));}catch(const std::invalid_argument&){failed=true;}require(failed,"Malformed reference accepted");};
  auto bad=r;bad.sourceLoop[0]=9999;reject(bad);bad=r;bad.curve[1]=bad.curve[0];reject(bad);bad=r;bad.parameters.back()=.9;reject(bad);bad=r;bad.support[0][0]=std::numeric_limits<double>::quiet_NaN();reject(bad);
  {

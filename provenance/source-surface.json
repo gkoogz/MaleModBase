@@ -5092,16 +5092,37 @@
   "currentProcessRuntime": {
     "recipe": "Win32 MSVC Release /fp:precise, original4-worker16-batch geometry, process-isolated",
     "serialGeometry": false,
-    "librarySHA256": "8a92552a53571ea8ec21b57af71f8d7731510ad9ab710af009ffd2ea245d860c",
-    "supportExecutableSHA256": "1b9d5c2767360e6233da190dae38329332edece50b8f234fe1c047befc0733a8",
-    "generatedKernelSHA256": "8fb5bc6fd26027e67a32498e36b41669a522520a958ed6e3368d5cce6e8b6ebd",
     "wireVersion": 6,
-    "behaviorRevision": 2,
-    "workingTreeClean": false,
-    "status": "Ordered mechanical and retained-skin APIs; exact numerical and donor parity verified; native acceptance separate",
-    "disabledReferenceGate": "currentSourceExtractionVerification.sourceConsumptionRecheck",
-    "observedGameplay": false,
-    "installed": false,
+    "behaviorRevision": 3,
+    "librarySHA256": "be941634bada751a00cbcebdd91539b453bef12129a26afef35333b6d2e195eb",
+    "supportExecutableSHA256": "96792d87d4d23232b9d39e9d18bf066d53f3270dac0dca8312a3a5499397d911",
+    "generatedKernelSHA256": "2d3bc9fbb14857ffca9b87e77751439e3124e16be20f9f331387279739244162",
+    "status": "Target-owned Full Floppy solid rod calibration; native attachment acceptance remains separate",
+    "sourcePhysicsBehaviorChanged": true,
+    "changedMode": "Target-owned collar, mechanical state 2 only; bend compliance multiplied by 0.4",
+    "otherMechanicalStates": "480 paired mechanical steps in each state; states 0 and 1 byte-identical to preceding target-owned worker",
+    "fullFloppyComparison": {
+      "frames": 480,
+      "measuredFrames": 360,
+      "meanCurvature": [
+        1.06712,
+        1.47132
+      ],
+      "peakCurvature": [
+        1.28913,
+        1.73766
+      ],
+      "tipTravel": [
+        41.4056,
+        35.5165
+      ],
+      "units": "radians for accumulated centerline turning; source units for tip travel",
+      "order": [
+        "candidate",
+        "preceding target-owned worker"
+      ],
+      "evidence": "D:/MaleMod/Work/witcher/hang-review/repair-current/solid-rod-response.jsonl"
+    },
     "cleanAdoptionContract": {
       "proofLocation": "build/physical-reaction-source-proof-<exact-pin-first7>/proof.json",
       "proofIsExternalToGit": true,
@@ -5111,17 +5132,8 @@
       "clothPhysicsOrNativeAcceptanceImplied": false
     },
     "freshBuildRecipe": "build/mechanical-runtime, Win32 process-isolated Release /fp:precise, MALEMOD_COMPLIANT_SCROTAL_SKIN=OFF",
-    "sourcePhysicsBehaviorChanged": false,
-    "disabledLegacyNumericalPayloadExact": true,
-    "runtimePipeline": {
-      "document": "docs/ORDERED-RUNTIME-PIPELINE.md",
-      "mechanicalSamplesExact": 240,
-      "retainedDonorRowsExact": 7218,
-      "retainedSamplesExact": 240,
-      "nativePackedCasesExact": 6,
-      "bindingRevision": "431e626cae6fb6720b552f8b20206727fe809c80",
-      "nativeAttachmentGatePassed": false
-    }
+    "observedGameplay": false,
+    "installed": false
   },
   "historicalProcessRuntimeReceipts": [
     {
@@ -5520,5 +5532,39 @@
       "sourcePhysicsBehaviorChanged": false,
       "disabledLegacyNumericalPayloadExact": true
     }
-  ]
+  ],
+  "precedingOrderedProcessRuntime": {
+    "recipe": "Win32 MSVC Release /fp:precise, original4-worker16-batch geometry, process-isolated",
+    "serialGeometry": false,
+    "librarySHA256": "8a92552a53571ea8ec21b57af71f8d7731510ad9ab710af009ffd2ea245d860c",
+    "supportExecutableSHA256": "1b9d5c2767360e6233da190dae38329332edece50b8f234fe1c047befc0733a8",
+    "generatedKernelSHA256": "8fb5bc6fd26027e67a32498e36b41669a522520a958ed6e3368d5cce6e8b6ebd",
+    "wireVersion": 6,
+    "behaviorRevision": 2,
+    "workingTreeClean": false,
+    "status": "Ordered mechanical and retained-skin APIs; exact numerical and donor parity verified; native acceptance separate",
+    "disabledReferenceGate": "currentSourceExtractionVerification.sourceConsumptionRecheck",
+    "observedGameplay": false,
+    "installed": false,
+    "cleanAdoptionContract": {
+      "proofLocation": "build/physical-reaction-source-proof-<exact-pin-first7>/proof.json",
+      "proofIsExternalToGit": true,
+      "hashDirection": "External source proof hashes the fixed full provenance and implementation; native worker/profile manifests bind that proof. Provenance does not embed the hash of its own clean proof.",
+      "requiresExactCleanSourceCommit": true,
+      "historicalDirtyProofCannotAuthorizeDeployment": true,
+      "clothPhysicsOrNativeAcceptanceImplied": false
+    },
+    "freshBuildRecipe": "build/mechanical-runtime, Win32 process-isolated Release /fp:precise, MALEMOD_COMPLIANT_SCROTAL_SKIN=OFF",
+    "sourcePhysicsBehaviorChanged": false,
+    "disabledLegacyNumericalPayloadExact": true,
+    "runtimePipeline": {
+      "document": "docs/ORDERED-RUNTIME-PIPELINE.md",
+      "mechanicalSamplesExact": 240,
+      "retainedDonorRowsExact": 7218,
+      "retainedSamplesExact": 240,
+      "nativePackedCasesExact": 6,
+      "bindingRevision": "431e626cae6fb6720b552f8b20206727fe809c80",
+      "nativeAttachmentGatePassed": false
+    }
+  }
 }

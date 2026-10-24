@@ -247,6 +247,90 @@ def sampled_uv_directions(points,uv,retained,indices,directions,minimum_distance
     return np.asarray(result)
 
 
+def retained_skin_faces(points,faces,uv,patch,seeds,include_chart_bridges=False):
+    """Return the measured retained component, preserving native UV aliases."""
+    from scipy import sparse
+    from scipy.sparse.csgraph import connected_components
+    _,weld=np.unique(np.round(points,5),axis=0,return_inverse=True)
+    triangles=np.asarray(faces)[~patch];edges=weld[triangles]
+    a=edges.ravel();b=np.roll(edges,-1,axis=1).ravel()
+    graph=sparse.coo_matrix((np.ones(len(a)),(a,b)),shape=(weld.max()+1,)*2).tocsr()
+    _,components=connected_components(graph,directed=False)
+    selected=np.isin(components[weld[triangles]],np.unique(components[weld[seeds]])).all(1)
+    coords=np.asarray(uv)[triangles]
+    if not include_chart_bridges:selected&=np.ptp(coords[:,:,0],axis=1)<.1
+    selected&=(coords[:,:,0]>.5).all(1)
+    triangles=triangles[selected]
+    if len(triangles)<100:raise ValueError('Retained source skin component is incomplete')
+    return triangles
+
+
+def fill_color_voids(image,mask,tile,background):
+    """Continue adjacent pigment into flat atlas padding sampled by skin.
+
+    Only the measured compressed padding palette changes; other texels and
+    alpha remain exact. Broad pigment comes from the nearest valid skin, while detail
+    comes from the same retained source tile rather than stretching edge pixels.
+    """
+    from scipy.ndimage import distance_transform_edt,gaussian_filter
+    original=np.asarray(image,dtype=np.uint8);mask=np.asarray(mask,dtype=bool)
+    if original.ndim!=3 or original.shape[2]<3 or mask.shape!=original.shape[:2]:
+        raise ValueError('Color void image/mask dimensions differ')
+    rgb=original[:,:,:3].astype(float)
+    # DXT block palettes encode the same flat padding with several nearby
+    # values (typically a four-byte green-channel step).
+    padding=np.max(np.abs(rgb-np.asarray(background)),axis=2)<=6
+    selected=padding&mask
+    if not selected.any():return original.copy(),0
+    yy,xx=np.nonzero(mask);y0,y1=yy.min(),yy.max()+1;x0,x1=xx.min(),xx.max()+1
+    local=rgb[y0:y1,x0:x1];valid=mask[y0:y1,x0:x1]&~padding[y0:y1,x0:x1]
+    if not valid.any():raise ValueError('Color void has no adjacent source skin')
+    nearest=distance_transform_edt(~valid,return_distances=False,return_indices=True)
+    # Normalized filtering excludes the unrelated padding from the pigment.
+    den=gaussian_filter(valid.astype(float),6)
+    pigment=np.stack([gaussian_filter(local[:,:,k]*valid,6)/np.maximum(den,1e-20) for k in range(3)],axis=2)
+    base=pigment[nearest[0],nearest[1]]
+    t=np.asarray(tile,dtype=float)[:,:,:3]
+    detail=sample_skin_detail(t-t.mean((0,1)),x1-x0,y1-y0,[(x1-x0)/(2*t.shape[1]),(y1-y0)/(2*t.shape[0])])
+    result=original.copy();target=result[y0:y1,x0:x1,:3];change=selected[y0:y1,x0:x1]
+    target[change]=np.clip(np.rint((base+detail)[change]),0,255).astype(np.uint8)
+    return result,int(change.sum())
+
+
+def fill_normal_voids(image,mask,tile):
+    """Fill broad constant-normal voids with detail from the same source map.
+
+    Existing textured pixels, alpha, and pixels outside the measured component
+    remain exact. Work in tangent slopes and feather within the void, avoiding
+    the gloss bands produced by tiling a source atlas with empty borders.
+    """
+    from scipy.ndimage import distance_transform_edt,uniform_filter
+    original=np.asarray(image,dtype=np.uint8)
+    if original.ndim!=3 or original.shape[2]<3 or np.shape(mask)!=original.shape[:2]:
+        raise ValueError('Normal void image/mask dimensions differ')
+    rgb=original[:,:,:3].astype(float)/127.5-1
+    # Block compression biases nominally flat normals by several byte values.
+    # Require both a near-flat direction and almost no neighborhood variation.
+    xy=rgb[:,:,:2]
+    variance=sum(np.maximum(0,uniform_filter(xy[:,:,k]**2,size=5)-uniform_filter(xy[:,:,k],size=5)**2) for k in (0,1))
+    flat=(np.abs(xy).max(2)<.065)&(rgb[:,:,2]>.98)&(variance<1e-5)
+    broad=uniform_filter(flat.astype(float),size=9)>.99
+    distance=distance_transform_edt(flat&np.asarray(mask,dtype=bool))
+    weight=smooth((distance-2)/10)*broad
+    if not weight.any():return original.copy(),0
+    yy,xx=np.nonzero(weight);x0,x1=xx.min(),xx.max()+1;y0,y1=yy.min(),yy.max()+1
+    t=np.asarray(tile,dtype=float)/127.5-1
+    slope=t[:,:,:2]/np.maximum(t[:,:,2,None],.1)
+    detail=sample_skin_detail(slope,x1-x0,y1-y0,[(x1-x0)/(2*t.shape[1]),(y1-y0)/(2*t.shape[0])],slopes=True)
+    old=rgb[y0:y1,x0:x1];w=weight[y0:y1,x0:x1,None]
+    slopes=old[:,:,:2]/np.maximum(old[:,:,2,None],.1)*(1-w)+detail*w
+    normal=np.concatenate([slopes,np.ones((*slopes.shape[:2],1))],axis=2)
+    normal/=np.linalg.norm(normal,axis=2,keepdims=True)
+    result=original.copy();target=result[y0:y1,x0:x1,:3];changed=w[:,:,0]>0
+    target[changed]=np.clip(np.rint((normal[changed]+1)*127.5),0,255).astype(np.uint8)
+    return result,int(changed.sum())
+
+
 def retained_skin_tile(points,faces,uv,patch,seeds,width,height,normal_image=None):
     """Measure the retained component reached from the source-side rim.
 
@@ -254,19 +338,8 @@ def retained_skin_tile(points,faces,uv,patch,seeds,width,height,normal_image=Non
     coordinates remain authoritative for the skin mask and texel density.
     """
     from PIL import Image,ImageDraw
-    from scipy import sparse
-    from scipy.sparse.csgraph import connected_components
     from scipy.ndimage import distance_transform_edt,uniform_filter
-    _,weld=np.unique(np.round(points,5),axis=0,return_inverse=True)
-    triangles=faces[~patch];edges=weld[triangles]
-    a=edges.ravel();b=np.roll(edges,-1,axis=1).ravel()
-    graph=sparse.coo_matrix((np.ones(len(a)),(a,b)),shape=(weld.max()+1,)*2).tocsr()
-    _,components=connected_components(graph,directed=False)
-    selected=np.isin(components[weld[triangles]],np.unique(components[weld[seeds]])).all(1)
-    coords=uv[triangles];selected&=np.ptp(coords[:,:,0],axis=1)<.1
-    selected&=(coords[:,:,0]>.5).all(1)
-    triangles=triangles[selected];coords=coords[selected]
-    if len(triangles)<100:raise ValueError('Retained source skin component is incomplete')
+    triangles=retained_skin_faces(points,faces,uv,patch,seeds);coords=uv[triangles]
     mask=Image.new('L',(1024,512));draw=ImageDraw.Draw(mask)
     for triangle in coords:draw.polygon([tuple(q*[1023,511]) for q in triangle],fill=255)
     distance=distance_transform_edt(np.asarray(mask)>0)

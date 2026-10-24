@@ -89,6 +89,14 @@ inline void ValidateState(const State& state){
  for(const auto& s:state.scales)for(double x:s)if(!std::isfinite(x)||x<=0)throw std::invalid_argument("Invalid modular morphology scale");
  for(const auto& f:state.frames){for(const auto& a:f.basis)for(double x:a)if(!std::isfinite(x))throw std::invalid_argument("Nonfinite modular frame");Quaternion(f.basis);for(double x:f.origin)if(!std::isfinite(x))throw std::invalid_argument("Nonfinite modular pose");}
 }
+// Carry the section's material side through a bend without projecting a world
+// axis independently at every station. That projection becomes singular as a
+// moving rod points sideways and can introduce a half-turn into intact tissue.
+inline Vec TransportSectionSide(Vec side,Vec before,Vec after){
+ const auto axis=Cross(before,after);const double c=std::clamp(Dot(before,after),-1.,1.);
+ Vec moved=c>-.999999?Add(Add(side,Cross(axis,side)),Scale(Cross(axis,Cross(axis,side)),1/(1+c))):side;
+ moved=Sub(moved,Scale(after,Dot(moved,after)));return Unit(moved);
+}
 // Preserve rest segment lengths after interpolation or root constraints.
 // Temporal interpolation of bent node positions otherwise shortens the rod.
 inline void PreserveMaterialLengths(State& s){
@@ -110,16 +118,20 @@ inline void PreserveMaterialLengths(State& s){
    target=Unit(target);const double angle=std::acos(std::clamp(Dot(target,direction),-1.,1.));
    // Half a segment from the clamped boundary to the first segment center.
    // The remaining margin covers interpolated section angular strain.
-   const double limit=.4*length/s.sectionRadius*(i==2?.5:1.);
+   const double limit=.25*length/s.sectionRadius*(i==2?.5:1.);
    if(angle>limit){auto side=Sub(direction,Scale(target,Dot(direction,target)));if(Dot(side,side)<1e-16)side=s.frames[i].basis[1];side=Unit(side);direction=Add(Scale(target,std::cos(limit)),Scale(side,std::sin(limit)));}
   }
   s.frames[i].origin=Add(s.frames[i-1].origin,Scale(direction,length));previous=direction;previousRest=restDirection;
  }
  for(unsigned i=2;i<=12;i++){
   auto tangent=Unit(Sub(s.frames[(std::min)(12u,i+1)].origin,s.frames[i-1].origin));
-  auto side=Sub(s.frames[i].basis[1],Scale(tangent,Dot(s.frames[i].basis[1],tangent)));
-  if(Dot(side,side)<1e-12)side=Cross(s.frames[i].basis[2],tangent);
-  side=Unit(side);s.frames[i].basis={tangent,side,Unit(Cross(tangent,side))};
+  auto side=TransportSectionSide(s.frames[i-1].basis[1],s.frames[i-1].basis[0],tangent);
+  // Preserve authored material twist, while excluding spurious pose-frame roll.
+  const auto& a=s.shapeFrames[i-1].basis;const auto& b=s.shapeFrames[i].basis;
+  auto restSide=TransportSectionSide(a[1],a[0],b[0]);
+  const double twist=std::atan2(Dot(b[0],Cross(restSide,b[1])),Dot(restSide,b[1]));
+  side=Add(Scale(side,std::cos(twist)),Scale(Cross(tangent,side),std::sin(twist)));
+  s.frames[i].basis={tangent,side,Unit(Cross(tangent,side))};
  }
 }
 inline State Interpolate(const State& a,const State& b,double t){

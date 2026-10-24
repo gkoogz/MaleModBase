@@ -6,6 +6,36 @@ from malemod_base.loft_material import chart, bake_patch, periodic_samples, surf
 
 
 class LoftMaterialTest(unittest.TestCase):
+    def test_color_void_repair_continues_skin_without_recoloring_original_detail(self):
+        image=np.full((64,96,4),73,dtype=np.uint8);image[:,:,:3]=[140,108,115]
+        y,x=np.mgrid[:64,:96]
+        skin=np.stack([120+8*np.sin(x),90+6*np.cos(y),85+4*np.sin(x+y)],axis=2).astype('u1')
+        image[:,:30,:3]=skin[:,:30];image[:,66:,:3]=skin[:,66:]
+        mask=np.zeros((64,96),bool);mask[5:59,8:88]=True
+        result,count=loft_material.fill_color_voids(image,mask,skin[:24,:24],[140,108,115])
+        self.assertEqual(count,54*36)
+        np.testing.assert_array_equal(result[~mask],image[~mask])
+        np.testing.assert_array_equal(result[:,:30],image[:,:30])
+        np.testing.assert_array_equal(result[:,66:],image[:,66:])
+        np.testing.assert_array_equal(result[:,:,3],image[:,:,3])
+        self.assertLess(abs(result[15:45,40:56,0].mean()-120),4)
+        self.assertGreater(result[15:45,40:56,0].std(),3)
+
+    def test_normal_void_repair_preserves_textured_and_unselected_pixels(self):
+        image=np.full((96,128,4),128,dtype=np.uint8);image[:,:,2]=255;image[:,:,3]=73
+        image[:,:20,:3]=[150,110,250]
+        mask=np.zeros((96,128),bool);mask[8:88,8:120]=True
+        x,y=np.meshgrid(np.arange(24),np.arange(24))
+        tile=np.stack([128+20*np.sin(x),128+20*np.cos(y),np.full(x.shape,250)],axis=2)
+        result,count=loft_material.fill_normal_voids(image,mask,tile)
+        self.assertGreater(count,1000)
+        np.testing.assert_array_equal(result[~mask],image[~mask])
+        np.testing.assert_array_equal(result[:,:20],image[:,:20])
+        np.testing.assert_array_equal(result[:,:,3],image[:,:,3])
+        self.assertGreater(np.std(result[30:60,40:80,0]),3)
+        again,_=loft_material.fill_normal_voids(image,mask,tile)
+        np.testing.assert_array_equal(result,again)
+
     def test_reflected_normal_detail_follows_reflected_height_gradient(self):
         x,y=np.meshgrid(np.linspace(-1,1,17),np.linspace(-1,1,17))
         height=x*x+2*y*y

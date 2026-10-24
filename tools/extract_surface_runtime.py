@@ -156,6 +156,10 @@ for d in sorted(decl,key=position):
   compliance=::malemod::surface::scrotal::ShearCompliance(w,physUI[4]);
   alpha=compliance/(dt*dt);
 #endif''')
+ if d['name']=='StepConstraintSolver':
+  marker='PDBendData bendData[shaftNodeCount];'
+  if s.count(marker)!=1:raise ValueError('Solid rod compliance entry changed')
+  s=s.replace(marker,'if(surfaceTargetOwnsCollar)bendCompliance*=::malemod::surface::SolidRodComplianceScale(physicsState);\n '+marker)
  if d['name']=='PDPrepareBend':
   old='float ratio=.10f+.40f*(1.f-max(0.f,min(1.f,physUI[2]/100.f)));'
   if s.count(old)!=1:raise ValueError('Rod damping span changed')
