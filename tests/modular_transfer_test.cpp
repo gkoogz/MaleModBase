@@ -63,6 +63,23 @@ int main(){
    auto error=Sub((*skinLive.surfaceNormals)[i],Unit(normal));
    if(Dot(error,error)>1e-24)throw std::runtime_error("Prepared skin normal ignores anisotropic scale");
   }
+  // Shared sewn rim stays coherent while each distal lobe keeps its own
+  // displacement. This fails the former whole-envelope averaging shortcut.
+  std::array<PresentationFrame,2> rim{skinMaterial.frames[13],skinMaterial.frames[14]};
+  std::vector<double> freedom{0,0,1,1};
+  skin.ApplyPrepared(asset,skinLive,skinMaterial,points,&rim,&freedom);
+  auto released=skinPlan.Evaluate(skinLive);
+  for(unsigned i=0;i<4;i++){
+   auto expected=i<2?Components(points[i],skinLive.scales[13+i%2]):posed[i];
+   if(Dot(Sub(released[i],expected),Sub(released[i],expected))>1e-24)throw std::runtime_error("Common rim erased independent distal motion");
+  }
+  const auto anchored=rim;for(auto& f:rim)f.origin={1,0,0};std::vector<double> rimFreedom{0,1,1,1};
+  skin.ApplyPrepared(asset,skinLive,skinMaterial,points,&rim,&freedom,&anchored,&rimFreedom);
+  released=skinPlan.Evaluate(skinLive);
+  for(unsigned i=0;i<4;i++){
+   auto expected=i<2?Add(Components(points[i],skinLive.scales[13+i%2]),Vec{i==1?1.:0.,0,0}):posed[i];
+   if(Dot(Sub(released[i],expected),Sub(released[i],expected))>1e-24)throw std::runtime_error("Attachment, shared skin and independent content ownership were conflated");
+  }
   std::filesystem::remove_all(dir);
   std::cout<<"PASS rest morphology exact across crown blend; legacy live and independent motion isolated\n";
  }catch(const std::exception& e){std::filesystem::remove_all(dir);std::cerr<<e.what()<<'\n';return 1;}

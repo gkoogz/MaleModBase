@@ -23,6 +23,26 @@ public:
   incidents_.resize(rows_.back());auto cursor=rows_;
   for(unsigned f=0;f<faces_.size();f++)for(auto i:faces_[f])incidents_[cursor[i]++]=f;
  }
+ std::vector<PresentationPoint> FaceNormals(const std::vector<PresentationPoint>& p,TaskArena* arena=nullptr)const{
+  if(p.size()!=count_)throw std::invalid_argument("Normal points differ from prepared topology");
+  std::vector<PresentationPoint> faces(faces_.size());auto make=[&](unsigned i){auto f=faces_[i];faces[i]=Cross(Sub(p[f[1]],p[f[0]]),Sub(p[f[2]],p[f[0]]));};
+  if(arena)arena->For(unsigned(faces.size()),make);else for(unsigned i=0;i<faces.size();i++)make(i);return faces;
+ }
+ std::vector<PresentationPoint> Field(const std::vector<PresentationPoint>& p,TaskArena* arena=nullptr)const{
+  const auto faces=FaceNormals(p,arena);std::vector<PresentationPoint> out(count_);
+  auto gather=[&](unsigned i){auto& n=out[i];for(unsigned at=rows_[i];at<rows_[i+1];at++)n=Add(n,faces[incidents_[at]]);const double square=Dot(n,n);n=square>1e-24?Scale(n,1/std::sqrt(square)):PresentationPoint{1,0,0};};
+  if(arena)arena->For(count_,gather);else for(unsigned i=0;i<count_;i++)gather(i);return out;
+ }
+ // The caller may need only visible moving vertices. Preserve the same face
+ // order and normalization there; unrequested entries are explicitly zero.
+ // Indices must be strictly increasing so parallel writes cannot alias.
+ std::vector<PresentationPoint> FieldSubset(const std::vector<PresentationPoint>& p,
+  const std::vector<unsigned>& vertices,TaskArena* arena=nullptr)const{
+  for(unsigned j=0;j<vertices.size();j++)if(vertices[j]>=count_||(j&&vertices[j]<=vertices[j-1]))throw std::invalid_argument("Normal subset must be ordered unique valid vertices");
+  const auto faces=FaceNormals(p,arena);std::vector<PresentationPoint> out(count_);
+  auto gather=[&](unsigned at){const auto i=vertices[at];auto& n=out[i];for(unsigned j=rows_[i];j<rows_[i+1];j++)n=Add(n,faces[incidents_[j]]);const double square=Dot(n,n);n=square>1e-24?Scale(n,1/std::sqrt(square)):PresentationPoint{1,0,0};};
+  if(arena)arena->For(unsigned(vertices.size()),gather);else for(unsigned i=0;i<vertices.size();i++)gather(i);return out;
+ }
  std::pair<std::vector<PresentationPoint>,std::vector<PresentationPoint>> Pair(
   const std::vector<PresentationPoint>& a,const std::vector<PresentationPoint>& b,
   TaskArena* arena=nullptr,bool guardMorph=false,bool normalize=true)const{

@@ -152,30 +152,37 @@ inline std::array<PresentationPoint,2> BoundRampTangents(PresentationPoint a,Pre
 inline PresentationPoint CrossSectionRadial(PresentationPoint radial,PresentationPoint shaftAxis){
  shaftAxis=Unit(shaftAxis);return Sub(radial,Scale(shaftAxis,Dot(radial,shaftAxis)));
 }
-// Raise only the joining annulus. A compact C2 shoulder leaves both sewn rims
-// and their tangent planes exact; its height follows the local radial size and
-// available forward clearance rather than a fixed world-space displacement.
-inline PresentationPoint RaisedRampPoint(PresentationPoint a,PresentationPoint b,PresentationPoint first,PresentationPoint last,PresentationPoint origin,PresentationPoint mountAxis,double t){
- auto p=modular::Hermite(a,b,first,last,t);
- const auto radial=Sub(Sub(a,origin),Scale(mountAxis,Dot(Sub(a,origin),mountAxis)));
- const double radius=std::sqrt(Dot(radial,radial));
- const double room=(std::max)(0.,Dot(Sub(b,a),mountAxis));
- const double wanted=.08*radius,available=.18*room;
- const double height=wanted+available>1e-15?wanted*available/(wanted+available):0;
- const double q=t*(1-t),shoulder=64*q*q*q;
- return Add(p,Scale(mountAxis,height*shoulder));
-}
 // Match the retained measured body surface at the outer rim, then release
-// that constraint smoothly over the complete connector. Position, slope and
-// curvature corrections vanish at the shaft rim. This changes the actual mesh.
+// that constraint only in the first quarter of the connector. Extending the
+// projection across its whole width creates a planar annulus before the bend.
+// The local C2 release leaves the remaining fillet free to turn into the shaft.
 inline PresentationPoint RampEntryPoint(PresentationPoint p,PresentationPoint bodyPoint,PresentationPoint bodyNormal,PresentationPoint axis,double t){
  const double facing=Dot(bodyNormal,axis);if(facing<=.15)return p;
- // The residual is already zero at the body rim. A quartic release therefore
- // preserves its position, tangent and curvature while starting the turn
- // earlier than a quintic weight (which unnecessarily pins a fourth order
- // contact). At the module rim w, w' and w'' still vanish exactly.
- const double u=std::clamp(t,0.,1.),v=1-u,w=v*v*v*(1+3*u);
+ const double u=std::clamp(t/.25,0.,1.),w=1-u*u*u*(10+u*(-15+6*u));
  return Sub(p,Scale(axis,w*Dot(Sub(p,bodyPoint),bodyNormal)/facing));
+}
+// Use the same boundary construction for full fitting and compact-frame motion.
+// Entry supplies the immutable measured body point/normal for (vertex,ordinal).
+template<class Entry> void ReposeRootRamp(std::vector<PresentationPoint>& points,
+ const std::vector<std::vector<unsigned>>& rings,const std::vector<PresentationPoint>& firstTangents,
+ PresentationPoint anchor,PresentationPoint mountAxis,PresentationPoint shaftAxis,Entry entry,TaskArena* arena=nullptr){
+ if(rings.size()<2||rings.front().empty()||firstTangents.size()!=rings.front().size())throw std::invalid_argument("Invalid prepared root ramp");
+ const auto columns=unsigned(firstTangents.size());for(const auto& ring:rings)if(ring.size()!=columns)throw std::invalid_argument("Root ramp circumference changed");
+ auto first=firstTangents;std::vector<PresentationPoint> last(columns);double firstScale=1,lastScale=1;
+ for(unsigned i=0;i<columns;i++){
+  auto a=points[rings.front()[i]],b=points[rings.back()[i]],d=Sub(a,b);const double distance=std::sqrt(Dot(d,d));last[i]=Scale(shaftAxis,distance);
+  auto radial=Sub(Sub(a,anchor),Scale(mountAxis,Dot(Sub(a,anchor),mountAxis)));
+  auto bounded=BoundRampTangents(a,b,first[i],last[i],CrossSectionRadial(radial,shaftAxis),.005*std::sqrt(Dot(radial,radial)));
+  if(Dot(first[i],first[i])>1e-20)firstScale=(std::min)(firstScale,std::sqrt(Dot(bounded[0],bounded[0])/Dot(first[i],first[i])));
+  if(Dot(last[i],last[i])>1e-20)lastScale=(std::min)(lastScale,std::sqrt(Dot(bounded[1],bounded[1])/Dot(last[i],last[i])));
+ }
+ for(auto& p:first)p=Scale(p,firstScale);for(auto& p:last)p=Scale(p,lastScale);
+ auto pose=[&](unsigned index){const unsigned row=1+index/columns,col=index%columns,id=rings[row][col];
+  const double t=.5*(1-std::cos(3.14159265358979323846*row/(rings.size()-1)));
+  auto p=modular::Hermite(points[rings.front()[col]],points[rings.back()[col]],first[col],last[col],t);const auto field=entry(id,index);
+  points[id]=RampEntryPoint(p,field.first,field.second,mountAxis,t);
+ };
+ const auto count=unsigned(rings.size()-2)*columns;if(arena)arena->For(count,pose);else for(unsigned i=0;i<count;i++)pose(i);
 }
 inline SurfaceJoin StitchSurfaces(SurfaceCut body,SurfaceCut module,const SurfaceLoopChart& bodyChart,const SurfaceLoopChart& moduleChart,PresentationPoint origin,PresentationPoint mountAxis,PresentationPoint shaftAxis,const std::vector<PresentationPoint>& bodyNormals,const std::vector<std::array<unsigned,3>>& bodyParents,double radialMargin=.18,double undersideExtra=.08,unsigned rows=12,const std::vector<PresentationPoint>* originalBody=nullptr){
  using Vec=PresentationPoint;const auto knots=CommonLoopKnots(bodyChart,moduleChart);auto outer=RefineSurfaceLoop(body,bodyChart,knots),inner=RefineSurfaceLoop(module,moduleChart,knots);
@@ -211,7 +218,7 @@ inline SurfaceJoin StitchSurfaces(SurfaceCut body,SurfaceCut module,const Surfac
  out.firstTangents=first;
  for(unsigned row=1;row<=rows;row++){
   const double t=.5*(1-std::cos(3.14159265358979323846*row/rows));std::vector<unsigned> ring;
-  for(unsigned i=0;i<outer.size();i++){if(row==rows)ring.push_back(inner[i]);else{ring.push_back(unsigned(out.points.size()));out.points.push_back(RaisedRampPoint(out.points[outer[i]],out.points[inner[i]],first[i],last[i],origin,mountAxis,t));}}
+  for(unsigned i=0;i<outer.size();i++){if(row==rows)ring.push_back(inner[i]);else{ring.push_back(unsigned(out.points.size()));out.points.push_back(modular::Hermite(out.points[outer[i]],out.points[inner[i]],first[i],last[i],t));}}
   const auto& previous=out.rings.back();const double before=.5*(1-std::cos(3.14159265358979323846*(row-1)/rows));
   for(unsigned i=0;i<outer.size();i++){
    const unsigned j=(i+1)%unsigned(outer.size());const double u0=double(i)/outer.size(),u1=double(i+1)/outer.size();

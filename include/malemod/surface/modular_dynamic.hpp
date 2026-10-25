@@ -69,21 +69,10 @@ struct DynamicMount {
   if(detailNormals){detailNormals->assign(points.size(),{});for(auto c:cached.moduleVertices){Vec n{};for(unsigned k=0;k<3;k++)n=Add(n,Scale(detail[asset.faces[c.parent][k]],c.donor[k]));(*detailNormals)[c.vertex]=n;}}
   for(auto c:cached.moduleVertices){Vec p{};for(unsigned k=0;k<3;k++)p=Add(p,Scale(source[asset.faces[c.parent][k]],c.donor[k]));points[c.vertex]=p;}
   const auto mapped=std::chrono::steady_clock::now();
-  const auto& rings=cached.surface.rings;auto first=cached.surface.firstTangents;std::vector<Vec> last(first.size());double firstScale=1,lastScale=1;
   const auto rimAxis=state.shaftMaterial?SocketMaterialState(state,cached.materialRoot).frames[1].basis[0]:state.frames[1].basis[0];
-  for(unsigned i=0;i<first.size();i++){
-   auto a=points[rings.front()[i]],b=points[rings.back()[i]];const double distance=std::sqrt(Dot(Sub(a,b),Sub(a,b)));last[i]=Scale(rimAxis,distance);
-   auto radial=Sub(Sub(a,cached.anchor),Scale(basis[0],Dot(Sub(a,cached.anchor),basis[0])));auto bounded=BoundRampTangents(a,b,first[i],last[i],CrossSectionRadial(radial,rimAxis),.005*std::sqrt(Dot(radial,radial)));
-   if(Dot(first[i],first[i])>1e-20)firstScale=(std::min)(firstScale,std::sqrt(Dot(bounded[0],bounded[0])/Dot(first[i],first[i])));
-   if(Dot(last[i],last[i])>1e-20)lastScale=(std::min)(lastScale,std::sqrt(Dot(bounded[1],bounded[1])/Dot(last[i],last[i])));
-  }
-  for(unsigned i=0;i<first.size();i++){first[i]=Scale(first[i],firstScale);last[i]=Scale(last[i],lastScale);}
-  for(unsigned row=1;row+1<rings.size();row++){
-   const double t=.5*(1-std::cos(3.14159265358979323846*row/(rings.size()-1)));
-   for(unsigned i=0;i<rings[0].size();i++){auto a=points[rings.front()[i]],b=points[rings.back()[i]];auto p=RaisedRampPoint(a,b,first[i],last[i],cached.anchor,basis[0],t);const auto id=rings[row][i];
-    if(id<cached.surface.entryNormals.size())p=RampEntryPoint(p,cached.surface.entryPoints[id],cached.surface.entryNormals[id],basis[0],t);
-    points[id]=p;}
-  }
+  ReposeRootRamp(points,cached.surface.rings,cached.surface.firstTangents,cached.anchor,basis[0],rimAxis,[&](unsigned id,unsigned){
+   return id<cached.surface.entryNormals.size()?std::make_pair(cached.surface.entryPoints[id],cached.surface.entryNormals[id]):std::make_pair(Vec{},Vec{});
+  },plan.Arena());
   if(timings){const auto end=std::chrono::steady_clock::now();auto ms=[](auto a,auto b){return std::chrono::duration<double,std::milli>(b-a).count();};*timings={ms(begin,posed),ms(posed,relieved),ms(relieved,mapped),ms(mapped,end)};}
   if(posedAsset)*posedAsset=std::move(source);
   return points;

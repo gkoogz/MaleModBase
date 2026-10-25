@@ -2,6 +2,86 @@
 #include "modular_motion.hpp"
 
 namespace malemod::surface::modular {
+inline double RapheCorrectionFraction(const std::vector<Vec>& before,
+ const std::vector<Vec>& after,const std::vector<std::array<unsigned,3>>& faces);
+// The retained shaft/crown join can double back axially and form a ventral
+// spur. A radial clamp alone flattens that fold into overlapping triangles.
+// Fair both axial and radial coordinates in a compact material-space patch,
+// retaining lateral coordinates and coincident aliases across both LODs.
+inline std::vector<Vec> FrenulumProfileCorrection(const std::vector<Vec>& points,
+ const std::vector<Binding>& owners,const PresentationFrames& frames,
+ const std::vector<std::array<unsigned,3>>& faces,double radius){
+ if(points.size()!=owners.size()||!std::isfinite(radius)||radius<=0)throw std::invalid_argument("Invalid frenulum material profile");
+ auto bindings=BindMaterialStations(points,owners,frames);std::array<double,12> arc{};
+ for(unsigned i=1;i<12;i++){auto d=Sub(frames[i+1].origin,frames[i].origin);arc[i]=arc[i-1]+std::sqrt(Dot(d,d));}
+ std::vector<Vec> delta(points.size()),local(points.size()),side(points.size()),up(points.size()),axis(points.size());std::vector<double> station(points.size());double extent=0;
+ PreparedMaterialSections sections(frames);
+ for(unsigned i=0;i<points.size();i++)if(ShaftBinding(owners[i])){
+  const auto a=bindings[i].influences[0],b=bindings[i].influences[1];auto frame=sections.Section(a.frame,b.frame,b.weight);
+  local[i]=Unrotate(frame.basis,Sub(points[i],frame.origin));side[i]=frame.basis[1];up[i]=frame.basis[2];axis[i]=frame.basis[0];
+  // The crown extends past the last rod station. Retain that material offset
+  // instead of clamping its entire frenulum to station one.
+  station[i]=arc[a.frame-1]*(1-b.weight)+arc[b.frame-1]*b.weight+local[i][0];extent=(std::max)(extent,station[i]);
+ }
+ if(extent<1e-8)return delta;
+ auto ease=[](double t){t=std::clamp(t,0.,1.);return t*t*t*(10+t*(-15+6*t));};
+ std::vector<double> proximal,distal;
+ for(unsigned i=0;i<points.size();i++)if(ShaftBinding(owners[i])&&std::abs(local[i][1])<.12*radius&&-local[i][2]>.3*radius){
+  const double s=station[i]/extent;
+  if(std::abs(s-.70)<=.015+1e-12)proximal.push_back(-local[i][2]);
+  if(std::abs(s-.91)<=.010+1e-12)distal.push_back(-local[i][2]);
+ }
+ const bool profile=proximal.size()>=3&&distal.size()>=3;
+ auto median=[](auto& values){std::sort(values.begin(),values.end());return .5*(values[(values.size()-1)/2]+values[values.size()/2]);};
+ const double proximalDepth=profile?median(proximal):0,distalDepth=profile?median(distal):0;
+ std::map<Vec,unsigned> unique;std::vector<unsigned> group(points.size()),representative;
+ std::vector<Vec> rest;std::vector<double> weight;
+ for(unsigned i=0;i<points.size();i++){
+  auto pair=unique.emplace(points[i],unsigned(rest.size()));group[i]=pair.first->second;
+  if(pair.second){rest.push_back(points[i]);representative.push_back(i);weight.push_back(0);}
+  if(!ShaftBinding(owners[i]))continue;
+  const double s=station[i]/extent,y=std::abs(local[i][1])/radius,z=-local[i][2]/radius;
+  const double width=1.0-.20*ease((s-.70)/.21);
+  const double w=ease((s-.69)/.045)*(1-ease((s-.90)/.04))*(1-ease((y-.10)/(width-.10)))*ease((z-.3)/.3);
+  if(w>weight[group[i]]){weight[group[i]]=w;representative[group[i]]=i;}
+ }
+ std::vector<std::vector<unsigned>> adjacent(rest.size());std::vector<std::array<unsigned,3>> patch;
+ for(auto f:faces){for(auto i:f)if(i>=points.size())throw std::invalid_argument("Invalid frenulum face");
+  std::array<unsigned,3> g{group[f[0]],group[f[1]],group[f[2]]};
+  if(!(weight[g[0]]||weight[g[1]]||weight[g[2]]))continue;
+  if(g[0]==g[1]||g[1]==g[2]||g[2]==g[0])continue;
+  patch.push_back(g);for(unsigned i=0;i<3;i++)if(weight[g[i]])for(unsigned j=0;j<3;j++)if(i!=j)adjacent[g[i]].push_back(g[j]);
+ }
+ std::vector<unsigned> active;
+ for(unsigned i=0;i<adjacent.size();i++)if(!adjacent[i].empty()){
+  auto& row=adjacent[i];std::sort(row.begin(),row.end());row.erase(std::unique(row.begin(),row.end()),row.end());active.push_back(i);
+ }
+ auto current=rest;
+ for(unsigned iteration=0;iteration<100;iteration++){
+  auto next=current;
+  for(auto i:active){Vec mean{};for(auto j:adjacent[i])mean=Add(mean,current[j]);mean=Scale(mean,1./adjacent[i].size());
+   auto move=Scale(Sub(mean,current[i]),.35*weight[i]);const auto id=representative[i];const auto lateral=side[id];move=Sub(move,Scale(lateral,Dot(move,lateral)));
+   if(profile){
+    const auto displacement=Sub(current[i],rest[i]);const double s=(station[id]+Dot(displacement,axis[id]))/extent,y=std::abs(local[id][1])/radius,z=-(local[id][2]+Dot(displacement,up[id]));
+    const double t=ease((s-.70)/.21),crest=proximalDepth*(1-t)+distalDepth*t;
+    // Continue the raphe as a narrowing ridge while its crest gently dips
+    // into the distal fold. A broad support removes the surrounding bulb;
+    // only its central relief narrows, so no steep wall replaces the bulb.
+    const double ridgeWidth=.40*(1-t)+.12*t,ridgeHeight=.10*radius*(1-.4*t);
+    const double target=crest+radius*(std::sqrt((std::max)(0.,1-y*y))-1)-ridgeHeight*(1-std::exp(-std::pow(y/ridgeWidth,2)));
+    move=Add(move,Scale(up[id],.05*weight[i]*(std::max)(0.,z-target)));
+   }
+   auto total=Sub(Add(current[i],move),rest[i]);const double length=std::sqrt(Dot(total,total));if(length>.6*radius)total=Scale(total,.6*radius/length);next[i]=Add(rest[i],total);
+  }
+  // Bound every incremental step. A repaired sharp fold can legitimately
+  // rotate more than90 degrees overall; comparing only to its original normal
+  // would preserve the spike rather than test continuous triangle integrity.
+  const double fraction=RapheCorrectionFraction(current,next,patch);
+  for(auto i:active)current[i]=Add(current[i],Scale(Sub(next[i],current[i]),fraction));
+ }
+ for(unsigned i=0;i<points.size();i++)delta[i]=Sub(current[group[i]],rest[group[i]]);
+ return delta;
+}
 // A common amplitude preserves a smooth profile when a short/wide shape has
 // nearly folded source triangles. Independent per-vertex backoffs would put
 // the very ripples being removed back into the longitudinal crest.

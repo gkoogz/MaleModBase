@@ -1,5 +1,6 @@
 #pragma once
 #include "presentation.hpp"
+#include <queue>
 
 namespace malemod::surface {
 // The outside skin has a suspension material frame, independent of the rigid
@@ -36,8 +37,8 @@ inline PresentationFrame SuspensionSkinFrame(const PresentationFrame& reference,
 }
 // The enclosing skin is one connected bag. Independent lobe transforms shear
 // its shared upper rim and raphe, even when each lobe's frame is well behaved.
-// Transport that envelope by the common suspension frame, preserving its
-// authored relative shape while following the contents' mean displacement.
+// This common transport belongs ONLY to the sewn upper rim. Applying it to
+// both complete lobes discards their independent simulated movement.
 inline std::array<PresentationFrame,2> SuspensionEnvelopeFrames(
  const std::array<PresentationFrame,2>& reference,
  const std::array<PresentationPoint,2>& restAnchors,
@@ -52,5 +53,35 @@ inline std::array<PresentationFrame,2> SuspensionEnvelopeFrames(
   for(unsigned k=0;k<3;k++)result[i].basis[k]=Rotate(common.basis,reference[i].basis[k]);
  }
  return result;
+}
+// The sewn rim follows the measured suspension attachments. Following the
+// contents' average center instead makes the attachment itself swing into the
+// supporting surface; independent distal motion must release below this rim.
+inline std::array<PresentationFrame,2> SuspensionAttachmentFrames(
+ const std::array<PresentationFrame,2>& reference,
+ const std::array<PresentationPoint,2>& restAnchors,
+ const std::array<PresentationPoint,2>& liveAnchors){
+ const auto rest=Scale(Add(restAnchors[0],restAnchors[1]),.5),live=Scale(Add(liveAnchors[0],liveAnchors[1]),.5);
+ const auto oldSpan=Sub(restAnchors[1],restAnchors[0]),newSpan=Sub(liveAnchors[1],liveAnchors[0]);
+ auto transport=SuspensionSkinFrame({rest,{{{1,0,0},{0,1,0},{0,0,1}}}},Add(rest,oldSpan),live,Add(live,newSpan));
+ auto result=reference;for(auto& f:result){f.origin=Add(live,Rotate(transport.basis,Sub(f.origin,rest)));for(auto& axis:f.basis)axis=Rotate(transport.basis,axis);}
+ return result;
+}
+// Geodesic release from the actual sewn rim, not a guessed world-height band.
+// Zero value and gradient at the rim preserve its common differential; tissue
+// farther down each lobe follows that lobe's own constrained mechanical frame.
+inline std::vector<double> SuspensionRimFreedom(const std::vector<PresentationPoint>& points,
+ const std::vector<std::array<unsigned,3>>& faces,const std::vector<unsigned>& rim,double span){
+ if(rim.empty()||!std::isfinite(span)||span<=0)throw std::invalid_argument("Missing suspension rim release");
+ std::vector<std::vector<unsigned>> adjacent(points.size());
+ for(auto f:faces)for(unsigned k=0;k<3;k++){auto a=f[k],b=f[(k+1)%3];adjacent.at(a).push_back(b);adjacent.at(b).push_back(a);}
+ std::vector<double> distance(points.size(),std::numeric_limits<double>::infinity());
+ using Item=std::pair<double,unsigned>;std::priority_queue<Item,std::vector<Item>,std::greater<Item>> queue;
+ for(auto id:rim){distance.at(id)=0;queue.push({0,id});}
+ while(!queue.empty()){auto [d,id]=queue.top();queue.pop();if(d!=distance[id]||d>=span)continue;
+  for(auto next:adjacent[id]){auto v=Sub(points[next],points[id]);const double candidate=d+std::sqrt(Dot(v,v));if(candidate<distance[next]){distance[next]=candidate;queue.push({candidate,next});}}
+ }
+ for(auto& d:distance){const double t=std::clamp(d/span,0.,1.);d=t*t*t*(10+t*(-15+6*t));}
+ return distance;
 }
 }

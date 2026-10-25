@@ -22,21 +22,6 @@ int main(){try{
    Check(a==b&&na==nb,"Spatial chart changed the measured body projection");
   }
  }
- // A raised annulus must leave the source rims and tangent planes exact,
- // scale with the model, and never inflate the circumference itself.
- for(double scale:{.01,1.,100.}){
-  Vec a{0,0,1.18*scale},b{.3*scale,0,scale},first{0,0,-.3*scale},last{.3*scale,0,0};
-  Check(RaisedRampPoint(a,b,first,last,{0,0,0},{1,0,0},0)==a,"Outer rim moved");
-  Check(RaisedRampPoint(a,b,first,last,{0,0,0},{1,0,0},1)==b,"Inner rim moved");
-  double previous=-1;
-  for(unsigned j=0;j<=100;j++){
-   const double t=j/100.;auto original=modular::Hermite(a,b,first,last,t),p=RaisedRampPoint(a,b,first,last,{0,0,0},{1,0,0},t);
-   Check(p[1]==original[1]&&p[2]==original[2],"Shoulder widened the circumference");
-   Check(p[0]>=original[0]-1e-14&&p[0]-original[0]<=.08*1.18*scale,"Shoulder escaped local envelope");
-   Check(p[0]>=previous,"Raised ramp folded backward");previous=p[0];
-  }
-  for(double t:{1e-5,1-1e-5}){auto d=Sub(RaisedRampPoint(a,b,first,last,{0,0,0},{1,0,0},t),modular::Hermite(a,b,first,last,t));Check(std::sqrt(Dot(d,d))<1e-12*scale,"Shoulder changed boundary differential");}
- }
  // A high-frequency interior normal must not survive arbitrarily close to
  // an exact boundary. This models the observed last-strip shading spike.
  for(Vec interior:{Vec{1,0,0},Vec{-.8,.6,0},Vec{0,0,-1}}){
@@ -71,6 +56,9 @@ int main(){try{
  for(unsigned i=0;i<moduleFaces.size();i++){SurfaceCutFace f;f.parent=i;for(unsigned k=0;k<3;k++){f.corners[k].vertex=moduleFaces[i][k];f.corners[k].donor[k]=1;}module.faces.push_back(f);}
  const auto originalModule=module.points;auto bodyChart=ChartLoop(body,{0,0,0},{{{0,1,0},{0,0,1}}}),moduleChart=ChartLoop(module,{0,0,0},{{{0,1,0},{0,0,1}}});
  auto out=StitchSurfaces(body,module,bodyChart,moduleChart,{0,0,0},{1,0,0},{1,0,0},std::vector<Vec>(p.size(),{1,0,0}),bodyFaces);
+ auto replayed=out.points;
+ ReposeRootRamp(replayed,out.rings,out.firstTangents,{0,0,0},{1,0,0},{1,0,0},[](unsigned,unsigned){return std::make_pair(Vec{},Vec{});});
+ for(const auto& ring:out.rings)for(auto id:ring)Check(Dot(Sub(replayed[id],out.points[id]),Sub(replayed[id],out.points[id]))<1e-24,"Compact root differs from the fitted boundary construction");
  std::map<std::pair<unsigned,unsigned>,std::pair<unsigned,int>> edges;
  for(auto f:out.faces){auto a=out.points[f[0].vertex],b=out.points[f[1].vertex],c=out.points[f[2].vertex];auto n=Cross(Sub(b,a),Sub(c,a));Check(Dot(n,n)>1e-20,"Stitch made a degenerate face");
   for(unsigned k=0;k<3;k++){
@@ -100,7 +88,7 @@ int main(){try{
   const double h=1e-4;const auto zero=entry(0),one=entry(h),two=entry(2*h);
   Check(std::abs((one[0]-zero[0])/(h*scale))<1e-6,"Entry has a geometric crease");
   Check(std::abs((two[0]-2*one[0]+zero[0])/(h*h*scale))<.01,"Entry curvature jumps off the pelvis");
-  Check(entry(.25)[0]>.05*scale,"Entry delays all bending until the middle");
+  Check(std::abs(entry(.25)[0]-.25*scale)<1e-12*scale,"Body constraint creates a flat washer past the entry band");
   double prior=-1;for(unsigned i=0;i<=100;i++){auto p=entry(i/100.);Check(p[0]>=prior,"Entry folds backward");prior=p[0];}
  }
  std::cout<<"PASS unequal-loop sewing, original donor reconstruction, manifoldness and winding\n";

@@ -15,8 +15,21 @@ int main(){try{
   auto envelope=SuspensionEnvelopeFrames(pair,anchors,live,anchors);
   auto a=Sub(pair[0].origin,pair[1].origin),b=Sub(envelope[0].origin,envelope[1].origin);
   Check(std::abs(Dot(a,a)-Dot(b,b))<1e-10,"Independent contents shear the common skin rim");
+  // The common frame is a boundary condition, never the two complete lobes.
+  for(unsigned i=0;i<2;i++){auto independent=SuspensionSkinFrame(pair[i],anchors[i],live[i],anchors[i]);Near(independent.origin,live[i]);}
   Near(Scale(Add(envelope[0].origin,envelope[1].origin),.5),Scale(Add(live[0],live[1]),.5));
   for(auto f:envelope)Quaternion(f.basis);
+  auto attached=SuspensionAttachmentFrames(pair,anchors,anchors);
+  for(unsigned i=0;i<2;i++){Near(attached[i].origin,pair[i].origin);for(unsigned k=0;k<3;k++)Near(attached[i].basis[k],pair[i].basis[k]);}
+  auto movedAnchors=anchors;for(auto& p:movedAnchors)p=Add(p,{1,2,-3});attached=SuspensionAttachmentFrames(pair,anchors,movedAnchors);
+  for(unsigned i=0;i<2;i++)Near(attached[i].origin,Add(pair[i].origin,{1,2,-3}));
+ }
+ {
+  std::vector<PresentationPoint> p{{0,0,0},{0,1,0},{0,0,-1},{0,1,-1},{0,0,-2},{0,1,-2}};
+  std::vector<std::array<unsigned,3>> f{{0,1,2},{1,3,2},{2,3,4},{3,5,4}};
+  auto release=SuspensionRimFreedom(p,f,{0,1},2);
+  Check(release[0]==0&&release[1]==0&&release[4]==1&&release[5]==1,"Rim freeze leaked into distal independent skin");
+  Check(std::abs(release[2]-.5)<1e-12,"Release is not continuous through the neck");
  }
  auto target=Unit(PresentationPoint{.7,-.2,1});PresentationPoint center{4,-6,8};auto endpoint=Add(center,Scale(target,2));auto frame=SuspensionSkinFrame(rest,anchor,center,endpoint);
  Near(Rotate(frame.basis,Unrotate(rest.basis,cord)),target);Check(frame.origin==center,"Skin body center changed");Quaternion(frame.basis);

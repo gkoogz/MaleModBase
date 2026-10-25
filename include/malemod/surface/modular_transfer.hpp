@@ -1,8 +1,17 @@
 #pragma once
 #include "modular_asset.hpp"
 #include "raphe_profile.hpp"
+#include "suspension_skin_frame.hpp"
 
 namespace malemod::surface::modular {
+inline std::vector<double> PreparedSuspensionFreedom(const Asset& asset,const std::vector<Vec>& points,
+ std::vector<unsigned> rim,double radius){
+ // Shared raphe ownership is an authored material fact, not a world-height
+ // guess. Use geodesic distance to release it, rather than differentiating
+ // steep left/right painting weights into artificial local skin strain.
+ for(unsigned i=0;i<asset.bindings.size();i++){std::array<double,2> w{};for(auto v:asset.bindings[i].influences)if(v.frame>=13)w.at(v.frame-13)+=v.weight;if(w[0]>.1&&w[1]>.1)rim.push_back(i);}
+ return SuspensionRimFreedom(points,asset.faces,rim,.8*radius);
+}
 // The complete rod owns axial material coordinates. A legacy surface may
 // carry a second length/collar correction, which must not pull one retained
 // vertex backwards through its neighboring rod section. Transfer only the
@@ -32,7 +41,11 @@ class SurfaceTransfer {
  // suspended skin starts from its fully authored material, then follows the
  // two independently simulated bodies through its original semantic weights.
  void ApplyPrepared(const Asset& asset,State& state,const State& material,
-                    const std::vector<Vec>& points)const{
+                    const std::vector<Vec>& points,
+                    const std::array<PresentationFrame,2>* rimFrames=nullptr,
+                    const std::vector<double>* freedom=nullptr,
+                    const std::array<PresentationFrame,2>* attachmentFrames=nullptr,
+                    const std::vector<double>* rimFreedom=nullptr)const{
   if(points.size()!=targetCount_||asset.bindings.size()!=targetCount_)
    throw std::invalid_argument("Prepared transfer topology differs");
   auto offsets=std::make_shared<std::vector<Vec>>(targetCount_);
@@ -44,10 +57,21 @@ class SurfaceTransfer {
     if(owner.frame<13)throw std::invalid_argument("Prepared suspended skin has non-lobe ownership");
     const auto& a=material.frames[owner.frame];const auto& b=state.frames[owner.frame];
     Vec scale{};for(unsigned k=0;k<3;k++)scale[k]=state.scales[owner.frame][k]/material.scales[owner.frame][k];
-    desired=Add(desired,Scale(Add(b.origin,Rotate(b.basis,Components(Unrotate(a.basis,Sub(points[row.target],a.origin)),scale))),owner.weight));
+    const auto localPoint=Components(Unrotate(a.basis,Sub(points[row.target],a.origin)),scale);
+    auto p=Add(b.origin,Rotate(b.basis,localPoint));
+    const double free=freedom?freedom->at(row.target):1;
+    if(rimFrames){const auto& rim=rimFrames->at(owner.frame-13);auto shared=Add(rim.origin,Rotate(rim.basis,localPoint));
+     if(attachmentFrames){const auto& a=attachmentFrames->at(owner.frame-13);auto anchored=Add(a.origin,Rotate(a.basis,localPoint));double release=rimFreedom->at(row.target);p=Add(Add(anchored,Scale(Sub(shared,anchored),release)),Scale(Sub(p,shared),free));}
+     else p=Add(shared,Scale(Sub(p,shared),free));}
+    desired=Add(desired,Scale(p,owner.weight));
     if(Dot(restNormal,restNormal)>1e-12){
      auto local=Unrotate(a.basis,restNormal);for(unsigned k=0;k<3;k++)local[k]/=scale[k];
-     normal=Add(normal,Scale(Rotate(b.basis,local),owner.weight));
+     // In the transition the weight gradient contributes to the normal.
+     // Let the actual connected geometry provide it, rather than rotating
+     // a normal as if the whole lobe were a rigid body.
+     if(attachmentFrames){if(free==1)normal=Add(normal,Scale(Rotate(b.basis,local),owner.weight));}
+     else if(!rimFrames||free==1)normal=Add(normal,Scale(Rotate(b.basis,local),owner.weight));
+     else if(free==0)normal=Add(normal,Scale(Rotate(rimFrames->at(owner.frame-13).basis,local),owner.weight));
     }
    }
    (*offsets)[row.target]=Sub(desired,Point(binding,state));
@@ -80,6 +104,9 @@ class SurfaceTransfer {
     for(unsigned i=0;i<targetCount_;i++)(*offsets)[i]=Add((*offsets)[i],Scale(correction[i],fraction-1));
     posed=plan.Evaluate(state);
    }
+   const auto fold=FrenulumProfileCorrection(posed,asset.bindings,state.frames,asset.faces,state.sectionRadius);
+   for(unsigned i=0;i<targetCount_;i++)(*offsets)[i]=Add((*offsets)[i],fold[i]);
+   posed=plan.Evaluate(state);
   }
   std::vector<Vec> geometric(targetCount_);
   for(auto face:asset.faces){auto n=Cross(Sub(posed[face[1]],posed[face[0]]),Sub(posed[face[2]],posed[face[0]]));for(auto i:face)geometric[i]=Add(geometric[i],n);}
