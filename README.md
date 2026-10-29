@@ -29,6 +29,9 @@ game state, and explains what a fresh machine must regenerate.
 - `templates/github-actions-verify.yml`: CI template; activation requires a
   GitHub credential permitted to create Actions workflows.
 
+Shared voice IDs, editable character scripts and approved PCM delivery are
+available through the [voice pipeline](docs/VOICE-PIPELINE.md).
+
 ## Use
 
 ```powershell

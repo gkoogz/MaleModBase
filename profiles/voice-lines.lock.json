@@ -1,0 +1,125 @@
+{
+  "schema": "malemod.voice-id-lock/1",
+  "lines": [
+    {
+      "line_id": "MM-VOICE-0001",
+      "cue": "sequence.phase1",
+      "variant": 1
+    },
+    {
+      "line_id": "MM-VOICE-0002",
+      "cue": "sequence.phase1",
+      "variant": 2
+    },
+    {
+      "line_id": "MM-VOICE-0003",
+      "cue": "sequence.phase1",
+      "variant": 3
+    },
+    {
+      "line_id": "MM-VOICE-0004",
+      "cue": "sequence.phase1",
+      "variant": 4
+    },
+    {
+      "line_id": "MM-VOICE-0005",
+      "cue": "sequence.phase1",
+      "variant": 5
+    },
+    {
+      "line_id": "MM-VOICE-0006",
+      "cue": "sequence.phase1",
+      "variant": 6
+    },
+    {
+      "line_id": "MM-VOICE-0007",
+      "cue": "sequence.phase1",
+      "variant": 7
+    },
+    {
+      "line_id": "MM-VOICE-0008",
+      "cue": "sequence.phase1",
+      "variant": 8
+    },
+    {
+      "line_id": "MM-VOICE-0009",
+      "cue": "sequence.phase1",
+      "variant": 9
+    },
+    {
+      "line_id": "MM-VOICE-0010",
+      "cue": "sequence.phase1",
+      "variant": 10
+    },
+    {
+      "line_id": "MM-VOICE-0011",
+      "cue": "sequence.phase1",
+      "variant": 11
+    },
+    {
+      "line_id": "MM-VOICE-0012",
+      "cue": "sequence.phase1",
+      "variant": 12
+    },
+    {
+      "line_id": "MM-VOICE-0013",
+      "cue": "sequence.phase1",
+      "variant": 13
+    },
+    {
+      "line_id": "MM-VOICE-0014",
+      "cue": "sequence.phase2",
+      "variant": 1
+    },
+    {
+      "line_id": "MM-VOICE-0015",
+      "cue": "sequence.phase2",
+      "variant": 2
+    },
+    {
+      "line_id": "MM-VOICE-0016",
+      "cue": "sequence.phase2",
+      "variant": 3
+    },
+    {
+      "line_id": "MM-VOICE-0017",
+      "cue": "sequence.phase2",
+      "variant": 4
+    },
+    {
+      "line_id": "MM-VOICE-0018",
+      "cue": "sequence.phase2",
+      "variant": 5
+    },
+    {
+      "line_id": "MM-VOICE-0019",
+      "cue": "sequence.phase2",
+      "variant": 6
+    },
+    {
+      "line_id": "MM-VOICE-0020",
+      "cue": "sequence.phase2",
+      "variant": 7
+    },
+    {
+      "line_id": "MM-VOICE-0021",
+      "cue": "sequence.phase2",
+      "variant": 8
+    },
+    {
+      "line_id": "MM-VOICE-0022",
+      "cue": "sequence.phase2",
+      "variant": 9
+    },
+    {
+      "line_id": "MM-VOICE-0023",
+      "cue": "sequence.phase2",
+      "variant": 10
+    },
+    {
+      "line_id": "MM-VOICE-0024",
+      "cue": "sequence.phase2",
+      "variant": 11
+    }
+  ]
+}
