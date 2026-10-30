@@ -1,7 +1,7 @@
 import copy,tempfile,unittest,wave,json,sys
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from malemod_base.voice_pipeline import catalog,next_id,scaffold,validate
+from malemod_base.voice_pipeline import COLUMNS,catalog,next_id,scaffold,validate,read_script
 
 class VoicePipelineTests(unittest.TestCase):
     def setUp(self):
@@ -10,8 +10,21 @@ class VoicePipelineTests(unittest.TestCase):
     def test_character_retake_preserves_identity(self):
         other=scaffold(self.data,'future_character')
         self.assertEqual(other[0]['line_id'],self.rows[0]['line_id'])
+        self.assertEqual(other[0]['tag'],'1')
         self.rows[0]['revision']='2'
         self.assertFalse(validate(self.data,self.rows)['ready'])
+    def test_incorrect_or_reused_numeric_tag_is_rejected(self):
+        self.rows[0]['tag']='2'
+        with self.assertRaisesRegex(ValueError,'Numeric tag'):validate(self.data,self.rows)
+    def test_legacy_script_gets_the_same_numeric_tag_without_text_change(self):
+        import csv
+        with tempfile.TemporaryDirectory()as d:
+            path=Path(d)/'old.csv'
+            with path.open('w',encoding='utf-8',newline='')as f:
+                w=csv.DictWriter(f,fieldnames=COLUMNS[1:]);w.writeheader();w.writerow({k:v for k,v in self.rows[0].items()if k!='tag'})
+            rows=read_script(path)
+            self.assertEqual(rows[0]['tag'],'1');self.assertEqual(rows[0]['text'],self.rows[0]['text'])
+            self.assertFalse(validate(self.data,rows)['ready'])
     def test_silent_plan_cannot_be_packaged_as_approved(self):
         with self.assertRaisesRegex(ValueError,'not approved'):validate(self.data,self.rows,require_approved=True)
     def test_duplicate_and_missing_ids_are_rejected(self):

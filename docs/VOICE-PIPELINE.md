@@ -25,7 +25,16 @@ python tools/voice_pipeline.py scaffold --character future_character --output bu
 python tools/voice_pipeline.py next-id
 ```
 
-CSV columns are `line_id,character_id,cue,variant,text,revision,status,recording`.
+CSV columns are `tag,line_id,character_id,cue,variant,text,revision,status,recording`.
+The first column is the simple global number, 1–24 for the initial set. It does
+not restart at the phase boundary: phase2 starts at tag14. Corresponding lines
+keep the same tag in Geralt, Wolverine and the Core template. The validator
+checks each tag against its permanent ID; older eight-column scripts remain
+readable and receive the same tag in memory.
+
+An editable reference script is [voice-lines-template.csv](../profiles/voice-lines-template.csv).
+It retains the recovered Geralt wording with character `template` and no bound
+recordings. Copy it for a new character or use the blank scaffold below.
 The scaffold leaves text/recordings blank and status `needs_recording`. Fill in
 the intended words. An adapter can preserve an existing character's text exactly
 when migrating a script. Keep the ID and cue columns fixed.
